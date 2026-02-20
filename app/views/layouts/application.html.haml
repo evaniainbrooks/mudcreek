@@ -1,0 +1,47 @@
+!!!
+%html{lang: "en"}
+  %head
+    %title= content_for(:title) || "Mudcreek"
+    %meta{name: "viewport", content: "width=device-width,initial-scale=1"}
+    %meta{name: "apple-mobile-web-app-capable", content: "yes"}
+    %meta{name: "application-name", content: "Mudcreek"}
+    %meta{name: "mobile-web-app-capable", content: "yes"}
+    = csrf_meta_tags
+    = csp_meta_tag
+    = yield :head
+    %link{rel: "icon", href: "/icon.png", type: "image/png"}
+    %link{rel: "icon", href: "/icon.svg", type: "image/svg+xml"}
+    %link{rel: "apple-touch-icon", href: "/icon.png"}
+    = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+  %body.d-flex.flex-column.min-vh-100
+    %nav.navbar.navbar-expand-lg.bg-dark{"data-bs-theme": "dark"}
+      .container
+        = link_to "Mudcreek", "/", class: "navbar-brand fw-bold"
+        %button.navbar-toggler{type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#mainNav", "aria-controls": "mainNav", "aria-expanded": "false", "aria-label": "Toggle navigation"}
+          %span.navbar-toggler-icon
+        #mainNav.collapse.navbar-collapse
+          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+            - if Current.user
+              %li.nav-item
+                = link_to admin_users_path, class: "nav-link" do
+                  %i.bi.bi-people-fill.me-1
+                  Users
+              %li.nav-item
+                = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
+            - else
+              %li.nav-item
+                = link_to "Sign in", new_session_path, class: "nav-link"
+    %main.flex-grow-1
+      .container.py-4
+        - flash.each do |type, message|
+          .alert.alert-dismissible.fade.show{class: "alert-#{bootstrap_flash_class(type)}", role: "alert"}
+            = message
+            %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
+        = yield
+    %footer.bg-body-tertiary.border-top.py-3
+      .container
+        %p.text-center.text-muted.small.mb-0
+          &copy;
+          = Date.current.year
+          Mudcreek

@@ -1,20 +1,33 @@
-%h1 Users
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-people-fill.me-2
+    Users
 
-= search_form_for @q, url: admin_users_path do |f|
-  = f.label :email_address_cont, "Email contains"
-  = f.search_field :email_address_cont
-  = f.submit "Search"
+.card.shadow-sm.border-0.mb-4
+  .card-body
+    = search_form_for @q, url: admin_users_path, html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-6
+        = f.label :email_address_cont, "Email", class: "form-label form-label-sm"
+        = f.search_field :email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+      .col-auto
+        = f.submit "Search", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_users_path, class: "btn btn-outline-secondary btn-sm"
 
-%table
-  %thead
-    %tr
-      %th= sort_link(@q, :email_address, "Email")
-      %th= sort_link(@q, :created_at, "Created At")
-  %tbody
-    - @users.each do |user|
+.table-responsive
+  %table.table.table-hover.align-middle.mb-0
+    %thead.table-dark
       %tr
-        %td= user.email_address
-        %td= user.created_at
+        %th= sort_link(@q, :email_address, "Email")
+        %th= sort_link(@q, :created_at, "Created At")
+    %tbody
+      - @users.each do |user|
+        %tr
+          %td.fw-medium= user.email_address
+          %td.text-muted= user.created_at.strftime("%b %-d, %Y at %H:%M")
 
-%nav.pagy
-  != @pagy.next_tag
+- if @pagy.next
+  .d-flex.justify-content-end.mt-3
+    = link_to admin_users_path(q: params[:q]&.to_unsafe_h, page: @pagy.next), class: "btn btn-outline-secondary btn-sm" do
+      Next
+      %i.bi.bi-chevron-right
