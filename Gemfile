@@ -98,6 +98,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Check consistency between DB constraints and model validations
+  gem "database_consistency", require: false
 end
 
 group :test do
