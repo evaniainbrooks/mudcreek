@@ -1,0 +1,52 @@
+# Bundler
+/.bundle
+/vendor/bundle
+
+# Environment
+/.env*
+
+# Secrets — never commit keys
+/config/master.key
+/config/credentials/*.key
+
+# Logs and temp files
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+!/tmp/pids/.keep
+!/tmp/storage/.keep
+
+# SQLite databases
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Uploaded files / Active Storage
+/storage/*
+!/storage/.keep
+
+# Compiled assets
+/node_modules/
+/app/assets/builds/*
+!/app/assets/builds/.keep
+/public/assets
+
+# Test coverage
+/coverage/
+
+# RSpec examples status (optional, some teams commit this)
+/spec/examples.txt
+
+# Yarn
+yarn-error.log
+
+# macOS
+.DS_Store
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
