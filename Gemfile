@@ -64,7 +64,7 @@ gem "strong_migrations"
 gem "sidekiq"
 
 # HAML templating
-gem "haml-rails", path: "../haml-rails"
+gem "haml-rails", "~> 3.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
