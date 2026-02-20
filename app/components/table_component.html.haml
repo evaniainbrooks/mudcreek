@@ -1,0 +1,15 @@
+.table-responsive
+  %table.table.table-hover.align-middle.mb-0
+    %thead.table-dark
+      %tr
+        - @columns.each do |col|
+          %th
+            - if col.sort_attr && @ransack_query
+              = sort_link(@ransack_query, col.sort_attr, col.header, page: nil)
+            - else
+              = col.header
+    %tbody
+      - @rows.each do |row|
+        %tr
+          - @columns.each do |col|
+            %td{class: col.html_class}= col.block.call(row)

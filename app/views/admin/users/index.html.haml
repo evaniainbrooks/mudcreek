@@ -14,17 +14,10 @@
       .col-auto
         = link_to "Clear", admin_users_path, class: "btn btn-outline-secondary btn-sm"
 
-.table-responsive
-  %table.table.table-hover.align-middle.mb-0
-    %thead.table-dark
-      %tr
-        %th= sort_link(@q, :email_address, "Email")
-        %th= sort_link(@q, :created_at, "Created At")
-    %tbody
-      - @users.each do |user|
-        %tr
-          %td.fw-medium= user.email_address
-          %td.text-muted= user.created_at.strftime("%b %-d, %Y at %H:%M")
+- table = ::TableComponent.new(rows: @users, ransack_query: @q)
+- table.with_column("Email", sort_attr: :email_address) { mail_to(it.email_address) }
+- table.with_column("Created At", sort_attr: :created_at, html_class: "text-muted") { it.created_at.to_fs(:long) }
+= render table
 
 - if @pagy.next
   .d-flex.justify-content-end.mt-3
