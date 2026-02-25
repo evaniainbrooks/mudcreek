@@ -4,6 +4,9 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
+  validates :email_address, presence: true, uniqueness: { case_sensitive: false }
+  validates :password_digest, presence: true
+
   def self.ransackable_attributes(_auth_object = nil)
     %w[email_address created_at]
   end
