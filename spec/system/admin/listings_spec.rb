@@ -179,7 +179,6 @@ RSpec.describe "Admin::Listings", type: :system do
   end
 
   describe "create" do
-
     context "with valid attributes" do
       it "redirects to the show page with a success notice" do
         visit new_admin_listing_path

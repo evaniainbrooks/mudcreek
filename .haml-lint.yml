@@ -3,5 +3,9 @@ linters:
     enabled: false
   SpaceInsideHashAttributes:
     enabled: false
+  RuboCop:
+    rubocop_config:
+      Layout/SpaceInsideArrayLiteralBrackets:
+        Enabled: false
   LineLength:
     max: 160
