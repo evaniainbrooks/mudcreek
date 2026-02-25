@@ -1,9 +1,6 @@
 # Mark existing migrations as safe
 StrongMigrations.start_after = 20260219124838
 
-# SQLite is not supported by strong_migrations; skip checks on the primary DB
-StrongMigrations.skip_database(:primary)
-
 # Set timeouts for migrations
 StrongMigrations.lock_timeout = 10.seconds
 StrongMigrations.statement_timeout = 1.hour

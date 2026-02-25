@@ -68,6 +68,19 @@ jobs:
   database_consistency:
     name: Database Consistency
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mudcreek_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -77,16 +90,31 @@ jobs:
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DATABASE_URL: postgres://postgres:postgres@localhost/mudcreek_test
         run: bin/rails db:test:prepare
       - name: Check database consistency
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DATABASE_URL: postgres://postgres:postgres@localhost/mudcreek_test
         run: bundle exec database_consistency
 
   specs:
     name: RSpec
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mudcreek_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -104,11 +132,13 @@ jobs:
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DATABASE_URL: postgres://postgres:postgres@localhost/mudcreek_test
         run: bin/rails db:test:prepare
       - name: Run RSpec
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          DATABASE_URL: postgres://postgres:postgres@localhost/mudcreek_test
         run: bundle exec rspec --format RSpec::Github::Formatter --format progress
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
