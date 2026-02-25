@@ -54,6 +54,9 @@ gem "pundit"
 # Search and filtering
 gem "ransack"
 
+# Money handling
+gem "money-rails"
+
 # Pagination (keyset/cursor-based)
 gem "pagy"
 
@@ -105,6 +108,7 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "shoulda-matchers"
   gem "capybara"
   gem "selenium-webdriver"
 

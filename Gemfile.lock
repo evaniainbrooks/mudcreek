@@ -238,6 +238,16 @@ GEM
     minitest (6.0.2)
       drb (~> 2.0)
       prism (~> 1.5)
+    monetize (2.0.0)
+      money (~> 7.0)
+    money (7.0.2)
+      bigdecimal
+      i18n (~> 1.9)
+    money-rails (3.0.0)
+      activesupport (>= 7.0)
+      monetize (~> 2.0)
+      money (~> 7.0)
+      railties (>= 7.0)
     msgpack (1.8.0)
     multipart-post (2.4.1)
     net-http (0.9.1)
@@ -416,6 +426,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    shoulda-matchers (7.0.1)
+      activesupport (>= 7.1)
     sidekiq (8.1.1)
       connection_pool (>= 3.0.0)
       json (>= 2.16.0)
@@ -526,6 +538,7 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   kamal
+  money-rails
   pagy
   pg
   propshaft
@@ -538,6 +551,7 @@ DEPENDENCIES
   rubocop
   rubocop-rails-omakase
   selenium-webdriver
+  shoulda-matchers
   sidekiq
   simplecov
   solid_cable
@@ -636,6 +650,9 @@ CHECKSUMS
   mini_magick (5.3.1) sha256=29395dfd76badcabb6403ee5aff6f681e867074f8f28ce08d78661e9e4a351c4
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   minitest (6.0.2) sha256=db6e57956f6ecc6134683b4c87467d6dd792323c7f0eea7b93f66bd284adbc3d
+  monetize (2.0.0) sha256=152980cadff9fd11a95817d56e3d7d69b07998c4506f15d971edf05851f82aba
+  money (7.0.2) sha256=615c27c1fd1d190dceda5c5f4dd5af5f4d20f790ff3b62ea2fe2d96eb22e2c60
+  money-rails (3.0.0) sha256=f4bd1c8e1c98d221e7bf452eeb52e240f41224e43da2a477a5659a87c0c95bae
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
   multipart-post (2.4.1) sha256=9872d03a8e552020ca096adadbf5e3cb1cd1cdd6acd3c161136b8a5737cdb4a8
   net-http (0.9.1) sha256=25ba0b67c63e89df626ed8fac771d0ad24ad151a858af2cc8e6a716ca4336996
@@ -705,6 +722,7 @@ CHECKSUMS
   rubyzip (3.2.2) sha256=c0ed99385f0625415c8f05bcae33fe649ed2952894a95ff8b08f26ca57ea5b3c
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   selenium-webdriver (4.41.0) sha256=cdc1173cd55cf186022cea83156cc2d0bec06d337e039b02ad25d94e41bedd22
+  shoulda-matchers (7.0.1) sha256=b4bfd8744c10e0a36c8ac1a687f921ee7e25ed529e50488d61b79a8688749c77
   sidekiq (8.1.1) sha256=afdf2736883e1e80c1c9b7c47afe0387e1a4997c87170978a45560d35d429151
   simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
   simplecov-html (0.13.2) sha256=bd0b8e54e7c2d7685927e8d6286466359b6f16b18cb0df47b508e8d73c777246
