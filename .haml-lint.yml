@@ -1,0 +1,7 @@
+linters:
+  ClassesBeforeIds:
+    enabled: false
+  SpaceInsideHashAttributes:
+    enabled: false
+  LineLength:
+    max: 160
