@@ -33,6 +33,10 @@
                   %i.bi.bi-people-fill.me-1
                   Users
               %li.nav-item
+                = link_to admin_listings_path, class: "nav-link" do
+                  %i.bi.bi-tag-fill.me-1
+                  Listings
+              %li.nav-item
                 = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
             - else
               %li.nav-item

@@ -1,0 +1,38 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tag-fill.me-2
+    = @listing.name
+  .btn-group
+    = link_to edit_admin_listing_path(@listing), class: "btn btn-outline-primary" do
+      %i.bi.bi-pencil.me-1
+      Edit
+    = button_to admin_listing_path(@listing), method: :delete, class: "btn btn-outline-danger",
+      form: { data: { turbo_confirm: "Are you sure you want to delete this listing?" } } do
+      %i.bi.bi-trash.me-1
+      Delete
+
+.card.shadow-sm.border-0
+  .card-body
+    %dl.row.mb-0
+      %dt.col-sm-3 Name
+      %dd.col-sm-9= @listing.name
+
+      %dt.col-sm-3 Price
+      %dd.col-sm-9= humanized_money_with_symbol(@listing.price, no_cents_if_whole: false)
+
+      %dt.col-sm-3 Owner
+      %dd.col-sm-9= mail_to @listing.owner.email_address
+
+      %dt.col-sm-3 Description
+      %dd.col-sm-9= @listing.description
+
+      %dt.col-sm-3 Created At
+      %dd.col-sm-9= @listing.created_at.to_fs(:long)
+
+      %dt.col-sm-3 Updated At
+      %dd.col-sm-9= @listing.updated_at.to_fs(:long)
+
+.mt-3
+  = link_to admin_listings_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Listings
