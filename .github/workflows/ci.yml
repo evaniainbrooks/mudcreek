@@ -99,7 +99,7 @@ jobs:
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-        run: bundle exec rspec
+        run: bundle exec rspec --format RSpec::Github::Formatter --format progress
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()

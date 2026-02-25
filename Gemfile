@@ -110,4 +110,7 @@ group :test do
 
   # Code coverage
   gem "simplecov", require: false
+
+  # GitHub Actions formatter for RSpec
+  gem "rspec-github", require: false
 end
