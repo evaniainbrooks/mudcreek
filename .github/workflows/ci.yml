@@ -47,8 +47,10 @@ jobs:
           cache: yarn
       - name: Install JS dependencies
         run: yarn install --frozen-lockfile
+      - name: Register ESLint problem matcher
+        run: echo "::add-matcher::.github/eslint-matcher.json"
       - name: Run ESLint
-        run: yarn lint:js
+        run: yarn eslint app/javascript/ --format compact
 
   security:
     name: Security

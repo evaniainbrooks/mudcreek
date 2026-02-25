@@ -7,7 +7,13 @@
         = form_with url: passwords_path do |f|
           .mb-3
             = f.label :email_address, "Email address", class: "form-label"
-            = f.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address], class: "form-control"
+            = f.email_field :email_address,
+              required: true,
+              autofocus: true,
+              autocomplete: "username",
+              placeholder: "you@example.com",
+              value: params[:email_address],
+              class: "form-control"
           .d-grid.mt-4
             = f.submit "Email reset instructions", class: "btn btn-primary"
         .text-center.mt-3

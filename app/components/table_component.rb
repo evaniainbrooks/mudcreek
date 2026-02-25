@@ -1,5 +1,4 @@
 class TableComponent < ViewComponent::Base
-  include Ransack::Helpers::FormHelper
   Column = Data.define(:header, :sort_attr, :html_class, :block)
 
   def initialize(rows:, ransack_query: nil)

@@ -7,7 +7,13 @@
         = form_with url: session_path do |f|
           .mb-3
             = f.label :email_address, "Email address", class: "form-label"
-            = f.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address], class: "form-control"
+            = f.email_field :email_address,
+              required: true,
+              autofocus: true,
+              autocomplete: "username",
+              placeholder: "you@example.com",
+              value: params[:email_address],
+              class: "form-control"
           .mb-3
             = f.label :password, "Password", class: "form-label"
             = f.password_field :password, required: true, autocomplete: "current-password", placeholder: "Password", maxlength: 72, class: "form-control"

@@ -18,9 +18,14 @@
     %nav.navbar.navbar-expand-lg.bg-dark{"data-bs-theme": "dark"}
       .container
         = link_to "Mudcreek", "/", class: "navbar-brand fw-bold"
-        %button.navbar-toggler{type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#mainNav", "aria-controls": "mainNav", "aria-expanded": "false", "aria-label": "Toggle navigation"}
+        %button.navbar-toggler{type: "button",
+          "data-bs-toggle": "collapse",
+          "data-bs-target": "#main-nav",
+          "aria-controls": "main-nav",
+          "aria-expanded": "false",
+          "aria-label": "Toggle navigation"}
           %span.navbar-toggler-icon
-        #mainNav.collapse.navbar-collapse
+        #main-nav.collapse.navbar-collapse
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
             - if Current.user
               %li.nav-item
