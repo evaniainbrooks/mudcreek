@@ -12,4 +12,7 @@
       - @rows.each do |row|
         %tr
           - @columns.each do |col|
-            %td{class: col.html_class}= col.block.call(row)
+            - if col.typed
+              = render(TableCellComponent.new(value: col.block.call(row), html_class: col.html_class))
+            - else
+              %td{class: col.html_class}= col.block.call(row)
