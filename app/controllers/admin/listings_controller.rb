@@ -2,6 +2,7 @@ class Admin::ListingsController < Admin::BaseController
   before_action :set_listing, only: %i[show edit update destroy]
 
   def index
+    authorize(Listing)
     @q = Listing.ransack(params[:q])
     scope = @q.result.includes(:owner).order(id: :asc)
     @pagy, @listings = pagy(:keyset, scope)
@@ -44,6 +45,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def set_listing
     @listing = Listing.with_attached_images.with_attached_videos.find(params[:id])
+    authorize(@listing)
   end
 
   def listing_params
