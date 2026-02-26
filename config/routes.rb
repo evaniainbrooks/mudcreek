@@ -6,7 +6,9 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users, only: :index
-    resources :roles, only: [ :index, :create, :destroy ]
+    resources :roles, only: [ :index, :create, :destroy ] do
+      resources :permissions, only: [ :index, :create, :destroy ]
+    end
     resources :listings do
       resources :attachments, only: [ :destroy ], module: :listings
     end

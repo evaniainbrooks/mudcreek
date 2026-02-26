@@ -1,0 +1,23 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-key-fill.me-2
+    = @role.name
+    %small.text-muted.fw-normal.fs-6.ms-1 Permissions
+  = link_to admin_roles_path, class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    Roles
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold New Permission
+  .card-body
+    = form_with model: [:admin, @role, @permission], html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-4
+        = f.label :resource, class: "form-label form-label-sm"
+        = f.select :resource, Permission::RESOURCES, { include_blank: "Select resource…" }, class: "form-select form-select-sm"
+      .col-md-4
+        = f.label :action, class: "form-label form-label-sm"
+        = f.select :action, Permission::ACTIONS, { include_blank: "Select action…" }, class: "form-select form-select-sm"
+      .col-auto
+        = f.submit "Add Permission", class: "btn btn-primary btn-sm"
+
+= render_permissions_table(role: @role, permissions: @permissions)

@@ -9,15 +9,15 @@ class ApplicationPolicy
   end
 
   def index?
-    false
+    permitted?(:index)
   end
 
   def show?
-    false
+    permitted?(:show)
   end
 
   def create?
-    false
+    permitted?(:create)
   end
 
   def new?
@@ -25,7 +25,7 @@ class ApplicationPolicy
   end
 
   def update?
-    false
+    permitted?(:update)
   end
 
   def edit?
@@ -33,7 +33,14 @@ class ApplicationPolicy
   end
 
   def destroy?
-    false
+    permitted?(:destroy)
+  end
+
+  private
+
+  def permitted?(action)
+    resource_name = record.is_a?(Class) ? record.name : record.class.name
+    user.role&.permissions&.exists?(resource: resource_name, action: action.to_s)
   end
 
   class Scope

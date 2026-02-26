@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_26_123554) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_26_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,6 +63,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_26_123554) do
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
   end
 
+  create_table "permissions", force: :cascade do |t|
+    t.string "action", null: false
+    t.datetime "created_at", null: false
+    t.string "resource", null: false
+    t.bigint "role_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id", "resource", "action"], name: "index_permissions_on_role_id_and_resource_and_action", unique: true
+    t.index ["role_id"], name: "index_permissions_on_role_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description"
@@ -92,6 +102,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_26_123554) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "listings", "users", column: "owner_id"
+  add_foreign_key "permissions", "roles"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "roles"
 end

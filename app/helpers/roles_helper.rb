@@ -1,7 +1,7 @@
 module RolesHelper
   def render_roles_table(roles:)
     table = ::TableComponent.new(rows: roles)
-    table.with_value_column("Name") { it.name }
+    table.with_column("Name") { |role| link_to role.name, admin_role_permissions_path(role) }
     table.with_value_column("Description") { it.description }
     table.with_value_column("Users") { it.users.size }
     table.with_column("Actions", html_class: "text-end") do |role|

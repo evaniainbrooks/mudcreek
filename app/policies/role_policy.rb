@@ -1,14 +1,6 @@
 class RolePolicy < ApplicationPolicy
-  def index?
-    true
-  end
-
-  def create?
-    true
-  end
-
   def destroy?
-    true
+    permitted?(:destroy) && record.users.none?
   end
 
   class Scope < ApplicationPolicy::Scope

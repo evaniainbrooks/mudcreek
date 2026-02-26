@@ -1,8 +1,40 @@
 default_password = Rails.application.credentials.seeds.default_user_password
 
+# Roles & Permissions
+all_resources = %w[Listing User Role Permission]
+all_actions   = %w[index show create update destroy]
+
+super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
+  r.description = "Full access to everything."
+end
+
+admin = Role.find_or_create_by!(name: "admin") do |r|
+  r.description = "Full access to listings. No access to users or roles."
+end
+
+Role.find_or_create_by!(name: "user") do |r|
+  r.description = "Standard user with no admin permissions."
+end
+
+all_resources.each do |resource|
+  all_actions.each do |action|
+    super_admin.permissions.find_or_create_by!(resource: resource, action: action)
+  end
+end
+
+admin_resources = %w[Listing]
+admin_resources.each do |resource|
+  all_actions.each do |action|
+    admin.permissions.find_or_create_by!(resource: resource, action: action)
+  end
+end
+
+puts "Seeded #{Role.count} roles and #{Permission.count} permissions."
+
 User.find_or_create_by!(email_address: "admin@mudcreek") do |u|
   u.password = default_password
   u.password_confirmation = default_password
+  u.role = super_admin
 end
 
 # Generate fake users for dev pagination testing
