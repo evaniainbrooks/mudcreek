@@ -44,11 +44,13 @@ class Admin::ListingsController < Admin::BaseController
   private
 
   def set_listing
-    @listing = Listing.with_attached_images.with_attached_videos.find(params[:id])
+    @listing = Listing.with_attached_images.with_attached_videos.with_attached_documents.find(params[:id])
     authorize(@listing)
   end
 
   def listing_params
-    params.require(:listing).permit(:name, :description, :price, :owner_id, :published, images: [], videos: [])
+    p = params.require(:listing).permit(:name, :description, :price, :owner_id, :published, images: [], videos: [], documents: [])
+    %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
+    p
   end
 end

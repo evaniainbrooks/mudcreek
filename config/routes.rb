@@ -4,6 +4,9 @@ Rails.application.routes.draw do
 
   resources :listings, only: [ :index, :show ]
 
+  resource  :cart,       only: [:show]
+  resources :cart_items, only: [:create, :destroy]
+
   namespace :admin do
     resources :users, only: :index
     resources :roles, only: [ :index, :create, :destroy ] do

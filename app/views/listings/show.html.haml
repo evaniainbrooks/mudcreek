@@ -66,5 +66,30 @@
       %h1.fw-bold.mb-1= @listing.name
       %p.fs-2.text-primary.fw-semibold.mb-4= number_to_currency(@listing.price)
       %hr.mb-4
+      - if Current.user
+        - if @cart_item
+          = button_to cart_item_path(@cart_item), method: :delete, class: "btn btn-outline-secondary w-100 mb-4", form: { data: { turbo_confirm: "Remove from cart?" } } do
+            %i.bi.bi-cart-check.me-2
+            In Cart
+        - else
+          = button_to cart_items_path, params: { listing_id: @listing.id }, class: "btn btn-primary w-100 mb-4" do
+            %i.bi.bi-cart-plus.me-2
+            Add to Cart
+      - else
+        = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-4" do
+          %i.bi.bi-cart-plus.me-2
+          Sign in to add to cart
       .listing-description
         = @listing.description
+
+- if @listing.documents.attached?
+  %hr.mt-5
+  %h2.h5.fw-semibold.mb-3
+    %i.bi.bi-folder2-open.me-2
+    Documents
+  .d-flex.flex-wrap.gap-3
+    - @listing.documents.each do |doc|
+      = link_to rails_blob_path(doc, disposition: "attachment"), class: "text-decoration-none" do
+        .d-flex.flex-column.align-items-center.justify-content-center.border.rounded-3.p-3.bg-body-tertiary{ style: "width: 120px; min-height: 110px" }
+          %i.bi{ class: "#{document_icon_class(doc.content_type)} text-secondary", style: "font-size: 2.5rem" }
+          %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)

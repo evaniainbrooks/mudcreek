@@ -6,7 +6,9 @@ class ListingsController < ApplicationController
                       .with_rich_text_description
                       .with_attached_images
                       .with_attached_videos
+                      .with_attached_documents
                       .find(params[:id])
+    @cart_item = Current.user&.cart_items&.find_by(listing_id: @listing.id)
   end
 
   def index

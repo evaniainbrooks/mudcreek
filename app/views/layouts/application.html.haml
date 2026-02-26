@@ -30,6 +30,12 @@
             - if Current.user
               - unless @admin
                 %li.nav-item
+                  = link_to cart_path, class: "nav-link" do
+                    %i.bi.bi-cart3.me-1
+                    Cart
+                    - if cart_item_count > 0
+                      %span.badge.rounded-pill.bg-primary.ms-1= cart_item_count
+                %li.nav-item
                   = link_to admin_listings_path, class: "nav-link" do
                     %i.bi.bi-gear-fill.me-1
                     Admin

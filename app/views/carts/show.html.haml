@@ -1,0 +1,31 @@
+- content_for :title, "My Cart"
+
+%h1.fw-bold.mb-4 My Cart
+
+- if @cart_items.empty?
+  .text-center.py-5
+    %i.bi.bi-cart-x{ style: "font-size: 4rem" }.text-muted.d-block.mb-3
+    %p.text-muted Your cart is empty.
+    = link_to "Browse Listings", listings_path, class: "btn btn-primary"
+- else
+  .table-responsive
+    %table.table.align-middle
+      %thead
+        %tr
+          %th Listing
+          %th.text-end Price
+          %th
+      %tbody
+        - @cart_items.each do |item|
+          %tr
+            %td
+              = link_to item.listing.name, listing_path(item.listing), class: "text-decoration-none fw-semibold"
+            %td.text-end= number_to_currency(item.listing.price)
+            %td.text-end
+              = button_to cart_item_path(item), method: :delete, class: "btn btn-sm btn-outline-danger", form: { data: { turbo_confirm: "Remove from cart?" } } do
+                %i.bi.bi-trash
+      %tfoot
+        %tr.border-top.border-2
+          %th.fs-5 Subtotal
+          %th.text-end.fs-5= number_to_currency(@subtotal)
+          %th
