@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_194752) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_26_123554) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,9 +57,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_194752) do
     t.string "name", null: false
     t.bigint "owner_id", null: false
     t.integer "price_cents", null: false
+    t.boolean "published", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "name"
+    t.datetime "updated_at", null: false
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -75,12 +83,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_194752) do
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "password_digest", null: false
+    t.bigint "role_id"
     t.datetime "updated_at", null: false
     t.index "lower((email_address)::text)", name: "index_users_on_lower_email_address", unique: true
+    t.index ["role_id"], name: "index_users_on_role_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "listings", "users", column: "owner_id"
   add_foreign_key "sessions", "users"
+  add_foreign_key "users", "roles"
 end

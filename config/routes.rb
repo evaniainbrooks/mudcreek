@@ -2,9 +2,14 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  resources :listings, only: [ :index, :show ]
+
   namespace :admin do
     resources :users, only: :index
-    resources :listings
+    resources :roles, only: [ :index, :create, :destroy ]
+    resources :listings do
+      resources :attachments, only: [ :destroy ], module: :listings
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -16,5 +21,5 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  root "admin/users#index"
+  root "listings#index"
 end

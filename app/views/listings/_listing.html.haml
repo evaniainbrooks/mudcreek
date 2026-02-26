@@ -1,0 +1,12 @@
+.col
+  .card.h-100.shadow-sm.border-0
+    - if listing.images.attached?
+      = image_tag listing.images.first, class: "card-img-top object-fit-cover", style: "height: 200px"
+    - elsif listing.videos.attached?
+      %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover", muted: true, playsinline: true, preload: "metadata"}
+        %source{ src: url_for(listing.videos.first) }
+    .card-body
+      %h5.card-title.fw-semibold.mb-1
+        = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"
+      %p.text-primary.fw-bold.mb-2= number_to_currency(listing.price)
+      %p.card-text.text-muted.small= listing.description.to_plain_text.truncate(120)
