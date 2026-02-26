@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_194752) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_26_021503) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,6 +57,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_194752) do
     t.string "name", null: false
     t.bigint "owner_id", null: false
     t.integer "price_cents", null: false
+    t.boolean "published", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"

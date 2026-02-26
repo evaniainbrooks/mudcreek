@@ -1,0 +1,6 @@
+%h1.h3.mb-4 Listings
+
+%div{ data: { controller: "infinite-scroll" } }
+  .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings
+    = render partial: "listings/listing", collection: @listings, as: :listing
+  = render "listings/sentinel", pagy: @pagy

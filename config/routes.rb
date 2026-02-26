@@ -2,9 +2,13 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  resources :listings, only: [:index, :show]
+
   namespace :admin do
     resources :users, only: :index
-    resources :listings
+    resources :listings do
+      resources :attachments, only: [:destroy], module: :listings
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

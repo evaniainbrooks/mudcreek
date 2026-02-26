@@ -1,0 +1,4 @@
+- if pagy.next
+  #sentinel{ data: { "infinite-scroll-target": "sentinel", url: listings_path(page: pagy.next) } }
+- else
+  #sentinel
