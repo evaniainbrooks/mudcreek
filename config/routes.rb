@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users, only: :index
+    resources :roles, only: [:index, :create, :destroy]
     resources :listings do
       resources :attachments, only: [:destroy], module: :listings
     end
@@ -20,5 +21,5 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  root "admin/users#index"
+  root "listings#index"
 end

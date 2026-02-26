@@ -1,3 +1,3 @@
 class Admin::BaseController < ApplicationController
-  # Authentication already enforced by ApplicationController
+  before_action { @admin = true }
 end

@@ -1,0 +1,23 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-shield-fill.me-2
+    Roles
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold New Role
+  .card-body
+    = form_with model: [:admin, @role], html: { class: "row g-2 align-items-end" } do |f|
+      - if @role.errors.any?
+        .col-12
+          .alert.alert-danger.mb-0
+            = @role.errors.full_messages.to_sentence
+      .col-md-3
+        = f.label :name, class: "form-label form-label-sm"
+        = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @role.errors[:name].any?}", required: true, placeholder: "e.g. Buyer"
+      .col-md-7
+        = f.label :description, class: "form-label form-label-sm"
+        = f.text_field :description, class: "form-control form-control-sm #{'is-invalid' if @role.errors[:description].any?}", required: true, placeholder: "Short description of this role"
+      .col-auto
+        = f.submit "Add Role", class: "btn btn-primary btn-sm"
+
+= render_roles_table(roles: @roles)

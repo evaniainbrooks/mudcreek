@@ -7,11 +7,23 @@ module ListingsHelper
     table.with_value_column("Published", sort_attr: :published) { it.published }
     table.with_value_column("Created At", sort_attr: :created_at) { it.created_at }
     table.with_column("Actions", html_class: "text-end") do |listing|
-      safe_join([
-        link_to("Edit", edit_admin_listing_path(listing), class: "btn btn-sm btn-outline-primary me-1"),
-        button_to("Delete", admin_listing_path(listing), method: :delete, class: "btn btn-sm btn-outline-danger",
-          form: { data: { turbo_confirm: "Are you sure you want to delete this listing?" } })
-      ])
+      content_tag(:div, class: "btn-group") do
+        safe_join([
+          link_to("Edit", edit_admin_listing_path(listing), class: "btn btn-sm btn-outline-primary"),
+          content_tag(:button, content_tag(:span, "Toggle dropdown", class: "visually-hidden"),
+            type: "button",
+            class: "btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split",
+            data: { bs_toggle: "dropdown" },
+            aria: { expanded: "false" }),
+          content_tag(:ul, class: "dropdown-menu dropdown-menu-end") do
+            content_tag(:li) do
+              link_to("Delete", admin_listing_path(listing),
+                class: "dropdown-item text-danger",
+                data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this listing?" })
+            end
+          end
+        ])
+      end
     end
     render(table)
   end
