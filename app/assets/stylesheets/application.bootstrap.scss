@@ -1,2 +1,21 @@
+// Hunter green / brown / yellow theme
+$primary:   #355E3B;  // hunter green
+$secondary: #6B3A2A;  // saddle brown
+$tertiary:  #C8A84B;  // golden yellow
+
+// Keep text readable on colored buttons
+$min-contrast-ratio: 3;
+
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+// Table header using secondary (brown) as background
+thead.thead-secondary {
+  --bs-table-color: #fff;
+  --bs-table-bg: #{$secondary};
+  --bs-table-border-color: #{shade-color($secondary, 15%)};
+
+  a, a:hover, a:visited {
+    color: #fff;
+  }
+}
