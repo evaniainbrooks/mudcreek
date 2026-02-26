@@ -6,9 +6,12 @@
 .card.shadow-sm.border-0.mb-4
   .card-body
     = search_form_for @q, url: admin_users_path, html: { class: "row g-2 align-items-end" } do |f|
-      .col-md-6
+      .col-md-5
         = f.label :email_address_cont, "Email", class: "form-label form-label-sm"
         = f.search_field :email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+      .col-md-3
+        = f.label :role_id_eq, "Role", class: "form-label form-label-sm"
+        = f.select :role_id_eq, @roles.map { [it.name, it.id] }, { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-auto
         = f.submit "Search", class: "btn btn-primary btn-sm"
       .col-auto

@@ -4,7 +4,7 @@ class Admin::RolesController < Admin::BaseController
   def index
     authorize(Role)
     @role = Role.new
-    @roles = Role.includes(:users).order(:name)
+    @roles = Role.includes(:users, :permissions).order(:name)
   end
 
   def create
@@ -13,7 +13,7 @@ class Admin::RolesController < Admin::BaseController
     if @role.save
       redirect_to admin_roles_path, notice: "Role \"#{@role.name}\" was successfully created."
     else
-      @roles = Role.includes(:users).order(:name)
+      @roles = Role.includes(:users, :permissions).order(:name)
       render :index, status: :unprocessable_entity
     end
   end

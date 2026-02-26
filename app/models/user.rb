@@ -10,6 +10,6 @@ class User < ApplicationRecord
   validates :password_digest, presence: true
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[email_address created_at]
+    %w[email_address created_at role_id]
   end
 end

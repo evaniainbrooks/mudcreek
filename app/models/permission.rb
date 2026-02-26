@@ -4,6 +4,10 @@ class Permission < ApplicationRecord
 
   belongs_to :role
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[resource action]
+  end
+
   validates :resource, presence: true, inclusion: { in: RESOURCES }
   validates :action, presence: true, inclusion: { in: ACTIONS }, uniqueness: { scope: %i[role_id resource], case_sensitive: false }
 

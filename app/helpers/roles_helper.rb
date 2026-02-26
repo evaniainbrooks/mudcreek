@@ -3,6 +3,7 @@ module RolesHelper
     table = ::TableComponent.new(rows: roles)
     table.with_column("Name") { |role| link_to role.name, admin_role_permissions_path(role) }
     table.with_value_column("Description") { it.description }
+    table.with_value_column("Permissions") { it.permissions.size }
     table.with_value_column("Users") { it.users.size }
     table.with_column("Actions", html_class: "text-end") do |role|
       button_to admin_role_path(role), method: :delete, class: "btn btn-sm btn-outline-danger",

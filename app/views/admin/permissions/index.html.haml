@@ -20,4 +20,18 @@
       .col-auto
         = f.submit "Add Permission", class: "btn btn-primary btn-sm"
 
+.card.shadow-sm.border-0.mb-4
+  .card-body
+    = search_form_for @q, url: admin_role_permissions_path(@role), html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-4
+        = f.label :resource_eq, "Resource", class: "form-label form-label-sm"
+        = f.select :resource_eq, Permission::RESOURCES, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-md-4
+        = f.label :action_eq, "Action", class: "form-label form-label-sm"
+        = f.select :action_eq, Permission::ACTIONS, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-auto
+        = f.submit "Filter", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_role_permissions_path(@role), class: "btn btn-outline-secondary btn-sm"
+
 = render_permissions_table(role: @role, permissions: @permissions)

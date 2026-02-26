@@ -5,7 +5,8 @@ class Admin::PermissionsController < Admin::BaseController
   def index
     authorize(Permission)
     @permission = @role.permissions.new
-    @permissions = @role.permissions.order(:resource, :action)
+    @q = @role.permissions.ransack(params[:q])
+    @permissions = @q.result.order(:resource, :action)
   end
 
   def create
