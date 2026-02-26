@@ -3,6 +3,8 @@ module ListingsHelper
     table = ::TableComponent.new(rows: listings, ransack_query: q)
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }
+    table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
+    table.with_value_column("Quantity", sort_attr: :quantity) { it.quantity }
     table.with_value_column("Owner") { it.owner }
     table.with_value_column("Published", sort_attr: :published) { it.published }
     table.with_value_column("Created At", sort_attr: :created_at) { it.created_at }

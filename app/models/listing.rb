@@ -7,6 +7,7 @@ class Listing < ApplicationRecord
   has_many_attached :documents
 
   monetize :price_cents
+  monetize :acquisition_price_cents, allow_nil: true
 
   ALLOWED_DOCUMENT_TYPES = %w[
     application/pdf
@@ -31,7 +32,7 @@ class Listing < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[name price_cents owner_id published created_at]
+    %w[name price_cents acquisition_price_cents quantity owner_id published created_at]
   end
 
   def self.ransackable_associations(_auth_object = nil)
