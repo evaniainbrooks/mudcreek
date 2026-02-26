@@ -14,7 +14,7 @@ RSpec.describe Listing, type: :model do
   describe "monetization" do
     it "exposes price as a Money object" do
       listing = build(:listing, price_cents: 1999)
-      expect(listing.price).to eq(Money.new(1999, "USD"))
+      expect(listing.price).to eq(Money.new(1999, "CAD"))
     end
   end
 
