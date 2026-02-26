@@ -24,6 +24,12 @@
       .invalid-feedback.d-block= listing.errors[:price_cents].to_sentence
 
   .mb-3
+    = f.label :quantity, class: "form-label"
+    = f.number_field :quantity, class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}", min: 0, required: true
+    - if listing.errors[:quantity].any?
+      .invalid-feedback= listing.errors[:quantity].to_sentence
+
+  .mb-3
     = f.label :owner_id, "Owner", class: "form-label"
     = f.collection_select :owner_id, User.order(:email_address), :id, :email_address,
       { prompt: "Select an owner..." },

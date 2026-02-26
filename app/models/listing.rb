@@ -18,6 +18,7 @@ class Listing < ApplicationRecord
   validates :name, presence: true
   validates :description, presence: true
   validates :price_cents, presence: true
+  validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :documents_content_type
 
   private

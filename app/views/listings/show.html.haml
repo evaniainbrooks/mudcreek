@@ -64,7 +64,10 @@
   .col-lg-5
     .position-sticky{ style: "top: 1.5rem" }
       %h1.fw-bold.mb-1= @listing.name
-      %p.fs-2.text-primary.fw-semibold.mb-4= number_to_currency(@listing.price)
+      %p.fs-2.text-primary.fw-semibold.mb-2= number_to_currency(@listing.price)
+      %p.text-muted.small.mb-4
+        %i.bi.bi-box-seam.me-1
+        = pluralize(@listing.quantity, "available")
       %hr.mb-4
       - if Current.user
         - if @cart_item

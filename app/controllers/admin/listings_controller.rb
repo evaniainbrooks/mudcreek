@@ -49,7 +49,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    p = params.require(:listing).permit(:name, :description, :price, :owner_id, :published, images: [], videos: [], documents: [])
+    p = params.require(:listing).permit(:name, :description, :price, :quantity, :owner_id, :published, images: [], videos: [], documents: [])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end
