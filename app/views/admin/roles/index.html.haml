@@ -16,7 +16,10 @@
         = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @role.errors[:name].any?}", required: true, placeholder: "e.g. Buyer"
       .col-md-7
         = f.label :description, class: "form-label form-label-sm"
-        = f.text_field :description, class: "form-control form-control-sm #{'is-invalid' if @role.errors[:description].any?}", required: true, placeholder: "Short description of this role"
+        = f.text_field :description,
+          class: "form-control form-control-sm #{'is-invalid' if @role.errors[:description].any?}",
+          required: true,
+          placeholder: "Short description of this role"
       .col-auto
         = f.submit "Add Role", class: "btn btn-primary btn-sm"
 

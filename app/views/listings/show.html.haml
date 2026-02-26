@@ -12,25 +12,35 @@
 .row.g-4.g-lg-5.align-items-start
   .col-lg-7
     - if has_images || has_videos
-      #listing-carousel.carousel.slide{ data: { bs_ride: "false" } }
-        .carousel-inner
-          - slide = 0
-          - @listing.images.each do |image|
-            .carousel-item{ class: slide.zero? ? "active" : "" }
-              = image_tag image, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
-            - slide += 1
-          - @listing.videos.each do |video|
-            .carousel-item{ class: slide.zero? ? "active" : "" }
-              %video.d-block.w-100.rounded-3{ controls: true, style: "height: 480px; object-fit: cover" }
-                %source{ src: url_for(video) }
-            - slide += 1
-        - if media_count > 1
-          %button.carousel-control-prev{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "prev" } }
-            %span.carousel-control-prev-icon{ aria: { hidden: "true" } }
-            %span.visually-hidden Previous
-          %button.carousel-control-next{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "next" } }
-            %span.carousel-control-next-icon{ aria: { hidden: "true" } }
-            %span.visually-hidden Next
+      .position-relative{ data: { controller: "image-zoom" } }
+        #listing-carousel.carousel.slide{ data: { bs_ride: "false" } }
+          .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
+            - slide = 0
+            - @listing.images.each do |image|
+              .carousel-item{ class: slide.zero? ? "active" : "" }
+                = image_tag image, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
+              - slide += 1
+            - @listing.videos.each do |video|
+              .carousel-item{ class: slide.zero? ? "active" : "" }
+                %video.d-block.w-100.rounded-3{ controls: true, style: "height: 480px; object-fit: cover" }
+                  %source{ src: url_for(video) }
+              - slide += 1
+          - if media_count > 1
+            %button.carousel-control-prev{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "prev" } }
+              %span.carousel-control-prev-icon{ aria: { hidden: "true" } }
+              %span.visually-hidden Previous
+            %button.carousel-control-next{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "next" } }
+              %span.carousel-control-next-icon{ aria: { hidden: "true" } }
+              %span.visually-hidden Next
+        .position-absolute.bottom-0.end-0.p-2{ style: "z-index: 10" }
+          .d-flex.align-items-center.gap-1
+            %span.badge.text-bg-dark.font-monospace{ data: { image_zoom_target: "level" }, style: "visibility: hidden" } 100%
+            %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Zoom out", data: { action: "image-zoom#zoomOut" } }
+              %i.bi.bi-zoom-out
+            %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Reset", data: { action: "image-zoom#reset" } }
+              %i.bi.bi-arrow-counterclockwise
+            %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Zoom in", data: { action: "image-zoom#zoomIn" } }
+              %i.bi.bi-zoom-in
 
       - if media_count > 1
         .d-flex.flex-wrap.gap-2.mt-3

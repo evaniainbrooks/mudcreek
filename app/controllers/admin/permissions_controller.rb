@@ -1,6 +1,6 @@
 class Admin::PermissionsController < Admin::BaseController
   before_action :set_role
-  before_action :set_permission, only: [:destroy]
+  before_action :set_permission, only: [ :destroy ]
 
   def index
     authorize(Permission)
