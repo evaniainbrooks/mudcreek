@@ -1,5 +1,5 @@
 class Admin::RolesController < Admin::BaseController
-  before_action :set_role, only: [:destroy]
+  before_action :set_role, only: [ :destroy ]
 
   def index
     @role = Role.new

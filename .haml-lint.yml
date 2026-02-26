@@ -3,5 +3,7 @@ linters:
     enabled: false
   SpaceInsideHashAttributes:
     enabled: false
+  SpaceInsideArrayLiteralBrackets:
+    enabled: false
   LineLength:
     max: 160

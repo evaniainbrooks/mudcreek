@@ -43,7 +43,7 @@ listing_data = [
   { name: "Valley View Farmhouse", price: 375_000, description: "Restored Victorian farmhouse with original millwork, updated plumbing and electrical, a large barn, and panoramic valley views from the covered porch.", published: true },
   { name: "Woodland Artist Retreat", price: 295_000, description: "Quiet woodland property with a main cottage and a separate studio building flooded with north light. Surrounded by sculpture gardens and mature hardwoods.", published: true },
   { name: "Equestrian Estate", price: 980_000, description: "Premier equestrian property with a 12-stall barn, indoor arena, outdoor ring, 20 fenced acres of pasture, and a stunning 4-bedroom home.", published: true },
-  { name: "Remote Island Cabin", price: 330_000, description: "Unique island property accessible only by boat or floatplane, with a well-built cabin, solar power, a dock, crab pots, and extraordinary solitude.", published: false },
+  { name: "Remote Island Cabin", price: 330_000, description: "Unique island property accessible only by boat or floatplane, with a well-built cabin, solar power, a dock, crab pots, and extraordinary solitude.", published: false }
 ]
 
 listing_data.each do |attrs|

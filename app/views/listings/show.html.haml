@@ -1,18 +1,18 @@
 - content_for :title, @listing.name
 
+:ruby
+  has_images = @listing.images.attached?
+  has_videos = @listing.videos.attached?
+  media_count = @listing.images.count + @listing.videos.count
+
 = link_to listings_path, class: "btn btn-outline-secondary btn-sm mb-4" do
   %i.bi.bi-arrow-left.me-1
   Back to listings
 
 .row.g-4.g-lg-5.align-items-start
-  -# Gallery
   .col-lg-7
-    - has_images = @listing.images.attached?
-    - has_videos = @listing.videos.attached?
-    - media_count = @listing.images.count + @listing.videos.count
-
     - if has_images || has_videos
-      #listingCarousel.carousel.slide{ data: { bs_ride: "false" } }
+      #listing-carousel.carousel.slide{ data: { bs_ride: "false" } }
         .carousel-inner
           - slide = 0
           - @listing.images.each do |image|
@@ -25,10 +25,10 @@
                 %source{ src: url_for(video) }
             - slide += 1
         - if media_count > 1
-          %button.carousel-control-prev{ type: "button", data: { bs_target: "#listingCarousel", bs_slide: "prev" } }
+          %button.carousel-control-prev{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "prev" } }
             %span.carousel-control-prev-icon{ aria: { hidden: "true" } }
             %span.visually-hidden Previous
-          %button.carousel-control-next{ type: "button", data: { bs_target: "#listingCarousel", bs_slide: "next" } }
+          %button.carousel-control-next{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "next" } }
             %span.carousel-control-next-icon{ aria: { hidden: "true" } }
             %span.visually-hidden Next
 
@@ -39,19 +39,18 @@
             = image_tag image,
               class: "rounded-2 object-fit-cover flex-shrink-0",
               style: "width: 76px; height: 76px; cursor: pointer; outline: 2px solid transparent",
-              data: { bs_target: "#listingCarousel", bs_slide_to: thumb_index }
+              data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index }
             - thumb_index += 1
           - @listing.videos.each do |video|
             .rounded-2.bg-dark.d-flex.align-items-center.justify-content-center.flex-shrink-0{
               style: "width: 76px; height: 76px; cursor: pointer",
-              data: { bs_target: "#listingCarousel", bs_slide_to: thumb_index } }
+              data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index } }
               %i.bi.bi-play-circle-fill.text-white.fs-3
             - thumb_index += 1
     - else
       .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
         %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
 
-  -# Details
   .col-lg-5
     .position-sticky{ style: "top: 1.5rem" }
       %h1.fw-bold.mb-1= @listing.name
