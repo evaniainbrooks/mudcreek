@@ -483,6 +483,8 @@ GEM
     thruster (0.1.18-x86_64-linux)
     tilt (2.7.0)
     timeout (0.6.0)
+    traceroute (0.8.1)
+      rails (>= 3.0.0)
     tsort (0.2.0)
     turbo-rails (2.0.23)
       actionpack (>= 7.1.0)
@@ -565,6 +567,7 @@ DEPENDENCIES
   stimulus-rails
   strong_migrations
   thruster
+  traceroute
   turbo-rails
   tzinfo-data
   view_component
@@ -748,6 +751,7 @@ CHECKSUMS
   thruster (0.1.18-x86_64-linux) sha256=0ec1ff5f12289c1ac10cf8e28ce6b5266f4e73416b34a664b79d037c7d955c40
   tilt (2.7.0) sha256=0d5b9ba69f6a36490c64b0eee9f6e9aad517e20dcc848800a06eb116f08c6ab3
   timeout (0.6.0) sha256=6d722ad619f96ee383a0c557ec6eb8c4ecb08af3af62098a0be5057bf00de1af
+  traceroute (0.8.1) sha256=584a3b531ce7ed9510fbda46868827c83ca66cc576f634668b607f2c11a806e8
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   turbo-rails (2.0.23) sha256=ee0d90733aafff056cf51ff11e803d65e43cae258cc55f6492020ec1f9f9315f
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b

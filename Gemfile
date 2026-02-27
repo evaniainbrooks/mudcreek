@@ -107,6 +107,9 @@ group :development do
 
   # Check consistency between DB constraints and model validations
   gem "database_consistency", require: false
+
+  # Detect unused routes and missing controller actions
+  gem "traceroute", require: false
 end
 
 group :test do
