@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -100,6 +100,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_140000) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_listings_categories_on_hashid", unique: true
+    t.index ["tenant_id", "name"], name: "index_listings_categories_on_tenant_id_and_name", unique: true
     t.index ["tenant_id"], name: "index_listings_categories_on_tenant_id"
   end
 
@@ -109,7 +110,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_140000) do
     t.bigint "listings_category_id", null: false
     t.datetime "updated_at", null: false
     t.index ["listing_id", "listings_category_id"], name: "idx_on_listing_id_listings_category_id_11916b414d", unique: true
-    t.index ["listing_id"], name: "index_listings_category_assignments_on_listing_id"
     t.index ["listings_category_id"], name: "index_listings_category_assignments_on_listings_category_id"
   end
 
@@ -138,8 +138,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_140000) do
 
   create_table "roles", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "description"
-    t.string "name"
+    t.string "description", null: false
+    t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_roles_on_tenant_id"

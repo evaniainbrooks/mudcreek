@@ -28,6 +28,7 @@ class Listing < ApplicationRecord
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   ].freeze
 
+  validates :position, numericality: { only_integer: true, greater_than: 0 }
   validates :name, presence: true
   validates :description, presence: true
   validates :price_cents, presence: true

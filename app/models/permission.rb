@@ -11,7 +11,7 @@ class Permission < ApplicationRecord
   end
 
   validates :resource, presence: true, inclusion: { in: RESOURCES }
-  validates :action, presence: true, inclusion: { in: ACTIONS }, uniqueness: { scope: %i[role_id resource], case_sensitive: false }
+  validates :action, presence: true, inclusion: { in: ACTIONS }, uniqueness: { scope: %i[role_id resource] }
 
   validate :immutable, on: :update
 
