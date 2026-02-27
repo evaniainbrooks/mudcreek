@@ -24,7 +24,9 @@
                 %span.badge.bg-secondary.ms-2.fw-normal Tax Exempt
             %td.text-end= number_to_currency(item.listing.price)
             %td.text-end
-              = button_to cart_item_path(item), method: :delete, class: "btn btn-sm btn-outline-danger", form: { data: { turbo_confirm: "Remove from cart?" } } do
+              = button_to cart_item_path(item),
+                  method: :delete, class: "btn btn-sm btn-outline-danger",
+                  form: { data: { turbo_confirm: "Remove from cart?" } } do
                 %i.bi.bi-trash
       %tfoot
         %tr.border-top
@@ -33,7 +35,7 @@
           %td
         %tr
           %td.text-muted
-            = "Tax (#{(SALES_TAX_RATE * 100).to_i}%)"
+            Tax (#{(SALES_TAX_RATE * 100).to_i}%)
           %td.text-end.text-muted= number_to_currency(@tax)
           %td
         %tr.border-top.border-2

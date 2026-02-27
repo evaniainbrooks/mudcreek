@@ -34,7 +34,7 @@
               %span.visually-hidden Next
         .position-absolute.bottom-0.end-0.p-2{ style: "z-index: 10", data: { "listing-carousel-target": "zoomControls" } }
           .d-flex.align-items-center.gap-1
-            %span.badge.text-bg-dark.font-monospace{ data: { image_zoom_target: "level" }, style: "visibility: hidden" } 100%
+            %span.badge.text-bg-dark.font-monospace.invisible{ data: { image_zoom_target: "level" } } 100%
             %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Zoom out", data: { action: "image-zoom#zoomOut" } }
               %i.bi.bi-zoom-out
             %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Reset", data: { action: "image-zoom#reset" } }
@@ -96,5 +96,5 @@
     - @listing.documents.each do |doc|
       = link_to rails_blob_path(doc, disposition: "attachment"), class: "text-decoration-none" do
         .d-flex.flex-column.align-items-center.justify-content-center.border.rounded-3.p-3.bg-body-tertiary{ style: "width: 120px; min-height: 110px" }
-          %i.bi{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" "), style: "font-size: 2.5rem" }
+          %i.bi.fs-1{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" ") }
           %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)

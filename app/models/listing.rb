@@ -28,7 +28,10 @@ class Listing < ApplicationRecord
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   ].freeze
 
-  validates :position, numericality: { only_integer: true, greater_than: 0 }
+  before_validation :set_default_position, on: :create
+
+  validates :position, presence: true, uniqueness: { scope: :tenant_id }, on: :update
+  validates :position, presence: true
   validates :name, presence: true
   validates :description, presence: true
   validates :price_cents, presence: true
@@ -36,6 +39,10 @@ class Listing < ApplicationRecord
   validate :documents_content_type
 
   private
+
+  def set_default_position
+    self.position ||= acts_as_list_list.maximum(:position).to_i + 1
+  end
 
   def documents_content_type
     documents.each do |doc|

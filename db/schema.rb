@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_153242) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,7 +65,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id", unique: true
-    t.index ["user_id"], name: "index_cart_items_on_user_id"
   end
 
   create_table "listings", force: :cascade do |t|
@@ -86,7 +85,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
     t.index ["hashid"], name: "index_listings_on_hashid", unique: true
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
-    t.index ["tenant_id"], name: "index_listings_on_tenant_id"
     t.check_constraint "acquisition_price_cents >= 0", name: "listings_acquisition_price_cents_non_negative"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
     t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
@@ -101,7 +99,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_listings_categories_on_hashid", unique: true
     t.index ["tenant_id", "name"], name: "index_listings_categories_on_tenant_id_and_name", unique: true
-    t.index ["tenant_id"], name: "index_listings_categories_on_tenant_id"
   end
 
   create_table "listings_category_assignments", force: :cascade do |t|
@@ -132,7 +129,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["role_id", "resource", "action"], name: "index_permissions_on_role_id_and_resource_and_action", unique: true
-    t.index ["role_id"], name: "index_permissions_on_role_id"
     t.index ["tenant_id"], name: "index_permissions_on_tenant_id"
   end
 
@@ -142,7 +138,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_150448) do
     t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_roles_on_tenant_id"
+    t.index "tenant_id, lower((name)::text)", name: "index_roles_on_tenant_id_and_lower_name", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|

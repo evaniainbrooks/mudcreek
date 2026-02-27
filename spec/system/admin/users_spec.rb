@@ -49,12 +49,14 @@ RSpec.describe "Admin::Users index", type: :system do
 
   describe "sorting" do
     it "sorts by email address" do
+      visit admin_users_path
       click_link "Email"
       expect(current_url).to include("email_address")
       expect(page).to have_css("table")
     end
 
     it "sorts by created at" do
+      visit admin_users_path
       click_link "Created At"
       expect(current_url).to include("created_at")
       expect(page).to have_css("table")

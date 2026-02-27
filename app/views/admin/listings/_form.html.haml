@@ -27,7 +27,8 @@
     = f.label :acquisition_price, "Acquisition Price", class: "form-label"
     .input-group
       %span.input-group-text $
-      = f.text_field :acquisition_price, class: "form-control #{'is-invalid' if listing.errors[:acquisition_price_cents].any?}", value: listing.acquisition_price&.to_f, placeholder: "Optional"
+      = f.text_field :acquisition_price, value: listing.acquisition_price&.to_f, placeholder: "Optional",
+          class: "form-control #{'is-invalid' if listing.errors[:acquisition_price_cents].any?}"
     - if listing.errors[:acquisition_price_cents].any?
       .invalid-feedback.d-block= listing.errors[:acquisition_price_cents].to_sentence
 
@@ -53,11 +54,11 @@
 
   .mb-3
     = f.label :category_ids, "Categories", class: "form-label"
-    = f.collection_select :category_ids, @categories, :id, :name, {}, { multiple: true, class: "form-select", size: [@categories.size, 6].min }
+    = f.collection_select :category_ids, categories, :id, :name, {}, { multiple: true, class: "form-select", size: [categories.size, 6].min }
 
   .mb-3
     = f.label :lot_id, "Lot", class: "form-label"
-    = f.collection_select :lot_id, @lots, :id, :name,
+    = f.collection_select :lot_id, lots, :id, :name,
       { include_blank: "— No lot —" },
       { class: "form-select #{'is-invalid' if listing.errors[:lot].any?}" }
     - if listing.errors[:lot].any?
