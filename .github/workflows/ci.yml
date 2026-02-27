@@ -155,7 +155,7 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost/mudcreek_test
         run: bundle exec rspec --format RSpec::Github::Formatter --format progress
       - name: Upload coverage report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage
