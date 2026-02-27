@@ -9,3 +9,7 @@ linters:
         Enabled: false
   LineLength:
     max: 160
+  InlineStyles:
+    enabled: false
+  ViewLength:
+    max: 200

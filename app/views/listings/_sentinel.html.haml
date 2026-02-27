@@ -1,4 +1,2 @@
-- if pagy.next
-  #sentinel{ data: { "infinite-scroll-target": "sentinel", url: listings_path(page: pagy.next, category_id: category_id, tab: tab) } }
-- else
-  #sentinel
+- data = pagy.next ? { "infinite-scroll-target": "sentinel", url: listings_path(page: pagy.next, category_id: category_id, tab: tab) } : {}
+#sentinel{data:}

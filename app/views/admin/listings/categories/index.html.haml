@@ -12,10 +12,14 @@
           = @category.errors.full_messages.to_sentence
       .mb-3
         = f.label :name, class: "form-label form-label-sm"
-        = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @category.errors[:name].any?}", required: true, placeholder: "e.g. Tools & Equipment"
+        = f.text_field :name,
+          class: "form-control form-control-sm #{'is-invalid' if @category.errors[:name].any?}",
+          required: true,
+          placeholder: "e.g. Tools & Equipment"
       .mb-3
         = f.label :description, class: "form-label form-label-sm"
-        = f.rich_text_area :description, class: "form-control form-control-sm #{'is-invalid' if @category.errors[:description].any?}"
+        = f.rich_text_area :description,
+          class: "form-control form-control-sm #{'is-invalid' if @category.errors[:description].any?}"
       = f.submit "Add Category", class: "btn btn-primary btn-sm"
 
 = render_listings_categories_table(categories: @categories)
