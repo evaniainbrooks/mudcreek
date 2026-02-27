@@ -1,13 +1,20 @@
 module ListingsHelper
+  BADGE_COLORS = %w[text-bg-primary text-bg-success text-bg-danger text-bg-warning text-bg-info text-bg-secondary text-bg-dark].freeze
+
+  def badge_color_for(str)
+    BADGE_COLORS[str.bytes.sum % BADGE_COLORS.size]
+  end
+
   def render_listings_table(listings:, q:)
     table = ::TableComponent.new(rows: listings, ransack_query: q)
+    table.with_column("Lot") { |l| l.lot ? content_tag(:span, l.lot.number, class: "badge #{badge_color_for(l.lot.name)}") : "—" }
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }
     table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
     table.with_value_column("Quantity", sort_attr: :quantity) { it.quantity }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Categories") do |listing|
-      safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge text-bg-secondary me-1") })
+      safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{badge_color_for(cat.name)} me-1") })
     end
     table.with_value_column("Published", sort_attr: :published) { it.published }
     table.with_value_column("Created At", sort_attr: :created_at) { it.created_at }

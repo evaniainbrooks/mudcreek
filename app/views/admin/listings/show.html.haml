@@ -23,6 +23,13 @@
       %dt.col-sm-3 Owner
       %dd.col-sm-9= mail_to @listing.owner.email_address
 
+      %dt.col-sm-3 Lot
+      %dd.col-sm-9
+        - if @listing.lot
+          = link_to @listing.lot.name, admin_lots_path
+        - else
+          %span.text-muted —
+
       %dt.col-sm-3 Categories
       %dd.col-sm-9
         - if @listing.categories.any?

@@ -41,6 +41,14 @@ $min-contrast-ratio: 3;
   }
 }
 
+// Inline editable cells
+.inline-editable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
 // Table header using secondary (brown) as background
 thead.thead-secondary {
   --bs-table-color: #fff;

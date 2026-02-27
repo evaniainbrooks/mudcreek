@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include MultiTenant
+
   has_secure_password
   has_many :sessions, dependent: :destroy
   belongs_to :role, optional: true

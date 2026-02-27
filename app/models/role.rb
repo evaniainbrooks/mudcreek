@@ -1,4 +1,6 @@
 class Role < ApplicationRecord
+  include MultiTenant
+
   has_many :users, dependent: :restrict_with_error
   has_many :permissions, dependent: :destroy
 

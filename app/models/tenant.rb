@@ -1,0 +1,14 @@
+class Tenant < ApplicationRecord
+  has_rich_text :description
+
+  has_many :lots, dependent: :restrict_with_error
+  has_many :listings, dependent: :restrict_with_error
+  has_many :users, dependent: :restrict_with_error
+  has_many :roles, dependent: :restrict_with_error
+  has_many :permissions, dependent: :restrict_with_error
+  has_many :listing_categories, class_name: "Listings::Category", dependent: :restrict_with_error
+  has_many :cart_items, dependent: :restrict_with_error
+
+  validates :key, presence: true, uniqueness: true, format: { with: /\A[a-z_]+\z/, message: "can only contain lowercase letters and underscores" }
+  validates :default, inclusion: { in: [ true, false ] }
+end

@@ -4,8 +4,9 @@ class Admin::ListingsController < Admin::BaseController
   def index
     authorize(Listing)
     @categories = Listings::Category.order(:name)
+    @lots = Lot.order(:number)
     @q = Listing.ransack(params[:q])
-    scope = @q.result.includes(:owner, :categories).order(id: :asc)
+    scope = @q.result.includes(:owner, :categories, :lot).order(id: :asc)
     @pagy, @listings = pagy(:keyset, scope)
   end
 
@@ -15,10 +16,12 @@ class Admin::ListingsController < Admin::BaseController
   def new
     @listing = Listing.new
     @categories = Listings::Category.order(:name)
+    @lots = Lot.order(:name)
   end
 
   def edit
     @categories = Listings::Category.order(:name)
+    @lots = Lot.order(:name)
   end
 
   def create
@@ -28,6 +31,7 @@ class Admin::ListingsController < Admin::BaseController
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully created."
     else
       @categories = Listings::Category.order(:name)
+      @lots = Lot.order(:name)
       render :new, status: :unprocessable_entity
     end
   end
@@ -37,6 +41,7 @@ class Admin::ListingsController < Admin::BaseController
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully updated."
     else
       @categories = Listings::Category.order(:name)
+      @lots = Lot.order(:name)
       render :edit, status: :unprocessable_entity
     end
   end
@@ -54,7 +59,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :published, images: [], videos: [], documents: [], category_ids: [])
+    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :lot_id, :published, images: [], videos: [], documents: [], category_ids: [])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

@@ -1,37 +1,62 @@
 default_password = Rails.application.credentials.seeds.default_user_password
 
+# Tenants
+mudcreek = Tenant.find_or_create_by!(key: "mudcreek") do |t|
+  t.default = true
+end
+
+Tenant.find_or_create_by!(key: "whitelabel") do |t|
+  t.default = false
+end
+
+puts "Seeded #{Tenant.count} tenants."
+
+# Backfill any existing records that predate the tenant column
+[Role, Permission, User, Listing, Listings::Category, CartItem].each do |klass|
+  count = klass.where(tenant_id: nil).update_all(tenant_id: mudcreek.id)
+  puts "Backfilled #{count} #{klass.name} records to mudcreek tenant." if count > 0
+end
+
 # Roles & Permissions
-all_resources = %w[Listing User Role Permission]
+all_resources = %w[Listing Lot User Role Permission]
 all_actions   = %w[index show create update destroy]
 
 super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
+  r.tenant = mudcreek
   r.description = "Full access to everything."
 end
 
 admin = Role.find_or_create_by!(name: "admin") do |r|
+  r.tenant = mudcreek
   r.description = "Full access to listings. No access to users or roles."
 end
 
 Role.find_or_create_by!(name: "user") do |r|
+  r.tenant = mudcreek
   r.description = "Standard user with no admin permissions."
 end
 
 all_resources.each do |resource|
   all_actions.each do |action|
-    super_admin.permissions.find_or_create_by!(resource: resource, action: action)
+    super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
+      p.tenant = mudcreek
+    end
   end
 end
 
 admin_resources = %w[Listing]
 admin_resources.each do |resource|
   all_actions.each do |action|
-    admin.permissions.find_or_create_by!(resource: resource, action: action)
+    admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
+      p.tenant = mudcreek
+    end
   end
 end
 
 puts "Seeded #{Role.count} roles and #{Permission.count} permissions."
 
 User.find_or_create_by!(email_address: "admin@mudcreek") do |u|
+  u.tenant = mudcreek
   u.password = default_password
   u.password_confirmation = default_password
   u.role = super_admin
@@ -42,6 +67,7 @@ if Rails.env.development? || Rails.env.test?
   require "faker"
   60.times do
     User.find_or_create_by!(email_address: Faker::Internet.unique.email) do |u|
+      u.tenant = mudcreek
       password = Faker::Internet.password
       u.password = password
       u.password_confirmation = password
@@ -51,7 +77,28 @@ end
 
 puts "Seeded #{User.count} users."
 
-user_ids = User.pluck(:id)
+user_ids = User.where(tenant: mudcreek).pluck(:id)
+
+# Lots
+admin_user = User.find_by!(email_address: "admin@mudcreek")
+
+lot_data = [
+  { name: "Mountain Properties",  number: "001" },
+  { name: "Waterfront Collection", number: "002" },
+  { name: "Farm & Ranch",          number: "003" },
+  { name: "Land & Parcels",        number: "004" },
+  { name: "Specialty Properties",  number: "005" }
+]
+
+lots = lot_data.each_with_object({}) do |attrs, hash|
+  hash[attrs[:name]] = Lot.find_or_create_by!(name: attrs[:name]) do |l|
+    l.tenant = mudcreek
+    l.number = attrs[:number]
+    l.owner  = admin_user
+  end
+end
+
+puts "Seeded #{Lot.count} lots."
 
 listing_data = [
   { name: "Cozy Mountain Cabin", price: 285_000, description: "A charming log cabin nestled in the pines with breathtaking mountain views, a wrap-around porch, and a stone fireplace. Perfect as a weekend retreat or full-time residence.", published: true },
@@ -83,6 +130,7 @@ listing_data = [
 
 listing_data.each do |attrs|
   Listing.find_or_create_by!(name: attrs[:name]) do |l|
+    l.tenant = mudcreek
     l.price = attrs[:price]
     l.description = attrs[:description]
     l.published = attrs[:published]
@@ -91,6 +139,22 @@ listing_data.each do |attrs|
 end
 
 puts "Seeded #{Listing.count} listings."
+
+# Assign listings to lots
+lot_assignments = {
+  "Mountain Properties"   => ["Cozy Mountain Cabin", "Timber Frame Retreat", "Mountain Ski Chalet", "Backcountry Retreat", "Riverside Retreat"],
+  "Waterfront Collection" => ["Lakefront Cottage", "Fishing Camp", "Remote Island Cabin", "Lakeside Glamping Parcel"],
+  "Farm & Ranch"          => ["Rural Hobby Farm", "Prairie Homestead", "Orchard Property", "River Bottom Farmland", "Working Cattle Ranch", "Valley View Farmhouse", "Equestrian Estate"],
+  "Land & Parcels"        => ["Forested Acreage", "Coastal Bluff Lot", "Wildflower Meadow Parcel", "High Desert Ranch"],
+  "Specialty Properties"  => ["Desert Adobe Estate", "Vineyard Parcel", "Converted Barn Loft", "Tiny House on Acreage", "Woodland Artist Retreat"]
+}
+
+lot_assignments.each do |lot_name, listing_names|
+  lot = lots[lot_name]
+  listing_names.each do |listing_name|
+    Listing.where(name: listing_name).update_all(lot_id: lot.id)
+  end
+end
 
 # Listing Categories
 category_names = [
@@ -105,7 +169,9 @@ category_names = [
 ]
 
 categories = category_names.each_with_object({}) do |name, hash|
-  hash[name] = Listings::Category.find_or_create_by!(name: name)
+  hash[name] = Listings::Category.find_or_create_by!(name: name) do |c|
+    c.tenant = mudcreek
+  end
 end
 
 category_assignments = {

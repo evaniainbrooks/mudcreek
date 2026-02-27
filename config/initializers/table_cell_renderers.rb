@@ -14,4 +14,8 @@ Rails.application.config.to_prepare do
   TableCellComponent.register(Listings::Category) do |category|
     content_tag(:span, h(category.name), class: "badge text-bg-secondary")
   end
+
+  TableCellComponent.register(Lot) do |lot|
+    helpers.link_to(lot.name, helpers.admin_lots_path)
+  end
 end

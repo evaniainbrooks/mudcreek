@@ -1,4 +1,6 @@
 class CartItem < ApplicationRecord
+  include MultiTenant
+
   belongs_to :user
   belongs_to :listing
 

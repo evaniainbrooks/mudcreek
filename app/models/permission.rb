@@ -1,5 +1,7 @@
 class Permission < ApplicationRecord
-  RESOURCES = %w[Listing User Role Permission Listings::Category].freeze
+  include MultiTenant
+
+  RESOURCES = %w[Listing Lot User Role Permission Listings::Category].freeze
   ACTIONS   = %w[index show create update destroy].freeze
 
   belongs_to :role

@@ -1,0 +1,6 @@
+= turbo_stream.replace "#{dom_id(@lot)}_name" do
+  = lot_inline_edit_cell(@lot, :name, @lot.name)
+= turbo_stream.replace "#{dom_id(@lot)}_number" do
+  = lot_inline_edit_cell(@lot, :number, @lot.number.to_s)
+= turbo_stream.replace "#{dom_id(@lot)}_owner_id" do
+  = lot_inline_edit_owner_cell(@lot, @users)

@@ -1,5 +1,8 @@
 class Listing < ApplicationRecord
+  include MultiTenant
+
   belongs_to :owner, class_name: "User"
+  belongs_to :lot, optional: true
 
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
@@ -39,6 +42,6 @@ class Listing < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[owner categories]
+    %w[owner categories lot]
   end
 end
