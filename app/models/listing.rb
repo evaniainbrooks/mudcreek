@@ -10,6 +10,7 @@ class Listing < ApplicationRecord
 
   native_enum :state, %i[on_sale sold cancelled]
 
+  has_many :cart_items, dependent: :destroy
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
 

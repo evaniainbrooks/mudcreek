@@ -1,28 +1,30 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
+  let(:tenant) { create(:tenant, key: "test") }
+
   describe "email normalization" do
     it "strips leading and trailing whitespace" do
-      user = create(:user, email_address: "  user@example.com  ")
+      user = create(:user, tenant:, email_address: "  user@example.com  ")
 
       expect(user.email_address).to eq("user@example.com")
     end
 
     it "downcases the email address" do
-      user = create(:user, email_address: "USER@EXAMPLE.COM")
+      user = create(:user, tenant:, email_address: "USER@EXAMPLE.COM")
 
       expect(user.email_address).to eq("user@example.com")
     end
 
     it "strips and downcases together" do
-      user = create(:user, email_address: "  USER@EXAMPLE.COM  ")
+      user = create(:user, tenant:, email_address: "  USER@EXAMPLE.COM  ")
 
       expect(user.email_address).to eq("user@example.com")
     end
   end
 
   describe "password authentication" do
-    let(:user) { create(:user, password: "correct_password") }
+    let(:user) { create(:user, tenant:, password: "correct_password") }
 
     it "returns the user when the password is correct" do
       expect(user.authenticate("correct_password")).to eq(user)
@@ -35,7 +37,7 @@ RSpec.describe User, type: :model do
 
   describe "sessions association" do
     it "destroys associated sessions when the user is destroyed" do
-      user = create(:user)
+      user = create(:user, tenant:)
       user.sessions.create!(user_agent: "Test Agent", ip_address: "127.0.0.1")
 
       expect { user.destroy }.to change(Session, :count).by(-1)
@@ -46,7 +48,7 @@ RSpec.describe User, type: :model do
     it "permits email_address and created_at" do
       result = User.ransackable_attributes
 
-      expect(result).to contain_exactly("email_address", "created_at")
+      expect(result).to contain_exactly("email_address", "created_at", "first_name", "last_name", "role_id")
     end
 
     it "does not permit password_digest" do
