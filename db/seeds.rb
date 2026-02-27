@@ -12,7 +12,7 @@ end
 puts "Seeded #{Tenant.count} tenants."
 
 # Backfill any existing records that predate the tenant column
-[Role, Permission, User, Listing, Listings::Category, CartItem].each do |klass|
+[ Role, Permission, User, Listing, Listings::Category, CartItem ].each do |klass|
   count = klass.where(tenant_id: nil).update_all(tenant_id: mudcreek.id)
   puts "Backfilled #{count} #{klass.name} records to mudcreek tenant." if count > 0
 end
@@ -152,11 +152,11 @@ puts "Seeded #{Listing.count} listings."
 
 # Assign listings to lots
 lot_assignments = {
-  "Mountain Properties"   => ["Cozy Mountain Cabin", "Timber Frame Retreat", "Mountain Ski Chalet", "Backcountry Retreat", "Riverside Retreat"],
-  "Waterfront Collection" => ["Lakefront Cottage", "Fishing Camp", "Remote Island Cabin", "Lakeside Glamping Parcel"],
-  "Farm & Ranch"          => ["Rural Hobby Farm", "Prairie Homestead", "Orchard Property", "River Bottom Farmland", "Working Cattle Ranch", "Valley View Farmhouse", "Equestrian Estate"],
-  "Land & Parcels"        => ["Forested Acreage", "Coastal Bluff Lot", "Wildflower Meadow Parcel", "High Desert Ranch"],
-  "Specialty Properties"  => ["Desert Adobe Estate", "Vineyard Parcel", "Converted Barn Loft", "Tiny House on Acreage", "Woodland Artist Retreat"]
+  "Mountain Properties"   => [ "Cozy Mountain Cabin", "Timber Frame Retreat", "Mountain Ski Chalet", "Backcountry Retreat", "Riverside Retreat" ],
+  "Waterfront Collection" => [ "Lakefront Cottage", "Fishing Camp", "Remote Island Cabin", "Lakeside Glamping Parcel" ],
+  "Farm & Ranch"          => [ "Rural Hobby Farm", "Prairie Homestead", "Orchard Property", "River Bottom Farmland", "Working Cattle Ranch", "Valley View Farmhouse", "Equestrian Estate" ],
+  "Land & Parcels"        => [ "Forested Acreage", "Coastal Bluff Lot", "Wildflower Meadow Parcel", "High Desert Ranch" ],
+  "Specialty Properties"  => [ "Desert Adobe Estate", "Vineyard Parcel", "Converted Barn Loft", "Tiny House on Acreage", "Woodland Artist Retreat" ]
 }
 
 lot_assignments.each do |lot_name, listing_names|
@@ -185,31 +185,31 @@ categories = category_names.each_with_object({}) do |name, hash|
 end
 
 category_assignments = {
-  "Cozy Mountain Cabin"      => ["Cabins & Retreats"],
-  "Lakefront Cottage"        => ["Cabins & Retreats", "Recreation & Glamping"],
-  "Rural Hobby Farm"         => ["Farms & Homesteads"],
-  "Riverside Retreat"        => ["Cabins & Retreats", "Recreation & Glamping"],
-  "Prairie Homestead"        => ["Farms & Homesteads"],
-  "Desert Adobe Estate"      => ["Unique Properties"],
-  "Orchard Property"         => ["Vineyards & Orchards", "Farms & Homesteads"],
-  "Forested Acreage"         => ["Land & Parcels"],
-  "Vineyard Parcel"          => ["Vineyards & Orchards"],
-  "Coastal Bluff Lot"        => ["Land & Parcels"],
-  "Timber Frame Retreat"     => ["Cabins & Retreats", "Unique Properties"],
-  "High Desert Ranch"        => ["Ranches"],
-  "Wildflower Meadow Parcel" => ["Land & Parcels"],
-  "Converted Barn Loft"      => ["Unique Properties"],
-  "Fishing Camp"             => ["Recreation & Glamping", "Cabins & Retreats"],
-  "Mountain Ski Chalet"      => ["Recreation & Glamping"],
-  "River Bottom Farmland"    => ["Farms & Homesteads", "Land & Parcels"],
-  "Tiny House on Acreage"    => ["Unique Properties"],
-  "Lakeside Glamping Parcel" => ["Recreation & Glamping"],
-  "Working Cattle Ranch"     => ["Ranches", "Farms & Homesteads"],
-  "Backcountry Retreat"      => ["Cabins & Retreats"],
-  "Valley View Farmhouse"    => ["Farms & Homesteads"],
-  "Woodland Artist Retreat"  => ["Unique Properties"],
-  "Equestrian Estate"        => ["Equestrian"],
-  "Remote Island Cabin"      => ["Cabins & Retreats", "Unique Properties"]
+  "Cozy Mountain Cabin"      => [ "Cabins & Retreats" ],
+  "Lakefront Cottage"        => [ "Cabins & Retreats", "Recreation & Glamping" ],
+  "Rural Hobby Farm"         => [ "Farms & Homesteads" ],
+  "Riverside Retreat"        => [ "Cabins & Retreats", "Recreation & Glamping" ],
+  "Prairie Homestead"        => [ "Farms & Homesteads" ],
+  "Desert Adobe Estate"      => [ "Unique Properties" ],
+  "Orchard Property"         => [ "Vineyards & Orchards", "Farms & Homesteads" ],
+  "Forested Acreage"         => [ "Land & Parcels" ],
+  "Vineyard Parcel"          => [ "Vineyards & Orchards" ],
+  "Coastal Bluff Lot"        => [ "Land & Parcels" ],
+  "Timber Frame Retreat"     => [ "Cabins & Retreats", "Unique Properties" ],
+  "High Desert Ranch"        => [ "Ranches" ],
+  "Wildflower Meadow Parcel" => [ "Land & Parcels" ],
+  "Converted Barn Loft"      => [ "Unique Properties" ],
+  "Fishing Camp"             => [ "Recreation & Glamping", "Cabins & Retreats" ],
+  "Mountain Ski Chalet"      => [ "Recreation & Glamping" ],
+  "River Bottom Farmland"    => [ "Farms & Homesteads", "Land & Parcels" ],
+  "Tiny House on Acreage"    => [ "Unique Properties" ],
+  "Lakeside Glamping Parcel" => [ "Recreation & Glamping" ],
+  "Working Cattle Ranch"     => [ "Ranches", "Farms & Homesteads" ],
+  "Backcountry Retreat"      => [ "Cabins & Retreats" ],
+  "Valley View Farmhouse"    => [ "Farms & Homesteads" ],
+  "Woodland Artist Retreat"  => [ "Unique Properties" ],
+  "Equestrian Estate"        => [ "Equestrian" ],
+  "Remote Island Cabin"      => [ "Cabins & Retreats", "Unique Properties" ]
 }
 
 category_assignments.each do |listing_name, cat_names|

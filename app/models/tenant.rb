@@ -11,4 +11,6 @@ class Tenant < ApplicationRecord
 
   validates :key, presence: true, uniqueness: true, format: { with: /\A[a-z_]+\z/, message: "can only contain lowercase letters and underscores" }
   validates :default, inclusion: { in: [ true, false ] }
+
+  def self.default = find_by!(default: true)
 end

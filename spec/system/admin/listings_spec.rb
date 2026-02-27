@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Admin::Listings", type: :system do
   before { driven_by :rack_test }
 
-  let(:current_user) { create(:user) }
+  let(:current_user) { create(:user, :super_admin) }
 
   before { sign_in_as(current_user) }
 
@@ -96,9 +96,9 @@ RSpec.describe "Admin::Listings", type: :system do
 
       it "clears the page cursor when changing sort" do
         create_list(:listing, 25)
-        visit admin_listings_path
 
-        click_link "Next"
+        # Simulate a paginated state by visiting with a page cursor param
+        visit admin_listings_path(page: "some_cursor")
         expect(current_url).to include("page=")
 
         click_link "Name"
@@ -107,21 +107,20 @@ RSpec.describe "Admin::Listings", type: :system do
       end
     end
 
-    describe "pagination" do
+    describe "infinite scroll sentinel" do
       before { create_list(:listing, 25) }
 
-      it "shows a Next link when results exceed the page size" do
+      it "renders a sentinel with a next-page URL when results exceed the page size" do
         visit admin_listings_path
 
-        expect(page).to have_link("Next")
+        expect(page).to have_css("#sentinel[data-url]")
       end
 
-      it "advances to the next page" do
-        visit admin_listings_path
+      it "renders an empty sentinel when all results fit on one page" do
+        visit admin_listings_path(q: { name_cont: "nonexistent" })
 
-        click_link "Next"
-        expect(current_url).to include("page=")
-        expect(page).to have_css("table")
+        expect(page).to have_css("#sentinel")
+        expect(page).not_to have_css("#sentinel[data-url]")
       end
     end
   end

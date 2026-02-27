@@ -5,6 +5,6 @@ class CreateCartItems < ActiveRecord::Migration[8.0]
       t.references :listing, null: false, foreign_key: true
       t.timestamps
     end
-    add_index :cart_items, [:user_id, :listing_id], unique: true
+    add_index :cart_items, [ :user_id, :listing_id ], unique: true
   end
 end

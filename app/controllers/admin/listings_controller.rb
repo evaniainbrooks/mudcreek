@@ -25,6 +25,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def new
     @listing = Listing.new
+    authorize(@listing)
     @categories = Listings::Category.order(:name)
     @lots = Lot.order(:name)
   end
@@ -36,6 +37,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def create
     @listing = Listing.new(listing_params)
+    authorize(@listing)
 
     if @listing.save
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully created."

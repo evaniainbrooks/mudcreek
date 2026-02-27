@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Admin::Users index", type: :system do
   before { driven_by :rack_test }
 
-  let(:current_user) { create(:user) }
+  let(:current_user) { create(:user, :super_admin) }
 
   before { sign_in_as(current_user) }
 
@@ -13,6 +13,8 @@ RSpec.describe "Admin::Users index", type: :system do
   end
 
   it "links each email as a mailto" do
+    visit admin_users_path
+
     expect(page).to have_link(current_user.email_address,
                               href: "mailto:#{current_user.email_address}")
   end

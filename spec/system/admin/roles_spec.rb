@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Admin::Roles", type: :system do
   before { driven_by :rack_test }
 
-  let(:current_user) { create(:user) }
+  let(:current_user) { create(:user, :super_admin) }
 
   before { sign_in_as(current_user) }
 
@@ -52,12 +52,12 @@ RSpec.describe "Admin::Roles", type: :system do
       it "creates the role and displays it in the table" do
         visit admin_roles_path
 
-        fill_in "Name", with: "Buyer"
+        fill_in "Name", with: "buyer"
         fill_in "Description", with: "A person looking to buy property"
         click_button "Add Role"
 
-        expect(page).to have_text('Role "Buyer" was successfully created.')
-        expect(page).to have_text("Buyer")
+        expect(page).to have_text('Role "buyer" was successfully created.')
+        expect(page).to have_text("buyer")
         expect(page).to have_text("A person looking to buy property")
       end
     end
@@ -77,7 +77,7 @@ RSpec.describe "Admin::Roles", type: :system do
       it "re-renders the form with a validation error" do
         visit admin_roles_path
 
-        fill_in "Name", with: "Buyer"
+        fill_in "Name", with: "buyer"
         click_button "Add Role"
 
         expect(page).to have_text("Description can't be blank")
@@ -85,12 +85,12 @@ RSpec.describe "Admin::Roles", type: :system do
     end
 
     context "with a duplicate name" do
-      let!(:existing_role) { create(:role, name: "Buyer") }
+      let!(:existing_role) { create(:role, name: "buyer") }
 
       it "re-renders the form with a uniqueness error" do
         visit admin_roles_path
 
-        fill_in "Name", with: "Buyer"
+        fill_in "Name", with: "buyer"
         fill_in "Description", with: "Another description"
         click_button "Add Role"
 
@@ -106,7 +106,9 @@ RSpec.describe "Admin::Roles", type: :system do
       visit admin_roles_path
 
       name = role.name
-      click_button "Delete"
+      within "tr", text: name do
+        click_button "Delete"
+      end
 
       expect(page).to have_text("Role \"#{name}\" was successfully deleted.")
       expect(page).to have_current_path(admin_roles_path)

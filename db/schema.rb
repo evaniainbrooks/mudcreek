@@ -10,9 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_135546) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "listing_state", ["on_sale", "sold", "cancelled"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -75,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_135546) do
     t.integer "price_cents", null: false
     t.boolean "published", default: false, null: false
     t.integer "quantity", default: 1, null: false
+    t.enum "state", default: "on_sale", null: false, enum_type: "listing_state"
     t.boolean "tax_exempt", default: false, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false

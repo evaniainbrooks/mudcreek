@@ -1,11 +1,14 @@
 class Listing < ApplicationRecord
   include MultiTenant
   include HasHashid
+  include NativeEnum
 
   belongs_to :owner, class_name: "User"
   belongs_to :lot, optional: true
 
   acts_as_list scope: :tenant, add_new_at: :bottom
+
+  native_enum :state, %i[on_sale sold cancelled]
 
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
@@ -41,7 +44,7 @@ class Listing < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[name price_cents acquisition_price_cents quantity owner_id published created_at]
+    %w[name price_cents acquisition_price_cents quantity owner_id published state created_at]
   end
 
   def self.ransackable_associations(_auth_object = nil)

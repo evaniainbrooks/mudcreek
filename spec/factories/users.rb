@@ -2,6 +2,8 @@ FactoryBot.define do
   factory :user do
     sequence(:email_address) { |n| "user#{n}@example.com" }
     password { "password" }
+    first_name { "Test" }
+    last_name { "User" }
 
     trait :super_admin do
       after(:create) do |user|

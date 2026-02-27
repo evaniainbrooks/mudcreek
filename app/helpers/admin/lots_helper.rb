@@ -17,7 +17,7 @@ module Admin::LotsHelper
         safe_join([
           (tag.div(errors.to_sentence, class: "text-danger small mb-1") if errors.any?),
           tag.div(class: "input-group input-group-sm") do
-            f.select(:owner_id, users.map { [it.email_address, it.id] },
+            f.select(:owner_id, users.map { [ it.email_address, it.id ] },
               {},
               class: "form-select form-select-sm #{"is-invalid" if errors.any?}") +
             f.button(type: "submit", class: "btn btn-outline-primary") do
