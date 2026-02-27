@@ -6,7 +6,13 @@ module ListingsHelper
   end
 
   def render_listings_table(listings:, q:)
-    table = ::TableComponent.new(rows: listings, ransack_query: q)
+    table = ::TableComponent.new(
+      rows: listings,
+      ransack_query: q,
+      row_data: ->(l) { { id: l.id } },
+      tbody_data: { controller: "sortable", sortable_url_value: reorder_admin_listings_path }
+    )
+    table.with_column("", html_class: "text-center pe-0" ) { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Lot") { |l| l.lot ? content_tag(:span, l.lot.number, class: "badge #{badge_color_for(l.lot.name)}") : "—" }
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       resources :categories, only: [ :index, :create, :update, :destroy ]
     end
     resources :listings do
+      collection { patch :reorder }
       resources :attachments, only: [ :destroy ], module: :listings
     end
   end

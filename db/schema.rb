@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_131247) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_132847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,11 +79,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_131247) do
     t.datetime "updated_at", null: false
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
-    t.index ["tenant_id", "position"], name: "index_listings_on_tenant_id_and_position", unique: true
     t.index ["tenant_id"], name: "index_listings_on_tenant_id"
     t.check_constraint "acquisition_price_cents >= 0", name: "listings_acquisition_price_cents_non_negative"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
     t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
+    t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
   create_table "listings_categories", force: :cascade do |t|

@@ -46,6 +46,13 @@ class Admin::ListingsController < Admin::BaseController
     end
   end
 
+  def reorder
+    authorize(Listing)
+    listing = Listing.find(params[:id])
+    listing.insert_at(params[:position].to_i)
+    head :ok
+  end
+
   def destroy
     @listing.destroy!
     redirect_to admin_listings_path, notice: "Listing was successfully deleted."

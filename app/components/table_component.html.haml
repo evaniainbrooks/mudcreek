@@ -8,9 +8,9 @@
               = helpers.sort_link(@ransack_query, col.sort_attr, col.header, page: nil)
             - else
               = col.header
-    %tbody
+    %tbody{data: @tbody_data}
       - @rows.each do |row|
-        %tr
+        %tr{data: @row_data&.call(row)}
           - @columns.each do |col|
             - if col.typed
               = render(TableCellComponent.new(value: col.block.call(row), html_class: col.html_class))
