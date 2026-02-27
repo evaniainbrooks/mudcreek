@@ -12,7 +12,15 @@
         %option{ value: "small" } Small Cards
         %option{ value: "large" } Large Cards
 
-  %div{ data: { controller: "infinite-scroll" } }
-    .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings{ data: { "view-toggle-target": "grid" } }
-      = render partial: "listings/listing", collection: @listings, as: :listing
-    = render "listings/sentinel", pagy: @pagy, category_id: @category_id
+  - if @listings.empty? && @category_id
+    .text-center.py-5
+      %p.text-muted.mb-2 No listings found in that category.
+      = link_to listings_path, class: "btn btn-outline-secondary btn-sm" do
+        %i.bi.bi-x-circle.me-1
+        Clear filter and see all listings
+
+  - else
+    %div{ data: { controller: "infinite-scroll" } }
+      .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings{ data: { "view-toggle-target": "grid" } }
+        = render partial: "listings/listing", collection: @listings, as: :listing
+      = render "listings/sentinel", pagy: @pagy, category_id: @category_id
