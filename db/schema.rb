@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_023959) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_131247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,6 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_023959) do
     t.bigint "lot_id"
     t.string "name", null: false
     t.bigint "owner_id", null: false
+    t.integer "position", null: false
     t.integer "price_cents", null: false
     t.boolean "published", default: false, null: false
     t.integer "quantity", default: 1, null: false
@@ -78,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_023959) do
     t.datetime "updated_at", null: false
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
+    t.index ["tenant_id", "position"], name: "index_listings_on_tenant_id_and_position", unique: true
     t.index ["tenant_id"], name: "index_listings_on_tenant_id"
     t.check_constraint "acquisition_price_cents >= 0", name: "listings_acquisition_price_cents_non_negative"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
@@ -155,6 +157,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_023959) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
     t.string "password_digest", null: false
     t.bigint "role_id"
     t.bigint "tenant_id", null: false

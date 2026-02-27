@@ -55,23 +55,33 @@ end
 
 puts "Seeded #{Role.count} roles and #{Permission.count} permissions."
 
-User.find_or_create_by!(email_address: "admin@mudcreek") do |u|
-  u.tenant = mudcreek
-  u.password = default_password
-  u.password_confirmation = default_password
-  u.role = super_admin
-end
+CartItem.destroy_all
+Lot.destroy_all
+User.destroy_all
+
+User.create!(
+  tenant: mudcreek,
+  email_address: "admin@mudcreek",
+  first_name: "Default",
+  last_name: "Admin",
+  password: default_password,
+  password_confirmation: default_password,
+  role: super_admin
+)
 
 # Generate fake users for dev pagination testing
 if Rails.env.development? || Rails.env.test?
   require "faker"
   60.times do
-    User.find_or_create_by!(email_address: Faker::Internet.unique.email) do |u|
-      u.tenant = mudcreek
-      password = Faker::Internet.password
-      u.password = password
-      u.password_confirmation = password
-    end
+    password = Faker::Internet.password
+    User.create!(
+      tenant: mudcreek,
+      email_address: Faker::Internet.unique.email,
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      password: password,
+      password_confirmation: password
+    )
   end
 end
 

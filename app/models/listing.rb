@@ -4,6 +4,8 @@ class Listing < ApplicationRecord
   belongs_to :owner, class_name: "User"
   belongs_to :lot, optional: true
 
+  acts_as_list scope: :tenant, add_new_at: :bottom
+
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
 

@@ -12,8 +12,8 @@
 .row.g-4.g-lg-5.align-items-start
   .col-lg-7
     - if has_images || has_videos
-      .position-relative{ data: { controller: "image-zoom" } }
-        #listing-carousel.carousel.slide{ data: { bs_ride: "false" } }
+      .position-relative{ data: { controller: "image-zoom listing-carousel" } }
+        #listing-carousel.carousel.slide{ data: { bs_ride: "false", "listing-carousel-target": "carousel" } }
           .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
             - slide = 0
             - @listing.images.each do |image|
@@ -32,7 +32,7 @@
             %button.carousel-control-next{ type: "button", data: { bs_target: "#listing-carousel", bs_slide: "next" } }
               %span.carousel-control-next-icon{ aria: { hidden: "true" } }
               %span.visually-hidden Next
-        .position-absolute.bottom-0.end-0.p-2{ style: "z-index: 10" }
+        .position-absolute.bottom-0.end-0.p-2{ style: "z-index: 10", data: { "listing-carousel-target": "zoomControls" } }
           .d-flex.align-items-center.gap-1
             %span.badge.text-bg-dark.font-monospace{ data: { image_zoom_target: "level" }, style: "visibility: hidden" } 100%
             %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Zoom out", data: { action: "image-zoom#zoomOut" } }

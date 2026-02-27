@@ -6,7 +6,10 @@
 .card.shadow-sm.border-0.mb-4
   .card-body
     = search_form_for @q, url: admin_users_path, html: { class: "row g-2 align-items-end" } do |f|
-      .col-md-5
+      .col-md-3
+        = f.label :first_name_or_last_name_cont, "Name", class: "form-label form-label-sm"
+        = f.search_field :first_name_or_last_name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
+      .col-md-4
         = f.label :email_address_cont, "Email", class: "form-label form-label-sm"
         = f.search_field :email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
       .col-md-3

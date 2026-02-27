@@ -63,6 +63,9 @@ gem "pagy"
 # Safe database migrations
 gem "strong_migrations"
 
+# Ordered list management
+gem "acts_as_list"
+
 # Background jobs
 gem "sidekiq"
 

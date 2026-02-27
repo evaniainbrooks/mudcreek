@@ -6,7 +6,7 @@ class Admin::ListingsController < Admin::BaseController
     @categories = Listings::Category.order(:name)
     @lots = Lot.order(:number)
     @q = Listing.ransack(params[:q])
-    scope = @q.result.includes(:owner, :categories, :lot).order(id: :asc)
+    scope = @q.result.includes(:owner, :categories, :lot).order(position: :asc, id: :asc)
     @pagy, @listings = pagy(:keyset, scope)
   end
 
