@@ -10,7 +10,7 @@ class Admin::Listings::AttachmentsController < Admin::BaseController
   private
 
   def set_listing
-    @listing = Listing.find(params[:listing_id])
+    @listing = Listing.find_by!(hashid: params[:listing_hashid])
     authorize(@listing, :update?)
   end
 

@@ -1,5 +1,6 @@
 class Listing < ApplicationRecord
   include MultiTenant
+  include HasHashid
 
   belongs_to :owner, class_name: "User"
   belongs_to :lot, optional: true

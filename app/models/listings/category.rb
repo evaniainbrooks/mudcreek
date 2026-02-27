@@ -1,5 +1,6 @@
 class Listings::Category < ApplicationRecord
   include MultiTenant
+  include HasHashid
 
   has_rich_text :description
 

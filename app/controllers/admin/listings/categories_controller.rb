@@ -34,7 +34,7 @@ class Admin::Listings::CategoriesController < Admin::BaseController
   private
 
   def set_category
-    @category = Listings::Category.find(params[:id])
+    @category = Listings::Category.find_by!(hashid: params[:hashid])
     authorize(@category)
   end
 

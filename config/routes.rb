@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
-  resources :listings, only: [ :index, :show ]
+  resources :listings, only: [ :index, :show ], param: :hashid
 
   resource  :cart,       only: [:show]
   resources :cart_items, only: [:create, :destroy]
@@ -16,9 +16,9 @@ Rails.application.routes.draw do
       resources :permissions, only: [ :index, :create, :destroy ]
     end
     namespace :listings do
-      resources :categories, only: [ :index, :create, :update, :destroy ]
+      resources :categories, only: [ :index, :create, :update, :destroy ], param: :hashid
     end
-    resources :listings do
+    resources :listings, param: :hashid do
       collection { patch :reorder }
       resources :attachments, only: [ :destroy ], module: :listings
     end

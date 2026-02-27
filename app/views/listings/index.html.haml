@@ -3,8 +3,8 @@
     %h1.h3.mb-0 Listings
     .d-flex.gap-2.align-items-center
       = form_with url: listings_path, method: :get do |f|
-        = f.select :category_id, @categories.map { [it.name, it.id] },
-          { include_blank: "All Categories", selected: @category_id },
+        = f.select :category_id, @categories.map { [it.name, it.hashid] },
+          { include_blank: "All Categories", selected: @category_hashid },
           class: "form-select form-select-sm w-auto",
           onchange: "this.form.requestSubmit()"
       %select.form-select.form-select-sm.w-auto{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
@@ -12,7 +12,7 @@
         %option{ value: "small" } Small Cards
         %option{ value: "large" } Large Cards
 
-  - if @listings.empty? && @category_id
+  - if @listings.empty? && @category_hashid
     .text-center.py-5
       %p.text-muted.mb-2 No listings found in that category.
       = link_to listings_path, class: "btn btn-outline-secondary btn-sm" do
@@ -23,4 +23,4 @@
     %div{ data: { controller: "infinite-scroll" } }
       .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings{ data: { "view-toggle-target": "grid" } }
         = render partial: "listings/listing", collection: @listings, as: :listing
-      = render "listings/sentinel", pagy: @pagy, category_id: @category_id
+      = render "listings/sentinel", pagy: @pagy, category_id: @category_hashid

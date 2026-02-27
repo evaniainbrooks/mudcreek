@@ -4,7 +4,7 @@
 
 - if @cart_items.empty?
   .text-center.py-5
-    %i.bi.bi-cart-x{ style: "font-size: 4rem" }.text-muted.d-block.mb-3
+    %i.bi.bi-cart-x.text-muted.d-block.mb-3{ style: "font-size: 4rem" }
     %p.text-muted Your cart is empty.
     = link_to "Browse Listings", listings_path, class: "btn btn-primary"
 - else

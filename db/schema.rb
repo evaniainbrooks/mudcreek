@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_132847) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_135546) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,6 +67,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_132847) do
   create_table "listings", force: :cascade do |t|
     t.integer "acquisition_price_cents"
     t.datetime "created_at", null: false
+    t.string "hashid", null: false
     t.bigint "lot_id"
     t.string "name", null: false
     t.bigint "owner_id", null: false
@@ -77,6 +78,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_132847) do
     t.boolean "tax_exempt", default: false, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["hashid"], name: "index_listings_on_hashid", unique: true
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.index ["tenant_id"], name: "index_listings_on_tenant_id"
@@ -88,9 +90,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_132847) do
 
   create_table "listings_categories", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "hashid", null: false
     t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["hashid"], name: "index_listings_categories_on_hashid", unique: true
     t.index ["tenant_id"], name: "index_listings_categories_on_tenant_id"
   end
 
