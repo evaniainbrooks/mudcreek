@@ -1,5 +1,5 @@
 class Permission < ApplicationRecord
-  RESOURCES = %w[Listing User Role Permission].freeze
+  RESOURCES = %w[Listing User Role Permission Listings::Category].freeze
   ACTIONS   = %w[index show create update destroy].freeze
 
   belongs_to :role

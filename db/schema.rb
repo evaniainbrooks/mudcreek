@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_26_210007) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_011714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,6 +78,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_26_210007) do
     t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
   end
 
+  create_table "listings_categories", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "listings_category_assignments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "listing_id", null: false
+    t.bigint "listings_category_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["listing_id", "listings_category_id"], name: "idx_on_listing_id_listings_category_id_11916b414d", unique: true
+    t.index ["listing_id"], name: "index_listings_category_assignments_on_listing_id"
+    t.index ["listings_category_id"], name: "index_listings_category_assignments_on_listings_category_id"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string "action", null: false
     t.datetime "created_at", null: false
@@ -119,6 +135,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_26_210007) do
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "users"
   add_foreign_key "listings", "users", column: "owner_id"
+  add_foreign_key "listings_category_assignments", "listings"
+  add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "permissions", "roles"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "roles"

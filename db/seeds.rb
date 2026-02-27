@@ -92,6 +92,61 @@ end
 
 puts "Seeded #{Listing.count} listings."
 
+# Listing Categories
+category_names = [
+  "Cabins & Retreats",
+  "Farms & Homesteads",
+  "Ranches",
+  "Land & Parcels",
+  "Equestrian",
+  "Vineyards & Orchards",
+  "Recreation & Glamping",
+  "Unique Properties"
+]
+
+categories = category_names.each_with_object({}) do |name, hash|
+  hash[name] = Listings::Category.find_or_create_by!(name: name)
+end
+
+category_assignments = {
+  "Cozy Mountain Cabin"      => ["Cabins & Retreats"],
+  "Lakefront Cottage"        => ["Cabins & Retreats", "Recreation & Glamping"],
+  "Rural Hobby Farm"         => ["Farms & Homesteads"],
+  "Riverside Retreat"        => ["Cabins & Retreats", "Recreation & Glamping"],
+  "Prairie Homestead"        => ["Farms & Homesteads"],
+  "Desert Adobe Estate"      => ["Unique Properties"],
+  "Orchard Property"         => ["Vineyards & Orchards", "Farms & Homesteads"],
+  "Forested Acreage"         => ["Land & Parcels"],
+  "Vineyard Parcel"          => ["Vineyards & Orchards"],
+  "Coastal Bluff Lot"        => ["Land & Parcels"],
+  "Timber Frame Retreat"     => ["Cabins & Retreats", "Unique Properties"],
+  "High Desert Ranch"        => ["Ranches"],
+  "Wildflower Meadow Parcel" => ["Land & Parcels"],
+  "Converted Barn Loft"      => ["Unique Properties"],
+  "Fishing Camp"             => ["Recreation & Glamping", "Cabins & Retreats"],
+  "Mountain Ski Chalet"      => ["Recreation & Glamping"],
+  "River Bottom Farmland"    => ["Farms & Homesteads", "Land & Parcels"],
+  "Tiny House on Acreage"    => ["Unique Properties"],
+  "Lakeside Glamping Parcel" => ["Recreation & Glamping"],
+  "Working Cattle Ranch"     => ["Ranches", "Farms & Homesteads"],
+  "Backcountry Retreat"      => ["Cabins & Retreats"],
+  "Valley View Farmhouse"    => ["Farms & Homesteads"],
+  "Woodland Artist Retreat"  => ["Unique Properties"],
+  "Equestrian Estate"        => ["Equestrian"],
+  "Remote Island Cabin"      => ["Cabins & Retreats", "Unique Properties"]
+}
+
+category_assignments.each do |listing_name, cat_names|
+  listing = Listing.find_by(name: listing_name)
+  next unless listing
+  cat_names.each do |cat_name|
+    cat = categories[cat_name]
+    listing.categories << cat unless listing.categories.include?(cat)
+  end
+end
+
+puts "Seeded #{Listings::Category.count} listing categories."
+
 require "open-uri"
 
 # Download a pool of stock images from Picsum Photos, then assign one per listing.

@@ -1,0 +1,21 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tags-fill.me-2
+    Listing Categories
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold New Category
+  .card-body
+    = form_with model: @category, url: admin_listings_categories_path do |f|
+      - if @category.errors.any?
+        .alert.alert-danger.mb-3
+          = @category.errors.full_messages.to_sentence
+      .mb-3
+        = f.label :name, class: "form-label form-label-sm"
+        = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @category.errors[:name].any?}", required: true, placeholder: "e.g. Tools & Equipment"
+      .mb-3
+        = f.label :description, class: "form-label form-label-sm"
+        = f.rich_text_area :description, class: "form-control form-control-sm #{'is-invalid' if @category.errors[:description].any?}"
+      = f.submit "Add Category", class: "btn btn-primary btn-sm"
+
+= render_listings_categories_table(categories: @categories)

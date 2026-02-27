@@ -52,6 +52,10 @@
       .invalid-feedback.d-block= listing.errors[:description].to_sentence
 
   .mb-3
+    = f.label :category_ids, "Categories", class: "form-label"
+    = f.collection_select :category_ids, @categories, :id, :name, {}, { multiple: true, class: "form-select", size: [@categories.size, 6].min }
+
+  .mb-3
     = f.label :images, class: "form-label"
     = f.file_field :images, multiple: true, class: "form-control #{'is-invalid' if listing.errors[:images].any?}", accept: "image/*"
     - if listing.errors[:images].any?

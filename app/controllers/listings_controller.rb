@@ -12,7 +12,11 @@ class ListingsController < ApplicationController
   end
 
   def index
+    @categories = Listings::Category.order(:name)
+    @category_id = params[:category_id].presence
+
     scope = Listing.where(published: true).with_rich_text_description.with_attached_images.with_attached_videos.order(id: :asc)
+    scope = scope.where(id: Listings::CategoryAssignment.where(listings_category_id: @category_id).select(:listing_id)) if @category_id
     @pagy, @listings = pagy(:keyset, scope)
 
     respond_to do |format|
@@ -20,7 +24,7 @@ class ListingsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.append("listings", partial: "listings/listing", collection: @listings, as: :listing),
-          turbo_stream.replace("sentinel", partial: "listings/sentinel", locals: { pagy: @pagy })
+          turbo_stream.replace("sentinel", partial: "listings/sentinel", locals: { pagy: @pagy, category_id: @category_id })
         ]
       end
     end

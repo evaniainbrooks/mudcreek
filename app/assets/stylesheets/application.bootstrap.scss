@@ -9,6 +9,38 @@ $min-contrast-ratio: 3;
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
+// Listing view mode styles
+#listings {
+  &[data-view-mode="large"] {
+    .card-img-top,
+    video.card-img-top {
+      height: 280px !important;
+    }
+  }
+
+  &[data-view-mode="list"] {
+    .col {
+      width: 100%;
+      height: auto;
+    }
+
+    .card {
+      flex-direction: row;
+      height: auto !important;
+    }
+
+    .card-img-top,
+    video.card-img-top,
+    div.card-img-top {
+      width: 180px !important;
+      min-width: 180px;
+      height: 120px !important;
+      border-radius: calc(var(--bs-card-border-radius) - 1px) 0 0 calc(var(--bs-card-border-radius) - 1px);
+      flex-shrink: 0;
+    }
+  }
+}
+
 // Table header using secondary (brown) as background
 thead.thead-secondary {
   --bs-table-color: #fff;

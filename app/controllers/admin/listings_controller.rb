@@ -3,8 +3,9 @@ class Admin::ListingsController < Admin::BaseController
 
   def index
     authorize(Listing)
+    @categories = Listings::Category.order(:name)
     @q = Listing.ransack(params[:q])
-    scope = @q.result.includes(:owner).order(id: :asc)
+    scope = @q.result.includes(:owner, :categories).order(id: :asc)
     @pagy, @listings = pagy(:keyset, scope)
   end
 
@@ -13,9 +14,11 @@ class Admin::ListingsController < Admin::BaseController
 
   def new
     @listing = Listing.new
+    @categories = Listings::Category.order(:name)
   end
 
   def edit
+    @categories = Listings::Category.order(:name)
   end
 
   def create
@@ -24,6 +27,7 @@ class Admin::ListingsController < Admin::BaseController
     if @listing.save
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully created."
     else
+      @categories = Listings::Category.order(:name)
       render :new, status: :unprocessable_entity
     end
   end
@@ -32,6 +36,7 @@ class Admin::ListingsController < Admin::BaseController
     if @listing.update(listing_params)
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully updated."
     else
+      @categories = Listings::Category.order(:name)
       render :edit, status: :unprocessable_entity
     end
   end
@@ -44,12 +49,12 @@ class Admin::ListingsController < Admin::BaseController
   private
 
   def set_listing
-    @listing = Listing.with_attached_images.with_attached_videos.with_attached_documents.find(params[:id])
+    @listing = Listing.includes(:categories).with_attached_images.with_attached_videos.with_attached_documents.find(params[:id])
     authorize(@listing)
   end
 
   def listing_params
-    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :published, images: [], videos: [], documents: [])
+    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :published, images: [], videos: [], documents: [], category_ids: [])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

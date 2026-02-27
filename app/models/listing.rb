@@ -1,6 +1,9 @@
 class Listing < ApplicationRecord
   belongs_to :owner, class_name: "User"
 
+  has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
+  has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
+
   has_rich_text :description
   has_many_attached :images
   has_many_attached :videos
@@ -36,6 +39,6 @@ class Listing < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    %w[owner]
+    %w[owner categories]
   end
 end

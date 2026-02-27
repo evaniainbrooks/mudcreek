@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     resources :roles, only: [ :index, :create, :destroy ] do
       resources :permissions, only: [ :index, :create, :destroy ]
     end
+    namespace :listings do
+      resources :categories, only: [ :index, :create, :destroy ]
+    end
     resources :listings do
       resources :attachments, only: [ :destroy ], module: :listings
     end

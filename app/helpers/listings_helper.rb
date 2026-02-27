@@ -6,6 +6,9 @@ module ListingsHelper
     table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
     table.with_value_column("Quantity", sort_attr: :quantity) { it.quantity }
     table.with_value_column("Owner") { it.owner }
+    table.with_column("Categories") do |listing|
+      safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge text-bg-secondary me-1") })
+    end
     table.with_value_column("Published", sort_attr: :published) { it.published }
     table.with_value_column("Created At", sort_attr: :created_at) { it.created_at }
     table.with_column("Actions", html_class: "text-end") do |listing|

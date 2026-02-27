@@ -23,6 +23,13 @@
       %dt.col-sm-3 Owner
       %dd.col-sm-9= mail_to @listing.owner.email_address
 
+      %dt.col-sm-3 Categories
+      %dd.col-sm-9
+        - if @listing.categories.any?
+          = safe_join(@listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge text-bg-secondary me-1") })
+        - else
+          %span.text-muted —
+
       %dt.col-sm-3 Description
       %dd.col-sm-9= @listing.description
 

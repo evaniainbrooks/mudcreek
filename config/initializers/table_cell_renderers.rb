@@ -10,4 +10,8 @@ Rails.application.config.to_prepare do
   TableCellComponent.register(Listing) do |listing|
     helpers.link_to(listing.name, helpers.admin_listing_path(listing))
   end
+
+  TableCellComponent.register(Listings::Category) do |category|
+    content_tag(:span, h(category.name), class: "badge text-bg-secondary")
+  end
 end

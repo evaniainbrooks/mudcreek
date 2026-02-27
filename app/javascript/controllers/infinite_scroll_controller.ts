@@ -9,7 +9,7 @@ export default class extends Controller {
 
   private observer!: IntersectionObserver
 
-  connect(): void {
+  initialize(): void {
     this.observer = new IntersectionObserver(this.load.bind(this), {
       rootMargin: "300px"
     })
