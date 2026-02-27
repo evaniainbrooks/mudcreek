@@ -32,9 +32,6 @@
         = f.submit "Search", class: "btn btn-primary btn-sm"
       .col-auto
         = link_to "Clear", admin_listings_path, class: "btn btn-outline-secondary btn-sm"
-= render_listings_table(listings: @listings, q: @q)
-- if @pagy.next
-  .d-flex.justify-content-end.mt-3
-    = link_to admin_listings_path(q: params[:q]&.to_unsafe_h, page: @pagy.next), class: "btn btn-outline-secondary btn-sm" do
-      Next
-      %i.bi.bi-chevron-right
+%div{data: { controller: "infinite-scroll" }}
+  = render_listings_table(listings: @listings, q: @q)
+  = render "admin/listings/sentinel", pagy: @pagy, q: params[:q]

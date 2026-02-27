@@ -1,0 +1,22 @@
+%tr{data: { id: listing.id }}
+  %td.text-center.pe-0
+    %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
+  %td
+    - if listing.lot
+      %span.badge{class: badge_color_for(listing.lot.name)}= listing.lot.number
+    - else
+      %span.text-muted —
+  %td= link_to listing.name, admin_listing_path(listing)
+  = render TableCellComponent.new(value: listing.price)
+  = render TableCellComponent.new(value: listing.acquisition_price)
+  = render TableCellComponent.new(value: listing.owner)
+  %td= safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{badge_color_for(cat.name)} me-1") })
+  = render TableCellComponent.new(value: listing.published)
+  = render TableCellComponent.new(value: listing.created_at)
+  %td.text-end
+    .btn-group
+      = link_to "Edit", edit_admin_listing_path(listing), class: "btn btn-sm btn-outline-primary"
+      %button.btn.btn-sm.btn-outline-primary.dropdown-toggle.dropdown-toggle-split{type: "button", data: { bs_toggle: "dropdown" }, aria: { expanded: "false" }}
+        %span.visually-hidden Toggle dropdown
+      %ul.dropdown-menu.dropdown-menu-end
+        %li= link_to "Delete", admin_listing_path(listing), class: "dropdown-item text-danger", data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this listing?" }

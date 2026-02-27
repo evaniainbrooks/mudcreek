@@ -8,6 +8,16 @@ class Admin::ListingsController < Admin::BaseController
     @q = Listing.ransack(params[:q])
     scope = @q.result.includes(:owner, :categories, :lot).order(position: :asc, id: :asc)
     @pagy, @listings = pagy(:keyset, scope)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.append("admin-listings-tbody", partial: "admin/listings/listing_row", collection: @listings, as: :listing),
+          turbo_stream.replace("sentinel", partial: "admin/listings/sentinel", locals: { pagy: @pagy, q: params[:q] })
+        ]
+      end
+    end
   end
 
   def show

@@ -9,7 +9,7 @@ module ListingsHelper
     table = ::TableComponent.new(
       rows: listings,
       ransack_query: q,
-      row_data: ->(l) { { id: l.id } },
+      tbody_id: "admin-listings-tbody",
       tbody_data: { controller: "sortable", sortable_url_value: reorder_admin_listings_path }
     )
     table.with_column("", html_class: "text-center pe-0" ) { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
@@ -17,7 +17,6 @@ module ListingsHelper
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }
     table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
-    table.with_value_column("Quantity", sort_attr: :quantity) { it.quantity }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Categories") do |listing|
       safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{badge_color_for(cat.name)} me-1") })
