@@ -172,3 +172,10 @@ jobs:
         with:
           name: coverage
           path: coverage/
+      - name: Check coverage thresholds
+        run: |
+          LINE=$(jq '.result.line' coverage/.last_run.json)
+          BRANCH=$(jq '.result.branch' coverage/.last_run.json)
+          echo "Line coverage:   $LINE%"
+          echo "Branch coverage: $BRANCH%"
+          jq -e '.result.line >= 100 and .result.branch >= 100' coverage/.last_run.json
