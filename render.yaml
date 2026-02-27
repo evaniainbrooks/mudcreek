@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: mudcreek
+    runtime: docker
+    preDeployCommand: "bundle exec rails db:prepare && bundle exec rails db:migrate:cache db:migrate:queue db:migrate:cable"
