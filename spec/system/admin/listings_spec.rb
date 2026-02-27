@@ -97,8 +97,9 @@ RSpec.describe "Admin::Listings", type: :system do
       it "clears the page cursor when changing sort" do
         create_list(:listing, 25)
 
-        # Simulate a paginated state by visiting with a page cursor param
-        visit admin_listings_path(page: "some_cursor")
+        visit admin_listings_path
+        next_page_url = find("#sentinel")["data-url"]
+        visit next_page_url
         expect(current_url).to include("page=")
 
         click_link "Name"
