@@ -3,10 +3,10 @@
 %h1.fw-bold.mb-4 My Cart
 
 - if @cart_items.empty?
-  .text-center.py-5
-    %i.bi.bi-cart-x.text-muted.d-block.mb-3{ style: "font-size: 4rem" }
-    %p.text-muted Your cart is empty.
-    = link_to "Browse Listings", listings_path, class: "btn btn-primary"
+  = render EmptyStateComponent.new(icon: "cart-x",
+      message: "Your cart is empty.",
+      link_text: "Browse Listings",
+      link_url: listings_path)
 - else
   .table-responsive
     %table.table.align-middle

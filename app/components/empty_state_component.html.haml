@@ -1,0 +1,6 @@
+.text-center.py-5
+  - if @icon
+    %i.text-muted.d-block.mb-3{ class: "bi bi-#{@icon}", style: "font-size: 4rem" }
+  %p.text-muted.mb-3= @message
+  - if @link_url
+    = link_to @link_text, @link_url, class: @link_class
