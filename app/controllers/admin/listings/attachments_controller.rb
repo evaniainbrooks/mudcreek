@@ -11,6 +11,7 @@ class Admin::Listings::AttachmentsController < Admin::BaseController
 
   def set_listing
     @listing = Listing.find(params[:listing_id])
+    authorize(@listing, :update?)
   end
 
   def set_attachment

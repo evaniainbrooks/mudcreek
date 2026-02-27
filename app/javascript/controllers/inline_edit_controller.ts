@@ -29,13 +29,4 @@ export default class extends Controller {
     }
   }
 
-  blur() {
-    if (!this.formTarget.hidden) {
-      this.inputTarget.closest("form")?.requestSubmit()
-    }
-  }
-
-  submit(event: Event) {
-    ;(event.target as HTMLElement).closest("form")?.requestSubmit()
-  }
 }

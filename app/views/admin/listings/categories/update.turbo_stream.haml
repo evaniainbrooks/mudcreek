@@ -1,0 +1,2 @@
+= turbo_stream.replace "#{dom_id(@category)}_name" do
+  = inline_edit_cell(@category, :name, @category.name, url: admin_listings_category_path(@category), scope: :listings_category)

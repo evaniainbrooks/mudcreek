@@ -57,6 +57,8 @@
               data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index } }
               %i.bi.bi-play-circle-fill.text-white.fs-3
             - thumb_index += 1
+    - elsif @listing.lot&.listing_placeholder&.attached?
+      = image_tag @listing.lot.listing_placeholder, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
     - else
       .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
         %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }

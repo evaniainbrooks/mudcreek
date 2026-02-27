@@ -3,6 +3,7 @@ class Lot < ApplicationRecord
 
   belongs_to :owner, class_name: "User"
   has_many :listings, dependent: :nullify
+  has_one_attached :listing_placeholder
 
   validates :name, presence: true
 

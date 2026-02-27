@@ -1,5 +1,5 @@
 class Admin::Listings::CategoriesController < Admin::BaseController
-  before_action :set_category, only: [ :destroy ]
+  before_action :set_category, only: [ :update, :destroy ]
 
   def index
     authorize(Listings::Category)
@@ -15,6 +15,14 @@ class Admin::Listings::CategoriesController < Admin::BaseController
     else
       @categories = Listings::Category.includes(:category_assignments).order(:name)
       render :index, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @category.update(category_params)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to admin_listings_categories_path }
     end
   end
 

@@ -5,6 +5,8 @@
     - elsif listing.videos.attached?
       %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover", muted: true, playsinline: true, preload: "metadata"}
         %source{ src: url_for(listing.videos.first) }
+    - elsif listing.lot&.listing_placeholder&.attached?
+      = image_tag listing.lot.listing_placeholder, class: "card-img-top object-fit-cover", style: "height: 200px"
     - else
       .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
         %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }

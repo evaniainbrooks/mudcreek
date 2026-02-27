@@ -1,6 +1,8 @@
 = turbo_stream.replace "#{dom_id(@lot)}_name" do
-  = lot_inline_edit_cell(@lot, :name, @lot.name)
+  = inline_edit_cell(@lot, :name, @lot.name, url: admin_lot_path(@lot), scope: :lot)
 = turbo_stream.replace "#{dom_id(@lot)}_number" do
-  = lot_inline_edit_cell(@lot, :number, @lot.number.to_s)
+  = inline_edit_cell(@lot, :number, @lot.number.to_s, url: admin_lot_path(@lot), scope: :lot)
 = turbo_stream.replace "#{dom_id(@lot)}_owner_id" do
   = lot_inline_edit_owner_cell(@lot, @users)
+= turbo_stream.replace "#{dom_id(@lot)}_listing_placeholder" do
+  = lot_placeholder_cell(@lot)

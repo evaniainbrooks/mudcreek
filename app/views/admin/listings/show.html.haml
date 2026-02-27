@@ -3,6 +3,9 @@
     %i.bi.bi-tag-fill.me-2
     = @listing.name
   .btn-group
+    = link_to listing_path(@listing), class: "btn btn-outline-secondary", target: "_blank" do
+      %i.bi.bi-box-arrow-up-right.me-1
+      Public View
     = link_to edit_admin_listing_path(@listing), class: "btn btn-outline-primary" do
       %i.bi.bi-pencil.me-1
       Edit

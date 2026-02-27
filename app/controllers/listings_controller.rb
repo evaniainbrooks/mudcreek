@@ -7,6 +7,7 @@ class ListingsController < ApplicationController
                       .with_attached_images
                       .with_attached_videos
                       .with_attached_documents
+                      .includes(lot: { listing_placeholder_attachment: :blob })
                       .find(params[:id])
     @cart_item = Current.user&.cart_items&.find_by(listing_id: @listing.id)
   end
@@ -15,7 +16,7 @@ class ListingsController < ApplicationController
     @categories = Listings::Category.order(:name)
     @category_id = params[:category_id].presence
 
-    scope = Listing.where(published: true).with_rich_text_description.with_attached_images.with_attached_videos.order(id: :asc)
+    scope = Listing.where(published: true).with_rich_text_description.with_attached_images.with_attached_videos.includes(lot: { listing_placeholder_attachment: :blob }).order(id: :asc)
     scope = scope.where(id: Listings::CategoryAssignment.where(listings_category_id: @category_id).select(:listing_id)) if @category_id
     @pagy, @listings = pagy(:keyset, scope)
 

@@ -9,12 +9,14 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users, only: :index
-    resources :lots, only: [ :index, :create, :update, :destroy ]
+    resources :lots, only: [ :index, :create, :update, :destroy ] do
+      resource :listing_placeholder, only: [ :destroy ], module: :lots
+    end
     resources :roles, only: [ :index, :create, :destroy ] do
       resources :permissions, only: [ :index, :create, :destroy ]
     end
     namespace :listings do
-      resources :categories, only: [ :index, :create, :destroy ]
+      resources :categories, only: [ :index, :create, :update, :destroy ]
     end
     resources :listings do
       resources :attachments, only: [ :destroy ], module: :listings
