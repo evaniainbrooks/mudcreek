@@ -1,0 +1,6 @@
+Hi <%= @user.first_name %>,
+
+Thanks for signing up! Please activate your account using the link below.
+This link will expire in 24 hours.
+
+<%= activation_url(token: @user.generate_token_for(:activation)) %>

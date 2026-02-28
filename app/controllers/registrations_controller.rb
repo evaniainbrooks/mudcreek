@@ -5,8 +5,8 @@ class RegistrationsController < ApplicationController
   def create
     user = User.new(registration_params)
     if user.save
-      start_new_session_for user
-      redirect_to after_authentication_url
+      RegistrationsMailer.activate(user).deliver_later
+      redirect_to new_session_path, notice: "Check your email for an activation link."
     else
       redirect_to new_session_path, alert: user.errors.full_messages.to_sentence
     end

@@ -18,20 +18,20 @@ RSpec.describe "Sessions", type: :request do
     context "when already signed in" do
       before { post session_path, params: { email_address: user.email_address, password: "password" } }
 
-      it "redirects to admin listings" do
+      it "redirects away from the sign-in page" do
         get new_session_path
 
-        expect(response).to redirect_to(admin_listings_path)
+        expect(response).to redirect_to(root_path)
       end
     end
   end
 
   describe "POST /session" do
     context "with valid credentials" do
-      it "redirects to the admin listings page by default" do
+      it "redirects to root by default for a user without admin access" do
         post session_path, params: { email_address: user.email_address, password: "password" }
 
-        expect(response).to redirect_to(admin_listings_path)
+        expect(response).to redirect_to(root_path)
       end
 
       it "sets a signed session cookie" do
@@ -83,6 +83,28 @@ RSpec.describe "Sessions", type: :request do
 
         expect(response).to redirect_to(new_session_path)
         expect(flash[:alert]).to eq("Try another email address or password.")
+      end
+    end
+
+    context "with an unactivated account" do
+      let(:user) { create(:user, :unactivated) }
+
+      it "redirects to the sign-in page" do
+        post session_path, params: { email_address: user.email_address, password: "password" }
+
+        expect(response).to redirect_to(new_session_path)
+      end
+
+      it "sets an alert" do
+        post session_path, params: { email_address: user.email_address, password: "password" }
+
+        expect(flash[:alert]).to eq("Please activate your account. Check your email for an activation link.")
+      end
+
+      it "does not create a session record" do
+        expect {
+          post session_path, params: { email_address: user.email_address, password: "password" }
+        }.not_to change { user.sessions.count }
       end
     end
   end

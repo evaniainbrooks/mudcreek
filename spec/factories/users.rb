@@ -4,6 +4,11 @@ FactoryBot.define do
     password { "password" }
     first_name { "Test" }
     last_name { "User" }
+    activated_at { Time.current }
+
+    trait :unactivated do
+      activated_at { nil }
+    end
 
     trait :super_admin do
       after(:create) do |user|

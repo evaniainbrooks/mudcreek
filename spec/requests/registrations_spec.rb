@@ -26,31 +26,34 @@ RSpec.describe "Registrations", type: :request do
         }.to change(User, :count).by(1)
       end
 
-      it "redirects to admin listings" do
+      it "creates the user without an activated_at timestamp" do
         post registration_path, params: valid_params
 
-        expect(response).to redirect_to(admin_listings_path)
+        expect(User.last.activated_at).to be_nil
       end
 
-      it "sets a signed session cookie" do
-        post registration_path, params: valid_params
-
-        expect(cookies[:session_id]).to be_present
-      end
-
-      it "creates a session record for the new user" do
-        post registration_path, params: valid_params
-
-        expect(User.last.sessions.count).to eq(1)
-      end
-
-      context "when return_to_after_authenticating is set" do
-        it "redirects to the stored URL" do
-          get admin_listings_path
+      it "enqueues an activation email" do
+        expect {
           post registration_path, params: valid_params
+        }.to have_enqueued_mail(RegistrationsMailer, :activate)
+      end
 
-          expect(response).to redirect_to(admin_listings_url)
-        end
+      it "redirects to the sign-in page" do
+        post registration_path, params: valid_params
+
+        expect(response).to redirect_to(new_session_path)
+      end
+
+      it "sets a notice" do
+        post registration_path, params: valid_params
+
+        expect(flash[:notice]).to eq("Check your email for an activation link.")
+      end
+
+      it "does not start a session" do
+        post registration_path, params: valid_params
+
+        expect(cookies[:session_id]).to be_blank
       end
     end
 
