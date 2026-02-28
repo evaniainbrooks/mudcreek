@@ -20,5 +20,9 @@
     .card-body
       %h5.card-title.fw-semibold.mb-1
         = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"
-      %p.text-primary.fw-bold.mb-2= number_to_currency(listing.price)
-      %p.card-text.text-muted.small= listing.description.to_plain_text.truncate(120)
+      %p.text-primary.fw-bold.mb-0= number_to_currency(listing.price)
+      %p.card-text.text-muted.small
+        = listing.description.to_plain_text.truncate(120)
+        - if listing.categories.any?
+          %br
+          = listing_categories_badges(listing, css: "text-bg-dark")

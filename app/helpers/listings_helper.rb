@@ -22,8 +22,8 @@ module ListingsHelper
     content_tag(:span, listing.state.humanize, class: ["badge", css, extra_css].compact.join(" "))
   end
 
-  def listing_categories_badges(listing)
-    safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{badge_color_for(cat.name)} me-1") })
+  def listing_categories_badges(listing, css: nil)
+    safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{css || badge_color_for(cat.name)} me-1") })
   end
 
   def render_listings_table(listings:, q:)

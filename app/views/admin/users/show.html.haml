@@ -1,0 +1,48 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-person-fill.me-2
+    = @user.name
+
+.card.shadow-sm.border-0
+  .card-body
+    %dl.row.mb-0
+      %dt.col-sm-3 Name
+      %dd.col-sm-9= @user.name
+
+      %dt.col-sm-3 Email
+      %dd.col-sm-9= mail_to @user.email_address
+
+      %dt.col-sm-3 Role
+      %dd.col-sm-9
+        - if @user.role
+          = link_to @user.role.name, admin_role_permissions_path(@user.role)
+        - else
+          %span.text-muted —
+
+      %dt.col-sm-3 Status
+      %dd.col-sm-9
+        - if @user.activated?
+          %span.badge.text-bg-success Activated
+        - else
+          %span.badge.text-bg-secondary Pending activation
+
+      %dt.col-sm-3 Listings
+      %dd.col-sm-9= link_to pluralize(@user.listings.count, "listing"), admin_listings_path(q: { owner_id_eq: @user.id })
+
+      %dt.col-sm-3 Lots
+      %dd.col-sm-9= link_to pluralize(@user.lots.count, "lot"), admin_lots_path
+
+      %dt.col-sm-3 Joined
+      %dd.col-sm-9= @user.created_at.to_fs(:long)
+
+      %dt.col-sm-3 Activated At
+      %dd.col-sm-9
+        - if @user.activated?
+          = @user.activated_at.to_fs(:long)
+        - else
+          %span.text-muted —
+
+.mt-3
+  = link_to admin_users_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Users

@@ -112,6 +112,8 @@
               Sign in to make an offer
       .listing-description
         = @listing.description
+      - if @listing.categories.any?
+        .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")
 
 - if @listing.documents.attached?
   %hr.mt-5

@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :cart_items,   only: [ :create, :destroy ]
 
   namespace :admin do
-    resources :users, only: :index
+    resources :users, only: [ :index, :show ]
     resources :lots, only: [ :index, :create, :update, :destroy ] do
       resource :listing_placeholder, only: [ :destroy ], module: :lots
     end

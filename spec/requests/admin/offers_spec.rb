@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Admin::Offers", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(key: "test", default: true)
+    Current.tenant = Tenant.create!(key: "test", name: "Test", default: true)
   end
 
   let(:role) do
