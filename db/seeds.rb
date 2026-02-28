@@ -311,3 +311,26 @@ if Rails.env.development? || Rails.env.test?
 
   puts "Seeded #{Offer.count} offers."
 end
+
+# Discount Codes
+DiscountCode.destroy_all
+
+[
+  { key: "WELCOME10",  discount_type: :fixed,      amount_cents:  1_000, start_at: nil,           end_at: nil },
+  { key: "SAVE50",     discount_type: :fixed,      amount_cents:  5_000, start_at: nil,           end_at: nil },
+  { key: "SUMMER25",   discount_type: :percentage, amount_cents:  2_500, start_at: nil,           end_at: 1.month.from_now },
+  { key: "FALL15",     discount_type: :percentage, amount_cents:  1_500, start_at: nil,           end_at: nil },
+  { key: "EARLYBIRD",  discount_type: :fixed,      amount_cents: 25_000, start_at: nil,           end_at: 2.weeks.from_now },
+  { key: "EXPIRED20",  discount_type: :percentage, amount_cents:  2_000, start_at: 3.months.ago,  end_at: 1.month.ago },
+  { key: "FUTURE100",  discount_type: :fixed,      amount_cents: 10_000, start_at: 1.month.from_now, end_at: 2.months.from_now }
+].each do |attrs|
+  DiscountCode.find_or_create_by!(key: attrs[:key]) do |dc|
+    dc.tenant        = mudcreek
+    dc.discount_type = attrs[:discount_type]
+    dc.amount_cents  = attrs[:amount_cents]
+    dc.start_at      = attrs[:start_at]
+    dc.end_at        = attrs[:end_at]
+  end
+end
+
+puts "Seeded #{DiscountCode.count} discount codes."

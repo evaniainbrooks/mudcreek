@@ -1,0 +1,37 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-ticket-perforated-fill.me-2
+    Discount Codes
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold New Discount Code
+  .card-body
+    = form_with model: @discount_code, url: admin_discount_codes_path do |f|
+      - if @discount_code.errors.any?
+        .alert.alert-danger.mb-3
+          = @discount_code.errors.full_messages.to_sentence
+      .row.g-3
+        .col-sm-3
+          = f.label :key, class: "form-label form-label-sm"
+          = f.text_field :key, class: "form-control form-control-sm #{'is-invalid' if @discount_code.errors[:key].any?}", required: true, placeholder: "e.g. SUMMER25"
+        .col-sm-2
+          = f.label :discount_type, "Type", class: "form-label form-label-sm"
+          = f.select :discount_type, DiscountCode.discount_types.keys.map { [it.humanize, it] }, {},
+              class: "form-select form-select-sm #{'is-invalid' if @discount_code.errors[:discount_type].any?}"
+        .col-sm-2
+          = f.label :amount, class: "form-label form-label-sm"
+          .input-group.input-group-sm
+            %span.input-group-text $/%
+            = f.number_field :amount, value: @discount_code.amount&.to_f,
+                class: "form-control form-control-sm #{'is-invalid' if @discount_code.errors[:amount_cents].any?}",
+                required: true, min: "0.01", step: "0.01", placeholder: "0.00"
+        .col-sm-2
+          = f.label :start_at, "Start", class: "form-label form-label-sm"
+          = f.datetime_local_field :start_at, class: "form-control form-control-sm"
+        .col-sm-2
+          = f.label :end_at, "End", class: "form-label form-label-sm"
+          = f.datetime_local_field :end_at, class: "form-control form-control-sm #{'is-invalid' if @discount_code.errors[:end_at].any?}"
+        .col-sm-1.d-flex.align-items-end
+          = f.submit "Add", class: "btn btn-primary btn-sm w-100"
+
+= render_discount_codes_table(discount_codes: @discount_codes)

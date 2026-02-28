@@ -38,7 +38,34 @@
             Tax (#{(SALES_TAX_RATE * 100).to_i}%)
           %td.text-end.text-muted= number_to_currency(@tax)
           %td
+        - if @discount_code
+          %tr.text-success
+            %td
+              %i.bi.bi-ticket-perforated.me-1
+              = @discount_code.key
+              - if @discount_code.percentage?
+                = "(#{@discount_code.amount_cents / 100}% off)"
+            %td.text-end= number_to_currency(-@discount_savings)
+            %td.text-end
+              = button_to cart_discount_path, method: :delete, class: "btn btn-sm btn-outline-danger",
+                  form: { data: { turbo_confirm: "Remove discount code?" } } do
+                %i.bi.bi-trash
         %tr.border-top.border-2
           %th.fs-5 Total
           %th.text-end.fs-5= number_to_currency(@total)
           %th
+
+  - unless @discount_code
+    .d-flex.justify-content-end.mt-4
+      .card.shadow-sm.border-0
+        .card-body
+          %p.fw-semibold.mb-2
+            %i.bi.bi-ticket-perforated.me-1
+            Have a discount code?
+          = form_with url: cart_discount_path, method: :post, class: "d-flex gap-2" do |f|
+            = f.text_field :discount_code,
+                class: "form-control",
+                placeholder: "Enter code",
+                autocomplete: "off",
+                style: "max-width: 240px"
+            = f.submit "Apply", class: "btn btn-primary"

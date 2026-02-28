@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_224432) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_230100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "discount_code_type", ["fixed", "percentage"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
@@ -67,6 +68,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_224432) do
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id", unique: true
+  end
+
+  create_table "discount_codes", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.enum "discount_type", null: false, enum_type: "discount_code_type"
+    t.datetime "end_at"
+    t.string "key", null: false
+    t.datetime "start_at"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "key"], name: "index_discount_codes_on_tenant_id_and_key", unique: true
+    t.index ["tenant_id"], name: "index_discount_codes_on_tenant_id"
+    t.check_constraint "amount_cents > 0", name: "discount_codes_amount_cents_positive"
   end
 
   create_table "listings", force: :cascade do |t|
@@ -169,6 +184,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_224432) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "solid_cache_entries", force: :cascade do |t|
+    t.integer "byte_size", null: false
+    t.datetime "created_at", null: false
+    t.binary "key", null: false
+    t.bigint "key_hash", null: false
+    t.binary "value", null: false
+    t.index ["byte_size"], name: "index_solid_cache_entries_on_byte_size"
+    t.index ["key_hash", "byte_size"], name: "index_solid_cache_entries_on_key_hash_and_byte_size"
+    t.index ["key_hash"], name: "index_solid_cache_entries_on_key_hash", unique: true
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "currency", default: "CAD", null: false
@@ -198,6 +224,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_224432) do
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
+  add_foreign_key "discount_codes", "tenants"
   add_foreign_key "listings", "lots", on_delete: :nullify
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"

@@ -65,6 +65,11 @@
                     = link_to admin_offers_path, class: "nav-link" do
                       %i.bi.bi-tag.me-1
                       Offers
+                - if policy(DiscountCode).index?
+                  %li.nav-item
+                    = link_to admin_discount_codes_path, class: "nav-link" do
+                      %i.bi.bi-ticket-perforated-fill.me-1
+                      Discounts
                 - if policy(Role).index?
                   %li.nav-item
                     = link_to admin_roles_path, class: "nav-link" do
