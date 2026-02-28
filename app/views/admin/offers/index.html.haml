@@ -1,0 +1,28 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tag-fill.me-2
+    Offers
+
+.card.shadow-sm.border-0.mb-4
+  .card-body
+    = search_form_for @q, url: admin_offers_path, html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-4
+        = f.label :listing_name_cont, "Listing", class: "form-label form-label-sm"
+        = f.search_field :listing_name_cont, class: "form-control form-control-sm", placeholder: "Search by listing name..."
+      .col-md-4
+        = f.label :user_email_address_cont, "Buyer Email", class: "form-label form-label-sm"
+        = f.search_field :user_email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+      .col-md-2
+        = f.label :state_eq, "State", class: "form-label form-label-sm"
+        = f.select :state_eq, Offer.states.keys.map { |s| [s.humanize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-auto
+        = f.submit "Search", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_offers_path, class: "btn btn-outline-secondary btn-sm"
+
+= render_offers_table(offers: @offers, q: @q)
+- if @pagy.next
+  .d-flex.justify-content-end.mt-3
+    = link_to admin_offers_path(q: params[:q]&.to_unsafe_h, page: @pagy.next), class: "btn btn-outline-secondary btn-sm" do
+      Next
+      %i.bi.bi-chevron-right

@@ -13,6 +13,9 @@
   .col-lg-7
     - if has_images || has_videos
       .position-relative{ data: { controller: "image-zoom listing-carousel" } }
+        - if @listing.sold?
+          .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
+            %span.badge.text-bg-danger.fs-6 Sold
         #listing-carousel.carousel.slide{ data: { bs_ride: "false", "listing-carousel-target": "carousel" } }
           .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
             - slide = 0
@@ -67,36 +70,38 @@
     .position-sticky{ style: "top: 1.5rem" }
       %h1.fw-bold.mb-1= @listing.name
       %p.fs-2.text-primary.fw-semibold.mb-2= number_to_currency(@listing.price)
-      %p.text-muted.small.mb-4
-        %i.bi.bi-box-seam.me-1
-        = pluralize(@listing.quantity, "available")
+      - unless @listing.sold?
+        %p.text-muted.small.mb-4
+          %i.bi.bi-box-seam.me-1
+          = pluralize(@listing.quantity, "available")
       %hr.mb-4
-      - if Current.user
-        - if @cart_item
-          = button_to cart_item_path(@cart_item),
-            method: :delete,
-            class: "btn btn-outline-secondary w-100 mb-3",
-            form: { data: { turbo_confirm: "Remove from cart?" } } do
-            %i.bi.bi-cart-check.me-2
-            In Cart
+      - unless @listing.sold?
+        - if Current.user
+          - if @cart_item
+            = button_to cart_item_path(@cart_item),
+              method: :delete,
+              class: "btn btn-outline-secondary w-100 mb-3",
+              form: { data: { turbo_confirm: "Remove from cart?" } } do
+              %i.bi.bi-cart-check.me-2
+              In Cart
+          - else
+            = button_to cart_items_path,
+              params: { listing_id: @listing.id },
+              class: "btn btn-primary w-100 mb-3" do
+              %i.bi.bi-cart-plus.me-2
+              Add to Cart
+          - if @listing.negotiable?
+            %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
+              %i.bi.bi-tag.me-2
+              Make an Offer
         - else
-          = button_to cart_items_path,
-            params: { listing_id: @listing.id },
-            class: "btn btn-primary w-100 mb-3" do
+          = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-3" do
             %i.bi.bi-cart-plus.me-2
-            Add to Cart
-        - if @listing.negotiable?
-          %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
-            %i.bi.bi-tag.me-2
-            Make an Offer
-      - else
-        = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-3" do
-          %i.bi.bi-cart-plus.me-2
-          Sign in to add to cart
-        - if @listing.negotiable?
-          = link_to new_session_path, class: "btn btn-outline-secondary w-100 mb-4" do
-            %i.bi.bi-tag.me-2
-            Sign in to make an offer
+            Sign in to add to cart
+          - if @listing.negotiable?
+            = link_to new_session_path, class: "btn btn-outline-secondary w-100 mb-4" do
+              %i.bi.bi-tag.me-2
+              Sign in to make an offer
       .listing-description
         = @listing.description
 

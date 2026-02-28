@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_221533) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_224432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -134,6 +134,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_221533) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["listing_id"], name: "index_offers_on_listing_id"
+    t.index ["listing_id"], name: "index_offers_on_listing_id_where_accepted", unique: true, where: "(state = 'accepted'::offer_state)"
     t.index ["tenant_id"], name: "index_offers_on_tenant_id"
     t.index ["user_id"], name: "index_offers_on_user_id"
     t.check_constraint "amount_cents > 0", name: "offers_amount_cents_positive"

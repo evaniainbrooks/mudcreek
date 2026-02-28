@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     namespace :listings do
       resources :categories, only: [ :index, :create, :update, :destroy ], param: :hashid
     end
+    resources :offers, only: [ :index, :show, :update ]
     resources :listings, param: :hashid do
       collection { patch :reorder }
       resources :attachments, only: [ :destroy ], module: :listings

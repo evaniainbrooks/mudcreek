@@ -60,6 +60,11 @@
                     = link_to admin_lots_path, class: "nav-link" do
                       %i.bi.bi-map-fill.me-1
                       Lots
+                - if policy(Offer).index?
+                  %li.nav-item
+                    = link_to admin_offers_path, class: "nav-link" do
+                      %i.bi.bi-tag.me-1
+                      Offers
                 - if policy(Role).index?
                   %li.nav-item
                     = link_to admin_roles_path, class: "nav-link" do
