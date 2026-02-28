@@ -85,7 +85,7 @@
       .container.py-4
         - flash.each do |type, message|
           .alert.alert-dismissible.fade.show{class: "alert-#{bootstrap_flash_class(type)}", role: "alert"}
-            = message
+            != message
             %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
         = yield
     %footer.bg-body-tertiary.border-top.py-3

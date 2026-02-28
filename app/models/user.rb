@@ -20,6 +20,10 @@ class User < ApplicationRecord
   validates :email_address, presence: true, uniqueness: { case_sensitive: false }
   validates :password_digest, presence: true
 
+  def name
+    [first_name, last_name].join(" ")
+  end
+
   def activated?
     activated_at.present?
   end
