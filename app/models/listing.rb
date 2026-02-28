@@ -9,8 +9,10 @@ class Listing < ApplicationRecord
   acts_as_list scope: :tenant, add_new_at: :bottom
 
   native_enum :state, %i[on_sale sold cancelled]
+  native_enum :pricing_type, %i[firm negotiable]
 
   has_many :cart_items, dependent: :destroy
+  has_many :offers, dependent: :destroy
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
 
@@ -53,7 +55,7 @@ class Listing < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[name price_cents acquisition_price_cents quantity owner_id published state created_at]
+    %w[name price_cents acquisition_price_cents quantity owner_id published state pricing_type created_at]
   end
 
   def self.ransackable_associations(_auth_object = nil)

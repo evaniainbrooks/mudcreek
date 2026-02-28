@@ -16,6 +16,10 @@ module ListingsHelper
     table.with_column("Lot") { |l| l.lot ? content_tag(:span, l.lot.number, class: "badge #{badge_color_for(l.lot.name)}") : "—" }
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }
+    table.with_column("Pricing", sort_attr: :pricing_type) do |listing|
+      css = listing.firm? ? "text-bg-secondary" : "text-bg-success"
+      content_tag(:span, listing.pricing_type.humanize, class: "badge #{css}")
+    end
     table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Categories") do |listing|

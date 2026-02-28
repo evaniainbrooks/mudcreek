@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
-  resources :listings, only: [ :index, :show ], param: :hashid
+  resources :listings, only: [ :index, :show ], param: :hashid do
+    resources :offers, only: [ :create ]
+  end
 
   resource  :cart,       only: [ :show ]
   resources :cart_items, only: [ :create, :destroy ]

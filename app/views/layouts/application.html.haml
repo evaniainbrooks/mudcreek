@@ -40,26 +40,31 @@
                     %i.bi.bi-gear-fill.me-1
                     Admin
               - if @admin
-                %li.nav-item
-                  = link_to admin_users_path, class: "nav-link" do
-                    %i.bi.bi-people-fill.me-1
-                    Users
-                %li.nav-item
-                  = link_to admin_listings_path, class: "nav-link" do
-                    %i.bi.bi-tag-fill.me-1
-                    Listings
-                %li.nav-item
-                  = link_to admin_listings_categories_path, class: "nav-link" do
-                    %i.bi.bi-tags-fill.me-1
-                    Categories
-                %li.nav-item
-                  = link_to admin_lots_path, class: "nav-link" do
-                    %i.bi.bi-map-fill.me-1
-                    Lots
-                %li.nav-item
-                  = link_to admin_roles_path, class: "nav-link" do
-                    %i.bi.bi-shield-fill.me-1
-                    Roles
+                - if policy(User).index?
+                  %li.nav-item
+                    = link_to admin_users_path, class: "nav-link" do
+                      %i.bi.bi-people-fill.me-1
+                      Users
+                - if policy(Listing).index?
+                  %li.nav-item
+                    = link_to admin_listings_path, class: "nav-link" do
+                      %i.bi.bi-tag-fill.me-1
+                      Listings
+                - if policy(Listings::Category).index?
+                  %li.nav-item
+                    = link_to admin_listings_categories_path, class: "nav-link" do
+                      %i.bi.bi-tags-fill.me-1
+                      Categories
+                - if policy(Lot).index?
+                  %li.nav-item
+                    = link_to admin_lots_path, class: "nav-link" do
+                      %i.bi.bi-map-fill.me-1
+                      Lots
+                - if policy(Role).index?
+                  %li.nav-item
+                    = link_to admin_roles_path, class: "nav-link" do
+                      %i.bi.bi-shield-fill.me-1
+                      Roles
               %li.nav-item
                 = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
             - else

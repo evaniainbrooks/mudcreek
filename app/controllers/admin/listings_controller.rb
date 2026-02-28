@@ -12,10 +12,14 @@ class Admin::ListingsController < Admin::BaseController
     respond_to do |format|
       format.html
       format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.append("admin-listings-tbody", partial: "admin/listings/listing_row", collection: @listings, as: :listing),
-          turbo_stream.replace("sentinel", partial: "admin/listings/sentinel", locals: { pagy: @pagy, q: params[:q] })
-        ]
+        if params[:page].present?
+          render turbo_stream: [
+            turbo_stream.append("admin-listings-tbody", partial: "admin/listings/listing_row", collection: @listings, as: :listing),
+            turbo_stream.replace("sentinel", partial: "admin/listings/sentinel", locals: { pagy: @pagy, q: params[:q] })
+          ]
+        else
+          render :index, formats: [ :html ]
+        end
       end
     end
   end
@@ -78,7 +82,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :lot_id, :published, images: [], videos: [], documents: [], category_ids: [])
+    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :lot_id, :published, :pricing_type, images: [], videos: [], documents: [], category_ids: [])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

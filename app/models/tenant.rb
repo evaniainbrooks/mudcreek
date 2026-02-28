@@ -10,6 +10,7 @@ class Tenant < ApplicationRecord
   has_many :cart_items, dependent: :restrict_with_error
 
   validates :key, presence: true, uniqueness: true, format: { with: /\A[a-z_-]+\z/, message: "can only contain lowercase letters and underscores" }
+  validates :currency, presence: true
   validates :default, inclusion: { in: [ true, false ] }
   validates :default, uniqueness: { if: :default? }
 

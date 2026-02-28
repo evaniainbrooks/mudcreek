@@ -14,6 +14,16 @@ RSpec.describe "Sessions", type: :request do
 
       expect(response).to have_http_status(:ok)
     end
+
+    context "when already signed in" do
+      before { post session_path, params: { email_address: user.email_address, password: "password" } }
+
+      it "redirects to admin listings" do
+        get new_session_path
+
+        expect(response).to redirect_to(admin_listings_path)
+      end
+    end
   end
 
   describe "POST /session" do

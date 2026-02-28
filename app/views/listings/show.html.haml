@@ -75,20 +75,28 @@
         - if @cart_item
           = button_to cart_item_path(@cart_item),
             method: :delete,
-            class: "btn btn-outline-secondary w-100 mb-4",
+            class: "btn btn-outline-secondary w-100 mb-3",
             form: { data: { turbo_confirm: "Remove from cart?" } } do
             %i.bi.bi-cart-check.me-2
             In Cart
         - else
           = button_to cart_items_path,
             params: { listing_id: @listing.id },
-            class: "btn btn-primary w-100 mb-4" do
+            class: "btn btn-primary w-100 mb-3" do
             %i.bi.bi-cart-plus.me-2
             Add to Cart
+        - if @listing.negotiable?
+          %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
+            %i.bi.bi-tag.me-2
+            Make an Offer
       - else
-        = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-4" do
+        = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-3" do
           %i.bi.bi-cart-plus.me-2
           Sign in to add to cart
+        - if @listing.negotiable?
+          = link_to new_session_path, class: "btn btn-outline-secondary w-100 mb-4" do
+            %i.bi.bi-tag.me-2
+            Sign in to make an offer
       .listing-description
         = @listing.description
 
@@ -103,3 +111,26 @@
         .d-flex.flex-column.align-items-center.justify-content-center.border.rounded-3.p-3.bg-body-tertiary{ style: "width: 120px; min-height: 110px" }
           %i.bi.fs-1{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" ") }
           %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)
+
+- if @listing.negotiable? && Current.user
+  #offer-modal.modal.fade{ tabindex: "-1", aria: { labelledby: "offer-modal-label", hidden: "true" } }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %h5.modal-title#offer-modal-label
+            %i.bi.bi-tag.me-2
+            Make an Offer
+          %button.btn-close{ type: "button", data: { "bs-dismiss": "modal" }, aria: { label: "Close" } }
+        = form_with url: listing_offers_path(@listing), scope: :offer do |f|
+          .modal-body
+            .mb-3
+              = f.label :amount, "Your offer", class: "form-label"
+              .input-group
+                %span.input-group-text $
+                = f.number_field :amount, class: "form-control", required: true, min: "0.01", step: "0.01", placeholder: "0.00"
+            .mb-3
+              = f.label :message, "Message", class: "form-label"
+              = f.text_area :message, class: "form-control", rows: 3, placeholder: "Include a note with your offer (optional)"
+          .modal-footer
+            %button.btn.btn-outline-secondary{ type: "button", data: { "bs-dismiss": "modal" } } Cancel
+            = f.submit "Submit Offer", class: "btn btn-primary"

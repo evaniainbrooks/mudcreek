@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_154402) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_27_221533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "listing_pricing_type", ["firm", "negotiable"]
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
+  create_enum "offer_state", ["pending", "accepted", "declined"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -76,6 +78,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_154402) do
     t.bigint "owner_id", null: false
     t.integer "position", null: false
     t.integer "price_cents", null: false
+    t.enum "pricing_type", default: "firm", null: false, enum_type: "listing_pricing_type"
     t.boolean "published", default: false, null: false
     t.integer "quantity", default: 1, null: false
     t.enum "state", default: "on_sale", null: false, enum_type: "listing_state"
@@ -121,6 +124,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_154402) do
     t.index ["tenant_id"], name: "index_lots_on_tenant_id"
   end
 
+  create_table "offers", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.bigint "listing_id", null: false
+    t.string "message"
+    t.enum "state", default: "pending", null: false, enum_type: "offer_state"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["listing_id"], name: "index_offers_on_listing_id"
+    t.index ["tenant_id"], name: "index_offers_on_tenant_id"
+    t.index ["user_id"], name: "index_offers_on_user_id"
+    t.check_constraint "amount_cents > 0", name: "offers_amount_cents_positive"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string "action", null: false
     t.datetime "created_at", null: false
@@ -152,6 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_154402) do
 
   create_table "tenants", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "currency", default: "CAD", null: false
     t.boolean "default", default: false, null: false
     t.string "key", null: false
     t.datetime "updated_at", null: false
@@ -186,6 +205,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_154402) do
   add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
+  add_foreign_key "offers", "listings"
+  add_foreign_key "offers", "tenants"
+  add_foreign_key "offers", "users"
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
   add_foreign_key "roles", "tenants"
