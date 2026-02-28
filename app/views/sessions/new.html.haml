@@ -1,5 +1,5 @@
-.row.justify-content-center.mt-3
-  .col-12.col-sm-10.col-md-6.col-lg-5.col-xl-4
+.row.justify-content-center.mt-3.g-4
+  .col-12.col-md-6.col-lg-5
     .card.shadow-sm.border-0
       .card-body.p-4.p-md-5
         %h1.card-title.h4.mb-1 Sign in
@@ -21,3 +21,28 @@
             = f.submit "Sign in", class: "btn btn-primary"
         .text-center.mt-3
           = link_to "Forgot your password?", new_password_path, class: "text-decoration-none small"
+
+  .col-12.col-md-6.col-lg-5
+    .card.shadow-sm.border-0
+      .card-body.p-4.p-md-5
+        %h2.card-title.h4.mb-1 Create account
+        %p.text-muted.small.mb-4 New here? Sign up for free
+        = form_with url: registration_path, scope: :user do |f|
+          .row.g-3.mb-3
+            .col
+              = f.label :first_name, "First name", class: "form-label"
+              = f.text_field :first_name, required: true, autocomplete: "given-name", placeholder: "First", class: "form-control"
+            .col
+              = f.label :last_name, "Last name", class: "form-label"
+              = f.text_field :last_name, required: true, autocomplete: "family-name", placeholder: "Last", class: "form-control"
+          .mb-3
+            = f.label :email_address, "Email address", class: "form-label"
+            = f.email_field :email_address, required: true, autocomplete: "username", placeholder: "you@example.com", class: "form-control"
+          .mb-3
+            = f.label :password, "Password", class: "form-label"
+            = f.password_field :password, required: true, autocomplete: "new-password", placeholder: "Password", minlength: 12, maxlength: 72, class: "form-control"
+          .mb-3
+            = f.label :password_confirmation, "Confirm password", class: "form-label"
+            = f.password_field :password_confirmation, required: true, autocomplete: "new-password", placeholder: "Confirm password", maxlength: 72, class: "form-control"
+          .d-grid.mt-4
+            = f.submit "Create account", class: "btn btn-outline-primary"

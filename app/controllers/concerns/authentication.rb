@@ -35,7 +35,11 @@ module Authentication
     end
 
     def after_authentication_url
-      session.delete(:return_to_after_authenticating) || root_url
+      session.delete(:return_to_after_authenticating) || default_after_authentication_url
+    end
+
+    def default_after_authentication_url
+      Current.user&.role&.permissions&.any? ? admin_listings_url : root_url
     end
 
     def start_new_session_for(user)

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resource :session
+  resource :registration, only: [:create]
   resources :passwords, param: :token
 
   resources :listings, only: [ :index, :show ], param: :hashid do
