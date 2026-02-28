@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   end
 
   resource  :cart,         only: [ :show ]
-  resource  :cart_discount, only: [ :create, :destroy ]
+  resource  :cart_discount,          only: [ :create, :destroy ]
+  resource  :cart_delivery_method,   only: [ :create, :destroy ]
   resources :cart_items,   only: [ :create, :destroy ]
 
   namespace :admin do
@@ -24,7 +25,8 @@ Rails.application.routes.draw do
       resources :categories, only: [ :index, :create, :update, :destroy ], param: :hashid
     end
     resources :offers, only: [ :index, :show, :update ]
-    resources :discount_codes, only: [ :index, :create, :destroy ]
+    resources :discount_codes,    only: [ :index, :create, :destroy ]
+    resources :delivery_methods,  only: [ :index, :create, :update, :destroy ]
     resources :listings, param: :hashid do
       collection { patch :reorder }
       resources :attachments, only: [ :destroy ], module: :listings

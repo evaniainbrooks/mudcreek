@@ -1,0 +1,6 @@
+= turbo_stream.replace "#{dom_id(@delivery_method)}_name" do
+  = inline_edit_cell(@delivery_method, :name, @delivery_method.name, url: admin_delivery_method_path(@delivery_method), scope: :delivery_method)
+= turbo_stream.replace "#{dom_id(@delivery_method)}_price" do
+  = delivery_method_inline_edit_price_cell(@delivery_method)
+= turbo_stream.replace "#{dom_id(@delivery_method)}_active" do
+  = delivery_method_toggle_active_cell(@delivery_method)

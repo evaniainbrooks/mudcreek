@@ -24,14 +24,10 @@
       %dd.col-sm-9= humanized_money_with_symbol(@listing.price, no_cents_if_whole: false)
 
       %dt.col-sm-3 Pricing
-      %dd.col-sm-9
-        - css = @listing.firm? ? "text-bg-secondary" : "text-bg-success"
-        %span.badge{class: css}= @listing.pricing_type.humanize
+      %dd.col-sm-9= listing_pricing_type_badge(@listing)
 
       %dt.col-sm-3 State
-      %dd.col-sm-9
-        - css = @listing.sold? ? "text-bg-danger" : (@listing.on_sale? ? "text-bg-success" : "text-bg-secondary")
-        %span.badge{class: css}= @listing.state.humanize
+      %dd.col-sm-9= listing_state_badge(@listing)
 
       %dt.col-sm-3 Owner
       %dd.col-sm-9= mail_to @listing.owner.email_address
@@ -46,7 +42,7 @@
       %dt.col-sm-3 Categories
       %dd.col-sm-9
         - if @listing.categories.any?
-          = safe_join(@listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge text-bg-secondary me-1") })
+          = listing_categories_badges(@listing)
         - else
           %span.text-muted —
 

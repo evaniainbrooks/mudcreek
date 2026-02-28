@@ -42,41 +42,64 @@
                       %i.bi.bi-gear-fill.me-1
                       Admin
               - if @admin
-                - if policy(User).index?
-                  %li.nav-item
-                    = link_to admin_users_path, class: "nav-link" do
-                      %i.bi.bi-people-fill.me-1
-                      Users
-                - if policy(Listing).index?
-                  %li.nav-item
-                    = link_to admin_listings_path, class: "nav-link" do
+                - if policy(Listing).index? || policy(Listings::Category).index? || policy(Lot).index?
+                  %li.nav-item.dropdown
+                    %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
                       %i.bi.bi-tag-fill.me-1
-                      Listings
-                - if policy(Listings::Category).index?
-                  %li.nav-item
-                    = link_to admin_listings_categories_path, class: "nav-link" do
-                      %i.bi.bi-tags-fill.me-1
-                      Categories
-                - if policy(Lot).index?
-                  %li.nav-item
-                    = link_to admin_lots_path, class: "nav-link" do
-                      %i.bi.bi-map-fill.me-1
-                      Lots
-                - if policy(Offer).index?
-                  %li.nav-item
-                    = link_to admin_offers_path, class: "nav-link" do
-                      %i.bi.bi-tag.me-1
-                      Offers
-                - if policy(DiscountCode).index?
-                  %li.nav-item
-                    = link_to admin_discount_codes_path, class: "nav-link" do
-                      %i.bi.bi-ticket-perforated-fill.me-1
-                      Discounts
-                - if policy(Role).index?
-                  %li.nav-item
-                    = link_to admin_roles_path, class: "nav-link" do
-                      %i.bi.bi-shield-fill.me-1
-                      Roles
+                      Catalog
+                    %ul.dropdown-menu.dropdown-menu-end
+                      - if policy(Listing).index?
+                        %li
+                          = link_to admin_listings_path, class: "dropdown-item" do
+                            %i.bi.bi-tag-fill.me-1
+                            Listings
+                      - if policy(Listings::Category).index?
+                        %li
+                          = link_to admin_listings_categories_path, class: "dropdown-item" do
+                            %i.bi.bi-tags-fill.me-1
+                            Categories
+                      - if policy(Lot).index?
+                        %li
+                          = link_to admin_lots_path, class: "dropdown-item" do
+                            %i.bi.bi-map-fill.me-1
+                            Lots
+                - if policy(Offer).index? || policy(DiscountCode).index? || policy(DeliveryMethod).index?
+                  %li.nav-item.dropdown
+                    %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
+                      %i.bi.bi-basket-fill.me-1
+                      Sales
+                    %ul.dropdown-menu.dropdown-menu-end
+                      - if policy(Offer).index?
+                        %li
+                          = link_to admin_offers_path, class: "dropdown-item" do
+                            %i.bi.bi-tag.me-1
+                            Offers
+                      - if policy(DiscountCode).index?
+                        %li
+                          = link_to admin_discount_codes_path, class: "dropdown-item" do
+                            %i.bi.bi-ticket-perforated-fill.me-1
+                            Discounts
+                      - if policy(DeliveryMethod).index?
+                        %li
+                          = link_to admin_delivery_methods_path, class: "dropdown-item" do
+                            %i.bi.bi-truck.me-1
+                            Delivery
+                - if policy(User).index? || policy(Role).index?
+                  %li.nav-item.dropdown
+                    %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
+                      %i.bi.bi-gear-fill.me-1
+                      Settings
+                    %ul.dropdown-menu.dropdown-menu-end
+                      - if policy(User).index?
+                        %li
+                          = link_to admin_users_path, class: "dropdown-item" do
+                            %i.bi.bi-people-fill.me-1
+                            Users
+                      - if policy(Role).index?
+                        %li
+                          = link_to admin_roles_path, class: "dropdown-item" do
+                            %i.bi.bi-shield-fill.me-1
+                            Roles
               %li.nav-item
                 = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
             - else

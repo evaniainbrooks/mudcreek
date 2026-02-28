@@ -4,6 +4,7 @@ class CartsController < ApplicationController
 
     remove_sold_items
     reconcile_discount_code
+    reconcile_delivery_method
 
     subtotal_cents = @cart_items.sum { |item| item.listing.price_cents }
     taxable_cents  = @cart_items.sum { |item| item.listing.tax_exempt? ? 0 : item.listing.price_cents }
@@ -20,10 +21,13 @@ class CartsController < ApplicationController
       0
     end
 
+    delivery_cents = @delivery_method&.price_cents || 0
+
     @subtotal         = Money.new(subtotal_cents)
     @tax              = Money.new(tax_cents)
     @discount_savings = Money.new(discount_cents)
-    @total            = Money.new([pretax_total - discount_cents, 0].max)
+    @delivery         = Money.new(delivery_cents)
+    @total            = Money.new([pretax_total - discount_cents + delivery_cents, 0].max)
   end
 
   private
@@ -53,6 +57,20 @@ class CartsController < ApplicationController
       @discount_code = nil
     else
       @discount_code = code
+    end
+  end
+
+  def reconcile_delivery_method
+    return unless session[:delivery_method_id]
+
+    method = DeliveryMethod.find_by(id: session[:delivery_method_id])
+
+    if method.nil? || !method.active?
+      session.delete(:delivery_method_id)
+      flash.now[:alert] = [ flash.now[:alert], "Your delivery method is no longer available." ].compact.join(" ")
+      @delivery_method = nil
+    else
+      @delivery_method = method
     end
   end
 end

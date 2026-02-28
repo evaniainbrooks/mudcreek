@@ -20,10 +20,10 @@
       .position-relative{ data: { controller: "image-zoom listing-carousel" } }
         - if @listing.sold?
           .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
-            %span.badge.text-bg-danger.fs-6 Sold
+            = listing_state_badge(@listing, extra_css: "fs-6")
         - if @listing.negotiable? && !@listing.sold?
           .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
-            %span.badge.text-bg-success.fs-6 Negotiable
+            = listing_pricing_type_badge(@listing, extra_css: "fs-6")
         #listing-carousel.carousel.slide{ data: { bs_ride: "false", "listing-carousel-target": "carousel" } }
           .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
             - slide = 0

@@ -38,6 +38,20 @@
             Tax (#{(SALES_TAX_RATE * 100).to_i}%)
           %td.text-end.text-muted= number_to_currency(@tax)
           %td
+        - if @delivery_method
+          %tr.table-info
+            %td
+              %i.bi.bi-truck.me-1
+              = @delivery_method.name
+            %td.text-end
+              - if @delivery_method.price_cents.zero?
+                Free
+              - else
+                = number_to_currency(@delivery)
+            %td.text-end
+              = button_to cart_delivery_method_path, method: :delete, class: "btn btn-sm btn-outline-danger",
+                  form: { data: { turbo_confirm: "Remove delivery method?" } } do
+                %i.bi.bi-trash
         - if @discount_code
           %tr.table-success
             %td
@@ -54,6 +68,26 @@
           %th.fs-5 Total
           %th.text-end.fs-5= number_to_currency(@total)
           %th
+
+  - available_methods = DeliveryMethod.where(active: true).order(:name)
+  - unless available_methods.empty?
+    .d-flex.justify-content-end.mt-4
+      .card.shadow-sm.border-0
+        .card-body
+          %p.fw-semibold.mb-2
+            %i.bi.bi-truck.me-1
+            Delivery Method
+          - if @delivery_method
+            %p.text-muted.mb-0.small
+              Selected:
+              %strong= @delivery_method.name
+          - else
+            = form_with url: cart_delivery_method_path, method: :post, class: "d-flex gap-2" do |f|
+              = f.select :delivery_method_id,
+                  available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{number_to_currency(m.price)})", m.id] },
+                  { include_blank: "Select a method…" },
+                  class: "form-select", style: "max-width: 280px"
+              = f.submit "Select", class: "btn btn-primary"
 
   - unless @discount_code
     .d-flex.justify-content-end.mt-4

@@ -3,14 +3,16 @@
     %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
   %td
     - if listing.lot
-      %span.badge{class: badge_color_for(listing.lot.name)}= listing.lot.number
+      = lot_number_badge(listing.lot)
     - else
       %span.text-muted —
   %td= link_to listing.name, admin_listing_path(listing)
   = render TableCellComponent.new(value: listing.price)
+  %td= listing_pricing_type_badge(listing)
+  %td= listing_state_badge(listing)
   = render TableCellComponent.new(value: listing.acquisition_price)
   = render TableCellComponent.new(value: listing.owner)
-  %td= safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{badge_color_for(cat.name)} me-1") })
+  %td= listing_categories_badges(listing)
   = render TableCellComponent.new(value: listing.published)
   = render TableCellComponent.new(value: listing.created_at)
   %td.text-end
