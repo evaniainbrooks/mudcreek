@@ -1,4 +1,9 @@
-- content_for :title, @listing.name
+- description = @listing.description.to_plain_text.truncate(200)
+- og_image = @listing.images.attached? ? url_for(@listing.images.first) : nil
+- set_meta_tags title: @listing.name,
+    description: description,
+    og: { title: @listing.name, description: description, image: og_image },
+    twitter: { card: (og_image ? "summary_large_image" : "summary"), title: @listing.name, description: description, image: og_image }
 
 :ruby
   has_images = @listing.images.attached?
@@ -16,6 +21,9 @@
         - if @listing.sold?
           .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
             %span.badge.text-bg-danger.fs-6 Sold
+        - if @listing.negotiable? && !@listing.sold?
+          .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
+            %span.badge.text-bg-success.fs-6 Negotiable
         #listing-carousel.carousel.slide{ data: { bs_ride: "false", "listing-carousel-target": "carousel" } }
           .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
             - slide = 0

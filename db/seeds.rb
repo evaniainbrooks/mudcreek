@@ -2,10 +2,12 @@ default_password = Rails.application.credentials.seeds.default_user_password
 
 # Tenants
 mudcreek = Tenant.find_or_create_by!(key: "mudcreek") do |t|
+  t.name = "Mudcreek"
   t.default = true
 end
 
 Tenant.find_or_create_by!(key: "whitelabel") do |t|
+  t.name = "Whitelabel"
   t.default = false
 end
 
@@ -18,8 +20,8 @@ puts "Seeded #{Tenant.count} tenants."
 end
 
 # Roles & Permissions
-all_resources = %w[Listing Lot User Role Permission]
-all_actions   = %w[index show create update destroy]
+all_resources = %w[Listing Lot User Role Permission Listings::Category Offer]
+all_actions   = %w[index show create update destroy reorder]
 
 super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
   r.tenant = mudcreek
@@ -67,13 +69,14 @@ User.create!(
   last_name: "Admin",
   password: default_password,
   password_confirmation: default_password,
+  activated_at: 1.day.ago,
   role: super_admin
 )
 
 # Generate fake users for dev pagination testing
-if Rails.env.development? || Rails.env.test?
+if Rails.env.local?
   require "faker"
-  60.times do
+  15.times do
     password = Faker::Internet.password
     User.create!(
       tenant: mudcreek,
@@ -94,11 +97,11 @@ user_ids = User.where(tenant: mudcreek).pluck(:id)
 admin_user = User.find_by!(email_address: "admin@mudcreek")
 
 lot_data = [
-  { name: "Mountain Properties",  number: "001" },
-  { name: "Waterfront Collection", number: "002" },
-  { name: "Farm & Ranch",          number: "003" },
-  { name: "Land & Parcels",        number: "004" },
-  { name: "Specialty Properties",  number: "005" }
+  { name: "Gladmore Estate",  number: "001" },
+  { name: "Westington Collection", number: "002" },
+  { name: "Borneo Consignments",          number: "003" },
+  { name: "Personal Items",        number: "004" },
+  { name: "Huckleberry Collection",  number: "005" }
 ]
 
 lots = lot_data.each_with_object({}) do |attrs, hash|
@@ -139,14 +142,17 @@ listing_data = [
   { name: "Remote Island Cabin", price: 330_000, pricing_type: :negotiable, description: "Unique island property accessible only by boat or floatplane, with a well-built cabin, solar power, a dock, crab pots, and extraordinary solitude.", published: false }
 ]
 
-listing_data.each do |attrs|
-  Listing.find_or_create_by!(name: attrs[:name]) do |l|
-    l.tenant = mudcreek
-    l.price = attrs[:price]
-    l.pricing_type = attrs[:pricing_type] || :firm
-    l.description = attrs[:description]
-    l.published = attrs[:published]
-    l.owner_id = user_ids.sample
+5.times do |index|
+  listing_data.each do |attrs|
+    Listing.find_or_create_by!(name: attrs[:name].split(" ").shuffle.join(" ")) do |l|
+      l.tenant = mudcreek
+      l.price = attrs[:price] / (index + 1)
+      l.pricing_type = attrs[:pricing_type] || :firm
+      l.description = attrs[:description]
+      l.published = attrs[:published]
+      l.owner_id = user_ids.sample
+      l.state = [:sold, :on_sale].sample
+    end
   end
 end
 
@@ -164,7 +170,7 @@ lot_assignments = {
 lot_assignments.each do |lot_name, listing_names|
   lot = lots[lot_name]
   listing_names.each do |listing_name|
-    Listing.where(name: listing_name).update_all(lot_id: lot.id)
+    Listing.where(name: listing_name).update_all(lot_id: lot.id) if lot
   end
 end
 
@@ -228,7 +234,7 @@ puts "Seeded #{Listings::Category.count} listing categories."
 require "open-uri"
 
 # Download a pool of stock images from Picsum Photos, then assign one per listing.
-PICSUM_SEEDS = %w[mountain lake farm river prairie desert orchard forest vineyard coast timber ranch meadow barn fishing]
+PICSUM_SEEDS = %w[dog cat mountain lake farm river axe chainsaw orchard forest vineyard coast timber ranch meadow barn fishing]
 
 puts "Downloading #{PICSUM_SEEDS.size} stock images..."
 

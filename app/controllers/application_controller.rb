@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_current_tenant
   before_action :resume_session
+  before_action :set_default_meta_tags
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
@@ -23,5 +24,13 @@ class ApplicationController < ActionController::Base
 
   def cart_item_count
     Current.user&.cart_items&.count || 0
+  end
+
+  def set_default_meta_tags
+    set_meta_tags(
+      site: "Mudcreek",
+      og: { site_name: "Mudcreek", type: "website" },
+      twitter: { card: "summary" }
+    )
   end
 end

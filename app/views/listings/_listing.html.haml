@@ -14,6 +14,9 @@
       - if listing.sold?
         .position-absolute.top-0.start-0.p-2
           %span.badge.text-bg-danger Sold
+      - if listing.negotiable? && !listing.sold?
+        .position-absolute.top-0.start-0.p-2
+          %span.badge.text-bg-success Negotiable
     .card-body
       %h5.card-title.fw-semibold.mb-1
         = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"

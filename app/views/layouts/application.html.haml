@@ -1,7 +1,7 @@
 !!!
 %html{lang: "en"}
   %head
-    %title= content_for(:title) || "Mudcreek"
+    = display_meta_tags separator: "–"
     %meta{name: "viewport", content: "width=device-width,initial-scale=1"}
     %meta{name: "apple-mobile-web-app-capable", content: "yes"}
     %meta{name: "application-name", content: "Mudcreek"}
@@ -17,7 +17,8 @@
   %body.d-flex.flex-column.min-vh-100
     %nav.navbar.navbar-expand-lg.bg-secondary{"data-bs-theme": "dark"}
       .container
-        = link_to "Mudcreek", "/", class: "navbar-brand fw-bold"
+        = image_tag(Current.tenant.logo) if Current.tenant.logo.attached?
+        = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
         %button.navbar-toggler{type: "button",
           "data-bs-toggle": "collapse",
           "data-bs-target": "#main-nav",
