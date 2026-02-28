@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Role, type: :model do
   before do
-    Current.tenant = Tenant.create!(key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
   end
 
   let(:role) { Role.create!(name: "test_role", description: "A test role") }

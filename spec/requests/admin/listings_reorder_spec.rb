@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Admin::Listings reorder", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
   end
 
   let(:role) do

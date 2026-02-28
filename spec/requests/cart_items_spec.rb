@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "CartItems", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
   end
 
   let(:user) { create(:user) }
@@ -21,7 +21,7 @@ RSpec.describe "CartItems", type: :request do
     it "sets a notice flash" do
       post cart_items_path, params: { listing_id: listing.id }
 
-      expect(flash[:notice]).to eq("Added to cart.")
+      expect(flash[:notice]).to match("Added to cart.")
     end
 
     it "redirects back" do

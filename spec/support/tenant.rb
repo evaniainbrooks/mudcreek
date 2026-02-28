@@ -10,6 +10,6 @@ end
 # the correct tenant via MultiTenant#set_tenant.
 RSpec.configure do |config|
   config.before(:each, type: :system) do
-    Current.tenant = Tenant.create!(key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
   end
 end
