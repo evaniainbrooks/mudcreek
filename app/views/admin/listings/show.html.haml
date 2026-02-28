@@ -28,6 +28,11 @@
         - css = @listing.firm? ? "text-bg-secondary" : "text-bg-success"
         %span.badge{class: css}= @listing.pricing_type.humanize
 
+      %dt.col-sm-3 State
+      %dd.col-sm-9
+        - css = @listing.sold? ? "text-bg-danger" : (@listing.on_sale? ? "text-bg-success" : "text-bg-secondary")
+        %span.badge{class: css}= @listing.state.humanize
+
       %dt.col-sm-3 Owner
       %dd.col-sm-9= mail_to @listing.owner.email_address
 

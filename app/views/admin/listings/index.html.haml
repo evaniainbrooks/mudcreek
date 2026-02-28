@@ -29,6 +29,9 @@
       .col-md-2
         = f.label :published_eq, "Published", class: "form-label form-label-sm"
         = f.select :published_eq, [["Published", true], ["Unpublished", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-md-2
+        = f.label :state_eq, "State", class: "form-label form-label-sm"
+        = f.select :state_eq, Listing.states.keys.map { [it.humanize, it] }, { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-auto
         = f.submit "Search", class: "btn btn-primary btn-sm"
       .col-auto

@@ -20,6 +20,13 @@ module ListingsHelper
       css = listing.firm? ? "text-bg-secondary" : "text-bg-success"
       content_tag(:span, listing.pricing_type.humanize, class: "badge #{css}")
     end
+    table.with_column("State", sort_attr: :state) do |listing|
+      css = if listing.sold?      then "text-bg-danger"
+            elsif listing.on_sale? then "text-bg-success"
+            else "text-bg-secondary"
+            end
+      content_tag(:span, listing.state.humanize, class: "badge #{css}")
+    end
     table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Categories") do |listing|
