@@ -16,6 +16,18 @@ class Order < ApplicationRecord
 
   before_create :assign_number
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[status created_at]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user]
+  end
+
+  def to_param
+    number
+  end
+
   private
 
   def assign_number

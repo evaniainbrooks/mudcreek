@@ -1,0 +1,127 @@
+.d-flex.align-items-center.gap-3.mb-4.flex-wrap
+  %h1.h3.mb-0
+    %i.bi.bi-bag-fill.me-2
+    Order
+  %span.badge.text-bg-secondary.fs-6= @order.number
+  = order_status_badge(@order)
+
+.row.g-4
+  .col-12.col-lg-8
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Buyer
+      .card-body
+        %dl.row.mb-0
+          %dt.col-sm-3 Name
+          %dd.col-sm-9= link_to @order.user.name, admin_user_path(@order.user)
+          %dt.col-sm-3 Email
+          %dd.col-sm-9= mail_to @order.user.email_address
+
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Details
+      .card-body
+        %dl.row.mb-0
+          %dt.col-6 Placed
+          %dd.col-6.text-end= @order.created_at.to_fs(:long)
+          %dt.col-6 Updated
+          %dd.col-6.text-end= @order.updated_at.to_fs(:long)
+
+    .card.shadow-sm.border-0
+      .card-header.fw-semibold Items
+      .card-body.p-0
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead
+              %tr
+                %th.ps-3 Item
+                %th Type
+                %th.text-end.pe-3 Price
+            %tbody
+              - @order.order_items.each do |item|
+                %tr
+                  %td.ps-3
+                    .lh-sm
+                      %span.fw-semibold= item.name
+                      - if item.rental_start_at.present?
+                        %small.text-muted.d-block
+                          = item.rental_start_at.to_fs(:short)
+                          →
+                          = item.rental_end_at.to_fs(:short)
+                  %td
+                    - if item.listing_type == "rental"
+                      %span.badge.text-bg-info Rental
+                    - else
+                      %span.badge.text-bg-secondary Sale
+                  %td.text-end.pe-3= number_to_currency(item.price)
+
+  .col-12.col-lg-4
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Summary
+      .card-body
+        %table.table.table-sm.mb-0
+          %tbody
+            %tr
+              %td.text-muted Subtotal
+              %td.text-end= number_to_currency(@order.subtotal)
+            %tr
+              %td.text-muted Tax
+              %td.text-end= number_to_currency(@order.tax)
+            - if @order.delivery_method_name.present?
+              %tr
+                %td.text-muted= @order.delivery_method_name
+                %td.text-end
+                  = @order.delivery_price_cents > 0 ? number_to_currency(@order.delivery_price) : "Free"
+            - if @order.discount_cents > 0
+              %tr.text-success
+                %td
+                  %i.bi.bi-ticket-perforated.me-1
+                  = @order.discount_code_key
+                %td.text-end= number_to_currency(-@order.discount)
+            %tr.border-top.border-2.fw-bold
+              %td Total
+              %td.text-end= number_to_currency(@order.total)
+
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Status
+      .card-body
+        = form_with model: @order, url: admin_order_path(@order), method: :patch do |f|
+          .d-flex.gap-2
+            = f.select :status, Order.statuses.keys.map { |s| [s.capitalize, s] },
+                { selected: @order.status },
+                class: "form-select form-select-sm"
+            = f.submit "Save", class: "btn btn-primary btn-sm"
+
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Delivery Address
+      .card-body
+        = form_with model: @order, url: admin_order_path(@order), method: :patch do |f|
+          .mb-2
+            = f.label :street_address, "Street address", class: "form-label form-label-sm"
+            = f.text_field :street_address, class: "form-control form-control-sm", placeholder: "123 Main St"
+          .row.g-2.mb-2
+            .col
+              = f.label :city, "City", class: "form-label form-label-sm"
+              = f.text_field :city, class: "form-control form-control-sm"
+            .col
+              = f.label :province, "Province / State", class: "form-label form-label-sm"
+              = f.text_field :province, class: "form-control form-control-sm"
+          .row.g-2.mb-3
+            .col
+              = f.label :postal_code, "Postal code", class: "form-label form-label-sm"
+              = f.text_field :postal_code, class: "form-control form-control-sm", placeholder: "A1A 1A1"
+            .col
+              = f.label :country, "Country", class: "form-label form-label-sm"
+              = f.text_field :country, class: "form-control form-control-sm", placeholder: "CA"
+          = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
+
+    - if policy(@order).update?
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Admin Notes
+        .card-body
+          = form_with model: @order, url: admin_order_path(@order), method: :patch do |f|
+            = f.text_area :admin_notes, class: "form-control form-control-sm mb-2", rows: 4, placeholder: "Internal notes…"
+            = f.submit "Save notes", class: "btn btn-primary btn-sm w-100"
+
+.mt-3
+  = link_to admin_orders_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Orders

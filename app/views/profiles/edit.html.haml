@@ -2,60 +2,105 @@
 
 %h1.fw-bold.mb-4 My Profile
 
-= form_with model: @user, url: profile_path, method: :patch do |f|
-  - if @user.errors.any?
-    .alert.alert-danger
-      %ul.mb-0
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
-  .row.g-4
-    .col-12.col-lg-6
+%ul.nav.nav-tabs.mb-4
+  %li.nav-item
+    %a.nav-link.active{ href: "#profile", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-person-fill.me-2
+      Profile
+  %li.nav-item
+    %a.nav-link{ href: "#orders", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-bag.me-2
+      Orders
+      - unless @orders.empty?
+        %span.badge.text-bg-secondary.ms-1= @orders.size
+
+.tab-content
+  .tab-pane.fade.show.active#profile
+    = form_with model: @user, url: profile_path, method: :patch do |f|
+      - if @user.errors.any?
+        .alert.alert-danger
+          %ul.mb-0
+            - @user.errors.full_messages.each do |msg|
+              %li= msg
+      .row.g-4
+        .col-12.col-lg-6
+          .card.shadow-sm.border-0
+            .card-body.p-4
+              %h2.card-title.h5.mb-4
+                %i.bi.bi-person-fill.me-2
+                Personal Information
+              .mb-3
+                = f.label :first_name, "First name", class: "form-label"
+                = f.text_field :first_name, required: true, autocomplete: "given-name", class: "form-control"
+              .mb-3
+                = f.label :last_name, "Last name", class: "form-label"
+                = f.text_field :last_name, required: true, autocomplete: "family-name", class: "form-control"
+              .mb-3
+                = f.label :email_address, "Email address", class: "form-label"
+                = f.email_field :email_address, disabled: true, autocomplete: "username", class: "form-control"
+                %p.form-text Email address cannot be changed here.
+        .col-12.col-lg-6
+          .card.shadow-sm.border-0
+            .card-body.p-4
+              %h2.card-title.h5.mb-4
+                %i.bi.bi-house-fill.me-2
+                Delivery Address
+              = f.fields_for :address do |addr|
+                - current_country = ISO3166::Country[addr.object.country]
+                - initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
+                - all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
+                %div{data: {controller: "address"}}
+                  .mb-3
+                    = addr.label :street_address, "Street address", class: "form-label"
+                    = addr.text_field :street_address, autocomplete: "street-address", placeholder: "123 Main St", class: "form-control"
+                  .mb-3
+                    = addr.label :city, "City", class: "form-label"
+                    = addr.text_field :city, autocomplete: "address-level2", class: "form-control"
+                  .mb-3
+                    = addr.label :country, "Country", class: "form-label"
+                    = addr.select :country, all_countries,
+                        { include_blank: "Select country…" },
+                        class: "form-select",
+                        data: { address_target: "country", action: "change->address#countryChanged" }
+                  .mb-3{hidden: initial_subdivisions.empty?, data: {address_target: "subdivisionWrapper"}}
+                    = addr.label :province, "Province / State", class: "form-label"
+                    = addr.select :province, initial_subdivisions,
+                        { include_blank: "Select…", selected: addr.object.province },
+                        class: "form-select",
+                        data: { address_target: "subdivision" }
+                  .mb-3
+                    = addr.label :postal_code, "Postal code", class: "form-label"
+                    = addr.text_field :postal_code, autocomplete: "postal-code", placeholder: "A1A 1A1", class: "form-control"
+      .d-flex.justify-content-end.mt-4
+        = f.submit "Save changes", class: "btn btn-primary px-4"
+
+  .tab-pane.fade#orders
+    - if @orders.empty?
+      = render EmptyStateComponent.new(icon: "bag-x",
+          message: "You haven't placed any orders yet.",
+          link_text: "Browse Listings",
+          link_url: listings_path)
+    - else
       .card.shadow-sm.border-0
-        .card-body.p-4
-          %h2.card-title.h5.mb-4
-            %i.bi.bi-person-fill.me-2
-            Personal Information
-          .mb-3
-            = f.label :first_name, "First name", class: "form-label"
-            = f.text_field :first_name, required: true, autocomplete: "given-name", class: "form-control"
-          .mb-3
-            = f.label :last_name, "Last name", class: "form-label"
-            = f.text_field :last_name, required: true, autocomplete: "family-name", class: "form-control"
-          .mb-3
-            = f.label :email_address, "Email address", class: "form-label"
-            = f.email_field :email_address, disabled: true, autocomplete: "username", class: "form-control"
-            %p.form-text Email address cannot be changed here.
-    .col-12.col-lg-6
-      .card.shadow-sm.border-0
-        .card-body.p-4
-          %h2.card-title.h5.mb-4
-            %i.bi.bi-house-fill.me-2
-            Delivery Address
-          = f.fields_for :address do |addr|
-            - current_country = ISO3166::Country[addr.object.country]
-            - initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
-            - all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
-            %div{data: {controller: "address"}}
-              .mb-3
-                = addr.label :street_address, "Street address", class: "form-label"
-                = addr.text_field :street_address, autocomplete: "street-address", placeholder: "123 Main St", class: "form-control"
-              .mb-3
-                = addr.label :city, "City", class: "form-label"
-                = addr.text_field :city, autocomplete: "address-level2", class: "form-control"
-              .mb-3
-                = addr.label :country, "Country", class: "form-label"
-                = addr.select :country, all_countries,
-                    { include_blank: "Select country…" },
-                    class: "form-select",
-                    data: { address_target: "country", action: "change->address#countryChanged" }
-              .mb-3{hidden: initial_subdivisions.empty?, data: {address_target: "subdivisionWrapper"}}
-                = addr.label :province, "Province / State", class: "form-label"
-                = addr.select :province, initial_subdivisions,
-                    { include_blank: "Select…", selected: addr.object.province },
-                    class: "form-select",
-                    data: { address_target: "subdivision" }
-              .mb-3
-                = addr.label :postal_code, "Postal code", class: "form-label"
-                = addr.text_field :postal_code, autocomplete: "postal-code", placeholder: "A1A 1A1", class: "form-control"
-  .d-flex.justify-content-end.mt-4
-    = f.submit "Save changes", class: "btn btn-primary px-4"
+        .card-body.p-0
+          .table-responsive
+            %table.table.align-middle.mb-0
+              %thead
+                %tr
+                  %th.ps-3 Order
+                  %th Date
+                  %th Status
+                  %th.text-end Total
+                  %th
+              %tbody
+                - @orders.each do |order|
+                  %tr
+                    %td.ps-3
+                      %span.fw-semibold= order.number
+                      %small.text-muted.ms-2= pluralize(order.order_items.size, "item")
+                    %td.text-muted= order.created_at.to_fs(:long)
+                    %td
+                      = order_status_badge(order)
+                    %td.text-end= number_to_currency(order.total)
+                    %td.pe-3
+                      = link_to "View", order_path(order), class: "btn btn-sm btn-outline-secondary"

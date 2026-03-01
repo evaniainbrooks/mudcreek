@@ -82,6 +82,11 @@
                       %i.bi.bi-basket-fill.me-1
                       Sales
                     %ul.dropdown-menu.dropdown-menu-end
+                      - if policy(Order).index?
+                        %li
+                          = link_to admin_orders_path, class: "dropdown-item" do
+                            %i.bi.bi-bag.me-1
+                            Orders
                       - if policy(Offer).index?
                         %li
                           = link_to admin_offers_path, class: "dropdown-item" do

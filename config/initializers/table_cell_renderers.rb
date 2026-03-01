@@ -1,6 +1,11 @@
 Rails.application.config.to_prepare do
   TableCellComponent.register(User) do |user|
-    helpers.link_to(user.name, helpers.admin_users_path(q: { email_address_eq: user.email_address }))
+    content_tag(:div, class: "lh-sm") do
+      safe_join([
+        helpers.link_to(user.name, helpers.admin_users_path(q: { email_address_eq: user.email_address })),
+        content_tag(:small, user.email_address, class: "text-muted d-block")
+      ])
+    end
   end
 
   TableCellComponent.register(Role) do |role|

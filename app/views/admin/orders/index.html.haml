@@ -1,0 +1,41 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-bag-fill.me-2
+    Orders
+
+.card.shadow-sm.border-0.mb-4
+  .card-body
+    = search_form_for @q, url: admin_orders_path, html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-4
+        = f.label :user_email_address_cont, "Buyer Email", class: "form-label form-label-sm"
+        = f.search_field :user_email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+      .col-md-2
+        = f.label :status_eq, "Status", class: "form-label form-label-sm"
+        = f.select :status_eq, Order.statuses.keys.map { |s| [s.capitalize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-md-2
+        = f.label :created_at_gteq, "From", class: "form-label form-label-sm"
+        = f.date_field :created_at_gteq, class: "form-control form-control-sm"
+      .col-md-2
+        = f.label :created_at_lteq, "To", class: "form-label form-label-sm"
+        = f.date_field :created_at_lteq, class: "form-control form-control-sm"
+      .col-auto
+        = f.submit "Search", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_orders_path, class: "btn btn-outline-secondary btn-sm"
+
+%div{data: { controller: "infinite-scroll" }}
+  .card.shadow-sm.border-0
+    .card-body.p-0
+      .table-responsive
+        %table.table.align-middle.mb-0
+          %thead
+            %tr
+              %th.ps-3 Order
+              %th Buyer
+              %th.text-center Items
+              %th Status
+              %th Total
+              %th.pe-3 Date
+          %tbody#admin-orders-tbody
+            = render partial: "admin/orders/order_row", collection: @orders, as: :order
+  = render "admin/orders/sentinel", pagy: @pagy, q: params[:q]

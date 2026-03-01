@@ -97,7 +97,7 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Current.user.orders.includes(:order_items).find(params[:id])
+    @order = Current.user.orders.includes(:order_items).find_by!(number: params[:number])
   end
 
   private

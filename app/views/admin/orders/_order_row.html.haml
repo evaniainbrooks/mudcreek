@@ -1,0 +1,9 @@
+%tr
+  %td.ps-3
+    = link_to order.number, admin_order_path(order), class: "fw-semibold"
+  = render TableCellComponent.new(value: order.user)
+  %td.text-center= order.order_items.size
+  %td
+    = order_status_badge(order)
+  %td= number_to_currency(order.total)
+  %td.text-muted.pe-3= order.created_at.to_fs(:long)

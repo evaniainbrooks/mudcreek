@@ -2,6 +2,7 @@ class ProfilesController < ApplicationController
   def edit
     @user = Current.user
     @user.build_address unless @user.address
+    @orders = @user.orders.order(created_at: :desc)
   end
 
   def update

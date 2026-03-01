@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resource  :cart_delivery_method, only: [ :create, :destroy ]
   resources :cart_items,          only: [ :create, :destroy ]
 
-  resources :orders, only: [ :create, :show ]
+  resources :orders, only: [ :create, :show ], param: :number
 
   resource  :profile,      only: [ :edit, :update ]
   resources :subdivisions, only: [ :index ]
@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     namespace :listings do
       resources :categories, only: [ :index, :create, :update, :destroy ], param: :hashid
     end
+    resources :orders, only: [ :index, :show, :update ], param: :number
     resources :offers, only: [ :index, :show, :update ]
     resources :discount_codes,    only: [ :index, :create, :destroy ]
     resources :delivery_methods,  only: [ :index, :create, :update, :destroy ]

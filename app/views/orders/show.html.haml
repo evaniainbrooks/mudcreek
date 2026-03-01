@@ -3,7 +3,7 @@
 .d-flex.align-items-center.gap-3.mb-4.flex-wrap
   %h1.fw-bold.mb-0 Order Confirmed
   %span.badge.text-bg-secondary.fs-6= @order.number
-  %span.badge.text-bg-success= @order.status.capitalize
+  = order_status_badge(@order)
   %span.text-muted.small= @order.created_at.to_fs(:long)
 
 .row.g-4

@@ -1,7 +1,7 @@
 class Permission < ApplicationRecord
   include MultiTenant
 
-  RESOURCES = %w[Listing Lot User Role Permission Listings::Category Offer DiscountCode DeliveryMethod Listings::RentalRatePlan].freeze
+  RESOURCES = %w[Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan].freeze
   ACTIONS   = %w[index show create update destroy reorder].freeze
 
   belongs_to :role
