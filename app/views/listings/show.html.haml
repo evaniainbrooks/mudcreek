@@ -1,11 +1,11 @@
-- description = @listing.description.to_plain_text.truncate(200)
-- og_image = @listing.images.attached? ? url_for(@listing.images.first) : nil
-- set_meta_tags title: @listing.name,
+:ruby
+  description = @listing.description.to_plain_text.truncate(200)
+  og_image = @listing.images.attached? ? url_for(@listing.images.first) : nil
+  set_meta_tags title: @listing.name,
     description: description,
     og: { title: @listing.name, description: description, image: og_image },
     twitter: { card: (og_image ? "summary_large_image" : "summary"), title: @listing.name, description: description, image: og_image }
 
-:ruby
   has_images = @listing.images.attached?
   has_videos = @listing.videos.attached?
   media_count = @listing.images.count + @listing.videos.count
@@ -65,7 +65,7 @@
           - @listing.videos.each do |video|
             .rounded-2.bg-dark.d-flex.align-items-center.justify-content-center.flex-shrink-0{
               style: "width: 76px; height: 76px; cursor: pointer",
-              data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index } }
+              data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index }}
               %i.bi.bi-play-circle-fill.text-white.fs-3
             - thumb_index += 1
     - elsif @listing.lot&.listing_placeholder&.attached?

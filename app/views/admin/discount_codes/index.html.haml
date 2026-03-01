@@ -13,7 +13,10 @@
       .row.g-3
         .col-sm-3
           = f.label :key, class: "form-label form-label-sm"
-          = f.text_field :key, class: "form-control form-control-sm #{'is-invalid' if @discount_code.errors[:key].any?}", required: true, placeholder: "e.g. SUMMER25"
+          = f.text_field :key,
+            class: "form-control form-control-sm #{'is-invalid' if @discount_code.errors[:key].any?}",
+            required: true,
+            placeholder: "e.g. SUMMER25"
         .col-sm-2
           = f.label :discount_type, "Type", class: "form-label form-label-sm"
           = f.select :discount_type, DiscountCode.discount_types.keys.map { [it.humanize, it] }, {},
