@@ -1,4 +1,4 @@
-default_password = Rails.application.credentials.seeds.default_user_password
+default_password = Rails.application.credentials&.seeds&.default_user_password || "default"
 
 # Tenants
 mudcreek = Tenant.find_or_create_by!(key: "mudcreek") do |t|
