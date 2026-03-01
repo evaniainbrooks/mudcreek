@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :listings, foreign_key: :owner_id, dependent: :destroy
   has_many :lots, foreign_key: :owner_id, dependent: :destroy
   has_many :cart_items, dependent: :destroy
+  has_many :offers, dependent: :destroy
   has_many :cart_listings, through: :cart_items, source: :listing
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }

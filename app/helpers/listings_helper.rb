@@ -16,9 +16,9 @@ module ListingsHelper
 
   def listing_state_badge(listing, extra_css: nil)
     css = if listing.sold?       then "text-bg-danger"
-           elsif listing.on_sale? then "text-bg-success"
-           else "text-bg-secondary"
-           end
+    elsif listing.on_sale? then "text-bg-success"
+    else "text-bg-secondary"
+    end
     content_tag(:span, listing.state.humanize, class: ["badge", css, extra_css].compact.join(" "))
   end
 

@@ -10,7 +10,7 @@ class Offer < ApplicationRecord
   monetize :amount_cents
 
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validate :one_accepted_offer_per_listing, if: :accepted?
+  validates :listing_id, uniqueness: { conditions: -> { where(state: :accepted) }, message: "already has an accepted offer" }, if: :accepted?
 
   after_update :mark_listing_sold, if: -> { saved_change_to_state?(to: "accepted") }
 
@@ -18,12 +18,6 @@ class Offer < ApplicationRecord
 
   def mark_listing_sold
     listing.sold!
-  end
-
-  def one_accepted_offer_per_listing
-    scope = listing.offers.accepted
-    scope = scope.where.not(id: id) if persisted?
-    errors.add(:base, "Listing already has an accepted offer") if scope.exists?
   end
 
   public

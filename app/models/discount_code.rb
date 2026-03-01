@@ -13,6 +13,7 @@ class DiscountCode < ApplicationRecord
   end
 
   validates :key, presence: true, uniqueness: { scope: :tenant_id, case_sensitive: false }
+  validates :discount_type, presence: true
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validate :end_at_after_start_at, if: -> { start_at.present? && end_at.present? }
 
