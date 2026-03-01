@@ -12,8 +12,10 @@ class User < ApplicationRecord
   has_many :lots, foreign_key: :owner_id, dependent: :destroy
   has_many :cart_items, dependent: :destroy
   has_many :offers, dependent: :destroy
+  has_many :orders, dependent: :destroy
   has_many :cart_listings, through: :cart_items, source: :listing
-  has_one  :address, dependent: :destroy
+  has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", dependent: :destroy
+  has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", dependent: :destroy
   accepts_nested_attributes_for :address, update_only: true
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }

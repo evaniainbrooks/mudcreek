@@ -5,7 +5,7 @@ class CartItem < ApplicationRecord
   belongs_to :listing
   has_one :rental_booking, dependent: :destroy
 
-  validates :listing_id, uniqueness: { scope: :user_id }
+  validates :listing_id, uniqueness: { scope: :user_id }, unless: :rental?
 
   def rental?
     rental_start_at.present?

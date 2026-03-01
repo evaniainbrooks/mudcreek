@@ -8,10 +8,13 @@ Rails.application.routes.draw do
     resources :offers, only: [ :create ]
   end
 
-  resource  :cart,         only: [ :show ]
-  resource  :cart_discount,          only: [ :create, :destroy ]
-  resource  :cart_delivery_method,   only: [ :create, :destroy ]
-  resources :cart_items,   only: [ :create, :destroy ]
+  resource  :cart,                only: [ :show ]
+  resource  :cart_address,        only: [ :create ]
+  resource  :cart_discount,       only: [ :create, :destroy ]
+  resource  :cart_delivery_method, only: [ :create, :destroy ]
+  resources :cart_items,          only: [ :create, :destroy ]
+
+  resources :orders, only: [ :create, :show ]
 
   resource  :profile,      only: [ :edit, :update ]
   resources :subdivisions, only: [ :index ]

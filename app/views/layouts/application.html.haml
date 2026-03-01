@@ -17,7 +17,7 @@
   %body.d-flex.flex-column.min-vh-100
     %nav.navbar.navbar-expand-lg.bg-secondary{"data-bs-theme": "dark"}
       .container
-        = image_tag(Current.tenant.logo) if Current.tenant.logo.attached?
+        = image_tag(Current.tenant.logo, style: "max-width: 75px; margin-right: 0.5rem") if Current.tenant.logo.attached?
         = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
         %button.navbar-toggler{type: "button",
           "data-bs-toggle": "collapse",
@@ -46,6 +46,10 @@
                         = link_to admin_listings_path, class: "dropdown-item" do
                           %i.bi.bi-gear-fill.me-1
                           Admin
+                    %li
+                      = link_to edit_profile_path, class: "dropdown-item" do
+                        %i.bi.bi-person-fill.me-1
+                        Profile
                     %li
                       %hr.dropdown-divider
                     %li

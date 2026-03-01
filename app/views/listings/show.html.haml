@@ -97,17 +97,9 @@
                   %td.text-end= number_to_currency(plan.price)
         - unless @listing.sold?
           - if Current.user
-            - if @cart_item
-              = button_to cart_item_path(@cart_item),
-                method: :delete,
-                class: "btn btn-outline-secondary w-100 mb-3",
-                form: { data: { turbo_confirm: "Remove from cart?" } } do
-                %i.bi.bi-cart-check.me-2
-                In Cart
-            - else
-              %button.btn.btn-primary.w-100{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }
-                %i.bi.bi-calendar-check.me-2
-                Check Availability &amp; Rent
+            %button.btn.btn-primary.w-100{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }
+              %i.bi.bi-calendar-check.me-2
+              Check Availability &amp; Rent
           - else
             = link_to new_session_path, class: "btn btn-outline-primary w-100" do
               Sign in to rent

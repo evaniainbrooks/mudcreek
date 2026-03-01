@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_100005) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_01_100011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +61,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_100005) do
   end
 
   create_table "addresses", force: :cascade do |t|
+    t.string "address_type", default: "profile", null: false
     t.string "city"
     t.string "country", default: "CA"
     t.datetime "created_at", null: false
@@ -69,7 +70,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_100005) do
     t.string "street_address"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_addresses_on_user_id", unique: true
+    t.index ["user_id", "address_type"], name: "index_addresses_on_user_id_and_address_type", unique: true
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -83,11 +84,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_100005) do
     t.bigint "user_id", null: false
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
-    t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id", unique: true
+    t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_sale_only", unique: true, where: "(rental_start_at IS NULL)"
   end
 
   create_table "delivery_methods", force: :cascade do |t|
     t.boolean "active", default: true, null: false
+    t.boolean "address_required", default: true, null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.integer "price_cents", default: 0, null: false
@@ -195,6 +197,45 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_100005) do
     t.index ["tenant_id"], name: "index_offers_on_tenant_id"
     t.index ["user_id"], name: "index_offers_on_user_id"
     t.check_constraint "amount_cents > 0", name: "offers_amount_cents_positive"
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "listing_id"
+    t.string "listing_type"
+    t.string "name", null: false
+    t.bigint "order_id", null: false
+    t.integer "price_cents", null: false
+    t.datetime "rental_end_at"
+    t.datetime "rental_start_at"
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "city"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.bigint "delivery_method_id"
+    t.string "delivery_method_name"
+    t.integer "delivery_price_cents", default: 0, null: false
+    t.integer "discount_cents", default: 0, null: false
+    t.bigint "discount_code_id"
+    t.string "discount_code_key"
+    t.string "number", null: false
+    t.string "postal_code"
+    t.string "province"
+    t.string "status", default: "pending", null: false
+    t.string "street_address"
+    t.integer "subtotal_cents", null: false
+    t.integer "tax_cents", null: false
+    t.bigint "tenant_id", null: false
+    t.integer "total_cents", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["number"], name: "index_orders_on_number", unique: true
+    t.index ["tenant_id"], name: "index_orders_on_tenant_id"
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -430,6 +471,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_100005) do
   add_foreign_key "offers", "listings"
   add_foreign_key "offers", "tenants"
   add_foreign_key "offers", "users"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "orders", "tenants"
+  add_foreign_key "orders", "users"
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :cascade

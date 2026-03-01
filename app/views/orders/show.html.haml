@@ -1,0 +1,80 @@
+- set_meta_tags title: "Order #{@order.number}"
+
+.d-flex.align-items-center.gap-3.mb-4.flex-wrap
+  %h1.fw-bold.mb-0 Order Confirmed
+  %span.badge.text-bg-secondary.fs-6= @order.number
+  %span.badge.text-bg-success= @order.status.capitalize
+  %span.text-muted.small= @order.created_at.to_fs(:long)
+
+.row.g-4
+  .col-12.col-lg-8
+    .card.shadow-sm.border-0
+      .card-body.p-0
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead
+              %tr
+                %th.ps-3 Item
+                %th Type
+                %th.text-end Price
+            %tbody
+              - @order.order_items.each do |item|
+                %tr
+                  %td.ps-3
+                    .lh-sm
+                      %span.fw-semibold= item.name
+                      - if item.rental_start_at.present?
+                        %br
+                        %small.text-muted
+                          = item.rental_start_at.to_fs(:short)
+                          →
+                          = item.rental_end_at.to_fs(:short)
+                  %td
+                    - if item.listing_type == "rental"
+                      %span.badge.text-bg-info Rental
+                    - else
+                      %span.badge.text-bg-secondary Sale
+                  %td.text-end.pe-3= number_to_currency(item.price)
+
+  .col-12.col-lg-4
+    .card.shadow-sm.border-0.mb-3
+      .card-body
+        %h6.fw-semibold.mb-3 Order Summary
+        %table.table.table-sm.mb-0
+          %tbody
+            %tr
+              %td.text-muted Subtotal
+              %td.text-end= number_to_currency(@order.subtotal)
+            %tr
+              %td.text-muted Tax
+              %td.text-end= number_to_currency(@order.tax)
+            - if @order.delivery_price_cents > 0
+              %tr
+                %td.text-muted= @order.delivery_method_name
+                %td.text-end= number_to_currency(@order.delivery_price)
+            - elsif @order.delivery_method_name.present?
+              %tr
+                %td.text-muted= @order.delivery_method_name
+                %td.text-end Free
+            - if @order.discount_cents > 0
+              %tr.text-success
+                %td
+                  %i.bi.bi-ticket-perforated.me-1
+                  = @order.discount_code_key
+                %td.text-end= number_to_currency(-@order.discount)
+            %tr.border-top.border-2.fw-bold
+              %td Total
+              %td.text-end= number_to_currency(@order.total)
+
+    - if @order.street_address.present?
+      .card.shadow-sm.border-0
+        .card-body
+          %h6.fw-semibold.mb-2
+            %i.bi.bi-house-fill.me-1
+            Delivery Address
+          %address.mb-0
+            = @order.street_address
+            %br
+            = [@order.city, @order.province, @order.postal_code].compact.join(", ")
+            %br
+            = @order.country

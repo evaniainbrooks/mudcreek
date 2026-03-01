@@ -5,6 +5,7 @@ class CartsController < ApplicationController
     remove_sold_items
     reconcile_discount_code
     reconcile_delivery_method
+    build_cart_address
 
     subtotal_cents = @cart_items.sum(&:effective_price_cents)
     taxable_cents  = @cart_items.sum { |item| item.listing.tax_exempt? ? 0 : item.effective_price_cents }
@@ -58,6 +59,18 @@ class CartsController < ApplicationController
     else
       @discount_code = code
     end
+  end
+
+  def build_cart_address
+    cart_addr = Current.user.cart_address
+    profile_addr = Current.user.address
+    @cart_address = {
+      street_address: cart_addr&.street_address || profile_addr&.street_address,
+      city:           cart_addr&.city           || profile_addr&.city,
+      province:       cart_addr&.province       || profile_addr&.province,
+      postal_code:    cart_addr&.postal_code    || profile_addr&.postal_code,
+      country:        cart_addr&.country        || profile_addr&.country || "CA"
+    }
   end
 
   def reconcile_delivery_method

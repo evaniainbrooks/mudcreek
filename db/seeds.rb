@@ -28,7 +28,7 @@ puts "Seeded #{Tenant.count} tenants."
 end
 
 # Roles & Permissions
-all_resources = %w[Listing Lot User Role Permission Listings::Category Offer DiscountCode Listings::RentalRatePlan]
+all_resources = %w[Listing Lot User Role Permission Listings::Category Offer DiscountCode DeliveryMethod Listings::RentalRatePlan]
 all_actions   = %w[index show create update destroy reorder]
 
 super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
@@ -582,3 +582,18 @@ DiscountCode.destroy_all
 end
 
 puts "Seeded #{DiscountCode.count} discount codes."
+
+# Delivery Methods
+[
+  { name: "Local Pickup",   price_cents: 0,    address_required: false },
+  { name: "Standard Mail",  price_cents: 1500, address_required: true  },
+  { name: "Courier",        price_cents: 2500, address_required: true  }
+].each do |attrs|
+  DeliveryMethod.find_or_create_by!(name: attrs[:name], tenant: mudcreek) do |dm|
+    dm.price_cents       = attrs[:price_cents]
+    dm.address_required  = attrs[:address_required]
+    dm.active            = true
+  end
+end
+
+puts "Seeded #{DeliveryMethod.count} delivery methods."

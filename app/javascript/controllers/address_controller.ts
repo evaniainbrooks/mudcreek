@@ -11,8 +11,7 @@ export default class extends Controller {
     const code = this.countryTarget.value
 
     if (!code) {
-      this.subdivisionWrapperTarget.hidden = true
-      this.subdivisionTarget.innerHTML = ""
+      this.hideSubdivision()
       return
     }
 
@@ -20,14 +19,20 @@ export default class extends Controller {
     const names: string[] = await res.json()
 
     if (names.length === 0) {
-      this.subdivisionWrapperTarget.hidden = true
-      this.subdivisionTarget.innerHTML = ""
+      this.hideSubdivision()
       return
     }
 
     this.subdivisionWrapperTarget.hidden = false
+    this.subdivisionTarget.required = true
     this.subdivisionTarget.innerHTML =
       '<option value="">Select…</option>' +
       names.map(name => `<option value="${name}">${name}</option>`).join("")
+  }
+
+  private hideSubdivision() {
+    this.subdivisionWrapperTarget.hidden = true
+    this.subdivisionTarget.required = false
+    this.subdivisionTarget.innerHTML = ""
   }
 }

@@ -39,6 +39,6 @@ class Admin::DeliveryMethodsController < Admin::BaseController
   end
 
   def delivery_method_params
-    params.require(:delivery_method).permit(:name, :price, :active)
+    params.require(:delivery_method).permit(:name, :price, :active, :address_required)
   end
 end

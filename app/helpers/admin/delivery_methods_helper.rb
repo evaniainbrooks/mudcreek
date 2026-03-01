@@ -51,11 +51,23 @@ module Admin::DeliveryMethodsHelper
     end
   end
 
+  def delivery_method_toggle_address_required_cell(dm)
+    tag.div(id: "#{dom_id(dm)}_address_required") do
+      button_to admin_delivery_method_path(dm), method: :patch,
+          params: { delivery_method: { address_required: !dm.address_required } },
+          class: "btn btn-sm #{dm.address_required? ? "btn-success" : "btn-outline-secondary"}" do
+        tag.i("", class: "bi #{dm.address_required? ? "bi-check-circle-fill" : "bi-circle"} me-1") +
+          (dm.address_required? ? "Required" : "Not required")
+      end
+    end
+  end
+
   def render_delivery_methods_table(delivery_methods:)
     table = ::TableComponent.new(rows: delivery_methods)
     table.with_column("Name") { |dm| inline_edit_cell(dm, :name, dm.name, url: admin_delivery_method_path(dm), scope: :delivery_method) }
     table.with_column("Price") { |dm| delivery_method_inline_edit_price_cell(dm) }
     table.with_column("Active") { |dm| delivery_method_toggle_active_cell(dm) }
+    table.with_column("Address required") { |dm| delivery_method_toggle_address_required_cell(dm) }
     table.with_column("Actions", html_class: "text-end") do |dm|
       button_to(admin_delivery_method_path(dm), method: :delete, class: "btn btn-sm btn-outline-danger",
         form: { data: { turbo_confirm: "Delete \"#{dm.name}\"?" } }) do
