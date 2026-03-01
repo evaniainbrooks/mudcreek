@@ -30,21 +30,26 @@
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
             - if Current.user
               - unless @admin
-                %li.nav-item
-                  = link_to cart_path, class: "nav-link" do
-                    %i.bi.bi-cart3.me-1
-                    Cart
-                    - if cart_item_count > 0
-                      %span.badge.rounded-pill.bg-primary.ms-1= cart_item_count
-                %li.nav-item
-                  = link_to edit_profile_path, class: "nav-link" do
-                    %i.bi.bi-person-fill.me-1
-                    Profile
-                - if Current.user.role&.permissions&.any?
-                  %li.nav-item
-                    = link_to admin_listings_path, class: "nav-link" do
-                      %i.bi.bi-gear-fill.me-1
-                      Admin
+                %li.nav-item.dropdown
+                  %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
+                    %i.bi.bi-person-circle.me-1
+                    = Current.user.name
+                  %ul.dropdown-menu.dropdown-menu-end
+                    %li
+                      = link_to cart_path, class: "dropdown-item" do
+                        %i.bi.bi-cart3.me-1
+                        Cart
+                        - if cart_item_count > 0
+                          %span.badge.rounded-pill.bg-primary.ms-1= cart_item_count
+                    - if Current.user.role&.permissions&.any?
+                      %li
+                        = link_to admin_listings_path, class: "dropdown-item" do
+                          %i.bi.bi-gear-fill.me-1
+                          Admin
+                    %li
+                      %hr.dropdown-divider
+                    %li
+                      = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "dropdown-item"
               - if @admin
                 - if policy(Listing).index? || policy(Listings::Category).index? || policy(Lot).index?
                   %li.nav-item.dropdown
@@ -104,8 +109,9 @@
                           = link_to admin_roles_path, class: "dropdown-item" do
                             %i.bi.bi-shield-fill.me-1
                             Roles
-              %li.nav-item
-                = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
+              - if @admin
+                %li.nav-item
+                  = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
             - else
               %li.nav-item
                 = link_to "Sign in", new_session_path, class: "nav-link"
