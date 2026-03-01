@@ -235,7 +235,7 @@ listing_data = [
   { name: "Vineyard Parcel", price: 875_000, description: "Established vineyard with 8 acres of Pinot Noir and Chardonnay vines, a production winery, tasting room, and farmhouse. Turnkey wine country operation.", published: true },
   { name: "Vineyard Estate", price: 1_350_000, description: "Prestigious wine country estate with 22 acres of producing vines, a gravity-flow winery, a tasting pavilion, a five-bedroom manor home, and a guest cottage.", published: true },
   { name: "Apple Hill Orchard", price: 425_000, pricing_type: :negotiable, description: "Thriving 18-acre apple operation with 15 heritage varieties, a licensed cidery, farm market, pick-your-own revenue, and a comfortable farmhouse.", published: true },
-  { name: "Cherry Farm", price: 385_000, pricing_type: :negotiable, description: "Productive cherry farm with 600 mature sweet and sour trees, a mechanical harvester, cold storage, direct-to-grocery contracts, and a farmhouse.", published: true },
+  { name: "Cherry Farm", price: 385_000, pricing_type: :negotiable, description: "Productive cherry farm with 600 mature sweet and sour trees, a mechanical harvester, cold storage, direct-to-grocery contracts, and a farmhouse.", published: true }
 ]
 
 listing_data.each do |attrs|
@@ -433,7 +433,7 @@ category_assignments = {
   "Vineyard Parcel"              => [ "Vineyards & Orchards" ],
   "Vineyard Estate"              => [ "Vineyards & Orchards" ],
   "Apple Hill Orchard"           => [ "Vineyards & Orchards", "Farms & Homesteads" ],
-  "Cherry Farm"                  => [ "Vineyards & Orchards", "Farms & Homesteads" ],
+  "Cherry Farm"                  => [ "Vineyards & Orchards", "Farms & Homesteads" ]
 }
 
 category_assignments.each do |listing_name, cat_names|
