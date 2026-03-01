@@ -10,12 +10,12 @@ class SessionsController < ApplicationController
     if user = User.authenticate_by(params.permit(:email_address, :password))
       if user.activated?
         start_new_session_for user
-        redirect_to after_authentication_url
+        redirect_to after_authentication_url, status: :see_other
       else
-        redirect_to new_session_path, alert: "Please activate your account. Check your email for an activation link."
+        redirect_to new_session_path, status: :see_other, alert: "Please activate your account. Check your email for an activation link."
       end
     else
-      redirect_to new_session_path, alert: "Try another email address or password."
+      redirect_to new_session_path, status: :see_other, alert: "Try another email address or password."
     end
   end
 

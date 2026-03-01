@@ -4,7 +4,7 @@
       .card-body.p-4.p-md-5
         %h1.card-title.h4.mb-1 Sign in
         %p.text-muted.small.mb-4 Welcome back
-        = form_with url: session_path do |f|
+        = form_with url: session_path, data: { turbo: false } do |f|
           .mb-3
             = f.label :email_address, "Email address", class: "form-label"
             = f.email_field :email_address,
@@ -27,7 +27,7 @@
       .card-body.p-4.p-md-5
         %h2.card-title.h4.mb-1 Create account
         %p.text-muted.small.mb-4 New here? Sign up for free
-        = form_with url: registration_path, scope: :user do |f|
+        = form_with url: registration_path, scope: :user, data: { turbo: false } do |f|
           .row.g-3.mb-3
             .col
               = f.label :first_name, "First name", class: "form-label"
