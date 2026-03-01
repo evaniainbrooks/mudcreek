@@ -8,6 +8,9 @@ if ENV.fetch("COVERAGE", "true") != "false"
     add_filter "/db/"
     add_filter "/bin/"
     add_filter "/vendor/"
+
+    add_group "Policies",   "app/policies"
+    add_group "Components", "app/components"
   end
 end
 
