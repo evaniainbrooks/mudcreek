@@ -91,7 +91,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000000) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index "tenant_id, lower((key)::text)", name: "index_discount_codes_on_tenant_id_and_lower_key", unique: true
-    t.index ["tenant_id"], name: "index_discount_codes_on_tenant_id"
     t.check_constraint "amount_cents > 0", name: "discount_codes_amount_cents_positive"
   end
 
