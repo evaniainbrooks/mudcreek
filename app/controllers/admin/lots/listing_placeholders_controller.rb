@@ -1,4 +1,4 @@
-class Admin::Lots::ListingPlaceholderController < Admin::BaseController
+class Admin::Lots::ListingPlaceholdersController < Admin::BaseController
   before_action :set_lot
 
   def destroy
