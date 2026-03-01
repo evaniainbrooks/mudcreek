@@ -231,22 +231,14 @@ end
 
 puts "Seeded #{Listings::Category.count} listing categories."
 
-require "open-uri"
+# Load a pool of stock images from fixtures, then assign one per listing.
+FIXTURES_IMAGE_DIR = Rails.root.join("spec/fixtures/images")
 
-# Download a pool of stock images from Picsum Photos, then assign one per listing.
-PICSUM_SEEDS = %w[dog cat mountain lake farm river axe chainsaw orchard forest vineyard coast timber ranch meadow barn fishing]
-
-puts "Downloading #{PICSUM_SEEDS.size} stock images..."
-
-stock_images = PICSUM_SEEDS.filter_map do |seed|
-  print "  #{seed}... "
-  io = URI.open("https://picsum.photos/seed/#{seed}/800/600")
-  puts "done"
-  { io: io, filename: "#{seed}.jpg", content_type: "image/jpeg" }
-rescue => e
-  puts "failed (#{e.message})"
-  nil
+stock_images = FIXTURES_IMAGE_DIR.glob("*.jpg").map do |path|
+  { io: path.open("rb"), filename: path.basename.to_s, content_type: "image/jpeg" }
 end
+
+puts "Loaded #{stock_images.size} stock images from fixtures."
 
 if stock_images.any?
   attached = 0
