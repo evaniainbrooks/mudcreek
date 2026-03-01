@@ -72,6 +72,9 @@ gem "sidekiq"
 # HAML templating
 gem "haml-rails", "~> 3.0"
 
+# Country and subdivision data (ISO 3166)
+gem "countries"
+
 # Open Graph / meta tags
 gem "meta-tags"
 

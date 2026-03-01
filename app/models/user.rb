@@ -13,6 +13,8 @@ class User < ApplicationRecord
   has_many :cart_items, dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :cart_listings, through: :cart_items, source: :listing
+  has_one  :address, dependent: :destroy
+  accepts_nested_attributes_for :address, update_only: true
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

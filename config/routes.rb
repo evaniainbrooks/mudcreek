@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   resource  :cart_delivery_method,   only: [ :create, :destroy ]
   resources :cart_items,   only: [ :create, :destroy ]
 
+  resource  :profile,      only: [ :edit, :update ]
+  resources :subdivisions, only: [ :index ]
+
   namespace :admin do
     resources :users, only: [ :index, :show ]
     resources :lots, only: [ :index, :create, :update, :destroy ] do
