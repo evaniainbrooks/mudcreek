@@ -173,6 +173,21 @@ jobs:
         with:
           name: coverage
           path: coverage/
+      - name: Show verbose coverage report
+        run: |
+          jq -r '
+            [.[].coverage | to_entries[] |
+              (.value.lines | map(select(. != null)) | length) as $rel |
+              (.value.lines | map(select(. != null and . > 0)) | length) as $cov |
+              {
+                pct: (if $rel > 0 then ($cov * 100.0 / $rel) | round else 100 end),
+                file: (.key | split("/") | .[-4:] | join("/")),
+                cov: $cov,
+                rel: $rel
+              }
+            ] | sort_by(.pct, .file) | .[] |
+            "\(.pct)%\t\(.cov)/\(.rel)\t\(.file)"
+          ' coverage/.resultset.json
       - name: Check coverage thresholds
         run: |
           LINE=$(jq '.result.line' coverage/.last_run.json)
