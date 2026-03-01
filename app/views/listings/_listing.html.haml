@@ -17,18 +17,26 @@
       - if listing.negotiable? && !listing.sold?
         .position-absolute.top-0.start-0.p-2
           = listing_pricing_type_badge(listing)
+      - if listing.rental?
+        .position-absolute.top-0.end-0.p-2
+          = listing_type_badge(listing)
     .card-body
       %h5.card-title.fw-semibold.mb-1
         = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"
       - if listing.rental?
-        %span.badge.text-bg-info.mb-1 Rental
         - cheapest = listing.rental_rate_plans.min_by(&:price_cents)
-        - if cheapest
-          %p.text-primary.fw-bold.mb-0 From #{number_to_currency(cheapest.price)} / #{cheapest.label}
-        - else
-          %p.text-muted.fw-bold.mb-0 Rental
+        .d-flex.align-items-center.gap-2.mb-0
+          - if cheapest
+            %p.text-primary.fw-bold.mb-0 From #{number_to_currency(cheapest.price)} / #{cheapest.label}
+          - else
+            %p.text-muted.fw-bold.mb-0 Rental
+          = listing_type_badge(listing)
       - else
-        %p.text-primary.fw-bold.mb-0= number_to_currency(listing.price)
+        - unless listing.sold?
+          .d-flex.align-items-center.gap-2.mb-0
+            %p.text-primary.fw-bold.mb-0= number_to_currency(listing.price)
+            - if listing.negotiable?
+              = listing_pricing_type_badge(listing)
       %p.card-text.text-muted.small
         = listing.description.to_plain_text.truncate(120)
         - if listing.categories.any?

@@ -29,7 +29,7 @@ class Admin::Listings::RentalRatePlansController < Admin::BaseController
     authorize(@rate_plan)
     @rate_plan.destroy
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@rate_plan)) }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(ActionView::RecordIdentifier.dom_id(@rate_plan)) }
       format.html { redirect_to edit_admin_listing_path(@listing) }
     end
   end
