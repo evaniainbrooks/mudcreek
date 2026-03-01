@@ -12,5 +12,18 @@ test:
   database: mudcreek_test
 
 production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
+  primary:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+  cache:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    database_tasks: false
+  queue:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    database_tasks: false
+  cable:
+    <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
+    database_tasks: false
