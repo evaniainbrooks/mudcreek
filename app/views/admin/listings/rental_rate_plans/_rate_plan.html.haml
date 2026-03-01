@@ -1,0 +1,10 @@
+%li.list-group-item.d-flex.align-items-center.justify-content-between{ id: dom_id(rate_plan) }
+  .d-flex.gap-3.align-items-center
+    %span.fw-semibold= rate_plan.label
+    %span.text-muted.small= "#{rate_plan.duration_minutes} min"
+    %span.text-primary= number_to_currency(rate_plan.price)
+  = button_to admin_listing_rental_rate_plan_path(rate_plan.listing, rate_plan),
+      method: :delete,
+      class: "btn btn-sm btn-outline-danger",
+      form: { data: { turbo_confirm: "Remove this rate plan?" } } do
+    %i.bi.bi-trash

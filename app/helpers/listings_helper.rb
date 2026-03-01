@@ -14,6 +14,11 @@ module ListingsHelper
     content_tag(:span, listing.pricing_type.humanize, class: ["badge", css, extra_css].compact.join(" "))
   end
 
+  def listing_type_badge(listing, extra_css: nil)
+    css = listing.rental? ? "text-bg-info" : "text-bg-secondary"
+    content_tag(:span, listing.listing_type.humanize, class: ["badge", css, extra_css].compact.join(" "))
+  end
+
   def listing_state_badge(listing, extra_css: nil)
     css = if listing.sold?       then "text-bg-danger"
     elsif listing.on_sale? then "text-bg-success"
@@ -36,6 +41,7 @@ module ListingsHelper
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Lot") { |l| l.lot ? lot_number_badge(l.lot) : "—" }
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }
+    table.with_column("Type", sort_attr: :listing_type) { |l| listing_type_badge(l) }
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }
     table.with_column("Pricing", sort_attr: :pricing_type) { |l| listing_pricing_type_badge(l) }
     table.with_column("State", sort_attr: :state) { |l| listing_state_badge(l) }

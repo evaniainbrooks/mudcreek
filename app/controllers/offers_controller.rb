@@ -2,6 +2,11 @@ class OffersController < ApplicationController
   before_action :set_listing
 
   def create
+    if @listing.rental?
+      redirect_to listing_path(@listing), alert: "Offers are not available for rental listings."
+      return
+    end
+
     @offer = @listing.offers.new(
       user: Current.user,
       amount_cents: (params.dig(:offer, :amount).to_f * 100).round,

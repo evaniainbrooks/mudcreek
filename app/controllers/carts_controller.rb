@@ -1,13 +1,13 @@
 class CartsController < ApplicationController
   def show
-    @cart_items = Current.user.cart_items.includes(:listing).order(:created_at)
+    @cart_items = Current.user.cart_items.includes(listing: { images_attachments: :blob }).order(:created_at)
 
     remove_sold_items
     reconcile_discount_code
     reconcile_delivery_method
 
-    subtotal_cents = @cart_items.sum { |item| item.listing.price_cents }
-    taxable_cents  = @cart_items.sum { |item| item.listing.tax_exempt? ? 0 : item.listing.price_cents }
+    subtotal_cents = @cart_items.sum(&:effective_price_cents)
+    taxable_cents  = @cart_items.sum { |item| item.listing.tax_exempt? ? 0 : item.effective_price_cents }
     tax_cents      = (taxable_cents * SALES_TAX_RATE).ceil
     pretax_total   = subtotal_cents + tax_cents
 

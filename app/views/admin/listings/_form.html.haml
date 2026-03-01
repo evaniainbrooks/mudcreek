@@ -1,4 +1,4 @@
-= form_with model: [:admin, listing], class: "needs-validation" do |f|
+= form_with model: [:admin, listing], class: "needs-validation", data: { controller: "listing-type" } do |f|
   - if listing.errors.any?
     .alert.alert-danger
       %h5.alert-heading
@@ -10,20 +10,29 @@
           %li= message
 
   .mb-3
+    = f.label :listing_type, "Listing Type", class: "form-label"
+    - if listing.new_record?
+      = f.select :listing_type, [["For Sale", "sale"], ["Rental", "rental"]],
+          {}, class: "form-select",
+          data: { action: "change->listing-type#toggle" }
+    - else
+      %p.form-control-plaintext= listing.listing_type.humanize
+
+  .mb-3
     = f.label :name, class: "form-label"
     = f.text_field :name, class: "form-control #{'is-invalid' if listing.errors[:name].any?}", required: true
     - if listing.errors[:name].any?
       .invalid-feedback= listing.errors[:name].to_sentence
 
-  .mb-3
+  .mb-3{ data: { "listing-type-target": "priceField" }, hidden: listing.rental? }
     = f.label :price, class: "form-label"
     .input-group
       %span.input-group-text $
-      = f.text_field :price, class: "form-control #{'is-invalid' if listing.errors[:price_cents].any?}", required: true, value: listing.price&.to_f
+      = f.text_field :price, class: "form-control #{'is-invalid' if listing.errors[:price_cents].any?}", required: !listing.rental?, value: listing.price&.to_f, data: { required: "true" }
     - if listing.errors[:price_cents].any?
       .invalid-feedback.d-block= listing.errors[:price_cents].to_sentence
 
-  .mb-3
+  .mb-3{ data: { "listing-type-target": "pricingTypeField" }, hidden: listing.rental? }
     = f.label :pricing_type, "Pricing", class: "form-label"
     = f.select :pricing_type, Listing.pricing_types.keys.map { |k| [k.humanize, k] },
         {},
@@ -31,7 +40,11 @@
     - if listing.errors[:pricing_type].any?
       .invalid-feedback= listing.errors[:pricing_type].to_sentence
 
-  .mb-3
+  .mb-1{ data: { "listing-type-target": "ratePlansSection" }, hidden: listing.sale? }
+    - unless listing.new_record?
+      = render "admin/listings/rental_rate_plans/section", listing: listing
+
+  .mb-3{ data: { "listing-type-target": "acquisitionPriceField" }, hidden: listing.rental? }
     = f.label :acquisition_price, "Acquisition Price", class: "form-label"
     .input-group
       %span.input-group-text $
@@ -40,9 +53,9 @@
     - if listing.errors[:acquisition_price_cents].any?
       .invalid-feedback.d-block= listing.errors[:acquisition_price_cents].to_sentence
 
-  .mb-3
+  .mb-3{ data: { "listing-type-target": "quantityField" }, hidden: listing.rental? }
     = f.label :quantity, class: "form-label"
-    = f.number_field :quantity, class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}", min: 0, required: true
+    = f.number_field :quantity, class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}", min: 0, required: !listing.rental?, data: { required: "true" }
     - if listing.errors[:quantity].any?
       .invalid-feedback= listing.errors[:quantity].to_sentence
 

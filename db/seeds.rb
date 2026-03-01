@@ -11,6 +11,14 @@ Tenant.find_or_create_by!(key: "whitelabel") do |t|
   t.default = false
 end
 
+unless mudcreek.logo.attached?
+  mudcreek.logo.attach(
+    io: Rails.root.join("spec/fixtures/images/mudcreek_logo.png").open("rb"),
+    filename: "mudcreek_logo.png",
+    content_type: "image/png"
+  )
+end
+
 puts "Seeded #{Tenant.count} tenants."
 
 # Backfill any existing records that predate the tenant column
@@ -20,7 +28,7 @@ puts "Seeded #{Tenant.count} tenants."
 end
 
 # Roles & Permissions
-all_resources = %w[Listing Lot User Role Permission Listings::Category Offer]
+all_resources = %w[Listing Lot User Role Permission Listings::Category Offer DiscountCode Listings::RentalRatePlan]
 all_actions   = %w[index show create update destroy reorder]
 
 super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
@@ -251,6 +259,32 @@ listing_data.each do |attrs|
 end
 
 puts "Seeded #{Listing.count} listings."
+
+# Rental listing example
+rental = Listing.find_or_create_by!(name: "Canoe Rental") do |l|
+  l.tenant       = mudcreek
+  l.listing_type = :rental
+  l.price_cents  = 0
+  l.description  = "16-foot aluminum canoe, paddles and life jackets included."
+  l.published    = true
+  l.owner_id     = admin_user.id
+  l.state        = :on_sale
+end
+
+[
+  { label: "1 Hour",   duration_minutes: 60,   price_cents: 1500  },
+  { label: "Half Day", duration_minutes: 240,  price_cents: 4000  },
+  { label: "Full Day", duration_minutes: 1440, price_cents: 6500  },
+  { label: "Weekend",  duration_minutes: 2880, price_cents: 10000 }
+].each do |attrs|
+  rental.rental_rate_plans.find_or_create_by!(label: attrs[:label]) do |p|
+    p.tenant           = mudcreek
+    p.duration_minutes = attrs[:duration_minutes]
+    p.price_cents      = attrs[:price_cents]
+  end
+end
+
+puts "Seeded rental listing with #{rental.rental_rate_plans.count} rate plans."
 
 # Assign listings to lots
 lot_assignments = {

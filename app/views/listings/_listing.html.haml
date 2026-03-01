@@ -20,7 +20,15 @@
     .card-body
       %h5.card-title.fw-semibold.mb-1
         = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"
-      %p.text-primary.fw-bold.mb-0= number_to_currency(listing.price)
+      - if listing.rental?
+        %span.badge.text-bg-info.mb-1 Rental
+        - cheapest = listing.rental_rate_plans.min_by(&:price_cents)
+        - if cheapest
+          %p.text-primary.fw-bold.mb-0 From #{number_to_currency(cheapest.price)} / #{cheapest.label}
+        - else
+          %p.text-muted.fw-bold.mb-0 Rental
+      - else
+        %p.text-primary.fw-bold.mb-0= number_to_currency(listing.price)
       %p.card-text.text-muted.small
         = listing.description.to_plain_text.truncate(120)
         - if listing.categories.any?

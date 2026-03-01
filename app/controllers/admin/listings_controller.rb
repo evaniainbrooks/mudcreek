@@ -25,6 +25,14 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def show
+    @offers = @listing.sale? ? @listing.offers.includes(:user).order(created_at: :desc) : []
+    if @listing.rental?
+      @rental_rate_plans = @listing.rental_rate_plans.order(:position)
+      @rental_bookings   = @listing.rental_bookings
+        .where("expires_at > ?", Time.current)
+        .includes(cart_item: :user)
+        .order(:start_at)
+    end
   end
 
   def new
@@ -82,7 +90,9 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    p = params.require(:listing).permit(:name, :description, :price, :acquisition_price, :quantity, :tax_exempt, :owner_id, :lot_id, :published, :pricing_type, images: [], videos: [], documents: [], category_ids: [])
+    base = %i[name description price acquisition_price quantity tax_exempt owner_id lot_id published pricing_type]
+    base.unshift(:listing_type) if action_name == "create"
+    p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

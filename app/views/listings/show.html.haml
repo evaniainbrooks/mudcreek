@@ -77,39 +77,68 @@
   .col-lg-5
     .position-sticky{ style: "top: 1.5rem" }
       %h1.fw-bold.mb-1= @listing.name
-      %p.fs-2.text-primary.fw-semibold.mb-2= number_to_currency(@listing.price)
+      - if @listing.rental?
+        %span.badge.text-bg-info.mb-2 Rental
+      - else
+        %p.fs-2.text-primary.fw-semibold.mb-2= number_to_currency(@listing.price)
       - unless @listing.sold?
         %p.text-muted.small.mb-4
           %i.bi.bi-box-seam.me-1
           = pluralize(@listing.quantity, "available")
       %hr.mb-4
-      - unless @listing.sold?
-        - if Current.user
-          - if @cart_item
-            = button_to cart_item_path(@cart_item),
-              method: :delete,
-              class: "btn btn-outline-secondary w-100 mb-3",
-              form: { data: { turbo_confirm: "Remove from cart?" } } do
-              %i.bi.bi-cart-check.me-2
-              In Cart
+      - if @listing.rental?
+        - if @listing.rental_rate_plans.any?
+          %p.fw-semibold.mb-1 Rate Plans
+          %table.table.table-sm.mb-3
+            %tbody
+              - @listing.rental_rate_plans.order(:position).each do |plan|
+                %tr
+                  %td= plan.label
+                  %td.text-end= number_to_currency(plan.price)
+        - unless @listing.sold?
+          - if Current.user
+            - if @cart_item
+              = button_to cart_item_path(@cart_item),
+                method: :delete,
+                class: "btn btn-outline-secondary w-100 mb-3",
+                form: { data: { turbo_confirm: "Remove from cart?" } } do
+                %i.bi.bi-cart-check.me-2
+                In Cart
+            - else
+              %button.btn.btn-primary.w-100{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }
+                %i.bi.bi-calendar-check.me-2
+                Check Availability &amp; Rent
           - else
-            = button_to cart_items_path,
-              params: { listing_id: @listing.id },
-              class: "btn btn-primary w-100 mb-3" do
+            = link_to new_session_path, class: "btn btn-outline-primary w-100" do
+              Sign in to rent
+      - else
+        - unless @listing.sold?
+          - if Current.user
+            - if @cart_item
+              = button_to cart_item_path(@cart_item),
+                method: :delete,
+                class: "btn btn-outline-secondary w-100 mb-3",
+                form: { data: { turbo_confirm: "Remove from cart?" } } do
+                %i.bi.bi-cart-check.me-2
+                In Cart
+            - else
+              = button_to cart_items_path,
+                params: { listing_id: @listing.id },
+                class: "btn btn-primary w-100 mb-3" do
+                %i.bi.bi-cart-plus.me-2
+                Add to Cart
+            - if @listing.sale? && @listing.negotiable?
+              %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
+                %i.bi.bi-tag.me-2
+                Make an Offer
+          - else
+            = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-3" do
               %i.bi.bi-cart-plus.me-2
-              Add to Cart
-          - if @listing.negotiable?
-            %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
-              %i.bi.bi-tag.me-2
-              Make an Offer
-        - else
-          = link_to new_session_path, class: "btn btn-outline-primary w-100 mb-3" do
-            %i.bi.bi-cart-plus.me-2
-            Sign in to add to cart
-          - if @listing.negotiable?
-            = link_to new_session_path, class: "btn btn-outline-secondary w-100 mb-4" do
-              %i.bi.bi-tag.me-2
-              Sign in to make an offer
+              Sign in to add to cart
+            - if @listing.sale? && @listing.negotiable?
+              = link_to new_session_path, class: "btn btn-outline-secondary w-100 mb-4" do
+                %i.bi.bi-tag.me-2
+                Sign in to make an offer
       .listing-description
         = @listing.description
       - if @listing.categories.any?
@@ -127,7 +156,37 @@
           %i.bi.fs-1{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" ") }
           %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)
 
-- if @listing.negotiable? && Current.user
+- if @listing.rental? && Current.user && !@cart_item
+  #rental-modal.modal.fade{ tabindex: "-1" }
+    .modal-dialog
+      .modal-content{ data: { controller: "rental-modal", "rental-modal-rate-plans-value": @listing.rental_rate_plans.map { |p| { label: p.label, duration_minutes: p.duration_minutes, price_cents: p.price_cents } }.to_json } }
+        .modal-header
+          %h5.modal-title
+            %i.bi.bi-calendar-check.me-2
+            Rent This Equipment
+          %button.btn-close{ type: "button", data: { "bs-dismiss": "modal" } }
+        = form_with url: cart_items_path, data: { turbo: false } do |f|
+          = f.hidden_field :listing_id, value: @listing.id
+          .modal-body
+            .row.g-3.mb-3
+              .col-md-6
+                = f.label :rental_start_at, "Start", class: "form-label"
+                = f.datetime_local_field :rental_start_at, class: "form-control",
+                    required: true,
+                    data: { "rental-modal-target": "startAt", action: "change->rental-modal#calculate" }
+              .col-md-6
+                = f.label :rental_end_at, "End", class: "form-label"
+                = f.datetime_local_field :rental_end_at, class: "form-control",
+                    required: true,
+                    data: { "rental-modal-target": "endAt", action: "change->rental-modal#calculate" }
+            #rental-price-breakdown{ data: { "rental-modal-target": "breakdown" } }
+          .modal-footer
+            %button.btn.btn-outline-secondary{ type: "button", data: { "bs-dismiss": "modal" } } Cancel
+            = f.submit "Add to Cart", class: "btn btn-primary",
+                disabled: true,
+                data: { "rental-modal-target": "submit" }
+
+- if @listing.sale? && @listing.negotiable? && Current.user
   #offer-modal.modal.fade{ tabindex: "-1", aria: { labelledby: "offer-modal-label", hidden: "true" } }
     .modal-dialog
       .modal-content

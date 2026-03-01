@@ -7,6 +7,7 @@
     - else
       %span.text-muted —
   %td= link_to listing.name, admin_listing_path(listing)
+  %td= listing_type_badge(listing)
   = render TableCellComponent.new(value: listing.price)
   %td= listing_pricing_type_badge(listing)
   %td= listing_state_badge(listing)

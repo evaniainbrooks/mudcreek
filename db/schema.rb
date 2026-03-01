@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_01_100003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
   create_enum "discount_code_type", ["fixed", "percentage"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
+  create_enum "listing_type", ["sale", "rental"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -62,6 +63,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
   create_table "cart_items", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "listing_id", null: false
+    t.datetime "rental_end_at"
+    t.integer "rental_price_cents"
+    t.datetime "rental_start_at"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -98,6 +102,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
     t.integer "acquisition_price_cents"
     t.datetime "created_at", null: false
     t.string "hashid", null: false
+    t.enum "listing_type", default: "sale", null: false, enum_type: "listing_type"
     t.bigint "lot_id"
     t.string "name", null: false
     t.bigint "owner_id", null: false
@@ -138,6 +143,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
     t.index ["listings_category_id"], name: "index_listings_category_assignments_on_listings_category_id"
   end
 
+  create_table "listings_rental_rate_plans", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "duration_minutes", null: false
+    t.string "label", null: false
+    t.bigint "listing_id", null: false
+    t.integer "position", null: false
+    t.integer "price_cents", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["listing_id", "position"], name: "index_listings_rental_rate_plans_on_listing_id_and_position"
+    t.index ["tenant_id"], name: "index_listings_rental_rate_plans_on_tenant_id"
+    t.check_constraint "duration_minutes > 0", name: "listings_rental_rate_plans_duration_minutes_positive"
+    t.check_constraint "price_cents >= 0", name: "listings_rental_rate_plans_price_cents_nonneg"
+  end
+
   create_table "lots", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
@@ -174,6 +194,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
     t.datetime "updated_at", null: false
     t.index ["role_id", "resource", "action"], name: "index_permissions_on_role_id_and_resource_and_action", unique: true
     t.index ["tenant_id"], name: "index_permissions_on_tenant_id"
+  end
+
+  create_table "rental_bookings", force: :cascade do |t|
+    t.bigint "cart_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "end_at", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "listing_id", null: false
+    t.datetime "start_at", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_item_id"], name: "index_rental_bookings_on_cart_item_id", unique: true
+    t.index ["expires_at"], name: "index_rental_bookings_on_expires_at"
+    t.index ["listing_id", "start_at", "end_at"], name: "index_rental_bookings_on_listing_id_and_start_at_and_end_at"
+    t.index ["tenant_id"], name: "index_rental_bookings_on_tenant_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -375,6 +410,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
   add_foreign_key "listings_categories", "tenants"
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
+  add_foreign_key "listings_rental_rate_plans", "listings"
+  add_foreign_key "listings_rental_rate_plans", "tenants"
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
   add_foreign_key "offers", "listings"
@@ -382,6 +419,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_000001) do
   add_foreign_key "offers", "users"
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
+  add_foreign_key "rental_bookings", "cart_items", on_delete: :cascade
+  add_foreign_key "rental_bookings", "listings"
+  add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

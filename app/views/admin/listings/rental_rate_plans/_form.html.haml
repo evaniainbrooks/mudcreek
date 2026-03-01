@@ -1,0 +1,23 @@
+= form_with model: rate_plan, url: admin_listing_rental_rate_plans_path(listing),
+    id: "rental-rate-plan-form", class: "d-flex gap-2 align-items-end flex-wrap mt-2" do |f|
+  .flex-fill
+    = f.label :label, "Label", class: "form-label form-label-sm mb-1"
+    = f.text_field :label, class: "form-control form-control-sm #{'is-invalid' if rate_plan.errors[:label].any?}",
+        placeholder: "e.g. 1 Hour"
+    - if rate_plan.errors[:label].any?
+      .invalid-feedback= rate_plan.errors[:label].to_sentence
+  .flex-fill
+    = f.label :duration_minutes, "Duration (min)", class: "form-label form-label-sm mb-1"
+    = f.number_field :duration_minutes, class: "form-control form-control-sm #{'is-invalid' if rate_plan.errors[:duration_minutes].any?}",
+        min: 1, placeholder: "60"
+    - if rate_plan.errors[:duration_minutes].any?
+      .invalid-feedback= rate_plan.errors[:duration_minutes].to_sentence
+  .flex-fill
+    = f.label :price, "Price", class: "form-label form-label-sm mb-1"
+    .input-group.input-group-sm
+      %span.input-group-text $
+      = f.text_field :price, class: "form-control #{'is-invalid' if rate_plan.errors[:price_cents].any?}",
+          placeholder: "15.00"
+    - if rate_plan.errors[:price_cents].any?
+      .invalid-feedback.d-block= rate_plan.errors[:price_cents].to_sentence
+  = f.submit "Add Plan", class: "btn btn-sm btn-outline-primary mt-3"

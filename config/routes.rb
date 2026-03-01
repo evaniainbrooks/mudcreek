@@ -29,7 +29,8 @@ Rails.application.routes.draw do
     resources :delivery_methods,  only: [ :index, :create, :update, :destroy ]
     resources :listings, param: :hashid do
       collection { patch :reorder }
-      resources :attachments, only: [ :destroy ], module: :listings
+      resources :attachments,       only: [ :destroy ], module: :listings
+      resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

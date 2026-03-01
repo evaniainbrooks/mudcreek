@@ -20,6 +20,9 @@
       .col-md-4
         = f.label :name_cont, "Name", class: "form-label form-label-sm"
         = f.search_field :name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
+      .col-md-2
+        = f.label :listing_type_eq, "Type", class: "form-label form-label-sm"
+        = f.select :listing_type_eq, Listing.listing_types.keys.map { [it.humanize, it] }, { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-md-4
         = f.label :owner_email_address_cont, "Owner Email", class: "form-label form-label-sm"
         = f.search_field :owner_email_address_cont, class: "form-control form-control-sm", placeholder: "Search by owner email..."
@@ -27,11 +30,11 @@
         = f.label :categories_id_eq, "Category", class: "form-label form-label-sm"
         = f.select :categories_id_eq, @categories.map { [it.name, it.id] }, { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-md-2
-        = f.label :published_eq, "Published", class: "form-label form-label-sm"
-        = f.select :published_eq, [["Published", true], ["Unpublished", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
-      .col-md-2
         = f.label :state_eq, "State", class: "form-label form-label-sm"
         = f.select :state_eq, Listing.states.keys.map { [it.humanize, it] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-md-2
+        = f.label :published_eq, "Published", class: "form-label form-label-sm"
+        = f.select :published_eq, [["Published", true], ["Unpublished", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-auto
         = f.submit "Search", class: "btn btn-primary btn-sm"
       .col-auto

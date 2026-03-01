@@ -14,46 +14,108 @@
       %i.bi.bi-trash.me-1
       Delete
 
-.card.shadow-sm.border-0
-  .card-body
-    %dl.row.mb-0
-      %dt.col-sm-3 Name
-      %dd.col-sm-9= @listing.name
+%ul.nav.nav-tabs.mb-4#listingTabs{ role: "tablist" }
+  %li.nav-item{ role: "presentation" }
+    %button.nav-link.active{ id: "details-tab", data: { bs_toggle: "tab", bs_target: "#details-pane" }, type: "button", role: "tab", aria: { controls: "details-pane", selected: "true" } }
+      %i.bi.bi-info-circle.me-1
+      Details
+  - if @listing.sale?
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "offers-tab", data: { bs_toggle: "tab", bs_target: "#offers-pane" }, type: "button", role: "tab", aria: { controls: "offers-pane", selected: "false" } }
+        %i.bi.bi-tag.me-1
+        Offers
+        - if @offers.any?
+          %span.badge.text-bg-secondary.ms-1= @offers.size
+  - if @listing.rental?
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "rate-plans-tab", data: { bs_toggle: "tab", bs_target: "#rate-plans-pane" }, type: "button", role: "tab", aria: { controls: "rate-plans-pane", selected: "false" } }
+        %i.bi.bi-currency-dollar.me-1
+        Rate Plans
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "schedule-tab", data: { bs_toggle: "tab", bs_target: "#schedule-pane" }, type: "button", role: "tab", aria: { controls: "schedule-pane", selected: "false" } }
+        %i.bi.bi-calendar3.me-1
+        Schedule
 
-      %dt.col-sm-3 Price
-      %dd.col-sm-9= humanized_money_with_symbol(@listing.price, no_cents_if_whole: false)
+.tab-content#listingTabsContent
+  #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+    .card.shadow-sm.border-0
+      .card-body
+        %dl.row.mb-0
+          %dt.col-sm-3 Name
+          %dd.col-sm-9= @listing.name
 
-      %dt.col-sm-3 Pricing
-      %dd.col-sm-9= listing_pricing_type_badge(@listing)
+          %dt.col-sm-3 Type
+          %dd.col-sm-9= listing_type_badge(@listing)
 
-      %dt.col-sm-3 State
-      %dd.col-sm-9= listing_state_badge(@listing)
+          - if @listing.sale?
+            %dt.col-sm-3 Price
+            %dd.col-sm-9= humanized_money_with_symbol(@listing.price, no_cents_if_whole: false)
 
-      %dt.col-sm-3 Owner
-      %dd.col-sm-9= mail_to @listing.owner.email_address
+            %dt.col-sm-3 Pricing
+            %dd.col-sm-9= listing_pricing_type_badge(@listing)
 
-      %dt.col-sm-3 Lot
-      %dd.col-sm-9
-        - if @listing.lot
-          = link_to @listing.lot.name, admin_lots_path
-        - else
-          %span.text-muted —
+          %dt.col-sm-3 State
+          %dd.col-sm-9= listing_state_badge(@listing)
 
-      %dt.col-sm-3 Categories
-      %dd.col-sm-9
-        - if @listing.categories.any?
-          = listing_categories_badges(@listing)
-        - else
-          %span.text-muted —
+          %dt.col-sm-3 Owner
+          %dd.col-sm-9= mail_to @listing.owner.email_address
 
-      %dt.col-sm-3 Description
-      %dd.col-sm-9= @listing.description
+          %dt.col-sm-3 Lot
+          %dd.col-sm-9
+            - if @listing.lot
+              = link_to @listing.lot.name, admin_lots_path
+            - else
+              %span.text-muted —
 
-      %dt.col-sm-3 Created At
-      %dd.col-sm-9= @listing.created_at.to_fs(:long)
+          %dt.col-sm-3 Categories
+          %dd.col-sm-9
+            - if @listing.categories.any?
+              = listing_categories_badges(@listing)
+            - else
+              %span.text-muted —
 
-      %dt.col-sm-3 Updated At
-      %dd.col-sm-9= @listing.updated_at.to_fs(:long)
+          %dt.col-sm-3 Description
+          %dd.col-sm-9= @listing.description
+
+          %dt.col-sm-3 Created At
+          %dd.col-sm-9= @listing.created_at.to_fs(:long)
+
+          %dt.col-sm-3 Updated At
+          %dd.col-sm-9= @listing.updated_at.to_fs(:long)
+
+  - if @listing.sale?
+    #offers-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "offers-tab" } }
+      - if @offers.empty?
+        .text-muted.py-3 No offers yet.
+      - else
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead
+              %tr
+                %th Buyer
+                %th.text-end Amount
+                %th State
+                %th Message
+                %th Submitted
+                %th
+            %tbody
+              - @offers.each do |offer|
+                %tr
+                  %td= mail_to offer.user.email_address
+                  %td.text-end= humanized_money_with_symbol(offer.amount, no_cents_if_whole: false)
+                  %td= offer_state_badge(offer)
+                  %td.text-muted.small= offer.message.presence || "—"
+                  %td.text-muted.small= offer.created_at.to_fs(:short)
+                  %td.text-end
+                    = link_to "View", admin_offer_path(offer), class: "btn btn-sm btn-outline-primary"
+
+  - if @listing.rental?
+    #rate-plans-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "rate-plans-tab" } }
+      = render "admin/listings/rental_rate_plans/section", listing: @listing
+
+    #schedule-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedule-tab" } }
+      - booking_events = @rental_bookings.map { |b| { title: b.cart_item.user.email_address, start: b.start_at.iso8601, end: b.end_at.iso8601 } }
+      #booking-calendar{ data: { controller: "booking-calendar", "booking-calendar-events-value": booking_events.to_json } }
 
 .mt-3
   = link_to admin_listings_path, class: "btn btn-outline-secondary" do
