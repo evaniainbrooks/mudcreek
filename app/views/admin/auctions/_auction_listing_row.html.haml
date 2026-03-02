@@ -3,7 +3,15 @@
     %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
   %td= link_to auction_listing.listing.name, admin_listing_path(auction_listing.listing)
   %td= listing_state_badge(auction_listing.listing)
+  %td= auction_listing_money_input("starting_bid", auction_listing)
+  %td= auction_listing_money_input("bid_increment", auction_listing)
+  %td= auction_listing_money_input("reserve_price", auction_listing)
   %td.text-end
+    = form_with url: admin_auction_auction_listing_path(@auction, auction_listing),
+        method: :patch,
+        id: "al-form-#{auction_listing.id}",
+        class: "d-inline" do |f|
+      = f.button "Save", class: "btn btn-sm btn-outline-success me-1"
     = button_to "Remove", admin_auction_auction_listing_path(@auction, auction_listing),
         method: :delete,
         class: "btn btn-sm btn-outline-danger",

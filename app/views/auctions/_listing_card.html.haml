@@ -1,0 +1,29 @@
+- listing = auction_listing.listing
+.col
+  .card.h-100.shadow-sm.border-0
+    .position-relative
+      - if listing.images.attached?
+        = image_tag listing.images.first, class: "card-img-top object-fit-cover", style: "height: 200px"
+      - elsif listing.videos.attached?
+        %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover", muted: true, playsinline: true, preload: "metadata" }
+          %source{ src: url_for(listing.videos.first) }
+      - elsif listing.lot&.listing_placeholder&.attached?
+        = image_tag listing.lot.listing_placeholder, class: "card-img-top object-fit-cover", style: "height: 200px"
+      - else
+        .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
+          %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
+      - if listing.sold?
+        .position-absolute.top-0.start-0.p-2
+          = listing_state_badge(listing)
+    .card-body
+      %h5.card-title.fw-semibold.mb-1
+        = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"
+      .d-flex.align-items-center.gap-2.mb-0
+        %p.text-muted.fw-bold.mb-0 No bids
+        - unless auction_listing.reserve_price_cents.present?
+          %span.badge.text-bg-success No Reserve
+      %p.card-text.text-muted.small.mt-1
+        = listing.description.to_plain_text.truncate(120)
+        - if listing.categories.any?
+          %br
+          = listing_categories_badges(listing, css: "text-bg-dark")

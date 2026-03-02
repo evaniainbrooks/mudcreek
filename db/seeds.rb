@@ -28,7 +28,7 @@ puts "Seeded #{Tenant.count} tenants."
 end
 
 # Roles & Permissions
-all_resources = %w[Listing Lot User Role Permission Listings::Category Offer DiscountCode DeliveryMethod Listings::RentalRatePlan]
+all_resources = %w[Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan Auction AuctionListing AuctionRegistration Bid]
 all_actions   = %w[index show create update destroy reorder]
 
 super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
@@ -597,3 +597,126 @@ puts "Seeded #{DiscountCode.count} discount codes."
 end
 
 puts "Seeded #{DeliveryMethod.count} delivery methods."
+
+# Auctions
+AuctionListing.destroy_all
+Auction.destroy_all
+
+auction_data = [
+  {
+    name: "Autumn Estates Auction",
+    starts_at: 6.weeks.ago,
+    ends_at: 4.weeks.ago,
+    published: true,
+    reconciled: true,
+    auto_approve: false,
+    address: { street_address: "1200 Heritage Drive", city: "Kamloops", province: "BC", postal_code: "V2C 1A1", country: "CA" },
+    listings: [
+      { name: "Cozy Mountain Cabin",  starting_bid: 250_000, bid_increment: 5_000, reserve_price: 265_000 },
+      { name: "Timber Frame Retreat", starting_bid: 400_000, bid_increment: 10_000, reserve_price: nil    },
+      { name: "Lakefront Cottage",    starting_bid: 380_000, bid_increment: 5_000,  reserve_price: 400_000 },
+      { name: "Sandy Cove Cottage",   starting_bid: 350_000, bid_increment: 5_000,  reserve_price: nil    },
+      { name: "Bear Creek Cabin",     starting_bid: 175_000, bid_increment: 2_500,  reserve_price: 190_000 }
+    ]
+  },
+  {
+    name: "Winter Wilderness Sale",
+    starts_at: 3.days.ago,
+    ends_at: 11.days.from_now,
+    published: true,
+    reconciled: false,
+    auto_approve: true,
+    address: { street_address: "740 Frontier Road", city: "Revelstoke", province: "BC", postal_code: "V0E 2S0", country: "CA" },
+    listings: [
+      { name: "Rural Hobby Farm",     starting_bid: 500_000, bid_increment: 10_000, reserve_price: 525_000 },
+      { name: "Prairie Homestead",    starting_bid: 350_000, bid_increment: 5_000,  reserve_price: nil    },
+      { name: "Desert Adobe Estate",  starting_bid: 575_000, bid_increment: 10_000, reserve_price: 600_000 },
+      { name: "Converted Barn Loft",  starting_bid: 300_000, bid_increment: 5_000,  reserve_price: nil    },
+      { name: "Treehouse Retreat",    starting_bid: 150_000, bid_increment: 5_000,  reserve_price: nil    }
+    ]
+  },
+  {
+    name: "Spring Land Preview",
+    starts_at: 3.weeks.from_now,
+    ends_at: 5.weeks.from_now,
+    published: false,
+    reconciled: false,
+    auto_approve: true,
+    address: { street_address: "55 Meadow Lane", city: "Penticton", province: "BC", postal_code: "V2A 1B3", country: "CA" },
+    listings: [
+      { name: "Forested Acreage",        starting_bid: 175_000, bid_increment: 5_000, reserve_price: 190_000 },
+      { name: "Coastal Bluff Lot",       starting_bid: 450_000, bid_increment: 10_000, reserve_price: nil    },
+      { name: "Wildflower Meadow Parcel",starting_bid: 120_000, bid_increment: 2_500,  reserve_price: nil    },
+      { name: "Ridgeline Parcel",        starting_bid: 140_000, bid_increment: 2_500,  reserve_price: 150_000 }
+    ]
+  }
+]
+
+auctions = auction_data.map do |attrs|
+  auction = Auction.create!(
+    tenant: mudcreek,
+    name: attrs[:name],
+    starts_at: attrs[:starts_at],
+    ends_at: attrs[:ends_at],
+    published: attrs[:published],
+    reconciled: attrs[:reconciled],
+    auto_approve: attrs[:auto_approve]
+  )
+
+  addr = attrs[:address]
+  Address.create!(
+    addressable: auction,
+    address_type: "primary",
+    street_address: addr[:street_address],
+    city: addr[:city],
+    province: addr[:province],
+    postal_code: addr[:postal_code],
+    country: addr[:country]
+  )
+
+  attrs[:listings].each_with_index do |listing_attrs, idx|
+    listing = Listing.find_by(name: listing_attrs[:name])
+    next unless listing
+
+    AuctionListing.create!(
+      auction: auction,
+      listing: listing,
+      position: idx + 1,
+      starting_bid_cents:  listing_attrs[:starting_bid]  ? listing_attrs[:starting_bid]  * 100 : nil,
+      bid_increment_cents: listing_attrs[:bid_increment] ? listing_attrs[:bid_increment] * 100 : nil,
+      reserve_price_cents: listing_attrs[:reserve_price] ? listing_attrs[:reserve_price] * 100 : nil
+    )
+  end
+
+  auction
+end
+
+puts "Seeded #{Auction.count} auctions with #{AuctionListing.count} auction listings."
+
+# Auction Registrations
+if Rails.env.local?
+  regular_users = User.where(tenant: mudcreek).where.not(email_address: "admin@mudcreek").limit(10).to_a
+
+  if regular_users.any?
+    autumn_auction, winter_auction, spring_auction = auctions
+
+    # Autumn (past, reconciled, manual approve) — mix of states
+    regular_users.first(4).each_with_index do |user, i|
+      state = [ :approved, :approved, :approved, :rejected ][i]
+      AuctionRegistration.create!(auction: autumn_auction, user: user, state: state)
+    end
+
+    # Winter (live, auto_approve: true) — all approved automatically
+    regular_users.first(7).each do |user|
+      reg = AuctionRegistration.new(auction: winter_auction, user: user)
+      reg.save!
+    end
+
+    # Spring (upcoming, auto_approve: true) — pending until auction created; a few registered early
+    regular_users.first(3).each do |user|
+      AuctionRegistration.create!(auction: spring_auction, user: user)
+    end
+
+    puts "Seeded #{AuctionRegistration.count} auction registrations."
+  end
+end

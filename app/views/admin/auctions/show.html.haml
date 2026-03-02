@@ -72,11 +72,6 @@
             %dt.col-sm-3 Description
             %dd.col-sm-9= @auction.description
 
-          - if @auction.cover_photo.attached?
-            %dt.col-sm-3 Cover Photo
-            %dd.col-sm-9
-              = image_tag @auction.cover_photo.variant(resize_to_fill: [200, 140]), class: "rounded", style: "object-fit: cover"
-
           - if @auction.poster.attached?
             %dt.col-sm-3 Poster
             %dd.col-sm-9

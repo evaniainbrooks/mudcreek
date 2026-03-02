@@ -62,12 +62,38 @@ module Admin::AuctionsHelper
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Name") { |al| link_to(al.listing.name, admin_listing_path(al.listing)) }
     table.with_column("State") { |al| listing_state_badge(al.listing) }
+    table.with_column("Starting Bid") { |al| auction_listing_money_input("starting_bid", al) }
+    table.with_column("Bid Increment") { |al| auction_listing_money_input("bid_increment", al) }
+    table.with_column("Reserve") { |al| auction_listing_money_input("reserve_price", al) }
     table.with_column("Actions", html_class: "text-end") do |al|
-      button_to("Remove", admin_auction_auction_listing_path(auction, al),
-        method: :delete,
-        class: "btn btn-sm btn-outline-danger",
-        form: { data: { turbo_confirm: "Remove this listing from the auction?" } })
+      safe_join([
+        form_with(url: admin_auction_auction_listing_path(auction, al), method: :patch,
+          id: "al-form-#{al.id}", class: "d-inline") { |f| f.button("Save", class: "btn btn-sm btn-outline-success me-1") },
+        button_to("Remove", admin_auction_auction_listing_path(auction, al),
+          method: :delete,
+          class: "btn btn-sm btn-outline-danger",
+          form: { data: { turbo_confirm: "Remove this listing from the auction?" } })
+      ])
     end
     render(table)
+  end
+
+  private
+
+  def auction_listing_money_input(field, al)
+    cents = al.send(:"#{field}_cents")
+    value = cents ? "%.2f" % (cents / 100.0) : nil
+    symbol = Money::Currency.new(Money.default_currency).symbol
+    content_tag(:div, class: "input-group input-group-sm", style: "width: 120px") do
+      safe_join([
+        content_tag(:span, symbol, class: "input-group-text"),
+        number_field_tag("auction_listing[#{field}]", value,
+          form: "al-form-#{al.id}",
+          class: "form-control form-control-sm",
+          step: "0.01",
+          min: "0",
+          placeholder: "—")
+      ])
+    end
   end
 end

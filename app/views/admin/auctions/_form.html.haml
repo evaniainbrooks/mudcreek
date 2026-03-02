@@ -61,20 +61,6 @@
           %i.bi.bi-x-lg.me-1
           Remove
 
-  .mb-3
-    = f.label :cover_photo, "Cover Photo", class: "form-label"
-    = f.file_field :cover_photo, class: "form-control #{'is-invalid' if auction.errors[:cover_photo].any?}", accept: "image/*"
-    - if auction.errors[:cover_photo].any?
-      .invalid-feedback= auction.errors[:cover_photo].to_sentence
-    - if auction.cover_photo.attached?
-      .mt-2.d-flex.align-items-center.gap-2
-        = image_tag auction.cover_photo.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
-        = button_to admin_auction_path(auction), method: :patch, params: { remove_cover_photo: true },
-            class: "btn btn-sm btn-outline-danger",
-            form: { data: { turbo_confirm: "Remove cover photo?" } } do
-          %i.bi.bi-x-lg.me-1
-          Remove
-
   %hr.my-4
 
   %h6.mb-3

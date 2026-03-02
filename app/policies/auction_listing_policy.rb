@@ -1,5 +1,5 @@
 class AuctionListingPolicy < ApplicationPolicy
-  actions :create, :destroy
+  actions :create, :destroy, :update
 
   def reorder? = permitted?(:reorder)
 

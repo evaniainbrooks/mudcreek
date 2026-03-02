@@ -53,7 +53,6 @@ class Admin::AuctionsController < Admin::BaseController
 
   def update
     @auction.poster.purge_later if params[:remove_poster].present?
-    @auction.cover_photo.purge_later if params[:remove_cover_photo].present?
     if @auction.update(auction_params)
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
     else
@@ -69,16 +68,16 @@ class Admin::AuctionsController < Admin::BaseController
   private
 
   def set_auction
-    @auction = Auction.with_attached_poster.with_attached_cover_photo.find_by!(hashid: params[:hashid])
+    @auction = Auction.with_attached_poster.find_by!(hashid: params[:hashid])
     authorize(@auction)
   end
 
   def auction_params
     p = params.require(:auction).permit(
-      :name, :starts_at, :ends_at, :published, :reconciled, :auto_approve, :poster, :cover_photo, :description,
+      :name, :starts_at, :ends_at, :published, :reconciled, :auto_approve, :poster, :description,
       address_attributes: %i[id street_address city province postal_code country _destroy]
     )
-    %i[poster cover_photo].each { |key| p.delete(key) if p[key].blank? }
+    p.delete(:poster) if p[:poster].blank?
     p
   end
 end

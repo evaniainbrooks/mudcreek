@@ -42,7 +42,7 @@ Rails.application.routes.draw do
       resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
     end
     resources :auctions, param: :hashid do
-      resources :auction_listings, only: [ :destroy ], module: :auctions do
+      resources :auction_listings, only: [ :destroy, :update ], module: :auctions do
         collection { patch :reorder }
       end
     end

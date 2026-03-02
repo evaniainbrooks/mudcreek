@@ -1,5 +1,3 @@
-- cover_style = @auction.cover_photo.attached? ? "background-image: url('#{url_for(@auction.cover_photo)}'); background-size: cover; background-position: center;" : ""
-
 .row.g-0.align-items-stretch{ style: "min-height: 70vh" }
   .col-lg-4.bg-body.border-end.p-4.p-lg-5
     .position-sticky{ style: "top: 1.5rem" }
@@ -28,16 +26,11 @@
         %hr.my-4
         .auction-description= @auction.description
 
-  .col-lg-8.position-relative{ style: cover_style }
-    - if @auction.cover_photo.attached?
-      .position-absolute.top-0.start-0.w-100.h-100{ style: "background: rgba(0,0,0,0.5); z-index: 0" }
-
-    .position-relative.p-4.p-lg-5{ style: "z-index: 1" }
-      - if @listings.any?
-        .row.row-cols-1.row-cols-sm-2.row-cols-xl-3.g-4
-          = render partial: "listings/listing", collection: @listings, as: :listing
-      - else
-        - text_class = @auction.cover_photo.attached? ? "text-white" : "text-muted"
-        .py-5.text-center
-          %i.bi.bi-tag.mb-3.d-block{ class: text_class, style: "font-size: 3rem" }
-          %p.mb-0{ class: text_class } No listings available for this auction yet.
+  .col-lg-8.bg-body-secondary.p-4.p-lg-5
+    - if @auction_listings.any?
+      .row.row-cols-1.row-cols-sm-2.row-cols-xl-3.g-4
+        = render partial: "auctions/listing_card", collection: @auction_listings, as: :auction_listing
+    - else
+      .py-5.text-center.text-muted
+        %i.bi.bi-tag.mb-3.d-block{ style: "font-size: 3rem" }
+        %p.mb-0 No listings available for this auction yet.

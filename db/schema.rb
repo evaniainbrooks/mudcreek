@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_120003) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_140001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,9 +77,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_120003) do
 
   create_table "auction_listings", force: :cascade do |t|
     t.bigint "auction_id", null: false
+    t.integer "bid_increment_cents"
     t.datetime "created_at", null: false
     t.bigint "listing_id", null: false
     t.integer "position"
+    t.integer "reserve_price_cents"
+    t.integer "starting_bid_cents"
     t.datetime "updated_at", null: false
     t.index ["auction_id"], name: "index_auction_listings_on_auction_id"
     t.index ["listing_id"], name: "index_auction_listings_on_listing_id", unique: true
@@ -109,6 +112,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_120003) do
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_auctions_on_hashid", unique: true
     t.index ["tenant_id"], name: "index_auctions_on_tenant_id"
+  end
+
+  create_table "bids", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.bigint "auction_listing_id", null: false
+    t.bigint "auction_registration_id", null: false
+    t.datetime "created_at", null: false
+    t.string "state", default: "placed", null: false
+    t.datetime "updated_at", null: false
+    t.index ["auction_listing_id"], name: "index_bids_on_auction_listing_id"
+    t.index ["auction_registration_id"], name: "index_bids_on_auction_registration_id"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -499,6 +513,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_120003) do
   add_foreign_key "auction_registrations", "auctions"
   add_foreign_key "auction_registrations", "users"
   add_foreign_key "auctions", "tenants"
+  add_foreign_key "bids", "auction_listings"
+  add_foreign_key "bids", "auction_registrations"
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"

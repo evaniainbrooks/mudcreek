@@ -8,6 +8,8 @@ class AuctionRegistration < ApplicationRecord
 
   validates :user_id, uniqueness: { scope: :auction_id }
 
+  has_many :bids, dependent: :destroy
+
   before_create :apply_auto_approve
 
   def self.ransackable_attributes(_auth_object = nil)
