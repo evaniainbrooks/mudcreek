@@ -38,16 +38,16 @@ module Admin::AuctionsHelper
 
   def render_auction_registrations_table(registrations:)
     table = ::TableComponent.new(rows: registrations)
-    table.with_column("User") { |r| link_to r.user.name, admin_user_path(r.user) }
-    table.with_column("Email") { |r| r.user.email_address }
-    table.with_column("State", html_class: "text-center") { |r| auction_registration_state_badge(r) }
+    table.with_value_column("User") { it.user }
+    table.with_column("State", html_class: "text-center") { auction_registration_state_badge(it) }
     table.with_value_column("Registered") { it.created_at }
+    table.with_value_column("Updated", sort_attr: :updated_at) { it.updated_at }
     render(table)
   end
 
   def auction_registration_state_badge(registration)
     case registration.state
-    when "pending"  then tag.span("Pending",  class: "badge text-bg-secondary")
+    when "pending"  then tag.span("Pending",  class: "badge text-bg-warning")
     when "approved" then tag.span("Approved", class: "badge text-bg-success")
     when "rejected" then tag.span("Rejected", class: "badge text-bg-danger")
     end

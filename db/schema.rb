@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_140001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -72,7 +72,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_140001) do
     t.string "street_address"
     t.datetime "updated_at", null: false
     t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_type", unique: true
-    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
   create_table "auction_listings", force: :cascade do |t|
@@ -95,7 +94,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_140001) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["auction_id", "user_id"], name: "index_auction_registrations_on_auction_id_and_user_id", unique: true
-    t.index ["auction_id"], name: "index_auction_registrations_on_auction_id"
     t.index ["user_id"], name: "index_auction_registrations_on_user_id"
   end
 
