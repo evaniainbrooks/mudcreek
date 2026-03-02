@@ -18,7 +18,7 @@ class ListingsController < ApplicationController
     @category_hashid = params[:category_id].presence
     category = @category_hashid && Listings::Category.find_by(hashid: @category_hashid)
 
-    scope = Listing.where(published: true, state: @tab).with_rich_text_description.with_attached_images.with_attached_videos.includes(:rental_rate_plans, lot: { listing_placeholder_attachment: :blob }).order(position: :asc, id: :asc)
+    scope = Listing.where(published: true, state: @tab).not_in_auction.with_rich_text_description.with_attached_images.with_attached_videos.includes(:rental_rate_plans, lot: { listing_placeholder_attachment: :blob }).order(position: :asc, id: :asc)
     scope = scope.where(id: Listings::CategoryAssignment.where(listings_category_id: category.id).select(:listing_id)) if category
     @pagy, @listings = pagy(:keyset, scope)
 

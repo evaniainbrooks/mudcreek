@@ -22,6 +22,9 @@ class Listing < ApplicationRecord
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
 
+  has_many :auction_listings, dependent: :destroy
+  has_one :auction_listing
+
   has_rich_text :description
   has_many_attached :images
   has_many_attached :videos
@@ -66,6 +69,8 @@ class Listing < ApplicationRecord
       errors.add(:documents, "#{doc.filename} must be a PDF, DOC, DOCX, or XLSX file")
     end
   end
+
+  scope :not_in_auction, -> { where.not(id: AuctionListing.select(:listing_id)) }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[name price_cents acquisition_price_cents quantity owner_id published state pricing_type listing_type created_at]

@@ -4,6 +4,7 @@
     Offers
 
 .card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Filter Records
   .card-body
     = search_form_for @q, url: admin_offers_path, html: { class: "row g-2 align-items-end" } do |f|
       .col-md-4

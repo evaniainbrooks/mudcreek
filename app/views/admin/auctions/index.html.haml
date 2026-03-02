@@ -1,0 +1,9 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-hammer.me-2
+    Auctions
+  = link_to new_admin_auction_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    New Auction
+
+= render_auctions_table(auctions: @auctions)

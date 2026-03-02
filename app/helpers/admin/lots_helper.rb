@@ -60,7 +60,7 @@ module Admin::LotsHelper
     table = ::TableComponent.new(rows: lots)
     table.with_column("Name") { |lot| inline_edit_cell(lot, :name, lot.name, url: admin_lot_path(lot), scope: :lot) }
     table.with_column("Number") { |lot| inline_edit_cell(lot, :number, lot.number.to_s, url: admin_lot_path(lot), scope: :lot) }
-    table.with_column("Owner") { |lot| lot_inline_edit_owner_cell(lot, users) }
+    table.with_value_column("Owner") { it.owner }
     table.with_column("Placeholder") { |lot| lot_placeholder_cell(lot) }
     table.with_value_column("Listings") { it.listings.size }
     table.with_column("Actions", html_class: "text-end") do |lot|

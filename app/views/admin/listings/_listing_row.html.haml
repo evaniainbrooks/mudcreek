@@ -1,5 +1,8 @@
 %tr{data: { id: listing.id }}
   %td.text-center.pe-0
+    - unless listing.auction_listing || listing.rental?
+      %input.form-check-input{type: "checkbox", value: listing.id, data: { "bulk-select-target": "checkbox", action: "change->bulk-select#toggle" }}
+  %td.text-center.pe-0
     %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
   %td
     - if listing.lot

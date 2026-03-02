@@ -11,6 +11,7 @@
       New Listing
 
 .card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Filter Records
   .card-body
     = search_form_for @q, url: admin_listings_path, html: { class: "row g-2 align-items-end" } do |f|
       .col-md-2
@@ -39,6 +40,20 @@
         = f.submit "Search", class: "btn btn-primary btn-sm"
       .col-auto
         = link_to "Clear", admin_listings_path, class: "btn btn-outline-secondary btn-sm"
-%div{data: { controller: "infinite-scroll" }}
-  = render_listings_table(listings: @listings, q: @q)
-  = render "admin/listings/sentinel", pagy: @pagy, q: params[:q]
+%div{data: { controller: "bulk-select" }}
+  .card.shadow-sm.border-0.mb-3{data: { "bulk-select-target": "actionBar" }, hidden: true}
+    .card-body
+      .d-flex.align-items-center.gap-3.flex-wrap
+        .form-check.mb-0
+          %input.form-check-input{type: "checkbox", data: { "bulk-select-target": "selectAll", action: "change->bulk-select#toggleAll" }}
+          %label.form-check-label Select all
+        %span.text-muted.small{data: { "bulk-select-target": "count" }} 0 selected
+        = form_with url: admin_auction_listings_path, method: :post, data: { "bulk-select-target": "form", turbo: false } do |f|
+          .d-flex.gap-2.flex-wrap
+            = f.select :auction_id, @auctions.map { [_1.name, _1.id] },
+                { prompt: "Select auction…" },
+                class: "form-select form-select-sm w-auto"
+            %button.btn.btn-primary.btn-sm{type: "button", data: { action: "click->bulk-select#submit" }} Add to Auction
+  %div{data: { controller: "infinite-scroll" }}
+    = render_listings_table(listings: @listings, q: @q)
+    = render "admin/listings/sentinel", pagy: @pagy, q: params[:q]

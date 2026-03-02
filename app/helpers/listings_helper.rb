@@ -15,7 +15,7 @@ module ListingsHelper
   end
 
   def listing_type_badge(listing, extra_css: nil)
-    css = listing.rental? ? "text-bg-info" : "text-bg-secondary"
+    css = listing.rental? ? "text-bg-info" : "text-bg-warning"
     content_tag(:span, listing.listing_type.humanize, class: ["badge", css, extra_css].compact.join(" "))
   end
 
@@ -38,6 +38,7 @@ module ListingsHelper
       tbody_id: "admin-listings-tbody",
       tbody_data: { controller: "sortable", sortable_url_value: reorder_admin_listings_path }
     )
+    table.with_column("", html_class: "text-center pe-0") { |l| l.auction_listing || l.rental? ? "".html_safe : tag.input(type: "checkbox", class: "form-check-input", value: l.id, data: { "bulk-select-target": "checkbox", action: "change->bulk-select#toggle" }) }
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Lot") { |l| l.lot ? lot_number_badge(l.lot) : "—" }
     table.with_column("Name", sort_attr: :name) { link_to(it.name, admin_listing_path(it)) }

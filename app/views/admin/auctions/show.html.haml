@@ -1,0 +1,87 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-hammer.me-2
+    = @auction.name
+  .btn-group
+    = link_to edit_admin_auction_path(@auction), class: "btn btn-outline-primary" do
+      %i.bi.bi-pencil.me-1
+      Edit
+    = button_to admin_auction_path(@auction), method: :delete, class: "btn btn-outline-danger",
+        form: { data: { turbo_confirm: "Are you sure you want to delete this auction?" } } do
+      %i.bi.bi-trash.me-1
+      Delete
+
+%ul.nav.nav-tabs.mb-4{ role: "tablist" }
+  %li.nav-item{ role: "presentation" }
+    %button.nav-link.active{ id: "details-tab",
+      data: { bs_toggle: "tab", bs_target: "#details-pane" },
+      type: "button", role: "tab",
+      aria: { controls: "details-pane", selected: "true" } }
+      %i.bi.bi-info-circle.me-1
+      Details
+  %li.nav-item{ role: "presentation" }
+    %button.nav-link{ id: "listings-tab",
+      data: { bs_toggle: "tab", bs_target: "#listings-pane" },
+      type: "button", role: "tab",
+      aria: { controls: "listings-pane", selected: "false" } }
+      %i.bi.bi-tags.me-1
+      Listings
+      %span.badge.text-bg-secondary.ms-1= @auction_listings.size
+
+.tab-content
+  #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+    .card.shadow-sm.border-0
+      .card-body
+        %dl.row.mb-0
+          %dt.col-sm-3 Name
+          %dd.col-sm-9= @auction.name
+
+          %dt.col-sm-3 Starts At
+          %dd.col-sm-9= @auction.starts_at&.to_fs(:long) || "—"
+
+          %dt.col-sm-3 Ends At
+          %dd.col-sm-9= @auction.ends_at&.to_fs(:long) || "—"
+
+          %dt.col-sm-3 Published
+          %dd.col-sm-9
+            - if @auction.published?
+              %span.badge.text-bg-success Published
+            - else
+              %span.badge.text-bg-secondary Unpublished
+
+          %dt.col-sm-3 Reconciled
+          %dd.col-sm-9
+            - if @auction.reconciled?
+              %span.badge.text-bg-info Reconciled
+            - else
+              %span.badge.text-bg-secondary Not Reconciled
+
+          - if @auction.description.present?
+            %dt.col-sm-3 Description
+            %dd.col-sm-9= @auction.description
+
+          - if @auction.cover_photo.attached?
+            %dt.col-sm-3 Cover Photo
+            %dd.col-sm-9
+              = image_tag @auction.cover_photo.variant(resize_to_fill: [200, 140]), class: "rounded", style: "object-fit: cover"
+
+          - if @auction.poster.attached?
+            %dt.col-sm-3 Poster
+            %dd.col-sm-9
+              = image_tag @auction.poster.variant(resize_to_fill: [200, 140]), class: "rounded", style: "object-fit: cover"
+
+          - if @auction.address
+            %dt.col-sm-3 Location
+            %dd.col-sm-9
+              = [@auction.address.street_address, @auction.address.city, @auction.address.province, @auction.address.postal_code, @auction.address.country].compact.join(", ")
+
+  #listings-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "listings-tab" } }
+    - if @auction_listings.empty?
+      .text-muted.py-3 No listings assigned to this auction yet.
+    - else
+      = render_auction_listings_table(auction_listings: @auction_listings, auction: @auction)
+
+.mt-3
+  = link_to admin_auctions_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Auctions

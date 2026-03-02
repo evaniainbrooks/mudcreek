@@ -5,8 +5,9 @@ class Admin::ListingsController < Admin::BaseController
     authorize(Listing)
     @categories = Listings::Category.order(:name)
     @lots = Lot.order(:number)
+    @auctions = Auction.unreconciled.order(:name)
     @q = Listing.ransack(params[:q])
-    scope = @q.result.includes(:owner, :categories, :lot).order(position: :asc, id: :asc)
+    scope = @q.result.includes(:owner, :categories, :lot, :auction_listing).order(position: :asc, id: :asc)
     @pagy, @listings = pagy(:keyset, scope)
 
     respond_to do |format|

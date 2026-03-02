@@ -4,6 +4,7 @@
     Orders
 
 .card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Filter Records
   .card-body
     = search_form_for @q, url: admin_orders_path, html: { class: "row g-2 align-items-end" } do |f|
       .col-md-4
@@ -24,18 +25,5 @@
         = link_to "Clear", admin_orders_path, class: "btn btn-outline-secondary btn-sm"
 
 %div{data: { controller: "infinite-scroll" }}
-  .card.shadow-sm.border-0
-    .card-body.p-0
-      .table-responsive
-        %table.table.align-middle.mb-0
-          %thead
-            %tr
-              %th.ps-3 Order
-              %th Buyer
-              %th.text-center Items
-              %th Status
-              %th Total
-              %th.pe-3 Date
-          %tbody#admin-orders-tbody
-            = render partial: "admin/orders/order_row", collection: @orders, as: :order
+  = render_orders_table(orders: @orders, q: @q)
   = render "admin/orders/sentinel", pagy: @pagy, q: params[:q]

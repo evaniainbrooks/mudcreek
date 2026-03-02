@@ -39,6 +39,12 @@ Rails.application.routes.draw do
       resources :attachments,       only: [ :destroy ], module: :listings
       resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
     end
+    resources :auctions do
+      resources :auction_listings, only: [ :destroy ], module: :auctions do
+        collection { patch :reorder }
+      end
+    end
+    resources :auction_listings, only: [ :create ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

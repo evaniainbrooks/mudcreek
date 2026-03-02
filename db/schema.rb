@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_005005) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_100003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,6 +73,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_005005) do
     t.datetime "updated_at", null: false
     t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
+  end
+
+  create_table "auction_listings", force: :cascade do |t|
+    t.bigint "auction_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "listing_id", null: false
+    t.integer "position"
+    t.datetime "updated_at", null: false
+    t.index ["auction_id"], name: "index_auction_listings_on_auction_id"
+    t.index ["listing_id"], name: "index_auction_listings_on_listing_id", unique: true
+  end
+
+  create_table "auctions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "ends_at"
+    t.string "name", null: false
+    t.boolean "published", default: false, null: false
+    t.boolean "reconciled", default: false, null: false
+    t.datetime "starts_at"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_auctions_on_tenant_id"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -458,6 +480,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_005005) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "auction_listings", "auctions"
+  add_foreign_key "auction_listings", "listings"
+  add_foreign_key "auctions", "tenants"
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"

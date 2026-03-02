@@ -1,5 +1,6 @@
 import { application } from "./application"
 import AddressController from "./address_controller"
+import BulkSelectController from "./bulk_select_controller"
 import BookingCalendarController from "./booking_calendar_controller"
 import HelloController from "./hello_controller"
 import ImageZoomController from "./image_zoom_controller"
@@ -12,6 +13,7 @@ import SortableController from "./sortable_controller"
 import ViewToggleController from "./view_toggle_controller"
 
 application.register("address", AddressController)
+application.register("bulk-select", BulkSelectController)
 application.register("booking-calendar", BookingCalendarController)
 application.register("hello", HelloController)
 application.register("image-zoom", ImageZoomController)
