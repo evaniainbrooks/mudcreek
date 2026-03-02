@@ -11,7 +11,7 @@
     %a.nav-link{ href: "#orders", data: { "bs-toggle": "tab" } }
       %i.bi.bi-bag.me-2
       Orders
-      - unless @orders.empty?
+      - if @orders.present?
         %span.badge.text-bg-secondary.ms-1= @orders.size
 
 .tab-content

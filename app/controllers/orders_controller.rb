@@ -32,24 +32,9 @@ class OrdersController < ApplicationController
 
     reconcile_discount_code
 
-    # Calculate totals (same formula as CartsController#show)
-    subtotal_cents = @cart_items.sum(&:effective_price_cents)
-    taxable_cents  = @cart_items.sum { |item| item.listing.tax_exempt? ? 0 : item.effective_price_cents }
-    tax_cents      = (taxable_cents * SALES_TAX_RATE).ceil
-    pretax_total   = subtotal_cents + tax_cents
-
-    discount_cents = if @discount_code
-      if @discount_code.fixed?
-        [ @discount_code.amount_cents, pretax_total ].min
-      else
-        (pretax_total * @discount_code.amount_cents / 10_000.0).floor
-      end
-    else
-      0
-    end
-
-    delivery_cents = @delivery_method&.price_cents || 0
-    total_cents    = [ pretax_total - discount_cents + delivery_cents, 0 ].max
+    summary = CartCalculator.new(
+      @cart_items, discount_code: @discount_code, delivery_method: @delivery_method
+    ).calculate
 
     # Build address snapshot
     cart_addr    = Current.user.cart_address
@@ -58,13 +43,13 @@ class OrdersController < ApplicationController
     order = Current.user.orders.build(
       delivery_method:      @delivery_method,
       delivery_method_name: @delivery_method&.name,
-      delivery_price_cents: delivery_cents,
+      delivery_price_cents: summary.delivery_cents,
       discount_code:        @discount_code,
       discount_code_key:    @discount_code&.key,
-      discount_cents:       discount_cents,
-      subtotal_cents:       subtotal_cents,
-      tax_cents:            tax_cents,
-      total_cents:          total_cents,
+      discount_cents:       summary.discount_cents,
+      subtotal_cents:       summary.subtotal_cents,
+      tax_cents:            summary.tax_cents,
+      total_cents:          summary.total_cents,
       street_address:       cart_addr&.street_address || profile_addr&.street_address,
       city:                 cart_addr&.city           || profile_addr&.city,
       province:             cart_addr&.province       || profile_addr&.province,

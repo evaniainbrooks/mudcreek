@@ -10,6 +10,86 @@ RSpec.describe "Profiles", type: :request do
 
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
 
+  describe "PATCH /profile" do
+    context "with valid name params" do
+      it "updates the user's name and redirects" do
+        patch profile_path, params: { user: { first_name: "Jane", last_name: "Doe" } }
+        expect(response).to redirect_to(edit_profile_path)
+        expect(user.reload.first_name).to eq("Jane")
+        expect(user.reload.last_name).to eq("Doe")
+      end
+
+      it "sets a success notice" do
+        patch profile_path, params: { user: { first_name: "Jane", last_name: "Doe" } }
+        follow_redirect!
+        expect(response.body).to include("Profile updated successfully.")
+      end
+    end
+
+    context "with address params (no existing address)" do
+      it "creates the address and redirects" do
+        patch profile_path, params: {
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            address_attributes: {
+              street_address: "123 Main St",
+              city: "Halifax",
+              province: "NS",
+              postal_code: "B3H 1A1",
+              country: "CA"
+            }
+          }
+        }
+        expect(response).to redirect_to(edit_profile_path)
+        expect(user.reload.address.city).to eq("Halifax")
+      end
+    end
+
+    context "with address params (existing address)" do
+      before do
+        patch profile_path, params: {
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            address_attributes: { street_address: "1 Old St", city: "Truro", province: "NS",
+                                  postal_code: "B2N 1A1", country: "CA" }
+          }
+        }
+      end
+
+      it "updates the existing address" do
+        patch profile_path, params: {
+          user: {
+            first_name: user.first_name,
+            last_name: user.last_name,
+            address_attributes: { street_address: "99 New Ave", city: "Dartmouth", province: "NS",
+                                  postal_code: "B2Y 1A1", country: "CA" }
+          }
+        }
+        expect(response).to redirect_to(edit_profile_path)
+        expect(user.reload.address.city).to eq("Dartmouth")
+        expect(user.address.street_address).to eq("99 New Ave")
+      end
+    end
+
+    context "with invalid params" do
+      it "renders the edit form with unprocessable_content status" do
+        patch profile_path, params: { user: { first_name: "" } }
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        patch profile_path, params: { user: { first_name: "Jane", last_name: "Doe" } }
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
   describe "GET /profile/edit — orders tab" do
     context "when the user has no orders" do
       it "returns 200" do

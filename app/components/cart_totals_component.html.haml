@@ -1,0 +1,35 @@
+%tfoot
+  %tr.border-top
+    %td.ps-3.text-muted Subtotal
+    %td.text-end.text-muted= number_to_currency(@summary.subtotal)
+    %td
+  %tr
+    %td.ps-3.text-muted
+      Tax (#{(SALES_TAX_RATE * 100).to_i}%)
+    %td.text-end.text-muted= number_to_currency(@summary.tax)
+    %td
+  - if @delivery_method
+    %tr.table-info
+      %td.ps-3
+        %i.bi.bi-truck.me-1
+        = @delivery_method.name
+      %td.text-end
+        = @delivery_method.price_cents.zero? ? "Free" : number_to_currency(@summary.delivery)
+      %td
+  - if @discount_code
+    %tr.table-success
+      %td.ps-3
+        %i.bi.bi-ticket-perforated.me-1
+        = @discount_code.key
+        - if @discount_code.percentage?
+          = "(#{@discount_code.amount_cents / 100}% off)"
+      %td.text-end= number_to_currency(-@summary.discount_savings)
+      %td
+  %tr.border-top.border-2
+    %th.ps-3.fs-5 Total
+    %th.text-end.fs-5= number_to_currency(@summary.total)
+    %th
+  %tr
+    %td{colspan: 3}
+      = form_with url: orders_path, method: :post do
+        = submit_tag "Place Order", class: "btn btn-success w-100 mt-2"

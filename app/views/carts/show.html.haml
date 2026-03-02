@@ -149,38 +149,7 @@
                           method: :delete, class: "btn btn-sm btn-outline-danger",
                           form: { data: { turbo_confirm: "Remove from cart?" } } do
                         %i.bi.bi-trash
-              %tfoot
-                %tr.border-top
-                  %td.ps-3.text-muted Subtotal
-                  %td.text-end.text-muted= number_to_currency(@subtotal)
-                  %td
-                %tr
-                  %td.ps-3.text-muted
-                    Tax (#{(SALES_TAX_RATE * 100).to_i}%)
-                  %td.text-end.text-muted= number_to_currency(@tax)
-                  %td
-                - if @delivery_method
-                  %tr.table-info
-                    %td.ps-3
-                      %i.bi.bi-truck.me-1
-                      = @delivery_method.name
-                    %td.text-end
-                      = @delivery_method.price_cents.zero? ? "Free" : number_to_currency(@delivery)
-                    %td
-                - if @discount_code
-                  %tr.table-success
-                    %td.ps-3
-                      %i.bi.bi-ticket-perforated.me-1
-                      = @discount_code.key
-                      - if @discount_code.percentage?
-                        = "(#{@discount_code.amount_cents / 100}% off)"
-                    %td.text-end= number_to_currency(-@discount_savings)
-                    %td
-                %tr.border-top.border-2
-                  %th.ps-3.fs-5 Total
-                  %th.text-end.fs-5= number_to_currency(@total)
-                  %th
-                %tr
-                  %td{colspan: 3}
-                    = form_with url: orders_path, method: :post do
-                      = submit_tag "Place Order", class: "btn btn-success w-100 mt-2"
+              = render CartTotalsComponent.new(
+                  summary: @cart_summary,
+                  discount_code: @discount_code,
+                  delivery_method: @delivery_method)
