@@ -74,7 +74,7 @@
         = f.submit "Save changes", class: "btn btn-primary px-4"
 
   .tab-pane.fade#orders
-    - if @orders.empty?
+    - if @orders.blank?
       = render EmptyStateComponent.new(icon: "bag-x",
           message: "You haven't placed any orders yet.",
           link_text: "Browse Listings",

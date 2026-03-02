@@ -149,7 +149,6 @@
                           method: :delete, class: "btn btn-sm btn-outline-danger",
                           form: { data: { turbo_confirm: "Remove from cart?" } } do
                         %i.bi.bi-trash
-              = render CartTotalsComponent.new(
-                  summary: @cart_summary,
+              = render CartTotalsComponent.new(summary: @cart_summary,
                   discount_code: @discount_code,
                   delivery_method: @delivery_method)
