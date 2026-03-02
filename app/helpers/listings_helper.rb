@@ -38,6 +38,18 @@ module ListingsHelper
       tbody_id: "admin-listings-tbody",
       tbody_data: { controller: "sortable", sortable_url_value: reorder_admin_listings_path }
     )
+    add_listing_columns(table)
+    render(table)
+  end
+
+  # Returns the column definitions shared between the full table and the row partial.
+  def listing_columns
+    add_listing_columns(::TableComponent.new(rows: [])).columns
+  end
+
+  private
+
+  def add_listing_columns(table)
     table.with_column("", html_class: "text-center pe-0") { |l| l.auction_listing || l.rental? ? "".html_safe : tag.input(type: "checkbox", class: "form-check-input", value: l.id, data: { "bulk-select-target": "checkbox", action: "change->bulk-select#toggle" }) }
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Lot") { |l| l.lot ? lot_number_badge(l.lot) : "—" }
@@ -69,6 +81,5 @@ module ListingsHelper
         ])
       end
     end
-    render(table)
   end
 end

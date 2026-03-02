@@ -1,31 +1,6 @@
 %tr{data: { id: listing.id }}
-  %td.text-center.pe-0
-    - unless listing.auction_listing || listing.rental?
-      %input.form-check-input{type: "checkbox", value: listing.id, data: { "bulk-select-target": "checkbox", action: "change->bulk-select#toggle" }}
-  %td.text-center.pe-0
-    %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
-  %td
-    - if listing.lot
-      = lot_number_badge(listing.lot)
+  - listing_columns.each do |col|
+    - if col.typed
+      = render TableCellComponent.new(value: col.block.call(listing), html_class: col.html_class)
     - else
-      %span.text-muted —
-  %td= link_to listing.name, admin_listing_path(listing)
-  %td= listing_type_badge(listing)
-  = render TableCellComponent.new(value: listing.price)
-  %td= listing_pricing_type_badge(listing)
-  %td= listing_state_badge(listing)
-  = render TableCellComponent.new(value: listing.owner)
-  %td= listing_categories_badges(listing)
-  = render TableCellComponent.new(value: listing.published)
-  = render TableCellComponent.new(value: listing.created_at)
-  %td.text-end
-    .btn-group
-      = link_to "Edit", edit_admin_listing_path(listing), class: "btn btn-sm btn-outline-primary"
-      %button.btn.btn-sm.btn-outline-primary.dropdown-toggle.dropdown-toggle-split{type: "button", data: { bs_toggle: "dropdown" }, aria: { expanded: "false" }}
-        %span.visually-hidden Toggle dropdown
-      %ul.dropdown-menu.dropdown-menu-end
-        %li
-          = link_to "Delete",
-              admin_listing_path(listing),
-              class: "dropdown-item text-danger",
-              data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this listing?" }
+      %td{class: col.html_class}= col.block.call(listing)

@@ -12,6 +12,7 @@ class ProfilesController < ApplicationController
     if @user.update(profile_params)
       redirect_to edit_profile_path, notice: "Profile updated successfully."
     else
+      @orders = @user.orders.order(created_at: :desc)
       render :edit, status: :unprocessable_content
     end
   end

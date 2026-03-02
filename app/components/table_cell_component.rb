@@ -40,7 +40,7 @@ class TableCellComponent < ViewComponent::Base
     when TrueClass
       content_tag(:span, "Yes", class: "badge text-bg-success")
     when FalseClass
-      content_tag(:span, "No", class: "badge text-bg-secondary")
+      content_tag(:span, "No", class: "badge text-bg-danger")
     when NilClass
       content_tag(:span, "—", class: "text-muted")
     when String

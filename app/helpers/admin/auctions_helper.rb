@@ -4,8 +4,8 @@ module Admin::AuctionsHelper
     table.with_column("Name") { |a| link_to(a.name, admin_auction_path(a)) }
     table.with_value_column("Starts At") { it.starts_at }
     table.with_value_column("Ends At") { it.ends_at }
-    table.with_column("Published", html_class: "text-center") { |a| a.published? ? tag.span("Yes", class: "badge text-bg-success") : tag.span("No", class: "badge text-bg-secondary") }
-    table.with_column("Reconciled", html_class: "text-center") { |a| a.reconciled? ? tag.span("Yes", class: "badge text-bg-info") : tag.span("No", class: "badge text-bg-secondary") }
+    table.with_column("Published", html_class: "text-center") { |a| a.published? ? tag.span("Yes", class: "badge text-bg-success") : tag.span("No", class: "badge text-bg-danger") }
+    table.with_column("Reconciled", html_class: "text-center") { |a| a.reconciled? ? tag.span("Yes", class: "badge text-bg-success") : tag.span("No", class: "badge text-bg-danger") }
     table.with_column("Listings", html_class: "text-center") { |a| a.listings.size }
     table.with_column("Lots") do |a|
       lots = a.listings.filter_map(&:lot).uniq(&:id).sort_by(&:number)

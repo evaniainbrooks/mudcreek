@@ -1,6 +1,8 @@
 class TableComponent < ViewComponent::Base
   Column = Data.define(:header, :sort_attr, :html_class, :typed, :block)
 
+  attr_reader :columns
+
   def initialize(rows:, ransack_query: nil, row_data: nil, tbody_id: nil, tbody_data: {})
     @rows = rows
     @ransack_query = ransack_query

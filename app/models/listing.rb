@@ -75,6 +75,17 @@ class Listing < ApplicationRecord
   end
 
   scope :not_in_auction, -> { where.not(id: AuctionListing.select(:listing_id)) }
+  scope :auction_assigned, ->(value = nil) {
+    return all if value.nil? || value.to_s.blank?
+    if ActiveModel::Type::Boolean.new.cast(value)
+      where(id: AuctionListing.select(:listing_id))
+    else
+      where.not(id: AuctionListing.select(:listing_id))
+    end
+  }
+
+  def self.ransackable_scopes(_auth_object = nil) = %w[auction_assigned]
+  def self.ransackable_scopes_skip_sanitize_args(_auth_object = nil) = %w[auction_assigned]
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[name price_cents acquisition_price_cents quantity owner_id published state pricing_type listing_type created_at]

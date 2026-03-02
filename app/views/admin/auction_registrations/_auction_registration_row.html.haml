@@ -1,6 +1,6 @@
 %tr{data: { id: auction_registration.id }}
-  %td= link_to auction_registration.auction.name, admin_auction_path(auction_registration.auction)
-  %td= link_to auction_registration.user.name, admin_user_path(auction_registration.user)
-  %td= auction_registration.user.email_address
-  %td.text-center= auction_registration_state_badge(auction_registration)
-  = render TableCellComponent.new(value: auction_registration.created_at)
+  - auction_registration_columns.each do |col|
+    - if col.typed
+      = render TableCellComponent.new(value: col.block.call(auction_registration), html_class: col.html_class)
+    - else
+      %td{class: col.html_class}= col.block.call(auction_registration)

@@ -2,7 +2,7 @@ module Admin::OffersHelper
   STATE_BADGE = {
     "pending"  => "text-bg-warning",
     "accepted" => "text-bg-success",
-    "declined" => "text-bg-secondary"
+    "declined" => "text-bg-danger"
   }.freeze
 
   def offer_state_badge(offer)
