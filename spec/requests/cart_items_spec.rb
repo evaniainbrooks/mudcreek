@@ -49,6 +49,70 @@ RSpec.describe "CartItems", type: :request do
         expect(response).to redirect_to(new_session_path)
       end
     end
+
+    context "when the listing is a rental" do
+      let!(:listing)   { create(:listing, listing_type: :rental) }
+      let!(:rate_plan) { create(:listings_rental_rate_plan, listing: listing) }
+      let(:start_at)   { 1.day.from_now.beginning_of_hour }
+      let(:end_at)     { 2.days.from_now.beginning_of_hour }
+
+      it "adds the rental to the user's cart" do
+        expect {
+          post cart_items_path, params: {
+            listing_id: listing.id,
+            rental_start_at: start_at.to_s, rental_end_at: end_at.to_s
+          }
+        }.to change { user.cart_items.count }.by(1)
+      end
+
+      it "creates an associated rental booking" do
+        post cart_items_path, params: {
+          listing_id: listing.id,
+          rental_start_at: start_at.to_s, rental_end_at: end_at.to_s
+        }
+        expect(user.cart_items.last.rental_booking).to be_present
+      end
+
+      it "sets a notice flash" do
+        post cart_items_path, params: {
+          listing_id: listing.id,
+          rental_start_at: start_at.to_s, rental_end_at: end_at.to_s
+        }
+        expect(flash[:notice]).to match("Rental added to cart.")
+      end
+
+      context "when end_at is before start_at" do
+        it "does not create a cart item" do
+          expect {
+            post cart_items_path, params: {
+              listing_id: listing.id,
+              rental_start_at: end_at.to_s, rental_end_at: start_at.to_s
+            }
+          }.not_to change { user.cart_items.count }
+        end
+
+        it "sets an alert flash" do
+          post cart_items_path, params: {
+            listing_id: listing.id,
+            rental_start_at: end_at.to_s, rental_end_at: start_at.to_s
+          }
+          expect(flash[:alert]).to eq("Please select a valid date and time range.")
+        end
+      end
+
+      context "when dates are missing" do
+        it "does not create a cart item" do
+          expect {
+            post cart_items_path, params: { listing_id: listing.id }
+          }.not_to change { user.cart_items.count }
+        end
+
+        it "sets an alert flash" do
+          post cart_items_path, params: { listing_id: listing.id }
+          expect(flash[:alert]).to eq("Please select a valid date and time range.")
+        end
+      end
+    end
   end
 
   describe "DELETE /cart_items/:id" do

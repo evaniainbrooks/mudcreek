@@ -11,6 +11,7 @@ RSpec.describe "Admin::AuctionListings", type: :request do
       r.permissions.create!(resource: "AuctionListing", action: "create")
       r.permissions.create!(resource: "AuctionListing", action: "destroy")
       r.permissions.create!(resource: "AuctionListing", action: "reorder")
+      r.permissions.create!(resource: "AuctionListing", action: "update")
     end
   end
 
@@ -102,6 +103,42 @@ RSpec.describe "Admin::AuctionListings", type: :request do
       it "raises Pundit::NotAuthorizedError" do
         expect {
           delete admin_auction_auction_listing_path(auction, auction_listing)
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "PATCH /admin/auctions/:auction_hashid/auction_listings/:id" do
+    let!(:auction_listing) { AuctionListing.create!(auction: auction, listing: listing) }
+
+    it "updates bid fields and redirects to the auction" do
+      patch admin_auction_auction_listing_path(auction, auction_listing),
+        params: { auction_listing: { starting_bid: "150.00", bid_increment: "10.00" } }
+      expect(response).to redirect_to(admin_auction_path(auction))
+      expect(flash[:notice]).to eq("Bid details updated.")
+    end
+
+    it "persists the starting_bid_cents value" do
+      patch admin_auction_auction_listing_path(auction, auction_listing),
+        params: { auction_listing: { starting_bid: "150.00" } }
+      expect(auction_listing.reload.starting_bid_cents).to eq(15_000)
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+      it "redirects to sign-in" do
+        patch admin_auction_auction_listing_path(auction, auction_listing),
+          params: { auction_listing: { starting_bid: "50.00" } }
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the update permission" do
+      let(:role) { Role.create!(name: "no_update", description: "No update") }
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          patch admin_auction_auction_listing_path(auction, auction_listing),
+            params: { auction_listing: { starting_bid: "50.00" } }
         }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
