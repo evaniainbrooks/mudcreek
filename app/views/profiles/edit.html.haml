@@ -48,8 +48,7 @@
               = f.fields_for :address do |addr|
                 - current_country = ISO3166::Country[addr.object.country]
                 - initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
-                - all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
-                %div{data: {controller: "address"}}
+                %div{ data: { controller: "address" } }
                   .mb-3
                     = addr.label :street_address, "Street address", class: "form-label"
                     = addr.text_field :street_address, autocomplete: "street-address", placeholder: "123 Main St", class: "form-control"

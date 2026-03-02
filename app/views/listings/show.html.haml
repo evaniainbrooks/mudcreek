@@ -151,7 +151,7 @@
 - if @listing.rental? && Current.user && !@cart_item
   #rental-modal.modal.fade{ tabindex: "-1" }
     .modal-dialog
-      .modal-content{ data: { controller: "rental-modal", "rental-modal-rate-plans-value": @listing.rental_rate_plans.map { |p| { label: p.label, duration_minutes: p.duration_minutes, price_cents: p.price_cents } }.to_json } }
+      .modal-content{ data: { controller: "rental-modal", "rental-modal-rate-plans-value": @listing.rental_rate_plans_to_json } }
         .modal-header
           %h5.modal-title
             %i.bi.bi-calendar-check.me-2

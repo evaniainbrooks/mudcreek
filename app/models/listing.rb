@@ -70,6 +70,10 @@ class Listing < ApplicationRecord
     end
   end
 
+  def rental_rate_plans_to_json
+    rental_rate_plans.map { { label: it.label, duration_minutes: it.duration_minutes, price_cents: it.price_cents } }.to_json
+  end
+
   scope :not_in_auction, -> { where.not(id: AuctionListing.select(:listing_id)) }
 
   def self.ransackable_attributes(_auth_object = nil)

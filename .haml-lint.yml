@@ -5,7 +5,11 @@ linters:
     enabled: false
   RuboCop:
     rubocop_config:
+      Layout/SpaceInsideParens:
+        Enabled: false
       Layout/SpaceInsideArrayLiteralBrackets:
+        Enabled: false
+      Layout/SpaceInsideHashLiteralBraces:
         Enabled: false
   LineLength:
     max: 160
