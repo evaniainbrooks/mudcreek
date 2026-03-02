@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_200001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -170,6 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200000) do
     t.bigint "lot_id"
     t.string "name", null: false
     t.bigint "owner_id", null: false
+    t.boolean "physical", default: false, null: false
     t.integer "position", null: false
     t.integer "price_cents", null: false
     t.enum "pricing_type", default: "firm", null: false, enum_type: "listing_pricing_type"

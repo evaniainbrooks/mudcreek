@@ -22,10 +22,10 @@ RSpec.describe "Orders", type: :request do
       end
     end
 
-    context "when active delivery methods exist but none is selected" do
+    context "when the cart contains a physical item but no delivery method is selected" do
       before do
         create(:delivery_method)
-        user.cart_items.create!(listing: listing)
+        user.cart_items.create!(listing: create(:listing, physical: true))
       end
 
       it "redirects to the cart with an alert" do

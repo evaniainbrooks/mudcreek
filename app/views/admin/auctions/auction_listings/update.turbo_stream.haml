@@ -1,0 +1,6 @@
+= turbo_stream.replace "#{dom_id(@auction_listing)}_starting_bid" do
+  = auction_listing_money_inline_cell("starting_bid", @auction_listing, @auction)
+= turbo_stream.replace "#{dom_id(@auction_listing)}_bid_increment" do
+  = auction_listing_money_inline_cell("bid_increment", @auction_listing, @auction)
+= turbo_stream.replace "#{dom_id(@auction_listing)}_reserve_price" do
+  = auction_listing_money_inline_cell("reserve_price", @auction_listing, @auction)

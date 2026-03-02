@@ -17,13 +17,12 @@
 .row.g-4.g-lg-5.align-items-start
   .col-lg-7
     - if has_images || has_videos
-      = render "listing/carousel", listing: @listing
+      = render "listings/carousel", listing: @listing, media_count:
     - elsif @listing.lot&.listing_placeholder&.attached?
       = image_tag @listing.lot.listing_placeholder, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
     - else
       .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
         %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
-
   .col-lg-5
     .position-sticky{ style: "top: 1.5rem" }
       %h1.fw-bold.mb-1= @listing.name
@@ -33,8 +32,11 @@
         %p.fs-2.text-primary.fw-semibold.mb-2= number_to_currency(@listing.price)
       - unless @listing.sold?
         %p.text-muted.small.mb-4
-          %i.bi.bi-box-seam.me-1
-          = pluralize(@listing.quantity, "available")
+          - if @listing.quantity == 0
+            %span.badge.text-bg-secondary.me-1 Out of Stock
+          - else
+            %i.bi.bi-box-seam.me-1
+            = pluralize(@listing.quantity, "available")
       %hr.mb-4
       - if @listing.rental?
         - if @listing.rental_rate_plans.any?

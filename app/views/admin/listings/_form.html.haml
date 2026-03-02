@@ -46,7 +46,7 @@
 
   .mb-1{ data: { "listing-type-target": "ratePlansSection" }, hidden: listing.sale? }
     - unless listing.new_record?
-      = render "admin/listings/rental_rate_plans/section", listing: listing
+      = render "admin/listings/rental_rate_plans/section", listing: listing, form: f
 
   .mb-3{ data: { "listing-type-target": "acquisitionPriceField" }, hidden: listing.rental? }
     = f.label :acquisition_price, "Acquisition Price", class: "form-label"
@@ -165,6 +165,10 @@
   .mb-3.form-check
     = f.check_box :tax_exempt, class: "form-check-input"
     = f.label :tax_exempt, "Tax Exempt", class: "form-check-label"
+
+  .mb-3.form-check
+    = f.check_box :physical, class: "form-check-input"
+    = f.label :physical, "Physical / Requires Delivery", class: "form-check-label"
 
   .d-flex.gap-2
     = f.submit class: "btn btn-primary"

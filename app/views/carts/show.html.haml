@@ -151,4 +151,5 @@
                         %i.bi.bi-trash
               = render CartTotalsComponent.new(summary: @cart_summary,
                   discount_code: @discount_code,
-                  delivery_method: @delivery_method)
+                  delivery_method: @delivery_method,
+                  requires_delivery: @has_physical_items)

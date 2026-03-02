@@ -10,10 +10,10 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
 
   def update
     authorize(@auction_listing)
-    if @auction_listing.update(auction_listing_params)
-      redirect_to admin_auction_path(@auction), notice: "Bid details updated."
-    else
-      redirect_to admin_auction_path(@auction), alert: @auction_listing.errors.full_messages.to_sentence
+    @auction_listing.update(auction_listing_params)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to admin_auction_path(@auction) }
     end
   end
 

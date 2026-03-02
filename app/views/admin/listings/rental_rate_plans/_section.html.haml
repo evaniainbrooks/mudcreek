@@ -3,4 +3,4 @@
   %ul.list-group#rental-rate-plans{ class: listing.rental_rate_plans.any? ? "mb-3" : "" }
     - listing.rental_rate_plans.order(:position).each do |rate_plan|
       = render "admin/listings/rental_rate_plans/rate_plan", rate_plan: rate_plan
-  = render "admin/listings/rental_rate_plans/form", listing: listing, rate_plan: Listings::RentalRatePlan.new
+  = render "admin/listings/rental_rate_plans/form", listing: listing, rate_plan: Listings::RentalRatePlan.new, form: form

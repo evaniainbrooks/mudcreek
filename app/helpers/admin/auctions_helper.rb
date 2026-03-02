@@ -62,38 +62,61 @@ module Admin::AuctionsHelper
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Name") { |al| link_to(al.listing.name, admin_listing_path(al.listing)) }
     table.with_column("State") { |al| listing_state_badge(al.listing) }
-    table.with_column("Starting Bid") { |al| auction_listing_money_input("starting_bid", al) }
-    table.with_column("Bid Increment") { |al| auction_listing_money_input("bid_increment", al) }
-    table.with_column("Reserve") { |al| auction_listing_money_input("reserve_price", al) }
+    table.with_column("Starting Bid") { |al| auction_listing_money_inline_cell("starting_bid", al, auction) }
+    table.with_column("Bid Increment") { |al| auction_listing_money_inline_cell("bid_increment", al, auction) }
+    table.with_column("Reserve") { |al| auction_listing_money_inline_cell("reserve_price", al, auction) }
     table.with_column("Actions", html_class: "text-end") do |al|
-      safe_join([
-        form_with(url: admin_auction_auction_listing_path(auction, al), method: :patch,
-          id: "al-form-#{al.id}", class: "d-inline") { |f| f.button("Save", class: "btn btn-sm btn-outline-success me-1") },
-        button_to("Remove", admin_auction_auction_listing_path(auction, al),
-          method: :delete,
-          class: "btn btn-sm btn-outline-danger",
-          form: { data: { turbo_confirm: "Remove this listing from the auction?" } })
-      ])
+      button_to("Remove", admin_auction_auction_listing_path(auction, al),
+        method: :delete,
+        class: "btn btn-sm btn-outline-danger",
+        form: { data: { turbo_confirm: "Remove this listing from the auction?" } })
     end
     render(table)
   end
 
   private
 
-  def auction_listing_money_input(field, al)
+  def auction_listing_money_inline_cell(field, al, auction)
     cents = al.send(:"#{field}_cents")
     value = cents ? "%.2f" % (cents / 100.0) : nil
     symbol = Money::Currency.new(Money.default_currency).symbol
-    content_tag(:div, class: "input-group input-group-sm", style: "width: 120px") do
-      safe_join([
-        content_tag(:span, symbol, class: "input-group-text"),
-        number_field_tag("auction_listing[#{field}]", value,
-          form: "al-form-#{al.id}",
-          class: "form-control form-control-sm",
-          step: "0.01",
-          min: "0",
-          placeholder: "—")
-      ])
+    errors = al.errors[field]
+    in_edit = errors.any?
+
+    display = tag.span(value ? "#{symbol}#{value}" : "—",
+      class: "inline-editable",
+      hidden: in_edit,
+      data: {
+        "inline-edit-target" => "display",
+        action: "click->inline-edit#edit",
+        value: value.to_s
+      })
+
+    form = tag.div(hidden: !in_edit, data: { "inline-edit-target" => "form" }) do
+      form_with(url: admin_auction_auction_listing_path(auction, al), method: :patch, scope: :auction_listing) do |f|
+        safe_join([
+          (tag.div(errors.to_sentence, class: "text-danger small mb-1") if errors.any?),
+          tag.div(class: "input-group input-group-sm", style: "width: 130px") do
+            tag.span(symbol, class: "input-group-text") +
+            f.number_field(field, value: value,
+              class: "form-control form-control-sm #{"is-invalid" if errors.any?}",
+              step: "0.01",
+              min: "0",
+              placeholder: "—",
+              data: {
+                "inline-edit-target" => "input",
+                action: "keydown->inline-edit#keydown"
+              }) +
+            f.button(type: "submit", class: "btn btn-outline-primary") do
+              tag.i("", class: "bi bi-check-lg")
+            end
+          end
+        ].compact)
+      end
+    end
+
+    tag.div(id: "#{dom_id(al)}_#{field}", data: { controller: "inline-edit" }) do
+      display + form
     end
   end
 end

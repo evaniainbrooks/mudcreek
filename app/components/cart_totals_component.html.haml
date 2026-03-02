@@ -32,4 +32,11 @@
   %tr
     %td{colspan: 3}
       = form_with url: orders_path, method: :post do
-        = submit_tag "Place Order", class: "btn btn-success w-100 mt-2"
+        - needs_delivery = @requires_delivery && !@delivery_method
+        - if needs_delivery
+          %p.text-muted.small.text-center.mb-1
+            %i.bi.bi-truck.me-1
+            Select a delivery method to continue
+        = submit_tag "Place Order",
+            class: "btn btn-success w-100 mt-2",
+            disabled: needs_delivery

@@ -9,8 +9,7 @@ class OrdersController < ApplicationController
 
     reconcile_delivery_method
 
-    active_methods = DeliveryMethod.where(active: true)
-    if active_methods.exists? && @delivery_method.nil?
+    if @cart_items.any? { |item| item.listing.physical? } && @delivery_method.nil?
       redirect_to cart_path, alert: "Please select a delivery method."
       return
     end

@@ -1,5 +1,5 @@
-= form_with model: rate_plan, url: admin_listing_rental_rate_plans_path(listing),
-    id: "rental-rate-plan-form", class: "d-flex gap-2 align-items-end flex-wrap mt-2" do |f|
+= form.fields_for(:rental_rate_plans, model: rate_plan, url: admin_listing_rental_rate_plans_path(listing),
+    id: "rental-rate-plan-form", class: "d-flex gap-2 align-items-end flex-wrap mt-2") do |f|
   .flex-fill
     = f.label :label, "Label", class: "form-label form-label-sm mb-1"
     = f.text_field :label, class: "form-control form-control-sm #{'is-invalid' if rate_plan.errors[:label].any?}",

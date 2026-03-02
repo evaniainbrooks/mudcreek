@@ -91,7 +91,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    base = %i[name description price acquisition_price quantity tax_exempt owner_id lot_id published pricing_type]
+    base = %i[name description price acquisition_price quantity tax_exempt physical owner_id lot_id published pricing_type]
     base.unshift(:listing_type) if action_name == "create"
     p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
