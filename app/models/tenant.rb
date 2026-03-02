@@ -13,6 +13,9 @@ class Tenant < ApplicationRecord
   has_many :offers, dependent: :restrict_with_error
   has_many :discount_codes, dependent: :restrict_with_error
   has_many :delivery_methods, dependent: :restrict_with_error
+  has_many :orders, dependent: :restrict_with_error
+  has_many :rental_bookings, dependent: :restrict_with_error
+  has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan", dependent: :restrict_with_error
 
   validates :name, presence: true
   validates :key, presence: true, uniqueness: true, format: { with: /\A[a-z_0-9]+\z/, message: "can only contain lowercase letters and underscores" }

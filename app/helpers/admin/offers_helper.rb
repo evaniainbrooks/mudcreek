@@ -13,7 +13,7 @@ module Admin::OffersHelper
   def render_offers_table(offers:, q:)
     table = ::TableComponent.new(rows: offers, ransack_query: q)
     table.with_column("Listing") { |o| link_to(o.listing.name, admin_listing_path(o.listing)) }
-    table.with_column("Buyer") { |o| mail_to(o.user.email_address) }
+    table.with_value_column("Buyer") { it.user }
     table.with_value_column("Amount", sort_attr: :amount_cents) { it.amount }
     table.with_column("State", sort_attr: :state) { |o| offer_state_badge(o) }
     table.with_value_column("Message") { it.message.presence }

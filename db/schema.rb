@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_005005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,6 +62,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
 
   create_table "addresses", force: :cascade do |t|
     t.string "address_type", default: "profile", null: false
+    t.bigint "addressable_id", null: false
+    t.string "addressable_type", null: false
     t.string "city"
     t.string "country", default: "CA"
     t.datetime "created_at", null: false
@@ -69,8 +71,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
     t.string "province"
     t.string "street_address"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id", "address_type"], name: "index_addresses_on_user_id_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_type", unique: true
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -209,6 +211,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
     t.datetime "rental_end_at"
     t.datetime "rental_start_at"
     t.datetime "updated_at", null: false
+    t.index ["listing_id"], name: "index_order_items_on_listing_id"
     t.index ["order_id"], name: "index_order_items_on_order_id"
   end
 
@@ -234,6 +237,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
     t.integer "total_cents", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["delivery_method_id"], name: "index_orders_on_delivery_method_id"
+    t.index ["discount_code_id"], name: "index_orders_on_discount_code_id"
     t.index ["number"], name: "index_orders_on_number", unique: true
     t.index ["tenant_id"], name: "index_orders_on_tenant_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -453,7 +458,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "addresses", "users"
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
@@ -472,7 +476,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_214606) do
   add_foreign_key "offers", "listings"
   add_foreign_key "offers", "tenants"
   add_foreign_key "offers", "users"
+  add_foreign_key "order_items", "listings", on_delete: :nullify
   add_foreign_key "order_items", "orders"
+  add_foreign_key "orders", "delivery_methods", on_delete: :nullify
+  add_foreign_key "orders", "discount_codes", on_delete: :nullify
   add_foreign_key "orders", "tenants"
   add_foreign_key "orders", "users"
   add_foreign_key "permissions", "roles"

@@ -4,6 +4,8 @@ class DiscountCode < ApplicationRecord
 
   native_enum :discount_type, %i[fixed percentage]
 
+  has_many :orders, dependent: :nullify
+
   monetize :amount_cents
 
   def active?

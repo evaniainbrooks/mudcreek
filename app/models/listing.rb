@@ -12,6 +12,8 @@ class Listing < ApplicationRecord
   native_enum :pricing_type, %i[firm negotiable]
   native_enum :listing_type, %i[sale rental]
 
+  has_one  :address, as: :addressable, dependent: :destroy
+  has_many :order_items, dependent: :nullify
   has_many :cart_items, dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan",
@@ -42,9 +44,11 @@ class Listing < ApplicationRecord
   validates :position, presence: true
   validates :name, presence: true
   validates :description, presence: true
-  validates :price_cents, presence: true, if: :sale?
+  validates :price_cents, presence: true
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :documents_content_type
+
+  accepts_nested_attributes_for :address, allow_destroy: true
 
   private
 

@@ -57,16 +57,17 @@
                 = f.submit "Select", class: "btn btn-sm btn-primary"
 
       - if @delivery_method&.address_required?
-        - current_country = ISO3166::Country[@cart_address[:country]]
-        - initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
-        - all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
+        :ruby
+          current_country = ISO3166::Country[@cart_address[:country]]
+          initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
+          all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
         .card.shadow-sm.border-0
           .card-body
             %p.fw-semibold.mb-3
               %i.bi.bi-house-fill.me-1
               Delivery Address
             = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
-              %div{data: {controller: "address"}}
+              %div{data: { controller: "address" }}
                 .mb-2
                   = f.label :street_address, "Street address", class: "form-label form-label-sm"
                   = f.text_field :street_address,

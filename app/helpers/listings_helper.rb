@@ -45,7 +45,6 @@ module ListingsHelper
     table.with_value_column("Price", sort_attr: :price_cents) { it.price }
     table.with_column("Pricing", sort_attr: :pricing_type) { |l| listing_pricing_type_badge(l) }
     table.with_column("State", sort_attr: :state) { |l| listing_state_badge(l) }
-    table.with_value_column("Acquisition Price", sort_attr: :acquisition_price_cents) { it.acquisition_price }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Categories") { |l| listing_categories_badges(l) }
     table.with_value_column("Published", sort_attr: :published) { it.published }

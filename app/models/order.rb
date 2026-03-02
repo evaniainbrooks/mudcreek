@@ -14,7 +14,9 @@ class Order < ApplicationRecord
   monetize :delivery_price_cents
   monetize :total_cents
 
-  before_create :assign_number
+  validates :number, presence: true, uniqueness: true
+
+  before_validation :assign_number, on: :create
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[status created_at]

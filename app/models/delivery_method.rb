@@ -1,6 +1,8 @@
 class DeliveryMethod < ApplicationRecord
   include MultiTenant
 
+  has_many :orders, dependent: :nullify
+
   monetize :price_cents
 
   validates :name, presence: true, uniqueness: { scope: :tenant_id, case_sensitive: false }

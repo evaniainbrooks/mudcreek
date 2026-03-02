@@ -28,7 +28,11 @@
     = f.label :price, class: "form-label"
     .input-group
       %span.input-group-text $
-      = f.text_field :price, class: "form-control #{'is-invalid' if listing.errors[:price_cents].any?}", required: !listing.rental?, value: listing.price&.to_f, data: { required: "true" }
+      = f.text_field :price,
+        class: "form-control #{'is-invalid' if listing.errors[:price_cents].any?}",
+        required: !listing.rental?,
+        value: listing.price&.to_f,
+        data: { required: "true" }
     - if listing.errors[:price_cents].any?
       .invalid-feedback.d-block= listing.errors[:price_cents].to_sentence
 
@@ -55,7 +59,11 @@
 
   .mb-3{ data: { "listing-type-target": "quantityField" }, hidden: listing.rental? }
     = f.label :quantity, class: "form-label"
-    = f.number_field :quantity, class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}", min: 0, required: !listing.rental?, data: { required: "true" }
+    = f.number_field :quantity,
+      class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}",
+      min: 0,
+      required: !listing.rental?,
+      data: { required: "true" }
     - if listing.errors[:quantity].any?
       .invalid-feedback= listing.errors[:quantity].to_sentence
 
@@ -75,7 +83,12 @@
 
   .mb-3
     = f.label :category_ids, "Categories", class: "form-label"
-    = f.collection_select :category_ids, categories, :id, :name, {}, { multiple: true, class: "form-select", size: [categories.size, 6].min }
+    = f.collection_select :category_ids,
+      categories,
+      :id,
+      :name,
+      {},
+      { multiple: true, class: "form-select", size: [categories.size, 6].min }
 
   .mb-3
     = f.label :lot_id, "Lot", class: "form-label"
@@ -87,7 +100,10 @@
 
   .mb-3
     = f.label :images, class: "form-label"
-    = f.file_field :images, multiple: true, class: "form-control #{'is-invalid' if listing.errors[:images].any?}", accept: "image/*"
+    = f.file_field :images,
+      multiple: true,
+      class: "form-control #{'is-invalid' if listing.errors[:images].any?}",
+      accept: "image/*"
     - if listing.errors[:images].any?
       .invalid-feedback= listing.errors[:images].to_sentence
     - if listing.images.attached?
@@ -104,7 +120,10 @@
 
   .mb-3
     = f.label :videos, class: "form-label"
-    = f.file_field :videos, multiple: true, class: "form-control #{'is-invalid' if listing.errors[:videos].any?}", accept: "video/*"
+    = f.file_field :videos,
+      multiple: true,
+      class: "form-control #{'is-invalid' if listing.errors[:videos].any?}",
+      accept: "video/*"
     - if listing.errors[:videos].any?
       .invalid-feedback= listing.errors[:videos].to_sentence
     - if listing.videos.attached?
@@ -121,7 +140,10 @@
 
   .mb-3
     = f.label :documents, class: "form-label"
-    = f.file_field :documents, multiple: true, class: "form-control #{'is-invalid' if listing.errors[:documents].any?}", accept: ".pdf,.doc,.docx,.xlsx"
+    = f.file_field :documents,
+      multiple: true,
+      class: "form-control #{'is-invalid' if listing.errors[:documents].any?}",
+      accept: ".pdf,.doc,.docx,.xlsx"
     - if listing.errors[:documents].any?
       .invalid-feedback= listing.errors[:documents].to_sentence
     - if listing.documents.attached?
