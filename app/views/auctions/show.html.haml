@@ -4,7 +4,23 @@
       - if @auction.poster.attached?
         = image_tag @auction.poster, class: "img-fluid rounded-3 mb-4 shadow-sm w-100 object-fit-cover"
 
-      %h1.fw-bold.lh-tight.mb-4= @auction.name
+      %h1.fw-bold.lh-tight.mb-2= @auction.name
+
+      - if @registration
+        - if @registration.pending?
+          .d-flex.align-items-center.gap-2.mb-4
+            %span.badge.text-bg-warning.py-2.px-3 Registration Pending
+            %small.text-muted You'll be notified by email when approved.
+        - elsif @registration.approved?
+          .mb-4
+            %span.badge.text-bg-success.py-2.px-3 Registered
+        - elsif @registration.rejected?
+          .mb-4
+            %span.badge.text-bg-danger.py-2.px-3 Registration Declined
+      - else
+        %button.btn.btn-primary.w-100.mb-4{data: { bs_toggle: "modal", bs_target: "#auction-register-modal" }}
+          %i.bi.bi-person-plus.me-2
+          Register Now
 
       - if @auction.starts_at
         .d-flex.align-items-center.gap-2.mb-2.text-muted
@@ -34,3 +50,6 @@
       .py-5.text-center.text-muted
         %i.bi.bi-tag.mb-3.d-block{ style: "font-size: 3rem" }
         %p.mb-0 No listings available for this auction yet.
+
+- unless @registration
+  = render "register_modal", auction: @auction

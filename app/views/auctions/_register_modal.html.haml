@@ -1,0 +1,21 @@
+#auction-register-modal.modal.fade{tabindex: "-1", aria: { labelledby: "auction-register-modal-label", hidden: "true" }}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title#auction-register-modal-label Register for this Auction
+        %button.btn-close{type: "button", data: { bs_dismiss: "modal" }, aria: { label: "Close" }}
+      = form_with url: auction_auction_registrations_path(auction), method: :post do |f|
+        .modal-body
+          %p
+            You're registering for
+            %strong= auction.name
+          %p.text-muted.small
+            Once submitted, your registration will be reviewed. You'll receive an email
+            notification once it has been approved.
+          .form-check.mt-3
+            %input#register-terms.form-check-input{type: "checkbox", name: "terms", required: true}
+            %label.form-check-label{for: "register-terms"}
+              I agree to the terms and conditions
+        .modal-footer
+          %button.btn.btn-secondary{type: "button", data: { bs_dismiss: "modal" }} Cancel
+          = f.submit "Register Now", class: "btn btn-primary"

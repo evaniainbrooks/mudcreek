@@ -8,7 +8,9 @@ Rails.application.routes.draw do
     resources :offers, only: [ :create ]
   end
 
-  resources :auctions, only: [ :show ], param: :hashid
+  resources :auctions, only: [ :show ], param: :hashid do
+    resources :auction_registrations, only: [ :create ]
+  end
 
   resource  :cart,                only: [ :show ]
   resource  :cart_address,        only: [ :create ]
