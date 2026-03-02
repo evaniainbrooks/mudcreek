@@ -1,0 +1,26 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-person-check.me-2
+    Registrations
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Filter Records
+  .card-body
+    = search_form_for @q, url: admin_auction_registrations_path, html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-4
+        = f.label :auction_name_cont, "Auction", class: "form-label form-label-sm"
+        = f.search_field :auction_name_cont, class: "form-control form-control-sm", placeholder: "Search by auction name..."
+      .col-md-4
+        = f.label :user_email_address_cont, "User Email", class: "form-label form-label-sm"
+        = f.search_field :user_email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+      .col-md-2
+        = f.label :state_eq, "State", class: "form-label form-label-sm"
+        = f.select :state_eq, AuctionRegistration.states.keys.map { |s| [s.humanize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-auto
+        = f.submit "Search", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_auction_registrations_path, class: "btn btn-outline-secondary btn-sm"
+
+%div{data: { controller: "infinite-scroll" }}
+  = render_auction_registrations_index_table(registrations: @registrations, q: @q)
+  = render "sentinel", pagy: @pagy, q: params[:q]

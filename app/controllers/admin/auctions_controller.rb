@@ -10,6 +10,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def show
     @auction_listings_count = @auction.auction_listings.count
+    @auction_registrations_count = @auction.auction_registrations.count
     scope = @auction.auction_listings.includes(:listing).order(:position, :id)
     @pagy, @auction_listings = pagy(:keyset, scope)
 
@@ -74,7 +75,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def auction_params
     p = params.require(:auction).permit(
-      :name, :starts_at, :ends_at, :published, :reconciled, :poster, :cover_photo, :description,
+      :name, :starts_at, :ends_at, :published, :reconciled, :auto_approve, :poster, :cover_photo, :description,
       address_attributes: %i[id street_address city province postal_code country _destroy]
     )
     %i[poster cover_photo].each { |key| p.delete(key) if p[key].blank? }

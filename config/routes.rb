@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       end
     end
     resources :auction_listings, only: [ :create ]
+    resources :auction_registrations, only: [ :index ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

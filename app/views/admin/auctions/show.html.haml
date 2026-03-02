@@ -27,6 +27,14 @@
       %i.bi.bi-tags.me-1
       Listings
       %span.badge.text-bg-secondary.ms-1= @auction_listings_count
+  %li.nav-item{ role: "presentation" }
+    %button.nav-link{ id: "registrations-tab",
+      data: { bs_toggle: "tab", bs_target: "#registrations-pane" },
+      type: "button", role: "tab",
+      aria: { controls: "registrations-pane", selected: "false" } }
+      %i.bi.bi-person-check.me-1
+      Registrations
+      %span.badge.text-bg-secondary.ms-1= @auction_registrations_count
 
 .tab-content
   #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
@@ -82,6 +90,13 @@
       %div{data: { controller: "infinite-scroll" }}
         = render_auction_listings_table(auction_listings: @auction_listings, auction: @auction)
         = render "sentinel", pagy: @pagy, auction: @auction
+
+  #registrations-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "registrations-tab" } }
+    - registrations = @auction.auction_registrations.includes(:user).order(:created_at)
+    - if registrations.empty?
+      .text-muted.py-3 No registrations for this auction yet.
+    - else
+      = render_auction_registrations_table(registrations: registrations)
 
 .mt-3
   = link_to admin_auctions_path, class: "btn btn-outline-secondary" do

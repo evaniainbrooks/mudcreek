@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :cart_items, dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :orders, dependent: :destroy
+  has_many :auction_registrations, dependent: :destroy
   has_many :cart_listings, through: :cart_items, source: :listing
   has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", as: :addressable, dependent: :destroy
   has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", as: :addressable, dependent: :destroy
