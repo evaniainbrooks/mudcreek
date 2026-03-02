@@ -1,5 +1,6 @@
 class Auction < ApplicationRecord
   include MultiTenant
+  include HasHashid
 
   has_one :address, as: :addressable, dependent: :destroy
   accepts_nested_attributes_for :address, allow_destroy: true
@@ -16,6 +17,10 @@ class Auction < ApplicationRecord
   validate :ends_at_after_starts_at
 
   scope :unreconciled, -> { where(reconciled: false) }
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[name published reconciled starts_at ends_at]
+  end
 
   private
 

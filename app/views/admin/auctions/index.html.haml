@@ -6,4 +6,22 @@
     %i.bi.bi-plus-lg.me-1
     New Auction
 
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Filter Records
+  .card-body
+    = search_form_for @q, url: admin_auctions_path, html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-4
+        = f.label :name_cont, "Name", class: "form-label form-label-sm"
+        = f.search_field :name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
+      .col-md-2
+        = f.label :published_eq, "Published", class: "form-label form-label-sm"
+        = f.select :published_eq, [["Published", true], ["Unpublished", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-md-2
+        = f.label :reconciled_eq, "Reconciled", class: "form-label form-label-sm"
+        = f.select :reconciled_eq, [["Reconciled", true], ["Not Reconciled", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-auto
+        = f.submit "Search", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_auctions_path, class: "btn btn-outline-secondary btn-sm"
+
 = render_auctions_table(auctions: @auctions)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_100003) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,12 +88,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_100003) do
   create_table "auctions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "ends_at"
+    t.string "hashid", null: false
     t.string "name", null: false
     t.boolean "published", default: false, null: false
     t.boolean "reconciled", default: false, null: false
     t.datetime "starts_at"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["hashid"], name: "index_auctions_on_hashid", unique: true
     t.index ["tenant_id"], name: "index_auctions_on_tenant_id"
   end
 

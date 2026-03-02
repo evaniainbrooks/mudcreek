@@ -26,7 +26,7 @@
       aria: { controls: "listings-pane", selected: "false" } }
       %i.bi.bi-tags.me-1
       Listings
-      %span.badge.text-bg-secondary.ms-1= @auction_listings.size
+      %span.badge.text-bg-secondary.ms-1= @auction_listings_count
 
 .tab-content
   #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
@@ -76,10 +76,12 @@
               = [@auction.address.street_address, @auction.address.city, @auction.address.province, @auction.address.postal_code, @auction.address.country].compact.join(", ")
 
   #listings-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "listings-tab" } }
-    - if @auction_listings.empty?
+    - if @auction_listings_count.zero?
       .text-muted.py-3 No listings assigned to this auction yet.
     - else
-      = render_auction_listings_table(auction_listings: @auction_listings, auction: @auction)
+      %div{data: { controller: "infinite-scroll" }}
+        = render_auction_listings_table(auction_listings: @auction_listings, auction: @auction)
+        = render "sentinel", pagy: @pagy, auction: @auction
 
 .mt-3
   = link_to admin_auctions_path, class: "btn btn-outline-secondary" do

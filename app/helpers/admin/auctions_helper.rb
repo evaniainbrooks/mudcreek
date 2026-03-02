@@ -7,6 +7,13 @@ module Admin::AuctionsHelper
     table.with_column("Published", html_class: "text-center") { |a| a.published? ? tag.span("Yes", class: "badge text-bg-success") : tag.span("No", class: "badge text-bg-secondary") }
     table.with_column("Reconciled", html_class: "text-center") { |a| a.reconciled? ? tag.span("Yes", class: "badge text-bg-info") : tag.span("No", class: "badge text-bg-secondary") }
     table.with_column("Listings", html_class: "text-center") { |a| a.listings.size }
+    table.with_column("Lots") do |a|
+      lots = a.listings.filter_map(&:lot).uniq(&:id).sort_by(&:number)
+      lots.any? ? safe_join(lots.map { |l| lot_number_badge(l) }, " ") : tag.span("—", class: "text-muted")
+    end
+    table.with_column("Location") do |a|
+      a.address ? a.address.city.presence || a.address.street_address.presence || "—" : tag.span("—", class: "text-muted")
+    end
     table.with_column("Actions", html_class: "text-end") do |auction|
       content_tag(:div, class: "btn-group") do
         safe_join([
@@ -32,6 +39,7 @@ module Admin::AuctionsHelper
   def render_auction_listings_table(auction_listings:, auction:)
     table = ::TableComponent.new(
       rows: auction_listings,
+      tbody_id: "auction-listings-tbody",
       tbody_data: { controller: "sortable", sortable_url_value: reorder_admin_auction_auction_listings_path(auction) }
     )
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }

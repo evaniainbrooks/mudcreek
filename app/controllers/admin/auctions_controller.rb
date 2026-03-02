@@ -3,12 +3,30 @@ class Admin::AuctionsController < Admin::BaseController
 
   def index
     authorize(Auction)
-    @auctions = Auction.includes(:listings, :address).order(:starts_at)
+    @q = Auction.ransack(params[:q])
+    @auctions = @q.result.includes({ listings: :lot }, :address).order(:starts_at)
     @auction = Auction.new
   end
 
   def show
-    @auction_listings = @auction.auction_listings.includes(:listing).order(:position)
+    @auction_listings_count = @auction.auction_listings.count
+    scope = @auction.auction_listings.includes(:listing).order(:position, :id)
+    @pagy, @auction_listings = pagy(:keyset, scope)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.append("auction-listings-tbody",
+            partial: "admin/auctions/auction_listing_row",
+            collection: @auction_listings,
+            as: :auction_listing),
+          turbo_stream.replace("auction-listings-sentinel",
+            partial: "admin/auctions/sentinel",
+            locals: { pagy: @pagy, auction: @auction })
+        ]
+      end
+    end
   end
 
   def new
@@ -50,7 +68,7 @@ class Admin::AuctionsController < Admin::BaseController
   private
 
   def set_auction
-    @auction = Auction.with_attached_poster.with_attached_cover_photo.find(params[:id])
+    @auction = Auction.with_attached_poster.with_attached_cover_photo.find_by!(hashid: params[:hashid])
     authorize(@auction)
   end
 

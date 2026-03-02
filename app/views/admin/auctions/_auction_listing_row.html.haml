@@ -1,0 +1,10 @@
+%tr{data: { id: auction_listing.id }}
+  %td.text-center.pe-0
+    %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
+  %td= link_to auction_listing.listing.name, admin_listing_path(auction_listing.listing)
+  %td= listing_state_badge(auction_listing.listing)
+  %td.text-end
+    = button_to "Remove", admin_auction_auction_listing_path(@auction, auction_listing),
+        method: :delete,
+        class: "btn btn-sm btn-outline-danger",
+        form: { data: { turbo_confirm: "Remove this listing from the auction?" } }
