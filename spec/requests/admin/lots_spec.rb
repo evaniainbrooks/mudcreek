@@ -81,7 +81,7 @@ RSpec.describe "Admin::Lots", type: :request do
       it "re-renders the index with unprocessable entity status" do
         post admin_lots_path, params: { lot: { name: "", owner_id: owner.id } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

@@ -14,7 +14,7 @@ class Admin::DiscountCodesController < Admin::BaseController
       redirect_to admin_discount_codes_path, notice: "Discount code \"#{@discount_code.key}\" was successfully created."
     else
       @discount_codes = DiscountCode.order(:key)
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 

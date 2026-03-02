@@ -99,7 +99,7 @@
                       required: true,
                       class: "form-select form-select-sm",
                       data: { address_target: "country", action: "change->address#countryChanged" }
-                .mb-3{hidden: initial_subdivisions.empty?, data: {address_target: "subdivisionWrapper"}}
+                .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
                   = f.label :province, "Province / State", class: "form-label form-label-sm"
                   = f.select :province, initial_subdivisions,
                       { include_blank: "Select…", selected: @cart_address[:province] },

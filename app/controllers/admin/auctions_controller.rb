@@ -21,6 +21,7 @@ class Admin::AuctionsController < Admin::BaseController
           turbo_stream.append("auction-listings-tbody",
             partial: "admin/auctions/auction_listing_row",
             collection: @auction_listings,
+            locals: { auction: @auction },
             as: :auction_listing),
           turbo_stream.replace("auction-listings-sentinel",
             partial: "admin/auctions/sentinel",
@@ -43,7 +44,7 @@ class Admin::AuctionsController < Admin::BaseController
     if @auction.save
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully created."
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -56,7 +57,7 @@ class Admin::AuctionsController < Admin::BaseController
     if @auction.update(auction_params)
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

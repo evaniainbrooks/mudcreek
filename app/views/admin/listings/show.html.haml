@@ -14,45 +14,45 @@
       %i.bi.bi-trash.me-1
       Delete
 
-%ul.nav.nav-tabs.mb-4#listingTabs{ role: "tablist" }
+%ul.nav.nav-tabs.mb-4#listing-tabs{ role: "tablist" }
   %li.nav-item{ role: "presentation" }
-    %button.nav-link.active{ id: "details-tab",
+    %button.nav-link.active{id: "details-tab",
       data: { bs_toggle: "tab", bs_target: "#details-pane" },
       type: "button",
       role: "tab",
-      aria: { controls: "details-pane", selected: "true" } }
+      aria: { controls: "details-pane", selected: "true" }}
       %i.bi.bi-info-circle.me-1
       Details
   - if @listing.sale?
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "offers-tab",
+      %button.nav-link{id: "offers-tab",
         data: { bs_toggle: "tab", bs_target: "#offers-pane" },
         type: "button",
         role: "tab",
-        aria: { controls: "offers-pane", selected: "false" } }
+        aria: { controls: "offers-pane", selected: "false" }}
         %i.bi.bi-tag.me-1
         Offers
         - if @offers.any?
           %span.badge.text-bg-secondary.ms-1= @offers.size
   - if @listing.rental?
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "rate-plans-tab",
+      %button.nav-link{id: "rate-plans-tab",
         data: { bs_toggle: "tab", bs_target: "#rate-plans-pane" },
         type: "button",
         role: "tab",
-        aria: { controls: "rate-plans-pane", selected: "false" } }
+        aria: { controls: "rate-plans-pane", selected: "false" }}
         %i.bi.bi-currency-dollar.me-1
         Rate Plans
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "schedule-tab",
+      %button.nav-link{id: "schedule-tab",
         data: { bs_toggle: "tab", bs_target: "#schedule-pane" },
         type: "button",
         role: "tab",
-        aria: { controls: "schedule-pane", selected: "false" } }
+        aria: { controls: "schedule-pane", selected: "false" }}
         %i.bi.bi-calendar3.me-1
         Schedule
 
-.tab-content#listingTabsContent
+.tab-content#listing-tabs
   #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
     .card.shadow-sm.border-0
       .card-body

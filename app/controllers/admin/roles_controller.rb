@@ -14,7 +14,7 @@ class Admin::RolesController < Admin::BaseController
       redirect_to admin_roles_path, notice: "Role \"#{@role.name}\" was successfully created."
     else
       @roles = Role.includes(:users, :permissions).order(:name)
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 

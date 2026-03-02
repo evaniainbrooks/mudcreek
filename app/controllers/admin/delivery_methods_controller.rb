@@ -14,7 +14,7 @@ class Admin::DeliveryMethodsController < Admin::BaseController
       redirect_to admin_delivery_methods_path, notice: "\"#{@delivery_method.name}\" was successfully created."
     else
       @delivery_methods = DeliveryMethod.order(:name)
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 

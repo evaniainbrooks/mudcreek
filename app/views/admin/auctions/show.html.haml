@@ -17,25 +17,25 @@
 
 %ul.nav.nav-tabs.mb-4{ role: "tablist" }
   %li.nav-item{ role: "presentation" }
-    %button.nav-link.active{ id: "details-tab",
+    %button.nav-link.active{id: "details-tab",
       data: { bs_toggle: "tab", bs_target: "#details-pane" },
       type: "button", role: "tab",
-      aria: { controls: "details-pane", selected: "true" } }
+      aria: { controls: "details-pane", selected: "true" }}
       %i.bi.bi-info-circle.me-1
       Details
   %li.nav-item{ role: "presentation" }
-    %button.nav-link{ id: "listings-tab",
+    %button.nav-link{id: "listings-tab",
       data: { bs_toggle: "tab", bs_target: "#listings-pane" },
       type: "button", role: "tab",
-      aria: { controls: "listings-pane", selected: "false" } }
+      aria: { controls: "listings-pane", selected: "false" }}
       %i.bi.bi-tags.me-1
       Listings
       %span.badge.text-bg-secondary.ms-1= @auction_listings_count
   %li.nav-item{ role: "presentation" }
-    %button.nav-link{ id: "registrations-tab",
+    %button.nav-link{id: "registrations-tab",
       data: { bs_toggle: "tab", bs_target: "#registrations-pane" },
       type: "button", role: "tab",
-      aria: { controls: "registrations-pane", selected: "false" } }
+      aria: { controls: "registrations-pane", selected: "false" }}
       %i.bi.bi-person-check.me-1
       Registrations
       %span.badge.text-bg-secondary.ms-1= @auction_registrations_count
@@ -79,8 +79,7 @@
 
           - if @auction.address
             %dt.col-sm-3 Location
-            %dd.col-sm-9
-              = [@auction.address.street_address, @auction.address.city, @auction.address.province, @auction.address.postal_code, @auction.address.country].compact.join(", ")
+            %dd.col-sm-9= @auction.address.to_fs(:long)
 
   #listings-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "listings-tab" } }
     - if @auction_listings_count.zero?

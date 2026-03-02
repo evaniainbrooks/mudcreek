@@ -1,0 +1,21 @@
+#offer-modal.modal.fade{ tabindex: "-1", aria: { labelledby: "offer-modal-label", hidden: "true" } }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title#offer-modal-label
+          %i.bi.bi-tag.me-2
+          Make an Offer
+        %button.btn-close{ type: "button", data: { "bs-dismiss": "modal" }, aria: { label: "Close" } }
+      = form_with url: listing_offers_path(listing), scope: :offer do |f|
+        .modal-body
+          .mb-3
+            = f.label :amount, "Your offer", class: "form-label"
+            .input-group
+              %span.input-group-text $
+              = f.number_field :amount, class: "form-control", required: true, min: "0.01", step: "0.01", placeholder: "0.00"
+          .mb-3
+            = f.label :message, "Message", class: "form-label"
+            = f.text_area :message, class: "form-control", rows: 3, placeholder: "Include a note with your offer (optional)"
+        .modal-footer
+          %button.btn.btn-outline-secondary{ type: "button", data: { "bs-dismiss": "modal" } } Cancel
+          = f.submit "Submit Offer", class: "btn btn-primary"

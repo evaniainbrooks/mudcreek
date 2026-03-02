@@ -16,7 +16,7 @@ class Admin::LotsController < Admin::BaseController
     else
       @users = User.order(:email_address)
       @lots = Lot.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 

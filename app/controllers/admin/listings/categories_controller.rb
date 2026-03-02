@@ -14,7 +14,7 @@ class Admin::Listings::CategoriesController < Admin::BaseController
       redirect_to admin_listings_categories_path, notice: "Category \"#{@category.name}\" was successfully created."
     else
       @categories = Listings::Category.includes(:category_assignments).order(:name)
-      render :index, status: :unprocessable_entity
+      render :index, status: :unprocessable_content
     end
   end
 

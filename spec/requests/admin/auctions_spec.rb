@@ -122,7 +122,7 @@ RSpec.describe "Admin::Auctions", type: :request do
       it "re-renders new with unprocessable entity status" do
         post admin_auctions_path, params: invalid_params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -203,7 +203,7 @@ RSpec.describe "Admin::Auctions", type: :request do
           auction: { starts_at: 1.day.from_now, ends_at: Time.current }
         }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

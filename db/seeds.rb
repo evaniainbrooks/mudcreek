@@ -646,7 +646,7 @@ auction_data = [
     listings: [
       { name: "Forested Acreage",        starting_bid: 175_000, bid_increment: 5_000, reserve_price: 190_000 },
       { name: "Coastal Bluff Lot",       starting_bid: 450_000, bid_increment: 10_000, reserve_price: nil    },
-      { name: "Wildflower Meadow Parcel",starting_bid: 120_000, bid_increment: 2_500,  reserve_price: nil    },
+      { name: "Wildflower Meadow Parcel", starting_bid: 120_000, bid_increment: 2_500,  reserve_price: nil    },
       { name: "Ridgeline Parcel",        starting_bid: 140_000, bid_increment: 2_500,  reserve_price: 150_000 }
     ]
   }

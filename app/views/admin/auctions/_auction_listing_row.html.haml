@@ -7,12 +7,12 @@
   %td= auction_listing_money_input("bid_increment", auction_listing)
   %td= auction_listing_money_input("reserve_price", auction_listing)
   %td.text-end
-    = form_with url: admin_auction_auction_listing_path(@auction, auction_listing),
+    = form_with url: admin_auction_auction_listing_path(auction, auction_listing),
         method: :patch,
         id: "al-form-#{auction_listing.id}",
         class: "d-inline" do |f|
       = f.button "Save", class: "btn btn-sm btn-outline-success me-1"
-    = button_to "Remove", admin_auction_auction_listing_path(@auction, auction_listing),
+    = button_to "Remove", admin_auction_auction_listing_path(auction, auction_listing),
         method: :delete,
         class: "btn btn-sm btn-outline-danger",
         form: { data: { turbo_confirm: "Remove this listing from the auction?" } }

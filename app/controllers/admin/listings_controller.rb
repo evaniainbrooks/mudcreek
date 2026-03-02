@@ -57,7 +57,7 @@ class Admin::ListingsController < Admin::BaseController
     else
       @categories = Listings::Category.order(:name)
       @lots = Lot.order(:name)
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -67,7 +67,7 @@ class Admin::ListingsController < Admin::BaseController
     else
       @categories = Listings::Category.order(:name)
       @lots = Lot.order(:name)
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

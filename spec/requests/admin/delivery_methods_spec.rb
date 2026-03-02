@@ -90,7 +90,7 @@ RSpec.describe "Admin::DeliveryMethods", type: :request do
       it "re-renders the index with unprocessable entity status" do
         post admin_delivery_methods_path, params: { delivery_method: { name: delivery_method.name, price: "0.00" } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

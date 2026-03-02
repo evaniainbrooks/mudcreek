@@ -112,7 +112,7 @@ RSpec.describe "Admin::DiscountCodes", type: :request do
       it "re-renders the index with unprocessable entity status" do
         post admin_discount_codes_path, params: { discount_code: { key: "", discount_type: "fixed", amount: "10.00" } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -126,7 +126,7 @@ RSpec.describe "Admin::DiscountCodes", type: :request do
       it "re-renders the index with unprocessable entity status" do
         post admin_discount_codes_path, params: { discount_code: { key: discount_code.key, discount_type: "fixed", amount: "10.00" } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
