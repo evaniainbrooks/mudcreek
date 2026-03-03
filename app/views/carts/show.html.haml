@@ -8,7 +8,7 @@
       link_text: "Browse Listings",
       link_url: listings_path)
 - else
-  .row.g-4.align-items-start
+  .row.g-4.align-items-start{ data: { controller: "cart" } }
     .col-12.col-lg-5
       .card.shadow-sm.border-0.mb-3
         .card-body
@@ -33,7 +33,7 @@
               = f.submit "Apply", class: "btn btn-sm btn-outline-primary"
 
       - available_methods = DeliveryMethod.where(active: true).order(:name)
-      - unless available_methods.empty?
+      - if @has_physical_items && available_methods.any?
         .card.shadow-sm.border-0.mb-3
           .card-body
             %p.fw-semibold.mb-2
@@ -53,7 +53,8 @@
                 = f.select :delivery_method_id,
                     available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{number_to_currency(m.price)})", m.id] },
                     { include_blank: "Select a method…" },
-                    class: "form-select form-select-sm"
+                    class: "form-select form-select-sm",
+                    data: { cart_target: "deliverySelect", action: "change->cart#updateButton" }
                 = f.submit "Select", class: "btn btn-sm btn-primary"
 
       - if @delivery_method&.address_required?
@@ -135,6 +136,10 @@
                             %i.bi.bi-image.text-secondary
                         .lh-sm
                           = link_to item.listing.name, listing_path(item.listing), class: "text-decoration-none fw-semibold"
+                          - if item.listing.physical?
+                            %span.badge.text-bg-light.border.ms-1.fw-normal
+                              %i.bi.bi-truck.me-1
+                              Delivery
                           - if item.listing.tax_exempt?
                             %span.badge.bg-secondary.ms-1.fw-normal Tax Exempt
                           - if item.rental?

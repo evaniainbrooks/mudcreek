@@ -39,4 +39,5 @@
             Select a delivery method to continue
         = submit_tag "Place Order",
             class: "btn btn-success w-100 mt-2",
-            disabled: needs_delivery
+            disabled: needs_delivery,
+            data: { cart_target: "placeOrderButton" }
