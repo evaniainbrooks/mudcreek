@@ -4,6 +4,9 @@ module Admin::AuctionsHelper
     table.with_column("Name") { |a| link_to(a.name, admin_auction_path(a)) }
     table.with_value_column("Starts At") { it.starts_at }
     table.with_value_column("Ends At") { it.ends_at }
+    table.with_column("Extension") do |a|
+      a.bidding_extension.positive? ? tag.span("#{a.bidding_extension}s") : tag.span("—", class: "text-muted")
+    end
     table.with_column("Published", html_class: "text-center") { |a| a.published? ? tag.span("Yes", class: "badge text-bg-success") : tag.span("No", class: "badge text-bg-danger") }
     table.with_column("Reconciled", html_class: "text-center") { |a| a.reconciled? ? tag.span("Yes", class: "badge text-bg-success") : tag.span("No", class: "badge text-bg-danger") }
     table.with_column("Listings", html_class: "text-center") { |a| a.listings.size }
@@ -62,6 +65,12 @@ module Admin::AuctionsHelper
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Name") { |al| link_to(al.listing.name, admin_listing_path(al.listing)) }
     table.with_column("State") { |al| listing_state_badge(al.listing) }
+    table.with_column("End Offset") do |al|
+      stagger = auction.end_time_stagger_interval
+      next tag.span("—", class: "text-muted") unless stagger.positive?
+      seconds = (al.position - 1) * stagger
+      tag.span("#{seconds}s", class: seconds.zero? ? "text-muted" : nil)
+    end
     table.with_column("Starting Bid") { |al| auction_listing_money_inline_cell("starting_bid", al, auction) }
     table.with_column("Bid Increment") { |al| auction_listing_money_inline_cell("bid_increment", al, auction) }
     table.with_column("Reserve") { |al| auction_listing_money_inline_cell("reserve_price", al, auction) }

@@ -3,34 +3,70 @@ class ProcessPaymentJob < ApplicationJob
 
   queue_as :default
 
-  def perform(order_id, source_id)
-    order = Order.unscoped.find(order_id)
-    return unless order.pending?
+  def perform(transaction_id, source_id)
+    transaction = Transaction.unscoped.find(transaction_id)
+    return unless transaction.pending?
 
-    response = SquareClient.client.payments.create(
-      source_id:       source_id,
-      idempotency_key: "order-#{order.number}",
-      amount_money:    { amount: order.total_cents, currency: "CAD" },
-      location_id:     SquareClient.location_id,
-      reference_id:    order.number,
-      note:            "Order #{order.number}"
-    )
+    transaction.with_lock do
+      return unless transaction.pending?
 
-    order.update!(status: "paid", square_payment_id: response.payment.id)
+      order = transaction.order
+
+      begin
+        response = SquareClient.client.payments.create(
+          source_id:       source_id,
+          idempotency_key: transaction.uuid,
+          amount_money:    { amount: transaction.amount_cents, currency: "CAD" },
+          location_id:     SquareClient.location_id,
+          reference_id:    order.number,
+          note:            "Order #{order.number}"
+        )
+
+        payment = response.payment
+
+        transaction.update!(
+          state:           :succeeded,
+          square_payment_id: payment.id,
+          raw_response:    response.to_h
+        )
+
+        order.with_lock { order.update!(status: :paid) if order.pending? }
+
+        broadcast_success(order)
+
+      rescue Square::Errors::ResponseError => e
+        transaction.update!(state: :failed, error_message: extract_error(e))
+
+        broadcast_error(order, e)
+      end
+    end
+  end
+
+  private
+
+  def broadcast_success(order)
+    return unless order
 
     Turbo::StreamsChannel.broadcast_action_to(
       "order_payment_#{order.id}",
       action: "redirect",
       target: order_path(order)
     )
-  rescue Square::Errors::ResponseError => e
-    error = JSON.parse(e.message).dig("errors", 0, "detail") rescue "Payment failed. Please try again."
+  end
+
+  def broadcast_error(order, error)
+    return unless order
 
     Turbo::StreamsChannel.broadcast_replace_to(
       "order_payment_#{order.id}",
       target: "payment-card",
       partial: "orders/payment_error",
-      locals: { order: order, error: error }
+      locals: { order:, error: extract_error(error) }
     )
+  end
+
+  def extract_error(error)
+    parsed = JSON.parse(error.message) rescue {}
+    parsed.dig("errors", 0, "detail") || "Payment failed. Please try again."
   end
 end

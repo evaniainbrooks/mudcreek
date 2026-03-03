@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe ProcessPaymentJob, type: :job do
   let(:user)  { create(:user) }
   let(:order) { create(:order, user: user, status: "pending", total_cents: 1150) }
+  let(:transaction) { create(:transaction, order:) }
 
   let(:payments_api) { instance_double("Square::Payments::Client") }
   let(:mock_client)  { instance_double("Square::Client", payments: payments_api) }
@@ -15,20 +16,21 @@ RSpec.describe ProcessPaymentJob, type: :job do
   end
 
   let(:payment_response) do
-    double("response", payment: double(id: "sq_payment_123"))
+    double("response", to_h: {}, payment: double(id: "sq_payment_123"))
   end
 
   context "when payment succeeds" do
     before { allow(payments_api).to receive(:create).and_return(payment_response) }
 
     it "marks the order as paid" do
-      described_class.perform_now(order.id, "tok_test")
+      described_class.perform_now(transaction.id, "tok_test")
       expect(order.reload.status).to eq("paid")
     end
 
     it "stores the Square payment ID" do
-      described_class.perform_now(order.id, "tok_test")
-      expect(order.reload.square_payment_id).to eq("sq_payment_123")
+      described_class.perform_now(transaction.id, "tok_test")
+
+      expect(transaction.reload.square_payment_id).to eq("sq_payment_123")
     end
 
     it "broadcasts a redirect action to the order stream" do
@@ -37,7 +39,7 @@ RSpec.describe ProcessPaymentJob, type: :job do
         action: "redirect",
         target: a_string_including(order.number)
       )
-      described_class.perform_now(order.id, "tok_test")
+      described_class.perform_now(transaction.id, "tok_test")
     end
   end
 
@@ -49,7 +51,8 @@ RSpec.describe ProcessPaymentJob, type: :job do
     end
 
     it "keeps the order as pending" do
-      described_class.perform_now(order.id, "tok_bad")
+      described_class.perform_now(transaction.id, "tok_bad")
+
       expect(order.reload.status).to eq("pending")
     end
 
@@ -60,16 +63,18 @@ RSpec.describe ProcessPaymentJob, type: :job do
         partial: "orders/payment_error",
         locals: { order: order, error: "Card declined." }
       )
-      described_class.perform_now(order.id, "tok_bad")
+
+      described_class.perform_now(transaction.id, "tok_bad")
     end
   end
 
-  context "when the order is already paid" do
-    before { order.update!(status: "paid") }
+  context "when the transaction is not pending" do
+    before { transaction.update!(state: "failed") }
 
     it "skips the Square API call" do
       expect(payments_api).not_to receive(:create)
-      described_class.perform_now(order.id, "tok_test")
+
+      described_class.perform_now(transaction.id, "tok_test")
     end
   end
 end

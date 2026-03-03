@@ -45,8 +45,7 @@
       .invalid-feedback= listing.errors[:pricing_type].to_sentence
 
   .mb-1{ data: { "listing-type-target": "ratePlansSection" }, hidden: listing.sale? }
-    - unless listing.new_record?
-      = render "admin/listings/rental_rate_plans/section", listing: listing, form: f
+    = render "admin/listings/rental_rate_plans/section", listing: listing, form: f
 
   .mb-3{ data: { "listing-type-target": "acquisitionPriceField" }, hidden: listing.rental? }
     = f.label :acquisition_price, "Acquisition Price", class: "form-label"

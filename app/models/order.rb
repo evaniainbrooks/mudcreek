@@ -1,12 +1,15 @@
 class Order < ApplicationRecord
   include MultiTenant
+  include NativeEnum
 
   belongs_to :user
   belongs_to :delivery_method, optional: true
   belongs_to :discount_code,   optional: true
   has_many   :order_items, dependent: :destroy
+  has_many   :transactions, dependent: :destroy
 
-  enum :status, { pending: "pending", paid: "paid", cancelled: "cancelled" }
+
+  native_enum :status, %i[pending paid cancelled]
 
   monetize :subtotal_cents
   monetize :tax_cents
@@ -29,6 +32,10 @@ class Order < ApplicationRecord
 
   def to_param
     number
+  end
+
+  def successful_transaction
+    transactions.succeeded.order(created_at: :desc).first
   end
 
   private

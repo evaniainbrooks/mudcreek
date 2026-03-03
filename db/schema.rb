@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_200002) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_043033) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200002) do
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
   create_enum "listing_type", ["sale", "rental"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
+  create_enum "transaction_state", ["pending", "succeeded", "failed"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -99,7 +100,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200002) do
 
   create_table "auctions", force: :cascade do |t|
     t.boolean "auto_approve", default: false, null: false
+    t.integer "bidding_extension", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "end_time_stagger_interval", default: 0, null: false
     t.datetime "ends_at"
     t.string "hashid", null: false
     t.string "name", null: false
@@ -492,6 +495,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200002) do
     t.index ["key"], name: "index_tenants_on_key", unique: true
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.bigint "order_id", null: false
+    t.jsonb "raw_response"
+    t.string "square_payment_id"
+    t.enum "state", default: "pending", null: false, enum_type: "transaction_state"
+    t.datetime "updated_at", null: false
+    t.uuid "uuid", null: false
+    t.index ["order_id"], name: "index_transactions_on_order_id"
+    t.index ["order_id"], name: "index_transactions_on_order_id_succeeded", unique: true, where: "(state = 'succeeded'::transaction_state)"
+    t.index ["uuid"], name: "index_transactions_on_uuid", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "activated_at"
     t.datetime "created_at", null: false
@@ -553,6 +571,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200002) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "transactions", "orders"
   add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"
 end

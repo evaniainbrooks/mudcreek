@@ -8,6 +8,7 @@ RSpec.describe "Webhooks::Square", type: :request do
 
   let(:signature_key) { "test_webhook_key" }
   let!(:order) { create(:order, status: "pending") }
+  let!(:transaction) { create(:transaction, state: :pending, order:, square_payment_id: "sq_pay_abc") }
 
   before do
     allow(SquareClient).to receive(:webhook_signature_key).and_return(signature_key)
@@ -36,6 +37,7 @@ RSpec.describe "Webhooks::Square", type: :request do
       "data" => {
         "object" => {
           "payment" => {
+            "amount_money" => { "amount" => 100_00 },
             "id"           => payment_id,
             "reference_id" => reference_id
           }
@@ -75,7 +77,7 @@ RSpec.describe "Webhooks::Square", type: :request do
       it "stores the Square payment ID" do
         post_webhook(payment_event("payment.completed", payment_id: "sq_pay_abc"))
 
-        expect(order.reload.square_payment_id).to eq("sq_pay_abc")
+        expect(transaction.reload.square_payment_id).to eq("sq_pay_abc")
       end
     end
 

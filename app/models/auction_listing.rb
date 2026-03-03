@@ -11,4 +11,10 @@ class AuctionListing < ApplicationRecord
   has_many :bids, dependent: :destroy
 
   validates :listing_id, uniqueness: true
+
+  def lot_end_time(auction)
+    return nil unless auction.ends_at
+    stagger = auction.end_time_stagger_interval || 0
+    auction.ends_at + (position - 1) * stagger
+  end
 end

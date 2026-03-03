@@ -14,6 +14,10 @@ class Auction < ApplicationRecord
   has_many :auction_registrations, dependent: :destroy
 
   validates :name, presence: true
+  validates :end_time_stagger_interval, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :end_time_stagger_interval, numericality: { greater_than_or_equal_to: 30 },
+            if: -> { end_time_stagger_interval.present? && end_time_stagger_interval > 0 }
+  validates :bidding_extension, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :ends_at_after_starts_at
 
   scope :unreconciled, -> { where(reconciled: false) }

@@ -7,7 +7,17 @@ class Orders::PaymentsController < ApplicationController
       return
     end
 
-    ProcessPaymentJob.perform_later(@order.id, params[:source_id])
+    transaction = nil
+
+    Order.transaction do
+      @order.lock!
+
+      raise "Already paid" unless @order.pending?
+
+      transaction = @order.transactions.create!(amount_cents: @order.total_cents, status: :pending)
+    end
+
+    ProcessPaymentJob.perform_later(transaction.id, params[:source_id])
 
     respond_to do |format|
       format.turbo_stream do
