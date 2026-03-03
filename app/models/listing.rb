@@ -52,6 +52,7 @@ class Listing < ApplicationRecord
   validate :documents_content_type
 
   accepts_nested_attributes_for :address, allow_destroy: true
+  accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
 
   private
 
