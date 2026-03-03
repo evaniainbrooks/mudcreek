@@ -13,7 +13,11 @@ class ApplicationController < ActionController::Base
   private
 
   def set_current_tenant
-    Current.tenant = if request.subdomain.present?
+    session[:tenant_key] = params[:tenant_key] if Rails.env.development? && params[:tenant_key].present?
+
+    Current.tenant = if Rails.env.development? && session[:tenant_key].present?
+      Tenant.find_by!(key: session[:tenant_key])
+    elsif request.subdomain.present?
       Tenant.find_by!(key: request.subdomain)
     else
       Tenant.find_by!(default: true)
