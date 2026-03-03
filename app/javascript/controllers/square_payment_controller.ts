@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { renderStreamMessage, visit } from "@hotwired/turbo"
 
 declare const Square: any
 
@@ -33,15 +34,26 @@ export default class extends Controller {
     const result = await this.card.tokenize()
 
     if (result.status === "OK") {
-      const form        = document.createElement("form")
-      form.method       = "POST"
-      form.action       = this.paymentUrlValue
-      form.innerHTML    = `
-        <input type="hidden" name="authenticity_token" value="${this.csrfTokenValue}">
-        <input type="hidden" name="source_id" value="${result.token}">
-      `
-      document.body.appendChild(form)
-      form.submit()
+      const response = await fetch(this.paymentUrlValue, {
+        method: "POST",
+        headers: {
+          "Accept": "text/vnd.turbo-stream.html",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRF-Token": this.csrfTokenValue
+        },
+        body: new URLSearchParams({ source_id: result.token })
+      })
+
+      if (response.ok) {
+        const contentType = response.headers.get("Content-Type") ?? ""
+        if (contentType.includes("vnd.turbo-stream")) {
+          renderStreamMessage(await response.text())
+        } else {
+          visit(response.url)
+        }
+      } else {
+        this.showError("Payment submission failed. Please try again.")
+      }
     } else {
       const msg = result.errors?.map((e: any) => e.message).join(", ") ?? "Tokenization failed."
       this.showError(msg)

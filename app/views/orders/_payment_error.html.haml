@@ -1,0 +1,6 @@
+#payment-card.card.shadow-sm.border-0.mb-3.border-danger
+  .card-body
+    .d-flex.align-items-center.gap-2.mb-3
+      %i.bi.bi-exclamation-circle-fill.text-danger
+      %span.text-danger= error
+    = link_to "Try Again", order_path(order), class: "btn btn-outline-secondary btn-sm"

@@ -34,7 +34,7 @@
 
   - if @listings.empty? && @search
     = render EmptyStateComponent.new(icon: "search",
-        message: "No listings found matching "#{@search}".",
+        message: "No listings found matching \"#{@search}\".",
         link_text: "Clear search",
         link_url: listings_path(tab: @tab, category_id: @category_hashid))
 
