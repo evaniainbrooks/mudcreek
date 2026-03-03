@@ -47,6 +47,7 @@ class CartsController < ApplicationController
   def build_cart_address
     cart_addr = Current.user.cart_address
     profile_addr = Current.user.address
+    @cart_address_saved = cart_addr&.street_address.present?
     @cart_address = {
       street_address: cart_addr&.street_address || profile_addr&.street_address,
       city:           cart_addr&.city           || profile_addr&.city,

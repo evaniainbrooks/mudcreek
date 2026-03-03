@@ -105,11 +105,11 @@ user_ids = User.where(tenant: mudcreek).pluck(:id)
 admin_user = User.find_by!(email_address: "admin@mudcreek")
 
 lot_data = [
-  { name: "Gladmore Estate",  number: "001" },
-  { name: "Westington Collection", number: "002" },
-  { name: "Borneo Consignments",          number: "003" },
-  { name: "Personal Items",        number: "004" },
-  { name: "Huckleberry Collection",  number: "005" }
+  { name: "Henderson Estate",    number: "001" },
+  { name: "Blackwood Collection", number: "002" },
+  { name: "Greenfield Manor",    number: "003" },
+  { name: "Chapman Farm",        number: "004" },
+  { name: "Personal Items",      number: "005" }
 ]
 
 lots = lot_data.each_with_object({}) do |attrs, hash|
@@ -123,159 +123,113 @@ end
 puts "Seeded #{Lot.count} lots."
 
 listing_data = [
-  # Cabins & Mountain Retreats
-  { name: "Cozy Mountain Cabin", price: 285_000, pricing_type: :negotiable, description: "A charming log cabin nestled in the pines with breathtaking mountain views, a wrap-around porch, and a stone fireplace. Perfect as a weekend retreat or full-time residence.", published: true },
-  { name: "Timber Frame Retreat", price: 445_000, pricing_type: :negotiable, description: "Handcrafted timber frame home deep in old-growth forest, with soaring ceilings, floor-to-ceiling windows, radiant heat, and a Finnish sauna.", published: true },
-  { name: "Mountain Ski Chalet", price: 590_000, description: "Ski-in/ski-out chalet steps from the lifts with a heated mudroom, hot tub, stone fireplace, and sleeping for twelve. Strong short-term rental history.", published: true },
-  { name: "Backcountry Retreat", price: 210_000, description: "Remote off-grid cabin accessible by ATV or snowmobile, surrounded by national forest. Solar power, propane appliances, and satellite internet.", published: false },
-  { name: "Riverside Retreat", price: 175_000, pricing_type: :negotiable, description: "Secluded cabin along a quiet trout stream with excellent fishing, hiking trails, and wildlife viewing. Off-grid capable with solar panels and a well.", published: true },
-  { name: "Alpine Lodge", price: 525_000, description: "Spacious alpine lodge with vaulted ceilings, exposed stone, a chef's kitchen, and wraparound deck with unobstructed mountain views at 8,000 ft elevation.", published: true },
-  { name: "Bear Creek Cabin", price: 198_000, pricing_type: :negotiable, description: "Cozy two-bedroom cabin on 5 wooded acres along Bear Creek. Features a covered porch, wood stove, and direct access to backcountry hiking and fishing.", published: true },
-  { name: "Pine Ridge Cabin", price: 235_000, pricing_type: :negotiable, description: "Well-maintained pine log cabin at the end of a quiet forest road. Three bedrooms, a large stone fireplace, and an outdoor hot tub with mountain views.", published: true },
-  { name: "Cedar Bluff Retreat", price: 310_000, description: "Custom-built cedar cabin perched on a granite bluff with sweeping valley views. Open-concept living, radiant floor heat, and a two-car garage.", published: true },
-  { name: "Spruce Haven Cabin", price: 175_000, pricing_type: :negotiable, description: "Snug four-season cabin tucked into a dense spruce forest. Recently renovated with a new metal roof, updated plumbing, and a screened porch.", published: true },
-  { name: "Summit Ridge Chalet", price: 680_000, description: "Architect-designed mountain chalet with post-and-beam construction, floor-to-ceiling windows, a loft bedroom, and direct ski access from the back door.", published: true },
-  { name: "Glacier View Lodge", price: 785_000, description: "Grand mountain lodge with six bedrooms, two great rooms, a commercial kitchen, and commanding views of a glacier-capped peak. Proven vacation rental income.", published: true },
-  { name: "Aspen Grove Cabin", price: 260_000, pricing_type: :negotiable, description: "Charming cabin surrounded by golden aspens with a babbling brook, screened sleeping porch, and a detached bunkhouse for guests.", published: true },
-  { name: "Hemlock Hollow Retreat", price: 195_000, pricing_type: :negotiable, description: "Private woodland retreat on 12 acres of old-growth hemlock. Simple but solid construction with a stone hearth, root cellar, and spring-fed water.", published: false },
-  { name: "High Country Hunting Lodge", price: 890_000, description: "Purpose-built hunting lodge on 320 acres of prime elk and mule deer habitat. Includes a trophy room, walk-in cooler, equipment barn, and five en-suite bedrooms.", published: true },
-  { name: "Snowshoe Cabin", price: 145_000, pricing_type: :negotiable, description: "Classic winter getaway cabin with easy snowshoe access, a wood-burning stove, loft sleeping, and a small ice fishing lake just steps away.", published: true },
-  { name: "Ridgetop Retreat", price: 420_000, description: "Dramatic ridgetop home with 360-degree views, passive solar design, a rainwater collection system, and ten acres of private hillside terrain.", published: true },
+  # Furniture
+  { name: "Victorian Parlour Chair",       price: 185,  pricing_type: :negotiable, description: "Beautifully carved walnut parlour chair with original needlepoint upholstery in a floral medallion pattern. Sturdy legs, minimal wear — a genuine Victorian-era piece from the Henderson drawing room.", published: true, physical: true },
+  { name: "Oak Dining Table with Six Chairs", price: 450, description: "Solid quarter-sawn oak dining suite with a pedestal base and six matching ladder-back chairs with rush seats. Extends to seat ten. Light surface scratches only.", published: true, physical: true },
+  { name: "Mahogany Dresser with Mirror",  price: 320,  pricing_type: :negotiable, description: "Seven-drawer mahogany dresser with a bevelled swivel mirror and original brass hardware. Dovetail joinery throughout. Excellent original finish with minor patina.", published: true, physical: true },
+  { name: "Brass Bed Frame",              price: 275,  description: "Full-size ornate brass bed frame with original side rails. Thick tubing, solid castings, and fully functional. Includes slats. Circa 1910.", published: true, physical: true },
+  { name: "Antique Writing Desk",         price: 385,  pricing_type: :negotiable, description: "Drop-front secretary desk in cherry with fitted interior — pigeon holes, small drawers, and a pull-out writing surface. Three lower drawers with original locks and skeleton keys.", published: true, physical: true },
+  { name: "Windsor Chairs Set of Four",   price: 220,  pricing_type: :negotiable, description: "Matched set of four bow-back Windsor chairs in original black paint with gold pinstriping. Solid and sturdy with minor paint loss. Farm-fresh from the Chapman dining room.", published: true, physical: true },
+  { name: "Cedar Chest",                  price: 165,  pricing_type: :negotiable, description: "Aromatic red cedar hope chest with tray insert and original hardware. Interior cedar is fragrant and unlined. Some light exterior scratches. Ideal for linens or blankets.", published: true, physical: true },
+  { name: "Chesterfield Sofa",            price: 495,  pricing_type: :negotiable, description: "Classic rolled-arm Chesterfield in original burgundy leather with deep button tufting. Some patina on the armrests consistent with age. Extremely comfortable and structurally sound.", published: true, physical: true },
+  { name: "Teak Garden Bench",            price: 140,  description: "Three-seat teak garden bench with slatted back and armrests. Silvered to a handsome grey with age. Hardware intact, no rot. Great outdoor piece.", published: true, physical: true },
+  { name: "Rocking Chair",                price: 95,   pricing_type: :negotiable, description: "Pressed-back oak rocking chair with a carved floral crest rail and turned spindles. Original finish in good condition. Rockers show normal wear. Comfortable and solid.", published: true, physical: true },
 
-  # Waterfront
-  { name: "Lakefront Cottage", price: 420_000, pricing_type: :negotiable, description: "Peaceful waterfront property with a private dock, sandy beach, and stunning sunset views. Features an updated kitchen, three bedrooms, and a boathouse.", published: true },
-  { name: "Fishing Camp", price: 225_000, description: "Rustic yet well-equipped fishing camp on a private lake with five sleeping cabins, a main lodge, boat storage, and a fish cleaning station.", published: true },
-  { name: "Remote Island Cabin", price: 330_000, pricing_type: :negotiable, description: "Unique island property accessible only by boat or floatplane, with a well-built cabin, solar power, a dock, crab pots, and extraordinary solitude.", published: false },
-  { name: "Lakeside Glamping Parcel", price: 260_000, description: "Established glamping business with four luxury canvas tent platforms, a bathhouse, fire pits, kayak storage, and direct lake access.", published: true },
-  { name: "Sandy Cove Cottage", price: 385_000, pricing_type: :negotiable, description: "Adorable waterfront cottage with a private sandy cove, a floating dock, a screened sunroom, and a guest bunkie. Turnkey and fully furnished.", published: true },
-  { name: "Dockside Retreat", price: 470_000, description: "Modern waterfront home with a deep-water dock, boathouse, outdoor kitchen, and an open-plan interior designed to maximize lake views from every room.", published: true },
-  { name: "Bayfront Bungalow", price: 515_000, description: "Charming bungalow on a protected bay with calm, swimmable water, a long sandy beach, and a detached garage with a guest suite above.", published: true },
-  { name: "River Bend Cabin", price: 215_000, pricing_type: :negotiable, description: "Secluded cabin on the inside of a gentle river bend with excellent fly fishing, a covered veranda over the water, and 8 acres of riparian land.", published: true },
-  { name: "Lakeview Escape", price: 295_000, pricing_type: :negotiable, description: "Elevated property with panoramic lake views, a switchback trail to a private dock, a wraparound deck, and two sleeping lofts.", published: true },
-  { name: "Marsh Landing Property", price: 340_000, description: "Unique tidal marsh property with a restored hunting cabin, a canoe launch, observation tower, and exceptional waterfowl habitat on 30 acres.", published: true },
-  { name: "Peninsula Retreat", price: 625_000, description: "Rare peninsula property with water on three sides, a 200-ft shoreline, private boat launch, fire pit beach, and a beautifully renovated four-season cottage.", published: true },
-  { name: "Inlet Hideaway", price: 190_000, pricing_type: :negotiable, description: "Rustic inlet property accessible by boat with a one-room cabin, a floating dock, an outhouse, and surrounded by old-growth coastal forest.", published: false },
-  { name: "Waterfall Acreage", price: 280_000, pricing_type: :negotiable, description: "Stunning 22-acre property featuring a 40-foot seasonal waterfall, swimming hole, hiking trails, and a cleared building site with utilities nearby.", published: true },
-  { name: "Tidal Creek Cottage", price: 360_000, description: "Low-country cottage on a navigable tidal creek with a covered porch, clam beds, kayak storage, and an outdoor shower. A coastal dream.", published: true },
+  # Antiques & Collectibles
+  { name: "Wedgwood Tea Service",         price: 145,  description: "Twenty-two piece Wedgwood Cornucopia tea service including teapot, creamer, sugar, six cups and saucers, and serving plates. Minor gilt wear, no chips or cracks.", published: true },
+  { name: "Bakelite Table Radio",         price: 85,   pricing_type: :negotiable, description: "1940s brown Bakelite cathedral radio in excellent cosmetic condition. Receives AM. Warm tone and impressive volume. A striking piece of mid-century design.", published: true },
+  { name: "Clockwork Mantle Clock",       price: 195,  description: "Eight-day French mantle clock in a black slate and marble case with gilt bronze mounts. Strikes on the half and hour. Running and keeping good time. Key included.", published: true },
+  { name: "Depression Glass Bowl Set",    price: 75,   description: "Eleven-piece set of pink Depression glass in the Sharon rose pattern — six salad plates, four berry bowls, and a large serving bowl. No chips or cracks.", published: true },
+  { name: "Sterling Silver Cutlery Set",  price: 340,  pricing_type: :negotiable, description: "Sixty-piece Birks sterling silver flatware service for twelve in the Chantilly pattern. Stored in original fitted case. Some tarnish, polishes beautifully. Weighs over 2 kg.", published: true },
+  { name: "Vintage Tin Advertising Signs", price: 55,  pricing_type: :negotiable, description: "Lot of four original lithograph tin signs — two tobacco, one feed store, one soft drink — ranging from 12\" to 18\" wide. Surface rust and honest patina on all.", published: true },
+  { name: "Pewter Tankard Set",           price: 90,   description: "Set of six English pewter tankards with hinged lids, hallmarked and dated circa 1890. No dents or damage. Rich grey patina. Displayed on original wooden rack.", published: true },
+  { name: "Brass Ship's Compass",         price: 125,  description: "Gimbal-mounted brass binnacle compass in original mahogany box with a swing ring. Card is clear and needle responsive. A handsome nautical antique.", published: true },
+  { name: "Hand-painted China Plates",    price: 95,   description: "Set of eight hand-painted Austrian china dinner plates with detailed fruit and floral borders on cream grounds. All signed by the artist. No damage.", published: true },
+  { name: "Cast Iron Doorstop Collection", price: 45,  description: "Four original painted cast iron doorstops — a Scottie dog, a lighthouse, a rooster, and a basket of flowers. Original paint intact on all. Charming farmhouse pieces.", published: true },
 
-  # Farms & Homesteads
-  { name: "Rural Hobby Farm", price: 550_000, pricing_type: :negotiable, description: "15 acres of fertile land with a renovated farmhouse, two barns, a chicken coop, and fenced pastures. Ideal for small-scale agriculture or equestrian use.", published: true },
-  { name: "Prairie Homestead", price: 390_000, description: "Classic farmhouse on 40 acres of open prairie with original hardwood floors, a modern kitchen, grain storage, and sweeping views in every direction.", published: true },
-  { name: "Orchard Property", price: 310_000, description: "Productive apple and pear orchard with a restored farmhouse, cider barn, and roadside stand. A thriving agritourism operation with loyal local customers.", published: true },
-  { name: "Valley View Farmhouse", price: 375_000, description: "Restored Victorian farmhouse with original millwork, updated plumbing and electrical, a large barn, and panoramic valley views from the covered porch.", published: true },
-  { name: "River Bottom Farmland", price: 880_000, description: "Prime irrigated river bottom cropland in a productive agricultural valley. Class 1 soils, established water rights, and a large equipment shed.", published: true },
-  { name: "Sunflower Homestead", price: 415_000, pricing_type: :negotiable, description: "Bright and welcoming 30-acre homestead with a renovated farmhouse, a large market garden, greenhouse, root cellar, and established orchard.", published: true },
-  { name: "Rolling Hills Farm", price: 490_000, description: "Picturesque 75-acre farm rolling across gentle hills with a two-story farmhouse, dairy barn, equipment shed, and productive hayfields.", published: true },
-  { name: "Heritage Grain Farm", price: 725_000, description: "Established 200-acre grain farm with Class 2 soils, a well-maintained farmhouse, three-phase power, grain bins, and a proven crop rotation history.", published: true },
-  { name: "Blue Ridge Farmstead", price: 445_000, pricing_type: :negotiable, description: "Scenic mountain farmstead at 2,400 ft elevation with organic-certified pastures, a log home, spring-fed water, and a small flock of heritage sheep.", published: true },
-  { name: "Clover Meadow Farm", price: 360_000, pricing_type: :negotiable, description: "Charming 20-acre farm with a restored 1890s farmhouse, a bank barn, herb garden, and fenced pastures currently supporting a small goat operation.", published: true },
-  { name: "Harvest Moon Homestead", price: 530_000, description: "Self-sufficient 40-acre homestead with solar power, a wind turbine, a large root cellar, greenhouse, chicken house, and a cozy updated farmhouse.", published: true },
-  { name: "Willow Creek Farm", price: 465_000, pricing_type: :negotiable, description: "Idyllic creek-side farm with a fieldstone farmhouse, a timber-frame barn, and 35 acres split between pasture, woodlot, and vegetable gardens.", published: true },
-  { name: "Stone Wall Farm", price: 395_000, pricing_type: :negotiable, description: "Classic New England farm bounded by historic stone walls, with a cape-style farmhouse, sugar maple grove, two ponds, and 28 acres of mixed land.", published: true },
-  { name: "Maple Sugar Farm", price: 480_000, description: "Working sugar bush with 3,000 taps, a modern sugarhouse, bottling facility, and retail shop. Includes a comfortable farmhouse and 60 acres of maple forest.", published: true },
-  { name: "Lavender Field Farm", price: 340_000, pricing_type: :negotiable, description: "Aromatic 12-acre lavender farm with a distillery shed, farm store, wedding venue pavilion, and a charming Provençal-style farmhouse.", published: true },
-  { name: "Blueberry Hill Farm", price: 285_000, pricing_type: :negotiable, description: "Established u-pick blueberry operation with 8 acres of mature bushes, a farm stand, irrigation system, and a three-bedroom farmhouse.", published: true },
-  { name: "Bee Farm Homestead", price: 320_000, pricing_type: :negotiable, description: "Thriving honey operation with 80 active hives, a honey house, extraction equipment, retail storefront, and a restored farmhouse on 15 acres of clover.", published: true },
-  { name: "Market Garden Property", price: 275_000, description: "Intensively managed 5-acre market garden with high tunnels, irrigation, walk-in cooler, and a small farmhouse. Supplies three local restaurants weekly.", published: true },
-  { name: "Sheep Station Homestead", price: 610_000, description: "Complete sheep operation on 120 acres with a wool barn, shearing facility, lambing shed, a border collie kennel, and a handsome log farmhouse.", published: true },
-  { name: "Dairy Farm Property", price: 950_000, description: "Fully operational small-scale dairy on 180 acres with a parlour barn, bulk tank, pasteurizer, licensed creamery, and a modern farmhouse.", published: true },
+  # Jewelry & Watches
+  { name: "Gold Locket Necklace",         price: 180,  description: "Yellow gold oval locket on a fine chain, circa 1890–1910. Interior holds two original photos. Tests at 10K. Minor surface wear. 3.4 g total weight.", published: true },
+  { name: "Gentleman's Pocket Watch",     price: 285,  pricing_type: :negotiable, description: "Illinois Bunn Special 21-jewel railroad-grade pocket watch in a yellow gold-filled screw-back case. Running accurately. Dial has a hairline near six — noted in price.", published: true },
+  { name: "Pearl Bracelet",               price: 95,   description: "Three-strand cultured pearl bracelet with a gold-filled clasp set with a small garnet. Pearls are uniform in size and lustre. Clasp functional.", published: true },
+  { name: "Cameo Brooch",                 price: 75,   description: "Shell cameo brooch depicting a classical profile in a rolled gold frame with pin catch intact. No chips. Circa 1880. Fine detail on the carving.", published: true },
+  { name: "Silver Cufflinks",             price: 65,   description: "Pair of sterling silver engine-turned cufflinks in original fitted leather box. Hallmarked Birmingham, 1927. Toggle backs in good working order.", published: true },
+  { name: "Amethyst Ring",                price: 145,  pricing_type: :negotiable, description: "Victorian silver amethyst and seed pearl cluster ring. Oval cushion-cut amethyst, deep purple, approximately 3 ct. Shank tests silver. Ring size 6.5.", published: true },
 
-  # Ranches
-  { name: "High Desert Ranch", price: 720_000, description: "200-acre high desert ranch with a modern hacienda-style home, working cattle operation, stock ponds, and outstanding mule deer hunting.", published: true },
-  { name: "Working Cattle Ranch", price: 1_450_000, description: "Turnkey 500-acre cattle ranch with a fully updated ranch house, bunkhouse, multiple barns, corrals, a feedlot, and deeded water rights on a year-round creek.", published: true },
-  { name: "Equestrian Estate", price: 980_000, description: "Premier equestrian property with a 12-stall barn, indoor arena, outdoor ring, 20 fenced acres of pasture, and a stunning 4-bedroom home.", published: true },
-  { name: "Silver Creek Ranch", price: 825_000, description: "380-acre working ranch straddling Silver Creek with lush riparian meadows, hay production, a modern ranch house, and excellent elk hunting in the back country.", published: true },
-  { name: "Eagle Ridge Ranch", price: 1_150_000, description: "Premier 600-acre cattle and horse ranch with a four-bedroom lodge, guest quarters, a 20-stall barn, indoor arena, and a private airstrip.", published: true },
-  { name: "Prairie Wind Ranch", price: 675_000, description: "Open-range cattle ranch on 400 acres of native prairie grassland with a classic ranch house, working corrals, and strong lease income potential.", published: true },
-  { name: "Big Sky Ranch", price: 1_080_000, description: "560-acre Montana-style ranch under a massive sky with a handsome log home, guest cabin, horse facilities, and a creek running through productive meadows.", published: true },
-  { name: "Sagebrush Ranch", price: 590_000, pricing_type: :negotiable, description: "Classic high-desert ranch on 280 acres of open sagebrush rangeland with a solar-powered ranch house, stock wells, working corrals, and a calving barn.", published: true },
-  { name: "Iron Horse Ranch", price: 765_000, description: "Well-established 320-acre horse property with a 16-stall barn, cross-country course, three-bedroom ranch home, and lush irrigated pastures.", published: true },
-  { name: "Cottonwood Creek Ranch", price: 895_000, description: "Scenic 430-acre ranch along a cottonwood-lined creek with irrigated hay meadows, a remodeled ranch house, a bunkhouse, and outstanding fishing.", published: true },
-  { name: "Thunder Ridge Ranch", price: 1_250_000, description: "Legacy 700-acre family ranch with a stunning log home, a guest lodge, working cattle facilities, private lake, and some of the best big-game hunting in the region.", published: true },
+  # Tools & Workshop
+  { name: "Stanley Hand Plane Set",       price: 85,   pricing_type: :negotiable, description: "Collection of five Stanley bench planes: #3, #4, #5, #6, and #7. All original with tight mouths and functional totes. Some surface rust — irons are sound.", published: true },
+  { name: "Woodworking Chisel Set",       price: 55,   description: "Set of eight socket chisels in a canvas roll — graduated from ¼\" to 1½\". Handles are sound, blades hold an edge well. Stamped 'P.S.&W.' manufacturer.", published: true },
+  { name: "Cast Iron Bench Vise",         price: 95,   description: "Heavy 5\" jaw cast iron bench vise with swivel base and pipe jaws. Smooth action, no cracks or stripped threads. Mounts securely to a workbench.", published: true, physical: true },
+  { name: "Crosscut Hand Saw",            price: 40,   description: "Disston No. 12 crosscut hand saw with a turned apple handle and 26\" blade. Teeth have been sharpened and set. Cuts cleanly. Medallion intact.", published: true },
+  { name: "Vintage Level Set",            price: 35,   description: "Three vintage wood and brass spirit levels — 12\", 24\", and 36\" — all with readable bubbles. Some finish wear. Great for display or use.", published: true },
 
-  # Land & Parcels
-  { name: "Forested Acreage", price: 195_000, pricing_type: :negotiable, description: "60 acres of mixed hardwood forest with a small meadow clearing, seasonal creek, and a simple hunting cabin. Excellent timber value and wildlife habitat.", published: true },
-  { name: "Coastal Bluff Lot", price: 490_000, description: "Rare buildable lot perched on a dramatic coastal bluff with unobstructed ocean views. Utilities at the road, approved for a 3,000 sq ft residence.", published: true },
-  { name: "Wildflower Meadow Parcel", price: 130_000, pricing_type: :negotiable, description: "Beautiful 8-acre meadow parcel bordered by mature oaks, alive with native wildflowers in spring and summer. Ideal for a custom build or camping land.", published: true },
-  { name: "Pine Timber Acreage", price: 220_000, pricing_type: :negotiable, description: "75 acres of mature plantation pine with a sustainable harvest plan, an established logging road network, and deeded access to a public boat launch.", published: true },
-  { name: "Ridgeline Parcel", price: 155_000, pricing_type: :negotiable, description: "Dramatic 12-acre ridgeline parcel with cleared building sites, power at the road, and 180-degree views across a protected wilderness valley.", published: true },
-  { name: "Valley Meadow Lot", price: 95_000, pricing_type: :negotiable, description: "Sunny 4-acre meadow lot in a productive farming valley with fertile soils, excellent sun exposure, a small pond, and paved road frontage.", published: true },
-  { name: "Lakeside Buildable Lot", price: 185_000, description: "One of the last available lakefront lots in the area, with 120 ft of shoreline, a gentle slope to the water, and approved building plans available.", published: true },
-  { name: "Hilltop View Parcel", price: 110_000, pricing_type: :negotiable, description: "Secluded 6-acre hilltop parcel with commanding 360-degree views, a drilled well, a septic perc test on file, and a roughed-in driveway.", published: true },
-  { name: "Creek Bottom Acreage", price: 175_000, pricing_type: :negotiable, description: "Productive 30-acre creek bottom parcel with Class 1 soils, mature cottonwood riparian corridor, and established water rights perfect for irrigation.", published: true },
-  { name: "Sunset Ridge Lot", price: 120_000, pricing_type: :negotiable, description: "South-facing 5-acre building lot with western exposure and spectacular sunset views. Includes a drilled well, electricity at the property line, and a gated entry.", published: true },
-  { name: "Timberline Parcel", price: 245_000, pricing_type: :negotiable, description: "Pristine 40-acre parcel sitting right at the treeline on the south slope of a major peak. Mix of mature spruce forest and open alpine meadow.", published: false },
-  { name: "Clifftop Lot", price: 380_000, description: "Exceptional half-acre clifftop building lot overlooking a river canyon. Engineered foundation plans in hand, power underground, and a gated private road.", published: true },
-  { name: "Remote Forest Tract", price: 90_000, pricing_type: :negotiable, description: "100-acre remote forest tract accessible only by seasonal road. Rich wildlife habitat, trophy elk sign throughout, and complete privacy.", published: false },
+  # Books & Media
+  { name: "Encyclopedia Britannica Set",  price: 95,   description: "Complete 1965 Encyclopedia Britannica in 24 volumes plus index. Burgundy cloth with gilt titles. All spines tight, pages clean. Includes original wooden bookends.", published: true, physical: true },
+  { name: "Vinyl Record Collection",      price: 85,   pricing_type: :negotiable, description: "Box of approximately 80 LP records — jazz, classical, and easy listening. Mostly 1950s–70s pressings. Several in original sleeves. Spot-checked: all play without skipping.", published: true },
+  { name: "First Edition Poetry Collection", price: 125, description: "Twelve early twentieth-century poetry volumes including a signed Robert Service first edition and a fine Kipling Barrack-Room Ballads. All in original boards.", published: true },
 
-  # Unique & Specialty
-  { name: "Converted Barn Loft", price: 340_000, pricing_type: :negotiable, description: "One-of-a-kind converted dairy barn with soaring exposed timber ceilings, a chef's kitchen, two loft bedrooms, and a wraparound deck overlooking rolling hills.", published: true },
-  { name: "Tiny House on Acreage", price: 165_000, pricing_type: :negotiable, description: "Thoughtfully designed 400 sq ft tiny house on 3 private acres with solar power, composting systems, a lush garden, and a workshop.", published: true },
-  { name: "Woodland Artist Retreat", price: 295_000, pricing_type: :negotiable, description: "Quiet woodland property with a main cottage and a separate studio building flooded with north light. Surrounded by sculpture gardens and mature hardwoods.", published: true },
-  { name: "Converted Silo Loft", price: 275_000, pricing_type: :negotiable, description: "Striking converted grain silo transformed into a two-story circular loft with custom curved windows, a rooftop deck, and a wrap-around garden.", published: true },
-  { name: "Yurt on Acreage", price: 110_000, pricing_type: :negotiable, description: "Fully permitted 30-ft yurt on 5 private acres with a composting toilet, wood stove, solar array, and a lovely meadow setting near hiking trails.", published: true },
-  { name: "Lighthouse Keeper's Cottage", price: 465_000, description: "Rare restored lighthouse property with a four-bedroom keeper's cottage, a functioning light tower, a private beach, and a registered heritage designation.", published: true },
-  { name: "Old Schoolhouse Conversion", price: 290_000, pricing_type: :negotiable, description: "Lovingly converted one-room schoolhouse with original bell tower, wide-plank floors, exposed brick, an open-plan loft, and a half-acre in a charming village.", published: true },
-  { name: "Church Conversion Loft", price: 320_000, pricing_type: :negotiable, description: "Dramatic conversion of a 1910 stone church into a two-level live-work loft. Soaring stained glass windows, original organ pipes, and a private walled courtyard.", published: true },
-  { name: "Container Home Property", price: 240_000, pricing_type: :negotiable, description: "Modern off-grid compound built from four shipping containers on 8 acres, with a green roof, solar and wind power, a rainwater cistern, and orchard.", published: true },
-  { name: "Treehouse Retreat", price: 185_000, pricing_type: :negotiable, description: "Professionally built treehouse retreat set 20 ft into a canopy of old-growth oaks. Two sleeping platforms, a suspended rope bridge, composting toilet, and solar.", published: true },
-  { name: "Windmill Farm Estate", price: 615_000, description: "Historic windmill property on 25 acres with a restored Dutch-style windmill (currently producing flour), a four-bedroom farmhouse, and a small farm store.", published: true },
-  { name: "Underground Earth Shelter", price: 195_000, pricing_type: :negotiable, description: "Ingeniously built earth-sheltered home bermed into a south-facing hillside with passive solar gain, exceptional insulation, and a rooftop wildflower meadow.", published: false },
+  # Kitchenware & Dining
+  { name: "Copper Cookware Set",          price: 185,  description: "Seven-piece set of French copper pots and pans — two saucepans, a sauté pan, a rondeau, a stockpot, and two lids — all tin-lined. Matching dovetailed seams.", published: true },
+  { name: "Vintage Pyrex Mixing Bowl Set", price: 65,  description: "Set of four nested Pyrex mixing bowls in the Primary Colors pattern: red, blue, green, and yellow. No chips or cracks. Excellent colour.", published: true },
+  { name: "Crystal Decanter Set",         price: 110,  description: "Cut crystal decanter with eight matching rocks glasses in a Greek key pattern. All pieces present and undamaged. Stored in original felt-lined box.", published: true },
+  { name: "Silverplate Serving Tray",     price: 75,   description: "Large oval silverplate gallery tray with pierced border and two handles. Maker's mark on base. Silver is thick, minimal wear to high points. 22\" long.", published: true },
+  { name: "Cast Iron Dutch Oven",         price: 55,   description: "No. 10 Griswold cast iron Dutch oven with lid. Large block logo, Erie PA. Seasoned black, no cracks or pits. A prized piece for any cast iron collector.", published: true },
 
-  # Desert & Southwest
-  { name: "Desert Adobe Estate", price: 620_000, description: "Stunning Southwest-style home with exposed vigas, terracotta tile floors, a courtyard pool, and panoramic desert and mountain views on 5 acres.", published: true },
-  { name: "Red Rock Canyon Estate", price: 780_000, description: "Dramatic red-rock country estate surrounded by towering sandstone formations, with a Santa Fe-style home, infinity pool, artist studio, and 12 acres of privacy.", published: true },
-  { name: "Saguaro Flats Ranch", price: 490_000, description: "Authentic desert ranch on 160 acres of saguaro-studded bajada, with a Territorial-style home, a guest casita, stock tank, and working cattle pens.", published: true },
-  { name: "Mesa Verde Retreat", price: 545_000, description: "Mesa-top retreat with commanding views of multiple mountain ranges, a passive-solar adobe home, a water storage cistern, and 20 acres of high desert terrain.", published: true },
-  { name: "Canyon Rim Property", price: 415_000, pricing_type: :negotiable, description: "Breathtaking canyon rim property with a 500-ft sheer drop to the river below, a custom timber home, a fire lookout tower conversion, and 15 acres.", published: true },
-  { name: "Desert Blossom Homestead", price: 355_000, pricing_type: :negotiable, description: "Lush desert homestead with a walled courtyard garden, acequia water rights, a ramada, fruit trees, raised beds, and an adobe farmhouse.", published: true },
-  { name: "Pinon Hills Cabin", price: 210_000, pricing_type: :negotiable, description: "Comfortable cabin in the piñon-juniper highlands with a kiva fireplace, Saltillo tile floors, a covered portal, and 3 acres of high-desert serenity.", published: true },
-  { name: "Joshua Tree Retreat", price: 335_000, pricing_type: :negotiable, description: "Architect-designed desert retreat among ancient Joshua trees, featuring a passive-solar layout, polished concrete floors, an outdoor soaking tub, and five acres.", published: true },
+  # Art & Decor
+  { name: "Watercolour Landscape Painting", price: 225, pricing_type: :negotiable, description: "Framed original watercolour of a misty river valley, signed lower right 'E. Sutton 1938.' 18\" × 24\" sheet in original gilt frame. Light mat foxing only.", published: true },
+  { name: "Hand-hooked Wool Rug",         price: 195,  description: "Circa 1920 hand-hooked wool rug, 4' × 6', depicting a folk art floral wreath on a navy ground. Wool is dense and colours are vibrant. Bound edges intact.", published: true, physical: true },
+  { name: "Framed Botanical Prints Set",  price: 85,   description: "Set of six antique hand-coloured botanical lithographs in matching mahogany frames. Circa 1870. Consistent minor foxing typical for age. Attractive grouping.", published: true },
+  { name: "Bronze Horse Figurine",        price: 165,  description: "Solid bronze sculpture of a trotting horse on a marble plinth, signed 'Dubois' on the base. 8\" tall. Rich dark patina. No damage.", published: true },
+  { name: "Tiffany-style Table Lamp",     price: 285,  pricing_type: :negotiable, description: "Leaded glass dragonfly shade on a cast metal base. 20\" shade diameter, overall height 26\". Wired and tested — all panels intact with no repairs.", published: true, physical: true },
+  { name: "Oil Portrait",                 price: 195,  pricing_type: :negotiable, description: "19th-century oil on canvas portrait of a seated gentleman in a dark coat. 24\" × 30\" canvas in carved gilt frame. Some inpainting visible under raking light.", published: true },
 
-  # Recreation & Glamping
-  { name: "Off-Grid Solar Homestead", price: 285_000, pricing_type: :negotiable, description: "Fully off-grid homestead with a 10kW solar array, battery bank, propane backup, well and septic, a 2,000 sq ft timber-frame home, and a productive garden.", published: true },
-  { name: "Hunting Lodge Compound", price: 1_100_000, description: "Premier hunting compound on 900 acres of private wilderness with a 10-bedroom lodge, guides' quarters, equipment barn, walk-in cooler, and airstrip.", published: true },
-  { name: "RV Resort Property", price: 750_000, description: "Established 40-site RV resort on 15 acres with full hookups, a bathhouse, camp store, playground, fire pits, and a strong occupancy track record.", published: true },
-  { name: "Campground Business", price: 620_000, description: "Operating campground with 60 sites (tents and RVs), 6 glamping cabins, a swimming hole, a general store, and loyal repeat customers.", published: true },
-  { name: "Duck Hunting Marsh", price: 320_000, pricing_type: :negotiable, description: "Prime 200-acre waterfowl marsh with a fully equipped hunt camp, pit blinds, water control structures, and an outstanding history of public wing shooting.", published: true },
+  # Vintage Clothing & Accessories
+  { name: "Mink Stole",                   price: 145,  pricing_type: :negotiable, description: "Full natural mink stole with satin lining in ivory. Pelts are supple and well-matched. Minimal shedding. Hook-and-eye closure. Stored properly in cedar.", published: true },
+  { name: "Men's Tweed Hunting Jacket",   price: 85,   description: "Original Harris Tweed Norfolk jacket in olive herringbone, size 42 long. Four patch pockets, belted back, and gun patch on right shoulder. Light wear only.", published: true },
+  { name: "Beaded Evening Bag",           price: 55,   description: "Edwardian micro-beaded evening bag in a peacock and floral motif with a silver-tone frame and chain handle. Clasp functional. Lining intact.", published: true },
+  { name: "Vintage Hat Collection",       price: 65,   description: "Collection of six vintage women's hats from the 1940s–60s — felts, a straw, and a cocktail fascinator — in original hatbox. All in wearable condition.", published: true },
 
-  # Vineyards & Orchards
-  { name: "Vineyard Parcel", price: 875_000, description: "Established vineyard with 8 acres of Pinot Noir and Chardonnay vines, a production winery, tasting room, and farmhouse. Turnkey wine country operation.", published: true },
-  { name: "Vineyard Estate", price: 1_350_000, description: "Prestigious wine country estate with 22 acres of producing vines, a gravity-flow winery, a tasting pavilion, a five-bedroom manor home, and a guest cottage.", published: true },
-  { name: "Apple Hill Orchard", price: 425_000, pricing_type: :negotiable, description: "Thriving 18-acre apple operation with 15 heritage varieties, a licensed cidery, farm market, pick-your-own revenue, and a comfortable farmhouse.", published: true },
-  { name: "Cherry Farm", price: 385_000, pricing_type: :negotiable, description: "Productive cherry farm with 600 mature sweet and sour trees, a mechanical harvester, cold storage, direct-to-grocery contracts, and a farmhouse.", published: true }
+  # Electronics
+  { name: "Grundig Shortwave Radio",      price: 95,   pricing_type: :negotiable, description: "Grundig Satellit 500 shortwave receiver in original case with manual. Receives AM, FM, and shortwave bands. Tested and functional. Display is bright.", published: true },
+  { name: "Vintage Rotary Telephone",     price: 45,   description: "Western Electric Model 500 rotary dial telephone in original harvest gold. Dial is smooth and springy. Handset cord intact. Purely decorative.", published: true },
+  { name: "8mm Film Projector",           price: 75,   pricing_type: :negotiable, description: "Eumig P8 Phonomatic 8mm film projector with built-in speaker and reverse function. Lamp works, motor runs smoothly. Two reels of family film included.", published: true },
+
+  # Garden & Outdoor
+  { name: "Cast Iron Garden Urns",        price: 165,  description: "Pair of matching cast iron garden urns on pedestal bases. Classical acanthus leaf design. Light surface rust — structurally sound. 18\" tall each.", published: true, physical: true },
+  { name: "Antique Wheelbarrow",          price: 85,   pricing_type: :negotiable, description: "Vintage wooden wheelbarrow with iron wheel and banded hardwood tray. Painted red, well-worn. Functional and charming as a garden planter.", published: true, physical: true },
+  { name: "Copper Garden Lanterns",       price: 95,   description: "Set of three wall-mount copper lanterns in graduated sizes. Aged verdigris patina. Glass panels intact. Wired for standard bulbs.", published: true, physical: true }
 ]
 
 listing_data.each do |attrs|
   Listing.find_or_create_by!(name: attrs[:name]) do |l|
-    l.tenant = mudcreek
-    l.price = attrs[:price]
+    l.tenant       = mudcreek
+    l.price        = attrs[:price]
     l.pricing_type = attrs[:pricing_type] || :firm
-    l.description = attrs[:description]
-    l.published = attrs[:published]
-    l.owner_id = user_ids.sample
-    l.state = [:sold, :on_sale].sample
+    l.description  = attrs[:description]
+    l.published    = attrs[:published]
+    l.physical     = attrs[:physical] || false
+    l.owner_id     = user_ids.sample
+    l.state        = [ :sold, :on_sale ].sample
   end
 end
 
 puts "Seeded #{Listing.count} listings."
 
-# Rental listing example
-rental = Listing.find_or_create_by!(name: "Canoe Rental") do |l|
+# Rental listing
+rental = Listing.find_or_create_by!(name: "Folding Tables & Chairs") do |l|
   l.tenant       = mudcreek
   l.listing_type = :rental
   l.price_cents  = 0
-  l.description  = "16-foot aluminum canoe, paddles and life jackets included."
+  l.description  = "Round folding tables (60\") and padded folding chairs available for events, estate viewings, and sales. Clean, stacked, and ready to go."
   l.published    = true
   l.owner_id     = admin_user.id
   l.state        = :on_sale
 end
 
 [
-  { label: "1 Hour",   duration_minutes: 60,   price_cents: 1500  },
+  { label: "2 Hours",  duration_minutes: 120,  price_cents: 2500  },
   { label: "Half Day", duration_minutes: 240,  price_cents: 4000  },
-  { label: "Full Day", duration_minutes: 1440, price_cents: 6500  },
-  { label: "Weekend",  duration_minutes: 2880, price_cents: 10000 }
+  { label: "Full Day", duration_minutes: 480,  price_cents: 6500  },
+  { label: "Weekend",  duration_minutes: 1440, price_cents: 10000 }
 ].each do |attrs|
   rental.rental_rate_plans.find_or_create_by!(label: attrs[:label]) do |p|
     p.tenant           = mudcreek
@@ -288,64 +242,58 @@ puts "Seeded rental listing with #{rental.rental_rate_plans.count} rate plans."
 
 # Assign listings to lots
 lot_assignments = {
-  "Gladmore Estate" => [
-    "Cozy Mountain Cabin", "Timber Frame Retreat", "Mountain Ski Chalet", "Backcountry Retreat",
-    "Riverside Retreat", "Alpine Lodge", "Bear Creek Cabin", "Pine Ridge Cabin",
-    "Cedar Bluff Retreat", "Spruce Haven Cabin", "Summit Ridge Chalet", "Glacier View Lodge",
-    "Aspen Grove Cabin", "Hemlock Hollow Retreat", "High Country Hunting Lodge",
-    "Snowshoe Cabin", "Ridgetop Retreat"
+  "Henderson Estate" => [
+    "Victorian Parlour Chair", "Oak Dining Table with Six Chairs", "Mahogany Dresser with Mirror",
+    "Brass Bed Frame", "Antique Writing Desk", "Chesterfield Sofa", "Clockwork Mantle Clock",
+    "Wedgwood Tea Service", "Sterling Silver Cutlery Set", "Silverplate Serving Tray",
+    "Crystal Decanter Set", "Watercolour Landscape Painting", "Oil Portrait",
+    "Framed Botanical Prints Set", "Gold Locket Necklace", "Pearl Bracelet"
   ],
-  "Westington Collection" => [
-    "Lakefront Cottage", "Fishing Camp", "Remote Island Cabin", "Lakeside Glamping Parcel",
-    "Sandy Cove Cottage", "Dockside Retreat", "Bayfront Bungalow", "River Bend Cabin",
-    "Lakeview Escape", "Marsh Landing Property", "Peninsula Retreat", "Inlet Hideaway",
-    "Waterfall Acreage", "Tidal Creek Cottage"
+  "Blackwood Collection" => [
+    "Brass Ship's Compass", "Pewter Tankard Set", "Bakelite Table Radio", "Gentleman's Pocket Watch",
+    "Grundig Shortwave Radio", "8mm Film Projector", "Vintage Rotary Telephone",
+    "Hand-painted China Plates", "Depression Glass Bowl Set", "Vintage Tin Advertising Signs",
+    "Cast Iron Doorstop Collection", "Cameo Brooch", "Silver Cufflinks", "Amethyst Ring"
   ],
-  "Borneo Consignments" => [
-    "Rural Hobby Farm", "Prairie Homestead", "Orchard Property", "River Bottom Farmland",
-    "Working Cattle Ranch", "Valley View Farmhouse", "Equestrian Estate", "Sunflower Homestead",
-    "Rolling Hills Farm", "Heritage Grain Farm", "Blue Ridge Farmstead", "Clover Meadow Farm",
-    "Harvest Moon Homestead", "Willow Creek Farm", "Stone Wall Farm", "Maple Sugar Farm",
-    "Lavender Field Farm", "Blueberry Hill Farm", "Bee Farm Homestead", "Market Garden Property",
-    "Sheep Station Homestead", "Dairy Farm Property",
-    "High Desert Ranch", "Silver Creek Ranch", "Eagle Ridge Ranch", "Prairie Wind Ranch",
-    "Big Sky Ranch", "Sagebrush Ranch", "Iron Horse Ranch", "Cottonwood Creek Ranch",
-    "Thunder Ridge Ranch", "Vineyard Parcel", "Vineyard Estate", "Apple Hill Orchard", "Cherry Farm"
+  "Greenfield Manor" => [
+    "Tiffany-style Table Lamp", "Bronze Horse Figurine", "Hand-hooked Wool Rug",
+    "Teak Garden Bench", "Cast Iron Garden Urns", "Copper Garden Lanterns",
+    "Windsor Chairs Set of Four", "Cedar Chest", "Rocking Chair",
+    "Copper Cookware Set", "Cast Iron Dutch Oven", "Mink Stole", "Men's Tweed Hunting Jacket"
+  ],
+  "Chapman Farm" => [
+    "Stanley Hand Plane Set", "Woodworking Chisel Set", "Cast Iron Bench Vise",
+    "Crosscut Hand Saw", "Vintage Level Set", "Antique Wheelbarrow",
+    "Encyclopedia Britannica Set", "Vinyl Record Collection", "First Edition Poetry Collection"
   ],
   "Personal Items" => [
-    "Forested Acreage", "Coastal Bluff Lot", "Wildflower Meadow Parcel", "Pine Timber Acreage",
-    "Ridgeline Parcel", "Valley Meadow Lot", "Lakeside Buildable Lot", "Hilltop View Parcel",
-    "Creek Bottom Acreage", "Sunset Ridge Lot", "Timberline Parcel", "Clifftop Lot",
-    "Remote Forest Tract"
-  ],
-  "Huckleberry Collection" => [
-    "Desert Adobe Estate", "Converted Barn Loft", "Tiny House on Acreage", "Woodland Artist Retreat",
-    "Converted Silo Loft", "Yurt on Acreage", "Lighthouse Keeper's Cottage", "Old Schoolhouse Conversion",
-    "Church Conversion Loft", "Container Home Property", "Treehouse Retreat", "Windmill Farm Estate",
-    "Underground Earth Shelter", "Red Rock Canyon Estate", "Saguaro Flats Ranch", "Mesa Verde Retreat",
-    "Canyon Rim Property", "Desert Blossom Homestead", "Pinon Hills Cabin", "Joshua Tree Retreat",
-    "Off-Grid Solar Homestead", "Hunting Lodge Compound", "RV Resort Property", "Campground Business",
-    "Duck Hunting Marsh"
+    "Vintage Pyrex Mixing Bowl Set", "Beaded Evening Bag", "Vintage Hat Collection",
+    "Vintage Tin Advertising Signs"
   ]
 }
 
 lot_assignments.each do |lot_name, listing_names|
   lot = lots[lot_name]
+  next unless lot
   listing_names.each do |listing_name|
-    Listing.where(name: listing_name).update_all(lot_id: lot.id) if lot
+    Listing.where(name: listing_name).update_all(lot_id: lot.id)
   end
 end
 
+puts "Assigned listings to lots."
+
 # Listing Categories
 category_names = [
-  "Cabins & Retreats",
-  "Farms & Homesteads",
-  "Ranches",
-  "Land & Parcels",
-  "Equestrian",
-  "Vineyards & Orchards",
-  "Recreation & Glamping",
-  "Unique Properties"
+  "Furniture",
+  "Antiques & Collectibles",
+  "Jewelry & Watches",
+  "Tools & Workshop",
+  "Books & Media",
+  "Kitchenware & Dining",
+  "Art & Decor",
+  "Vintage Clothing",
+  "Electronics",
+  "Garden & Outdoor"
 ]
 
 categories = category_names.each_with_object({}) do |name, hash|
@@ -355,119 +303,71 @@ categories = category_names.each_with_object({}) do |name, hash|
 end
 
 category_assignments = {
-  # Cabins & Retreats
-  "Cozy Mountain Cabin"          => [ "Cabins & Retreats" ],
-  "Timber Frame Retreat"         => [ "Cabins & Retreats", "Unique Properties" ],
-  "Mountain Ski Chalet"          => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  "Backcountry Retreat"          => [ "Cabins & Retreats" ],
-  "Riverside Retreat"            => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  "Alpine Lodge"                 => [ "Cabins & Retreats" ],
-  "Bear Creek Cabin"             => [ "Cabins & Retreats" ],
-  "Pine Ridge Cabin"             => [ "Cabins & Retreats" ],
-  "Cedar Bluff Retreat"          => [ "Cabins & Retreats" ],
-  "Spruce Haven Cabin"           => [ "Cabins & Retreats" ],
-  "Summit Ridge Chalet"          => [ "Cabins & Retreats", "Unique Properties" ],
-  "Glacier View Lodge"           => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  "Aspen Grove Cabin"            => [ "Cabins & Retreats" ],
-  "Hemlock Hollow Retreat"       => [ "Cabins & Retreats" ],
-  "High Country Hunting Lodge"   => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  "Snowshoe Cabin"               => [ "Cabins & Retreats" ],
-  "Ridgetop Retreat"             => [ "Cabins & Retreats", "Unique Properties" ],
-  "Remote Island Cabin"          => [ "Cabins & Retreats", "Unique Properties" ],
-  "Fishing Camp"                 => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  # Waterfront / Recreation
-  "Lakefront Cottage"            => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  "Lakeside Glamping Parcel"     => [ "Recreation & Glamping" ],
-  "Sandy Cove Cottage"           => [ "Cabins & Retreats" ],
-  "Dockside Retreat"             => [ "Cabins & Retreats" ],
-  "Bayfront Bungalow"            => [ "Cabins & Retreats" ],
-  "River Bend Cabin"             => [ "Cabins & Retreats" ],
-  "Lakeview Escape"              => [ "Cabins & Retreats" ],
-  "Marsh Landing Property"       => [ "Recreation & Glamping" ],
-  "Peninsula Retreat"            => [ "Cabins & Retreats", "Recreation & Glamping" ],
-  "Inlet Hideaway"               => [ "Cabins & Retreats" ],
-  "Waterfall Acreage"            => [ "Land & Parcels" ],
-  "Tidal Creek Cottage"          => [ "Cabins & Retreats" ],
-  # Farms & Homesteads
-  "Rural Hobby Farm"             => [ "Farms & Homesteads" ],
-  "Prairie Homestead"            => [ "Farms & Homesteads" ],
-  "Valley View Farmhouse"        => [ "Farms & Homesteads" ],
-  "River Bottom Farmland"        => [ "Farms & Homesteads", "Land & Parcels" ],
-  "Sunflower Homestead"          => [ "Farms & Homesteads" ],
-  "Rolling Hills Farm"           => [ "Farms & Homesteads" ],
-  "Heritage Grain Farm"          => [ "Farms & Homesteads" ],
-  "Blue Ridge Farmstead"         => [ "Farms & Homesteads" ],
-  "Clover Meadow Farm"           => [ "Farms & Homesteads" ],
-  "Harvest Moon Homestead"       => [ "Farms & Homesteads", "Unique Properties" ],
-  "Willow Creek Farm"            => [ "Farms & Homesteads" ],
-  "Stone Wall Farm"              => [ "Farms & Homesteads" ],
-  "Maple Sugar Farm"             => [ "Farms & Homesteads", "Vineyards & Orchards" ],
-  "Lavender Field Farm"          => [ "Farms & Homesteads", "Unique Properties" ],
-  "Blueberry Hill Farm"          => [ "Farms & Homesteads", "Vineyards & Orchards" ],
-  "Bee Farm Homestead"           => [ "Farms & Homesteads" ],
-  "Market Garden Property"       => [ "Farms & Homesteads" ],
-  "Sheep Station Homestead"      => [ "Farms & Homesteads" ],
-  "Dairy Farm Property"          => [ "Farms & Homesteads" ],
-  "Orchard Property"             => [ "Vineyards & Orchards", "Farms & Homesteads" ],
-  # Ranches
-  "High Desert Ranch"            => [ "Ranches" ],
-  "Working Cattle Ranch"         => [ "Ranches", "Farms & Homesteads" ],
-  "Equestrian Estate"            => [ "Equestrian" ],
-  "Silver Creek Ranch"           => [ "Ranches" ],
-  "Eagle Ridge Ranch"            => [ "Ranches", "Equestrian" ],
-  "Prairie Wind Ranch"           => [ "Ranches" ],
-  "Big Sky Ranch"                => [ "Ranches" ],
-  "Sagebrush Ranch"              => [ "Ranches" ],
-  "Iron Horse Ranch"             => [ "Ranches", "Equestrian" ],
-  "Cottonwood Creek Ranch"       => [ "Ranches" ],
-  "Thunder Ridge Ranch"          => [ "Ranches", "Recreation & Glamping" ],
-  "Saguaro Flats Ranch"          => [ "Ranches" ],
-  # Land & Parcels
-  "Forested Acreage"             => [ "Land & Parcels" ],
-  "Coastal Bluff Lot"            => [ "Land & Parcels" ],
-  "Wildflower Meadow Parcel"     => [ "Land & Parcels" ],
-  "Pine Timber Acreage"          => [ "Land & Parcels" ],
-  "Ridgeline Parcel"             => [ "Land & Parcels" ],
-  "Valley Meadow Lot"            => [ "Land & Parcels", "Farms & Homesteads" ],
-  "Lakeside Buildable Lot"       => [ "Land & Parcels" ],
-  "Hilltop View Parcel"          => [ "Land & Parcels" ],
-  "Creek Bottom Acreage"         => [ "Land & Parcels" ],
-  "Sunset Ridge Lot"             => [ "Land & Parcels" ],
-  "Timberline Parcel"            => [ "Land & Parcels" ],
-  "Clifftop Lot"                 => [ "Land & Parcels" ],
-  "Remote Forest Tract"          => [ "Land & Parcels" ],
-  # Unique Properties
-  "Converted Barn Loft"          => [ "Unique Properties" ],
-  "Tiny House on Acreage"        => [ "Unique Properties" ],
-  "Woodland Artist Retreat"      => [ "Unique Properties" ],
-  "Converted Silo Loft"          => [ "Unique Properties" ],
-  "Yurt on Acreage"              => [ "Unique Properties", "Recreation & Glamping" ],
-  "Lighthouse Keeper's Cottage"  => [ "Unique Properties", "Cabins & Retreats" ],
-  "Old Schoolhouse Conversion"   => [ "Unique Properties" ],
-  "Church Conversion Loft"       => [ "Unique Properties" ],
-  "Container Home Property"      => [ "Unique Properties" ],
-  "Treehouse Retreat"            => [ "Unique Properties", "Cabins & Retreats" ],
-  "Windmill Farm Estate"         => [ "Unique Properties", "Farms & Homesteads" ],
-  "Underground Earth Shelter"    => [ "Unique Properties" ],
-  # Desert & Southwest
-  "Desert Adobe Estate"          => [ "Unique Properties" ],
-  "Red Rock Canyon Estate"       => [ "Unique Properties" ],
-  "Mesa Verde Retreat"           => [ "Unique Properties", "Cabins & Retreats" ],
-  "Canyon Rim Property"          => [ "Unique Properties", "Land & Parcels" ],
-  "Desert Blossom Homestead"     => [ "Farms & Homesteads", "Unique Properties" ],
-  "Pinon Hills Cabin"            => [ "Cabins & Retreats" ],
-  "Joshua Tree Retreat"          => [ "Cabins & Retreats", "Unique Properties" ],
-  # Recreation
-  "Off-Grid Solar Homestead"     => [ "Unique Properties", "Farms & Homesteads" ],
-  "Hunting Lodge Compound"       => [ "Recreation & Glamping", "Cabins & Retreats" ],
-  "RV Resort Property"           => [ "Recreation & Glamping" ],
-  "Campground Business"          => [ "Recreation & Glamping" ],
-  "Duck Hunting Marsh"           => [ "Recreation & Glamping" ],
-  # Vineyards & Orchards
-  "Vineyard Parcel"              => [ "Vineyards & Orchards" ],
-  "Vineyard Estate"              => [ "Vineyards & Orchards" ],
-  "Apple Hill Orchard"           => [ "Vineyards & Orchards", "Farms & Homesteads" ],
-  "Cherry Farm"                  => [ "Vineyards & Orchards", "Farms & Homesteads" ]
+  # Furniture
+  "Victorian Parlour Chair"         => [ "Furniture" ],
+  "Oak Dining Table with Six Chairs" => [ "Furniture" ],
+  "Mahogany Dresser with Mirror"    => [ "Furniture" ],
+  "Brass Bed Frame"                 => [ "Furniture" ],
+  "Antique Writing Desk"            => [ "Furniture", "Antiques & Collectibles" ],
+  "Windsor Chairs Set of Four"      => [ "Furniture" ],
+  "Cedar Chest"                     => [ "Furniture" ],
+  "Chesterfield Sofa"               => [ "Furniture" ],
+  "Teak Garden Bench"               => [ "Furniture", "Garden & Outdoor" ],
+  "Rocking Chair"                   => [ "Furniture" ],
+  # Antiques & Collectibles
+  "Wedgwood Tea Service"            => [ "Antiques & Collectibles", "Kitchenware & Dining" ],
+  "Bakelite Table Radio"            => [ "Antiques & Collectibles", "Electronics" ],
+  "Clockwork Mantle Clock"          => [ "Antiques & Collectibles" ],
+  "Depression Glass Bowl Set"       => [ "Antiques & Collectibles", "Kitchenware & Dining" ],
+  "Sterling Silver Cutlery Set"     => [ "Antiques & Collectibles", "Kitchenware & Dining" ],
+  "Vintage Tin Advertising Signs"   => [ "Antiques & Collectibles" ],
+  "Pewter Tankard Set"              => [ "Antiques & Collectibles" ],
+  "Brass Ship's Compass"            => [ "Antiques & Collectibles" ],
+  "Hand-painted China Plates"       => [ "Antiques & Collectibles", "Kitchenware & Dining" ],
+  "Cast Iron Doorstop Collection"   => [ "Antiques & Collectibles" ],
+  # Jewelry & Watches
+  "Gold Locket Necklace"            => [ "Jewelry & Watches" ],
+  "Gentleman's Pocket Watch"        => [ "Jewelry & Watches", "Antiques & Collectibles" ],
+  "Pearl Bracelet"                  => [ "Jewelry & Watches" ],
+  "Cameo Brooch"                    => [ "Jewelry & Watches", "Antiques & Collectibles" ],
+  "Silver Cufflinks"                => [ "Jewelry & Watches" ],
+  "Amethyst Ring"                   => [ "Jewelry & Watches" ],
+  # Tools & Workshop
+  "Stanley Hand Plane Set"          => [ "Tools & Workshop" ],
+  "Woodworking Chisel Set"          => [ "Tools & Workshop" ],
+  "Cast Iron Bench Vise"            => [ "Tools & Workshop" ],
+  "Crosscut Hand Saw"               => [ "Tools & Workshop" ],
+  "Vintage Level Set"               => [ "Tools & Workshop", "Antiques & Collectibles" ],
+  # Books & Media
+  "Encyclopedia Britannica Set"     => [ "Books & Media" ],
+  "Vinyl Record Collection"         => [ "Books & Media" ],
+  "First Edition Poetry Collection" => [ "Books & Media", "Antiques & Collectibles" ],
+  # Kitchenware & Dining
+  "Copper Cookware Set"             => [ "Kitchenware & Dining" ],
+  "Vintage Pyrex Mixing Bowl Set"   => [ "Kitchenware & Dining", "Antiques & Collectibles" ],
+  "Crystal Decanter Set"            => [ "Kitchenware & Dining", "Antiques & Collectibles" ],
+  "Silverplate Serving Tray"        => [ "Kitchenware & Dining", "Antiques & Collectibles" ],
+  "Cast Iron Dutch Oven"            => [ "Kitchenware & Dining", "Antiques & Collectibles" ],
+  # Art & Decor
+  "Watercolour Landscape Painting"  => [ "Art & Decor" ],
+  "Hand-hooked Wool Rug"            => [ "Art & Decor", "Antiques & Collectibles" ],
+  "Framed Botanical Prints Set"     => [ "Art & Decor", "Antiques & Collectibles" ],
+  "Bronze Horse Figurine"           => [ "Art & Decor" ],
+  "Tiffany-style Table Lamp"        => [ "Art & Decor", "Antiques & Collectibles" ],
+  "Oil Portrait"                    => [ "Art & Decor" ],
+  # Vintage Clothing
+  "Mink Stole"                      => [ "Vintage Clothing", "Antiques & Collectibles" ],
+  "Men's Tweed Hunting Jacket"      => [ "Vintage Clothing" ],
+  "Beaded Evening Bag"              => [ "Vintage Clothing", "Antiques & Collectibles" ],
+  "Vintage Hat Collection"          => [ "Vintage Clothing" ],
+  # Electronics
+  "Grundig Shortwave Radio"         => [ "Electronics", "Antiques & Collectibles" ],
+  "Vintage Rotary Telephone"        => [ "Electronics", "Antiques & Collectibles" ],
+  "8mm Film Projector"              => [ "Electronics", "Antiques & Collectibles" ],
+  # Garden & Outdoor
+  "Cast Iron Garden Urns"           => [ "Garden & Outdoor", "Antiques & Collectibles" ],
+  "Antique Wheelbarrow"             => [ "Garden & Outdoor", "Antiques & Collectibles" ],
+  "Copper Garden Lanterns"          => [ "Garden & Outdoor" ]
 }
 
 category_assignments.each do |listing_name, cat_names|
@@ -508,38 +408,30 @@ if Rails.env.development? || Rails.env.test?
   negotiable_listings = Listing.where(tenant: mudcreek, pricing_type: :negotiable).to_a
 
   offer_data = [
-    # Cozy Mountain Cabin — one accepted (listing goes sold), two declined
-    { listing: "Cozy Mountain Cabin", amount: 265_000, message: "Love the location, would you take a bit less?", state: :declined },
-    { listing: "Cozy Mountain Cabin", amount: 270_000, message: "Cash buyer, can close quickly.", state: :declined },
-    { listing: "Cozy Mountain Cabin", amount: 278_000, message: "Final offer, very motivated buyer.", state: :accepted },
+    { listing: "Victorian Parlour Chair",      amount: 165, message: "Lovely piece — would you take a little less?", state: :pending },
+    { listing: "Victorian Parlour Chair",      amount: 175, message: "Cash, can pick up this weekend.",              state: :pending },
 
-    # Lakefront Cottage — two pending
-    { listing: "Lakefront Cottage", amount: 395_000, message: "Interested in the property, willing to negotiate.", state: :pending },
-    { listing: "Lakefront Cottage", amount: 400_000, message: nil, state: :pending },
+    { listing: "Mahogany Dresser with Mirror", amount: 290, message: "Interested, is there any flex?",              state: :declined },
+    { listing: "Mahogany Dresser with Mirror", amount: 310, message: "Final offer from a keen buyer.",              state: :accepted },
 
-    # Rural Hobby Farm — one declined, one pending
-    { listing: "Rural Hobby Farm", amount: 510_000, message: "Farm has been in our sights for months.", state: :declined },
-    { listing: "Rural Hobby Farm", amount: 530_000, message: "Ready to move forward if price works.", state: :pending },
+    { listing: "Watercolour Landscape Painting", amount: 195, message: "Beautiful work — room to move?",           state: :pending },
+    { listing: "Watercolour Landscape Painting", amount: 210, message: "Happy to pay in cash on collection.",      state: :pending },
 
-    # Riverside Retreat — one accepted (listing goes sold)
-    { listing: "Riverside Retreat", amount: 168_000, message: "Perfect fishing spot, would love to own it.", state: :accepted },
+    { listing: "Gentleman's Pocket Watch",    amount: 250, message: "Great watch, hoping for a bit of a deal.",    state: :declined },
+    { listing: "Gentleman's Pocket Watch",    amount: 270, message: "Serious collector, will take it today.",      state: :accepted },
 
-    # Forested Acreage — pending only
-    { listing: "Forested Acreage", amount: 180_000, message: "Timber rights included?", state: :pending },
+    { listing: "Mink Stole",                  amount: 130, message: "Excellent condition — any flexibility?",      state: :pending },
 
-    # Timber Frame Retreat — one declined, one pending
-    { listing: "Timber Frame Retreat", amount: 410_000, message: nil, state: :declined },
-    { listing: "Timber Frame Retreat", amount: 430_000, message: "Absolutely stunning build, making my best offer.", state: :pending },
+    { listing: "Bakelite Table Radio",        amount: 70,  message: "Would $70 work?",                             state: :declined },
+    { listing: "Bakelite Table Radio",        amount: 80,  message: "Willing to meet halfway.",                    state: :pending },
 
-    # Converted Barn Loft — pending
-    { listing: "Converted Barn Loft", amount: 320_000, message: "Unique property, flexible on closing date.", state: :pending },
+    { listing: "Tiffany-style Table Lamp",    amount: 255, message: "Love it — best I can do is $255.",            state: :pending },
+    { listing: "Tiffany-style Table Lamp",    amount: 270, message: "I'll arrange courier if you accept.",         state: :pending },
 
-    # Tiny House on Acreage — pending
-    { listing: "Tiny House on Acreage", amount: 155_000, message: "Minimalist lifestyle is exactly what we want.", state: :pending },
+    { listing: "Chesterfield Sofa",           amount: 450, message: "Could you do $450? I have a truck.",          state: :pending },
 
-    # Woodland Artist Retreat — one declined
-    { listing: "Woodland Artist Retreat", amount: 275_000, message: "Looking for a quiet creative space.", state: :declined },
-    { listing: "Woodland Artist Retreat", amount: 285_000, message: nil, state: :pending }
+    { listing: "Antique Writing Desk",        amount: 340, message: "Interested if there's a bit of flex.",        state: :declined },
+    { listing: "Antique Writing Desk",        amount: 360, message: "Ready to move quickly.",                      state: :pending }
   ]
 
   offer_data.each do |attrs|
@@ -564,13 +456,13 @@ end
 DiscountCode.destroy_all
 
 [
-  { key: "WELCOME10",  discount_type: :fixed,      amount_cents:  1_000, start_at: nil,           end_at: nil },
-  { key: "SAVE50",     discount_type: :fixed,      amount_cents:  5_000, start_at: nil,           end_at: nil },
-  { key: "SUMMER25",   discount_type: :percentage, amount_cents:  2_500, start_at: nil,           end_at: 1.month.from_now },
-  { key: "FALL15",     discount_type: :percentage, amount_cents:  1_500, start_at: nil,           end_at: nil },
-  { key: "EARLYBIRD",  discount_type: :fixed,      amount_cents: 25_000, start_at: nil,           end_at: 2.weeks.from_now },
-  { key: "EXPIRED20",  discount_type: :percentage, amount_cents:  2_000, start_at: 3.months.ago,  end_at: 1.month.ago },
-  { key: "FUTURE100",  discount_type: :fixed,      amount_cents: 10_000, start_at: 1.month.from_now, end_at: 2.months.from_now }
+  { key: "WELCOME10",  discount_type: :fixed,      amount_cents: 1_000, start_at: nil,              end_at: nil },
+  { key: "SAVE25",     discount_type: :fixed,      amount_cents: 2_500, start_at: nil,              end_at: nil },
+  { key: "SUMMER15",   discount_type: :percentage, amount_cents: 1_500, start_at: nil,              end_at: 1.month.from_now },
+  { key: "FALL10",     discount_type: :percentage, amount_cents: 1_000, start_at: nil,              end_at: nil },
+  { key: "EARLYBIRD",  discount_type: :fixed,      amount_cents: 5_000, start_at: nil,              end_at: 2.weeks.from_now },
+  { key: "EXPIRED20",  discount_type: :percentage, amount_cents: 2_000, start_at: 3.months.ago,    end_at: 1.month.ago },
+  { key: "FUTURE50",   discount_type: :fixed,      amount_cents: 5_000, start_at: 1.month.from_now, end_at: 2.months.from_now }
 ].each do |attrs|
   DiscountCode.find_or_create_by!(key: attrs[:key]) do |dc|
     dc.tenant        = mudcreek
@@ -585,14 +477,14 @@ puts "Seeded #{DiscountCode.count} discount codes."
 
 # Delivery Methods
 [
-  { name: "Local Pickup",   price_cents: 0,    address_required: false },
-  { name: "Standard Mail",  price_cents: 1500, address_required: true  },
-  { name: "Courier",        price_cents: 2500, address_required: true  }
+  { name: "Local Pickup",  price_cents: 0,    address_required: false },
+  { name: "Standard Mail", price_cents: 1500, address_required: true  },
+  { name: "Courier",       price_cents: 2500, address_required: true  }
 ].each do |attrs|
   DeliveryMethod.find_or_create_by!(name: attrs[:name], tenant: mudcreek) do |dm|
-    dm.price_cents       = attrs[:price_cents]
-    dm.address_required  = attrs[:address_required]
-    dm.active            = true
+    dm.price_cents      = attrs[:price_cents]
+    dm.address_required = attrs[:address_required]
+    dm.active           = true
   end
 end
 
@@ -604,50 +496,50 @@ Auction.destroy_all
 
 auction_data = [
   {
-    name: "Autumn Estates Auction",
+    name: "Henderson Estate Auction",
     starts_at: 6.weeks.ago,
     ends_at: 4.weeks.ago,
     published: true,
     reconciled: true,
     auto_approve: false,
-    address: { street_address: "1200 Heritage Drive", city: "Kamloops", province: "BC", postal_code: "V2C 1A1", country: "CA" },
+    address: { street_address: "412 Elmwood Avenue", city: "Kamloops", province: "BC", postal_code: "V2C 1A1", country: "CA" },
     listings: [
-      { name: "Cozy Mountain Cabin",  starting_bid: 250_000, bid_increment: 5_000, reserve_price: 265_000 },
-      { name: "Timber Frame Retreat", starting_bid: 400_000, bid_increment: 10_000, reserve_price: nil    },
-      { name: "Lakefront Cottage",    starting_bid: 380_000, bid_increment: 5_000,  reserve_price: 400_000 },
-      { name: "Sandy Cove Cottage",   starting_bid: 350_000, bid_increment: 5_000,  reserve_price: nil    },
-      { name: "Bear Creek Cabin",     starting_bid: 175_000, bid_increment: 2_500,  reserve_price: 190_000 }
+      { name: "Victorian Parlour Chair",      starting_bid: 100, bid_increment: 10, reserve_price: 150 },
+      { name: "Mahogany Dresser with Mirror", starting_bid: 200, bid_increment: 20, reserve_price: 280 },
+      { name: "Clockwork Mantle Clock",       starting_bid: 100, bid_increment: 10, reserve_price: 175 },
+      { name: "Crystal Decanter Set",         starting_bid:  50, bid_increment: 10, reserve_price: nil },
+      { name: "Watercolour Landscape Painting", starting_bid: 125, bid_increment: 25, reserve_price: nil }
     ]
   },
   {
-    name: "Winter Wilderness Sale",
+    name: "Blackwood Collection Sale",
     starts_at: 3.days.ago,
     ends_at: 11.days.from_now,
     published: true,
     reconciled: false,
     auto_approve: true,
-    address: { street_address: "740 Frontier Road", city: "Revelstoke", province: "BC", postal_code: "V0E 2S0", country: "CA" },
+    address: { street_address: "88 Birchwood Court", city: "Revelstoke", province: "BC", postal_code: "V0E 2S0", country: "CA" },
     listings: [
-      { name: "Rural Hobby Farm",     starting_bid: 500_000, bid_increment: 10_000, reserve_price: 525_000 },
-      { name: "Prairie Homestead",    starting_bid: 350_000, bid_increment: 5_000,  reserve_price: nil    },
-      { name: "Desert Adobe Estate",  starting_bid: 575_000, bid_increment: 10_000, reserve_price: 600_000 },
-      { name: "Converted Barn Loft",  starting_bid: 300_000, bid_increment: 5_000,  reserve_price: nil    },
-      { name: "Treehouse Retreat",    starting_bid: 150_000, bid_increment: 5_000,  reserve_price: nil    }
+      { name: "Gentleman's Pocket Watch",  starting_bid: 150, bid_increment: 25, reserve_price: 250 },
+      { name: "Sterling Silver Cutlery Set", starting_bid: 150, bid_increment: 25, reserve_price: nil },
+      { name: "Tiffany-style Table Lamp", starting_bid: 150, bid_increment: 25, reserve_price: 250 },
+      { name: "Bronze Horse Figurine",     starting_bid:  75, bid_increment: 15, reserve_price: nil },
+      { name: "Hand-hooked Wool Rug",      starting_bid: 100, bid_increment: 15, reserve_price: 165 }
     ]
   },
   {
-    name: "Spring Land Preview",
+    name: "Greenfield Manor Preview",
     starts_at: 3.weeks.from_now,
     ends_at: 5.weeks.from_now,
     published: false,
     reconciled: false,
     auto_approve: true,
-    address: { street_address: "55 Meadow Lane", city: "Penticton", province: "BC", postal_code: "V2A 1B3", country: "CA" },
+    address: { street_address: "55 Manor Gate Road", city: "Penticton", province: "BC", postal_code: "V2A 1B3", country: "CA" },
     listings: [
-      { name: "Forested Acreage",        starting_bid: 175_000, bid_increment: 5_000, reserve_price: 190_000 },
-      { name: "Coastal Bluff Lot",       starting_bid: 450_000, bid_increment: 10_000, reserve_price: nil    },
-      { name: "Wildflower Meadow Parcel", starting_bid: 120_000, bid_increment: 2_500,  reserve_price: nil    },
-      { name: "Ridgeline Parcel",        starting_bid: 140_000, bid_increment: 2_500,  reserve_price: 150_000 }
+      { name: "Vinyl Record Collection",        starting_bid: 40,  bid_increment: 5,  reserve_price: nil },
+      { name: "Grundig Shortwave Radio",        starting_bid: 50,  bid_increment: 10, reserve_price: nil },
+      { name: "Bakelite Table Radio",           starting_bid: 35,  bid_increment: 5,  reserve_price: nil },
+      { name: "Oil Portrait",                   starting_bid: 100, bid_increment: 15, reserve_price: 175 }
     ]
   }
 ]
@@ -698,23 +590,22 @@ if Rails.env.local?
   regular_users = User.where(tenant: mudcreek).where.not(email_address: "admin@mudcreek").limit(10).to_a
 
   if regular_users.any?
-    autumn_auction, winter_auction, spring_auction = auctions
+    henderson_auction, blackwood_auction, greenfield_auction = auctions
 
-    # Autumn (past, reconciled, manual approve) — mix of states
+    # Henderson (past, reconciled, manual approve) — mix of states
     regular_users.first(4).each_with_index do |user, i|
       state = [ :approved, :approved, :approved, :rejected ][i]
-      AuctionRegistration.create!(auction: autumn_auction, user: user, state: state)
+      AuctionRegistration.create!(auction: henderson_auction, user: user, state: state)
     end
 
-    # Winter (live, auto_approve: true) — all approved automatically
+    # Blackwood (live, auto_approve: true) — all approved automatically
     regular_users.first(7).each do |user|
-      reg = AuctionRegistration.new(auction: winter_auction, user: user)
-      reg.save!
+      AuctionRegistration.new(auction: blackwood_auction, user: user).save!
     end
 
-    # Spring (upcoming, auto_approve: true) — pending until auction created; a few registered early
+    # Greenfield (upcoming) — a few registered early
     regular_users.first(3).each do |user|
-      AuctionRegistration.create!(auction: spring_auction, user: user)
+      AuctionRegistration.create!(auction: greenfield_auction, user: user)
     end
 
     puts "Seeded #{AuctionRegistration.count} auction registrations."

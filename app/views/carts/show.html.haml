@@ -8,7 +8,7 @@
       link_text: "Browse Listings",
       link_url: listings_path)
 - else
-  .row.g-4.align-items-start{ data: { controller: "cart" } }
+  .row.g-4.align-items-start
     .col-12.col-lg-5
       .card.shadow-sm.border-0.mb-3
         .card-body
@@ -16,7 +16,7 @@
             %i.bi.bi-ticket-perforated.me-1
             Discount Code
           - if @discount_code
-            .d-flex.align-items-center.gap-2
+            .d-flex.align-items-center.justify-content-between
               %span.badge.text-bg-success.py-2.px-3
                 = @discount_code.key
                 - if @discount_code.percentage?
@@ -53,8 +53,7 @@
                 = f.select :delivery_method_id,
                     available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{number_to_currency(m.price)})", m.id] },
                     { include_blank: "Select a method…" },
-                    class: "form-select form-select-sm",
-                    data: { cart_target: "deliverySelect", action: "change->cart#updateButton" }
+                    class: "form-select form-select-sm"
                 = f.submit "Select", class: "btn btn-sm btn-primary"
 
       - if @delivery_method&.address_required?
@@ -64,53 +63,67 @@
           all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
         .card.shadow-sm.border-0
           .card-body
-            %p.fw-semibold.mb-3
-              %i.bi.bi-house-fill.me-1
-              Delivery Address
-            = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
-              %div{data: { controller: "address" }}
-                .mb-2
-                  = f.label :street_address, "Street address", class: "form-label form-label-sm"
-                  = f.text_field :street_address,
-                      value: @cart_address[:street_address],
-                      required: true,
-                      autocomplete: "street-address",
-                      placeholder: "123 Main St",
-                      class: "form-control form-control-sm"
-                .row.g-2.mb-2
-                  .col
-                    = f.label :city, "City", class: "form-label form-label-sm"
-                    = f.text_field :city,
-                        value: @cart_address[:city],
+            .d-flex.align-items-center.justify-content-between.mb-0
+              %p.fw-semibold.mb-0
+                %i.bi.bi-house-fill.me-1
+                Delivery Address
+              - if @cart_address_saved
+                %button.btn.btn-sm.btn-link.p-0.text-decoration-none{ type: "button",
+                    data: { bs_toggle: "collapse", bs_target: "#address-form-collapse" },
+                    aria: { expanded: "false", controls: "address-form-collapse" } }
+                  %i.bi.bi-pencil.me-1
+                  Change
+            - if @cart_address_saved
+              %p.text-muted.small.mt-2.mb-0
+                = @cart_address[:street_address]
+                %br
+                = [@cart_address[:city], @cart_address[:province], @cart_address[:postal_code]].compact.join(", ")
+            .collapse{ id: "address-form-collapse", class: @cart_address_saved ? nil : "show" }
+              %hr.mt-3.mb-3
+              = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
+                %div{data: { controller: "address" }}
+                  .mb-2
+                    = f.label :street_address, "Street address", class: "form-label form-label-sm"
+                    = f.text_field :street_address,
+                        value: @cart_address[:street_address],
                         required: true,
-                        autocomplete: "address-level2",
+                        autocomplete: "street-address",
+                        placeholder: "123 Main St",
                         class: "form-control form-control-sm"
-                  .col
-                    = f.label :postal_code, "Postal code", class: "form-label form-label-sm"
-                    = f.text_field :postal_code,
-                        value: @cart_address[:postal_code],
+                  .row.g-2.mb-2
+                    .col
+                      = f.label :city, "City", class: "form-label form-label-sm"
+                      = f.text_field :city,
+                          value: @cart_address[:city],
+                          required: true,
+                          autocomplete: "address-level2",
+                          class: "form-control form-control-sm"
+                    .col
+                      = f.label :postal_code, "Postal code", class: "form-label form-label-sm"
+                      = f.text_field :postal_code,
+                          value: @cart_address[:postal_code],
+                          required: true,
+                          autocomplete: "postal-code",
+                          placeholder: "A1A 1A1",
+                          class: "form-control form-control-sm"
+                  .mb-2
+                    = f.label :country, "Country", class: "form-label form-label-sm"
+                    = f.select :country, all_countries,
+                        { selected: @cart_address[:country] },
                         required: true,
-                        autocomplete: "postal-code",
-                        placeholder: "A1A 1A1",
-                        class: "form-control form-control-sm"
-                .mb-2
-                  = f.label :country, "Country", class: "form-label form-label-sm"
-                  = f.select :country, all_countries,
-                      { selected: @cart_address[:country] },
-                      required: true,
-                      class: "form-select form-select-sm",
-                      data: { address_target: "country", action: "change->address#countryChanged" }
-                .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
-                  = f.label :province, "Province / State", class: "form-label form-label-sm"
-                  = f.select :province, initial_subdivisions,
-                      { include_blank: "Select…", selected: @cart_address[:province] },
-                      required: !initial_subdivisions.empty?,
-                      class: "form-select form-select-sm",
-                      data: { address_target: "subdivision" }
-                .form-check.mb-3
-                  = f.check_box :also_save_as_default, { checked: false }, "1", "0"
-                  = f.label :also_save_as_default, "Save as my default address", class: "form-check-label"
-                = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
+                        class: "form-select form-select-sm",
+                        data: { address_target: "country", action: "change->address#countryChanged" }
+                  .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
+                    = f.label :province, "Province / State", class: "form-label form-label-sm"
+                    = f.select :province, initial_subdivisions,
+                        { include_blank: "Select…", selected: @cart_address[:province] },
+                        required: !initial_subdivisions.empty?,
+                        class: "form-select form-select-sm",
+                        data: { address_target: "subdivision" }
+                  .form-check.mb-3
+                    = f.check_box :also_save_as_default, { checked: false }, "1", "0"
+                    = f.label :also_save_as_default, "Save as my default address", class: "form-check-label"
+                  = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
 
     .col-12.col-lg-7
       .card.shadow-sm.border-0
@@ -157,4 +170,5 @@
               = render CartTotalsComponent.new(summary: @cart_summary,
                   discount_code: @discount_code,
                   delivery_method: @delivery_method,
-                  requires_delivery: @has_physical_items)
+                  requires_delivery: @has_physical_items,
+                  address_saved: @cart_address_saved)

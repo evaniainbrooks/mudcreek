@@ -16,10 +16,12 @@ class ListingsController < ApplicationController
     @categories = Listings::Category.order(:name)
     @tab = params[:tab].presence_in(%w[on_sale sold]) || "on_sale"
     @category_hashid = params[:category_id].presence
+    @search = params[:search].presence
     category = @category_hashid && Listings::Category.find_by(hashid: @category_hashid)
 
     scope = Listing.where(published: true, state: @tab).not_in_auction.with_rich_text_description.with_attached_images.with_attached_videos.includes(:rental_rate_plans, lot: { listing_placeholder_attachment: :blob }).order(position: :asc, id: :asc)
     scope = scope.where(id: Listings::CategoryAssignment.where(listings_category_id: category.id).select(:listing_id)) if category
+    scope = scope.where(Listing.arel_table[:name].matches("%#{Listing.sanitize_sql_like(@search)}%")) if @search
     @pagy, @listings = pagy(:keyset, scope)
 
     respond_to do |format|
@@ -27,7 +29,7 @@ class ListingsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.append("listings", partial: "listings/listing", collection: @listings, as: :listing),
-          turbo_stream.replace("sentinel", partial: "listings/sentinel", locals: { pagy: @pagy, category_id: @category_hashid, tab: @tab })
+          turbo_stream.replace("sentinel", partial: "listings/sentinel", locals: { pagy: @pagy, category_id: @category_hashid, tab: @tab, search: @search })
         ]
       end
     end

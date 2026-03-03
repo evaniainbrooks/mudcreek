@@ -31,13 +31,17 @@
     %th
   %tr
     %td{colspan: 3}
+      - needs_delivery = @requires_delivery && !@delivery_method
+      - needs_address  = @delivery_method&.address_required? && !@address_saved
+      - if needs_delivery
+        %p.text-muted.small.text-center.mb-1
+          %i.bi.bi-truck.me-1
+          Select a delivery method to continue
+      - elsif needs_address
+        %p.text-muted.small.text-center.mb-1
+          %i.bi.bi-house-fill.me-1
+          Save your delivery address to continue
       = form_with url: orders_path, method: :post do
-        - needs_delivery = @requires_delivery && !@delivery_method
-        - if needs_delivery
-          %p.text-muted.small.text-center.mb-1
-            %i.bi.bi-truck.me-1
-            Select a delivery method to continue
         = submit_tag "Place Order",
             class: "btn btn-success w-100 mt-2",
-            disabled: needs_delivery,
-            data: { cart_target: "placeOrderButton" }
+            disabled: needs_delivery || needs_address

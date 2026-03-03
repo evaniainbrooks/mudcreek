@@ -8,10 +8,17 @@
     .d-flex.gap-2.align-items-center
       = form_with url: listings_path, method: :get do |f|
         = f.hidden_field :tab, value: @tab
-        = f.select :category_id, @categories.map { [it.name, it.hashid] },
-          { include_blank: "All Categories", selected: @category_hashid },
-          class: "form-select form-select-sm w-auto",
-          onchange: "this.form.requestSubmit()"
+        = f.hidden_field :category_id, value: @category_hashid
+        .d-flex.gap-2
+          .input-group.input-group-sm
+            = f.search_field :search, value: @search, placeholder: "Search listings…", class: "form-control form-control-sm", style: "min-width: 180px"
+            - if @search
+              = link_to listings_path(tab: @tab, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+                %i.bi.bi-x-lg
+          = f.select :category_id, @categories.map { [it.name, it.hashid] },
+            { include_blank: "All Categories", selected: @category_hashid },
+            class: "form-select form-select-sm w-auto",
+            onchange: "this.form.requestSubmit()"
       %select.form-select.form-select-sm.w-auto{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
         %option{ value: "list" } List View
         %option{ value: "small" } Small Cards
@@ -19,13 +26,19 @@
 
   %ul.nav.nav-tabs.mb-4
     %li.nav-item
-      = link_to listings_path(tab: "on_sale", category_id: @category_hashid), class: "nav-link #{"active" if @tab == "on_sale"}" do
+      = link_to listings_path(tab: "on_sale", category_id: @category_hashid, search: @search), class: "nav-link #{"active" if @tab == "on_sale"}" do
         On Sale
     %li.nav-item
-      = link_to listings_path(tab: "sold", category_id: @category_hashid), class: "nav-link #{"active" if @tab == "sold"}" do
+      = link_to listings_path(tab: "sold", category_id: @category_hashid, search: @search), class: "nav-link #{"active" if @tab == "sold"}" do
         Sold
 
-  - if @listings.empty? && @category_hashid
+  - if @listings.empty? && @search
+    = render EmptyStateComponent.new(icon: "search",
+        message: "No listings found matching "#{@search}".",
+        link_text: "Clear search",
+        link_url: listings_path(tab: @tab, category_id: @category_hashid))
+
+  - elsif @listings.empty? && @category_hashid
     = render EmptyStateComponent.new(icon: "funnel",
         message: "No listings found in that category.",
         link_text: "Clear filter and see all listings",

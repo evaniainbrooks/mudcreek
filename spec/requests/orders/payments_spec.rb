@@ -9,7 +9,7 @@ RSpec.describe "Orders::Payments", type: :request do
   let(:user)   { create(:user) }
   let!(:order) { create(:order, user: user, status: "pending", total_cents: 1150) }
 
-  let(:payments_api) { instance_double("Square::PaymentsApi") }
+  let(:payments_api) { instance_double("Square::Payments::Client") }
   let(:mock_client)  { instance_double("Square::Client", payments: payments_api) }
 
   before do
@@ -20,16 +20,14 @@ RSpec.describe "Orders::Payments", type: :request do
   end
 
   describe "POST /orders/:order_number/payment" do
-    let(:payment_double) do
-      double("Square::ApiResponse",
-        success?: true,
-        errors: nil,
-        data: double(payment: double(id: "sq_payment_123"))
+    let(:payment_response) do
+      double("Square::Types::CreatePaymentResponse",
+        payment: double(id: "sq_payment_123")
       )
     end
 
     before do
-      allow(payments_api).to receive(:create_payment).and_return(payment_double)
+      allow(payments_api).to receive(:create).and_return(payment_response)
     end
 
     context "when the order is pending and payment succeeds" do
@@ -60,20 +58,18 @@ RSpec.describe "Orders::Payments", type: :request do
       it "redirects with an alert and does not call Square" do
         post order_payment_path(order), params: { source_id: "tok_test" }
 
-        expect(payments_api).not_to have_received(:create_payment)
+        expect(payments_api).not_to have_received(:create)
         expect(response).to redirect_to(order_path(order))
         follow_redirect!
         expect(response.body).to include("already been processed")
       end
     end
 
-    context "when Square returns an error" do
-      let(:payment_double) do
-        double("Square::ApiResponse",
-          success?: false,
-          errors: [ double(detail: "Card declined.") ],
-          data: nil
-        )
+    context "when Square raises an error" do
+      before do
+        error_body = { errors: [ { detail: "Card declined." } ] }.to_json
+        allow(payments_api).to receive(:create)
+          .and_raise(Square::Errors::ClientError.new(error_body, code: 400))
       end
 
       it "keeps the order as pending" do

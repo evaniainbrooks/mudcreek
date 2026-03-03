@@ -1,9 +1,9 @@
 - set_meta_tags title: "Order #{@order.number}"
 
 - if @order.pending?
-  - cdn = SquareClient::ENVIRONMENT == "production" ? "https://web.squarecdn.com/v1/square.js" : "https://sandbox.web.squarecdn.com/v1/square.js"
   - content_for :head do
-    %script{src: cdn, type: "text/javascript"}
+    %meta{ name: "turbo-visit-control", content: "reload" }
+    %script{src: SquareClient::ENVIRONMENT == "production" ? "https://web.squarecdn.com/v1/square.js" : "https://sandbox.web.squarecdn.com/v1/square.js"}
 
 .d-flex.align-items-center.gap-3.mb-4.flex-wrap
   %h1.fw-bold.mb-0= @order.pending? ? "Complete Your Payment" : "Order Confirmed"
