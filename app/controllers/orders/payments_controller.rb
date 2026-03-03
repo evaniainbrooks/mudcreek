@@ -14,7 +14,7 @@ class Orders::PaymentsController < ApplicationController
 
       raise "Already paid" unless @order.pending?
 
-      transaction = @order.transactions.create!(amount_cents: @order.total_cents, status: :pending)
+      transaction = @order.transactions.create!(amount_cents: @order.total_cents, state: :pending)
     end
 
     ProcessPaymentJob.perform_later(transaction.id, params[:source_id])

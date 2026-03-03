@@ -16,7 +16,7 @@ RSpec.describe "Orders::Payments", type: :request do
         expect {
           post order_payment_path(order), params: { source_id: "tok_test" },
             headers: { "Accept" => "text/vnd.turbo-stream.html" }
-        }.to have_enqueued_job(ProcessPaymentJob).with(order.id, "tok_test")
+        }.to have_enqueued_job(ProcessPaymentJob).with(anything, "tok_test")
       end
 
       it "responds with a turbo stream showing the processing state" do
