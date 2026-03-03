@@ -15,6 +15,7 @@ class Order < ApplicationRecord
   monetize :total_cents
 
   validates :number, presence: true, uniqueness: true
+  validates :square_payment_id, uniqueness: true, allow_nil: true
 
   before_validation :assign_number, on: :create
 
