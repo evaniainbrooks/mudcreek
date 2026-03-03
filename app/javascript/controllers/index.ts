@@ -11,6 +11,7 @@ import ListingCarouselController from "./listing_carousel_controller"
 import ListingTypeController from "./listing_type_controller"
 import RentalModalController from "./rental_modal_controller"
 import SortableController from "./sortable_controller"
+import SquarePaymentController from "./square_payment_controller"
 import ViewToggleController from "./view_toggle_controller"
 
 application.register("address", AddressController)
@@ -25,4 +26,5 @@ application.register("listing-carousel", ListingCarouselController)
 application.register("listing-type", ListingTypeController)
 application.register("rental-modal", RentalModalController)
 application.register("sortable", SortableController)
+application.register("square-payment", SquarePaymentController)
 application.register("view-toggle", ViewToggleController)

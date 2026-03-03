@@ -1,7 +1,12 @@
 - set_meta_tags title: "Order #{@order.number}"
 
+- if @order.pending?
+  - cdn = SquareClient::ENVIRONMENT == "production" ? "https://web.squarecdn.com/v1/square.js" : "https://sandbox.web.squarecdn.com/v1/square.js"
+  - content_for :head do
+    %script{src: cdn, type: "text/javascript"}
+
 .d-flex.align-items-center.gap-3.mb-4.flex-wrap
-  %h1.fw-bold.mb-0 Order Confirmed
+  %h1.fw-bold.mb-0= @order.pending? ? "Complete Your Payment" : "Order Confirmed"
   %span.badge.text-bg-secondary.fs-6= @order.number
   = order_status_badge(@order)
   %span.text-muted.small= @order.created_at.to_fs(:long)
@@ -65,6 +70,23 @@
             %tr.border-top.border-2.fw-bold
               %td Total
               %td.text-end= number_to_currency(@order.total)
+
+    - if @order.pending?
+      .card.shadow-sm.border-0.mb-3{ data: { controller: "square-payment",
+          "square-payment-application-id-value": SquareClient.application_id,
+          "square-payment-location-id-value":    SquareClient.location_id,
+          "square-payment-payment-url-value":    order_payment_path(@order),
+          "square-payment-csrf-token-value":     form_authenticity_token } }
+        .card-body
+          %h6.fw-semibold.mb-3
+            %i.bi.bi-credit-card.me-2
+            Pay Now
+          %div{ data: { "square-payment-target": "container" } }
+          %p.text-danger.small.mt-2{ hidden: true, data: { "square-payment-target": "errorMessage" } }
+          %button.btn.btn-primary.w-100.mt-3{ type: "button",
+              data: { action: "click->square-payment#submit" } }
+            Pay
+            = number_to_currency(@order.total)
 
     - if @order.street_address.present?
       .card.shadow-sm.border-0

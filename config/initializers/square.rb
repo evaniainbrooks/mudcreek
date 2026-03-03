@@ -1,16 +1,31 @@
 module SquareClient
+  ENVIRONMENT = Rails.env.production? ? "production" : "sandbox"
+
+  def self.config
+    Rails.application.credentials.square.public_send(ENVIRONMENT)
+  end
+
+  BASE_URLS = {
+    "sandbox"    => "https://connect.squareupsandbox.com",
+    "production" => "https://connect.squareup.com"
+  }.freeze
+
   def self.client
     @client ||= Square::Client.new(
-      access_token: Rails.application.credentials.square.access_token,
-      environment: Rails.application.credentials.square.environment
+      token:    config.access_token,
+      base_url: BASE_URLS.fetch(ENVIRONMENT)
     )
   end
 
-  def self.location_id
-    Rails.application.credentials.square.location_id
+  def self.application_id
+    config.application_id
   end
 
-  def self.application_id
-    Rails.application.credentials.square.application_id
+  def self.location_id
+    config.location_id
+  end
+
+  def self.webhook_signature_key
+    config.webhook_signature_key
   end
 end

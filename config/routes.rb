@@ -18,7 +18,13 @@ Rails.application.routes.draw do
   resource  :cart_delivery_method, only: [ :create, :destroy ]
   resources :cart_items,          only: [ :create, :destroy ]
 
-  resources :orders, only: [ :create, :show ], param: :number
+  resources :orders, only: [ :create, :show ], param: :number do
+    resource :payment, only: [ :create ], module: :orders
+  end
+
+  namespace :webhooks do
+    resource :square, only: [ :create ], controller: "square"
+  end
 
   resource  :profile,      only: [ :edit, :update ]
   resources :subdivisions, only: [ :index ]

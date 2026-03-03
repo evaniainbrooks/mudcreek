@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_02_200001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_200002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -278,6 +278,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200001) do
     t.string "number", null: false
     t.string "postal_code"
     t.string "province"
+    t.string "square_payment_id"
     t.string "status", default: "pending", null: false
     t.string "street_address"
     t.integer "subtotal_cents", null: false
@@ -289,6 +290,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_02_200001) do
     t.index ["delivery_method_id"], name: "index_orders_on_delivery_method_id"
     t.index ["discount_code_id"], name: "index_orders_on_discount_code_id"
     t.index ["number"], name: "index_orders_on_number", unique: true
+    t.index ["square_payment_id"], name: "index_orders_on_square_payment_id", unique: true
     t.index ["tenant_id"], name: "index_orders_on_tenant_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end

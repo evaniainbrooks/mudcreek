@@ -54,6 +54,10 @@ class Listing < ApplicationRecord
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
 
+  def rental_rate_plans_to_json
+    rental_rate_plans.map { { label: it.label, duration_minutes: it.duration_minutes, price_cents: it.price_cents } }.to_json
+  end
+
   private
 
   def set_default_position
@@ -69,10 +73,6 @@ class Listing < ApplicationRecord
       next if ALLOWED_DOCUMENT_TYPES.include?(doc.content_type)
       errors.add(:documents, "#{doc.filename} must be a PDF, DOC, DOCX, or XLSX file")
     end
-  end
-
-  def rental_rate_plans_to_json
-    rental_rate_plans.map { { label: it.label, duration_minutes: it.duration_minutes, price_cents: it.price_cents } }.to_json
   end
 
   scope :not_in_auction, -> { where.not(id: AuctionListing.select(:listing_id)) }
