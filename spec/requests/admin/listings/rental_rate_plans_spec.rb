@@ -44,7 +44,6 @@ RSpec.describe "Admin::Listings::RentalRatePlans", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to include("text/vnd.turbo-stream.html")
         expect(response.body).to include("rental-rate-plans")
-        expect(response.body).to include("rental-rate-plan-form")
       end
     end
 
@@ -65,13 +64,12 @@ RSpec.describe "Admin::Listings::RentalRatePlans", type: :request do
         expect(response).to redirect_to(edit_admin_listing_path(listing))
       end
 
-      it "re-renders the form via turbo stream" do
+      it "redirects to the listing edit page" do
         post admin_listing_rental_rate_plans_path(listing_hashid: listing.hashid),
              params: invalid_params,
              headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("rental-rate-plan-form")
+        expect(response).to redirect_to(edit_admin_listing_path(listing))
       end
     end
 

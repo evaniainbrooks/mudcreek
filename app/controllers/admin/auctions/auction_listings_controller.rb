@@ -13,7 +13,7 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
     @auction_listing.update(auction_listing_params)
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to admin_auction_path(@auction) }
+      format.html { redirect_to admin_auction_path(@auction), notice: "Bid details updated." }
     end
   end
 

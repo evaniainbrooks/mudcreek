@@ -7,20 +7,12 @@ class Admin::Listings::RentalRatePlansController < Admin::BaseController
     if @rate_plan.save
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.append("rental-rate-plans", partial: "admin/listings/rental_rate_plans/rate_plan", locals: { rate_plan: @rate_plan }),
-            turbo_stream.replace("rental-rate-plan-form", partial: "admin/listings/rental_rate_plans/form", locals: { listing: @listing, rate_plan: Listings::RentalRatePlan.new })
-          ]
+          render turbo_stream: turbo_stream.append("rental-rate-plans", partial: "admin/listings/rental_rate_plans/rate_plan", locals: { rate_plan: @rate_plan })
         end
         format.html { redirect_to edit_admin_listing_path(@listing) }
       end
     else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("rental-rate-plan-form", partial: "admin/listings/rental_rate_plans/form", locals: { listing: @listing, rate_plan: @rate_plan })
-        end
-        format.html { redirect_to edit_admin_listing_path(@listing) }
-      end
+      redirect_to edit_admin_listing_path(@listing)
     end
   end
 
