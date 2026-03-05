@@ -28,16 +28,24 @@ RSpec.describe "Admin::Tenants", type: :request do
   end
 
   describe "PATCH /admin/tenant" do
-    let(:params) { { tenant: { name: "New Name" } } }
-
     it "returns 200", :aggregate_failures do
-      patch(admin_tenant_path, params:)
+      patch(admin_tenant_path, params: { tenant: { name: "New Name" } })
 
       expect(response).to have_http_status(:found)
 
       get admin_tenant_path
 
       expect(response.body).to include("New Name")
+    end
+
+    it "updates address" do
+      patch(admin_tenant_path, params: { tenant: { address_attributes: { city: "Calgary" } } })
+
+      expect(response).to have_http_status(:found)
+
+      get admin_tenant_path
+
+      expect(response.body).to include("Calgary")
     end
   end
 end

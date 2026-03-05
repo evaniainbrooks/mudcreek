@@ -42,7 +42,7 @@
                 %i.bi.bi-geo-alt.me-1
                 Location (optional)
 
-              = f.fields_for :address do |addr|
+              = f.fields_for :address, f.object.address || f.object.build_address do |addr|
                 .mb-3
                   = addr.label :street_address, "Street Address", class: "form-label"
                   = addr.text_field :street_address, class: "form-control"
