@@ -10,6 +10,9 @@ class Role < ApplicationRecord
     format: { with: /\A[a-z_]+\z/, message: "can only contain lowercase letters and underscores" }
   validates :description, presence: true
 
+  scope :super_admin, -> { find_by!(name: "super_admin") }
+  scope :admin, -> { find_by!(name: "admin") }
+
   def name
     ActiveSupport::StringInquirer.new(super) if super
   end

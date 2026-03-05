@@ -30,7 +30,7 @@
       %dd.col-sm-9= link_to pluralize(@user.listings.count, "listing"), admin_listings_path(q: { owner_id_eq: @user.id })
 
       %dt.col-sm-3 Lots
-      %dd.col-sm-9= link_to pluralize(@user.lots.count, "lot"), admin_lots_path
+      %dd.col-sm-9= link_to pluralize(@user.lots.count, "lot"), admin_lots_path(q: { owner_id_eq: @user.id })
 
       %dt.col-sm-3 Joined
       %dd.col-sm-9= @user.created_at.to_fs(:long)

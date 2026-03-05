@@ -12,9 +12,14 @@ class AuctionListing < ApplicationRecord
 
   validates :listing_id, uniqueness: true
 
-  def lot_end_time(auction)
+  def ends_at
     return nil unless auction.ends_at
+
+    auction.ends_at + end_offset
+  end
+
+  def end_offset
     stagger = auction.end_time_stagger_interval || 0
-    auction.ends_at + (position - 1) * stagger
+    (position - 1) * stagger
   end
 end

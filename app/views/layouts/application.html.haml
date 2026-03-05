@@ -18,7 +18,9 @@
     %nav.navbar.navbar-expand-lg.bg-secondary{"data-bs-theme": "dark"}
       .container
         = image_tag(Current.tenant.logo, style: "max-width: 75px; margin-right: 0.5rem") if Current.tenant.logo.attached?
-        = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
+        %div.lh-sm
+          = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
+          %span.text-muted.d-block= Current.tenant.description
         %button.navbar-toggler{type: "button",
           "data-bs-toggle": "collapse",
           "data-bs-target": "#main-nav",

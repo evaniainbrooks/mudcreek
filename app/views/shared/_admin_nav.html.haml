@@ -55,7 +55,7 @@
           = link_to admin_delivery_methods_path, class: "dropdown-item" do
             %i.bi.bi-truck.me-1
             Delivery
-- if policy(User).index? || policy(Role).index?
+- if policy(User).index? || policy(Role).index? || policy(Tenant).index?
   %li.nav-item.dropdown
     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
       %i.bi.bi-gear-fill.me-1
@@ -71,3 +71,8 @@
           = link_to admin_roles_path, class: "dropdown-item" do
             %i.bi.bi-shield-fill.me-1
             Roles
+      - if policy(Tenant).index?
+        %li
+          = link_to admin_tenant_path, class: "dropdown-item" do
+            %i.bi.bi-globe.me-1
+            Tenant

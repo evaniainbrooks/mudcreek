@@ -1,0 +1,68 @@
+- set_meta_tags title: "Tenant Settings"
+
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-globe.me-2
+    Tenant Settings
+
+.tab-content
+  .tab-pane.fade.show.active#profile
+    = form_with model: @tenant, url: admin_tenant_path, method: :patch do |f|
+      - if @tenant.errors.any?
+        .alert.alert-danger
+          %ul.mb-0
+            - @tenant.errors.full_messages.each do |msg|
+              %li= msg
+      .row.g-4
+        .col-12
+          .card.shadow-sm.border-0
+            .card-body.p-4
+              .mb-3
+                = f.label :name, "Name", class: "form-label"
+                = f.text_field :name, required: true, class: "form-control"
+              .mb-3
+                = f.label :description, class: "form-label"
+                = f.rich_text_area :description, class: "form-control #{'is-invalid' if @tenant.errors[:description].any?}"
+                - if @tenant.errors[:description].any?
+                  .invalid-feedback.d-block= @tenant.errors[:description].to_sentence
+              .mb-3
+                = f.label :logo, class: "form-label"
+                = f.file_field :logo, class: "form-control #{'is-invalid' if @tenant.errors[:logo].any?}", accept: "image/*"
+                - if @tenant.errors[:logo].any?
+                  .invalid-feedback= @tenant.errors[:logo].to_sentence
+                - if @tenant.logo.attached?
+                  .mt-2.d-flex.align-items-center.gap-2
+                    = image_tag @tenant.logo.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+                    = button_to admin_tenant_path, method: :patch, params: { remove_logo: true },
+                        class: "btn btn-sm btn-outline-danger",
+                        form: { data: { turbo_confirm: "Remove logo?" } } do
+                      %i.bi.bi-x-lg.me-1
+                      Remove
+              %h6.mb-3
+                %i.bi.bi-geo-alt.me-1
+                Location (optional)
+
+              = f.fields_for :address do |addr|
+                .mb-3
+                  = addr.label :street_address, "Street Address", class: "form-label"
+                  = addr.text_field :street_address, class: "form-control"
+                .row.g-3.mb-3
+                  .col-md-6
+                    = addr.label :city, "City", class: "form-label"
+                    = addr.text_field :city, class: "form-control"
+                  .col-md-6
+                    = addr.label :province, "Province / State", class: "form-label"
+                    = addr.text_field :province, class: "form-control"
+                .row.g-3.mb-3
+                  .col-md-6
+                    = addr.label :postal_code, "Postal Code", class: "form-label"
+                    = addr.text_field :postal_code, class: "form-control"
+                  .col-md-6
+                    = addr.label :country, "Country", class: "form-label"
+                    = addr.text_field :country, class: "form-control"
+
+              .d-flex.gap-2.mt-4
+                = f.submit class: "btn btn-primary"
+                = link_to "Cancel", admin_auctions_path, class: "btn btn-outline-secondary"
+              .d-flex.justify-content-end.mt-4
+                = f.submit "Save changes", class: "btn btn-primary px-4"

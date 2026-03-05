@@ -3,6 +3,8 @@ class Tenant < ApplicationRecord
 
   has_one_attached :logo
 
+  has_one  :address, as: :addressable, dependent: :destroy
+
   has_many :lots, dependent: :restrict_with_error
   has_many :listings, dependent: :restrict_with_error
   has_many :users, dependent: :restrict_with_error
@@ -25,4 +27,6 @@ class Tenant < ApplicationRecord
   validates :default, uniqueness: { if: :default? }
 
   def self.default = find_by!(default: true)
+
+  def grant_super_admin_all_permissions! = roles.super_admin.grant_all_permissions!
 end
