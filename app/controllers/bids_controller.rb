@@ -26,7 +26,7 @@ class BidsController < ApplicationController
     )
 
     if bid.save
-      flash.now[:notice] = "Bid of #{ActiveSupport::NumberHelper.number_to_currency(submitted_amount / 100.0)} placed successfully."
+      flash.now[:notice] = "Bid of #{ActiveSupport::NumberHelper.humanized_money_with_symbol(bid.amount)} placed successfully."
       broadcast_listing_card
       broadcast_bid_panel
       respond_with_flash_or_redirect(fallback)

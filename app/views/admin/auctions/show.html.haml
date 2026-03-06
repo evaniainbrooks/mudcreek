@@ -77,7 +77,7 @@
             %dd.col-sm-9
               = image_tag @auction.poster.variant(resize_to_fill: [200, 140]), class: "rounded", style: "object-fit: cover"
 
-          - if @auction.address
+          - if @auction.address&.any?
             %dt.col-sm-3 Location
             %dd.col-sm-9= @auction.address.to_fs(:long)
 

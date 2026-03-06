@@ -3,11 +3,14 @@ class Address < ApplicationRecord
 
   validates :address_type, uniqueness: { scope: [:addressable_type, :addressable_id] }
 
+  def any? = [street_address, city, province, postal_code, country].compact_blank.length.positive?
+
   def to_fs(format)
+    components = [street_address, city, province, postal_code, country].compact_blank
     if format == :long
-      [street_address, city, province, postal_code, country].compact.join(", ")
+      components
     else
-      [city, country].compact.join(", ")
-    end
+      components.take(3)
+    end.join(", ")
   end
 end

@@ -51,7 +51,7 @@
                       %span.badge.text-bg-info Rental
                     - else
                       %span.badge.text-bg-secondary Sale
-                  %td.text-end.pe-3= number_to_currency(item.price)
+                  %td.text-end.pe-3= humanized_money_with_symbol(item.price)
 
   .col-12.col-lg-4
     .card.shadow-sm.border-0.mb-4
@@ -61,24 +61,24 @@
           %tbody
             %tr
               %td.text-muted Subtotal
-              %td.text-end= number_to_currency(@order.subtotal)
+              %td.text-end= humanized_money_with_symbol(@order.subtotal)
             %tr
               %td.text-muted Tax
-              %td.text-end= number_to_currency(@order.tax)
+              %td.text-end= humanized_money_with_symbol(@order.tax)
             - if @order.delivery_method_name.present?
               %tr
                 %td.text-muted= @order.delivery_method_name
                 %td.text-end
-                  = @order.delivery_price_cents > 0 ? number_to_currency(@order.delivery_price) : "Free"
+                  = @order.delivery_price_cents > 0 ? humanized_money_with_symbol(@order.delivery_price) : "Free"
             - if @order.discount_cents > 0
               %tr.text-success
                 %td
                   %i.bi.bi-ticket-perforated.me-1
                   = @order.discount_code_key
-                %td.text-end= number_to_currency(-@order.discount)
+                %td.text-end= humanized_money_with_symbol(-@order.discount)
             %tr.border-top.border-2.fw-bold
               %td Total
-              %td.text-end= number_to_currency(@order.total)
+              %td.text-end= humanized_money_with_symbol(@order.total)
 
     .card.shadow-sm.border-0.mb-4
       .card-header.fw-semibold Status

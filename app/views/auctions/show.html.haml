@@ -48,7 +48,7 @@
           %i.bi.bi-calendar-check.flex-shrink-0
           %span= @auction.ends_at.to_fs(:long)
 
-      - if @auction.address
+      - if @auction.address&.any?
         - addr = @auction.address
         .d-flex.align-items-start.gap-2.mb-2.text-muted
           %i.bi.bi-geo-alt-fill.flex-shrink-0.mt-1

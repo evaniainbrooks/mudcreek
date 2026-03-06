@@ -30,11 +30,13 @@ class AuctionListing < ApplicationRecord
   end
 
   def next_bid_amount
-    if current_bid
-      current_bid.amount_cents + (bid_increment_cents || 0)
-    else
-      starting_bid_cents || 0
-    end
+    Money.new(
+      if current_bid
+        current_bid.amount_cents + (bid_increment_cents || 0)
+      else
+        starting_bid_cents || 0
+      end
+    )
   end
 
   private

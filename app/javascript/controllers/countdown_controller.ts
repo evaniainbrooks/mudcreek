@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { endsAt: String }
+  static values = { endsAt: String,  }
   static targets = ["display"]
 
   declare endsAtValue: string
@@ -22,7 +22,7 @@ export default class extends Controller {
     const diff = new Date(this.endsAtValue).getTime() - Date.now()
 
     if (diff <= 0) {
-      this.displayTarget.textContent = "Auction has started!"
+      this.displayTarget.textContent = ""
       if (this.interval) {
         clearInterval(this.interval)
         this.interval = null

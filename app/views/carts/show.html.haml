@@ -44,14 +44,14 @@
                 %span.text-muted.small
                   = @delivery_method.name
                   &mdash;
-                  = @delivery_method.price_cents.zero? ? "Free" : number_to_currency(@delivery_method.price)
+                  = @delivery_method.price_cents.zero? ? "Free" : humanized_money_with_symbol(@delivery_method.price)
                 = button_to cart_delivery_method_path, method: :delete, class: "btn btn-sm btn-outline-danger",
                     form: { data: { turbo_confirm: "Remove delivery method?" } } do
                   %i.bi.bi-x-lg
             - else
               = form_with url: cart_delivery_method_path, method: :post, class: "d-flex gap-2" do |f|
                 = f.select :delivery_method_id,
-                    available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{number_to_currency(m.price)})", m.id] },
+                    available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{humanized_money_with_symbol(m.price)})", m.id] },
                     { include_blank: "Select a method…" },
                     class: "form-select form-select-sm"
                 = f.submit "Select", class: "btn btn-sm btn-primary"
@@ -161,7 +161,7 @@
                               = item.rental_start_at.to_fs(:short)
                               →
                               = item.rental_end_at.to_fs(:short)
-                    %td.text-end= number_to_currency(Money.new(item.effective_price_cents))
+                    %td.text-end= humanized_money_with_symbol(Money.new(item.effective_price_cents))
                     %td.text-end.pe-3
                       = button_to cart_item_path(item),
                           method: :delete, class: "btn btn-sm btn-outline-danger",

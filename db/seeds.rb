@@ -28,8 +28,11 @@ puts "Seeded #{Tenant.count} tenants."
 end
 
 # Roles & Permissions
-all_resources = %w[Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan Auction AuctionListing AuctionRegistration Bid]
-all_actions   = %w[index show create update destroy reorder]
+all_resources = %w[
+  Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan Auction AuctionListing Tenant AuctionRegistration Bid
+]
+
+all_actions = %w[index show create update destroy reorder]
 
 super_admin = Role.find_or_create_by!(name: "super_admin") do |r|
   r.tenant = mudcreek
@@ -54,7 +57,7 @@ all_resources.each do |resource|
   end
 end
 
-admin_resources = %w[Listing]
+admin_resources = %w[Listing Auction Lot Listings::Category Offer DiscountCode DeliveryMethod Listings::RentalRatePlan AuctionListing AuctionRegistration]
 admin_resources.each do |resource|
   all_actions.each do |action|
     admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|

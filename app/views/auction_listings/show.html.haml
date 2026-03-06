@@ -34,7 +34,10 @@
       .d-flex.align-items-center.gap-2.mb-3
         .lh-sm
           = @auction_listing.ends_at.to_fs(:long)
-          %small.text-muted.d-block= distance_of_time_in_words(Time.current, @auction_listing.ends_at)
+          - if @auction_listing.ends_at.future?
+            .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown", "countdown-ends-at-value": @auction_listing.ends_at.iso8601 } }
+              %i.bi.bi-clock.flex-shrink-0
+              %strong{ data: { "countdown-target": "display" } }
       %hr.mb-4
       = render "auction_listings/bid_panel",
         auction_listing: @auction_listing,

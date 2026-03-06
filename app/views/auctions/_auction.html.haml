@@ -28,11 +28,10 @@
         .d-flex.align-items-center.gap-2.text-muted.small.mb-1
           %i.bi.bi-calendar-check.flex-shrink-0
           %span= auction.ends_at.to_fs(:long)
-      - if auction.address
-        - addr = auction.address
+      - if auction.address&.any?
         .d-flex.align-items-center.gap-2.text-muted.small.mb-1
           %i.bi.bi-geo-alt.flex-shrink-0
-          %span= [ addr.city, addr.province ].compact_blank.join(", ")
+          %span= auction.address.to_fs(:short)
       .mt-auto.pt-3
         - if registration&.pending?
           .d-flex.align-items-center.gap-2

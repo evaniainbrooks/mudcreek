@@ -1,11 +1,7 @@
 %div{ id: dom_id(auction_listing, :bid_panel) }
-  - bid_count = auction_listing.bids_count || 0
-  .d-flex.align-items-center.gap-2.mb-3
-    - if bid_count == 0
-      %p.text-muted.fw-bold.mb-0 No bids
-    - else
-      %p.text-muted.fw-bold.mb-0
-        = "#{bid_count} #{bid_count == 1 ? 'bid' : 'bids'}"
+  .d-flex.flex-column.align-items-center.gap-2.mt-3
+    = render("auction_listings/bid_count", auction_listing:)
+    = render("auction_listings/current_bid", auction_listing:)
   = render BidButtonComponent.new(auction_listing: auction_listing,
     auction: auction,
     registration: registration,

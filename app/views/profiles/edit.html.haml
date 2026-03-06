@@ -100,6 +100,6 @@
                     %td.text-muted= order.created_at.to_fs(:long)
                     %td
                       = order_status_badge(order)
-                    %td.text-end= number_to_currency(order.total)
+                    %td.text-end= humanized_money_with_symbol(order.total)
                     %td.pe-3
                       = link_to "View", order_path(order), class: "btn btn-sm btn-outline-secondary"

@@ -29,7 +29,7 @@
       - if @listing.rental?
         %span.badge.text-bg-info.mb-2 Rental
       - else
-        %p.fs-2.text-primary.fw-semibold.mb-2= number_to_currency(@listing.price)
+        %p.fs-2.text-primary.fw-semibold.mb-2= humanized_money_with_symbol(@listing.price)
       - unless @listing.sold?
         %p.text-muted.small.mb-4
           - if @listing.quantity == 0
@@ -46,7 +46,7 @@
               - @listing.rental_rate_plans.order(:position).each do |plan|
                 %tr
                   %td= plan.label
-                  %td.text-end= number_to_currency(plan.price)
+                  %td.text-end= humanized_money_with_symbol(plan.price)
         - unless @listing.sold?
           - if Current.user
             %button.btn.btn-primary.w-100{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }

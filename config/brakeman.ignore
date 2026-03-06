@@ -7,7 +7,7 @@
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
       "file": "app/views/listings/show.html.haml",
-      "line": 99,
+      "line": 100,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
       "code": "::Haml::AttributeBuilder.build_class(true, \"bi fs-1\", [document_icon_class((Unresolved Model).new.content_type), \"text-secondary\"].compact_blank.join(\" \"))",
       "render_path": [
@@ -26,6 +26,40 @@
       "location": {
         "type": "template",
         "template": "listings/show"
+      },
+      "user_input": "(Unresolved Model).new.content_type",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "8d1f016b5309779c6f4088cadf83d109ffe057b1d158490af629c579525dcc74",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/auction_listings/show.html.haml",
+      "line": 58,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "::Haml::AttributeBuilder.build_class(true, \"bi fs-1\", [document_icon_class((Unresolved Model).new.content_type), \"text-secondary\"].compact_blank.join(\" \"))",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "AuctionListingsController",
+          "method": "show",
+          "line": 29,
+          "file": "app/controllers/auction_listings_controller.rb",
+          "rendered": {
+            "name": "auction_listings/show",
+            "file": "app/views/auction_listings/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "auction_listings/show"
       },
       "user_input": "(Unresolved Model).new.content_type",
       "confidence": "Weak",
