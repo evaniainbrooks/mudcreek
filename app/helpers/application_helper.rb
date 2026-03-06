@@ -50,6 +50,12 @@ module ApplicationHelper
     end
   end
 
+  def user_bid_token(user_or_id)
+    id = user_or_id.respond_to?(:id) ? user_or_id.id : user_or_id
+    return nil unless id
+    OpenSSL::HMAC.hexdigest("SHA256", Rails.application.secret_key_base[0, 32], "bid:#{id}")
+  end
+
   def bootstrap_flash_class(type)
     FLASH_CLASS_MAP.fetch(type.to_s, "secondary")
   end

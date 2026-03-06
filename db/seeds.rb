@@ -499,6 +499,7 @@ auction_data = [
     name: "Henderson Estate Auction",
     starts_at: 6.weeks.ago,
     ends_at: 4.weeks.ago,
+    end_time_stagger_interval: 60,
     published: true,
     reconciled: true,
     auto_approve: false,
@@ -515,6 +516,7 @@ auction_data = [
     name: "Blackwood Collection Sale",
     starts_at: 3.days.ago,
     ends_at: 11.days.from_now,
+    end_time_stagger_interval: 30,
     published: true,
     reconciled: false,
     auto_approve: true,
@@ -550,6 +552,7 @@ auctions = auction_data.map do |attrs|
     name: attrs[:name],
     starts_at: attrs[:starts_at],
     ends_at: attrs[:ends_at],
+    end_time_stagger_interval: attrs[:end_time_stagger_interval] || 0,
     published: attrs[:published],
     reconciled: attrs[:reconciled],
     auto_approve: attrs[:auto_approve]

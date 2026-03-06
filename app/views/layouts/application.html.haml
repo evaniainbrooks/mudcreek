@@ -65,10 +65,11 @@
                 = link_to "Sign in", new_session_path, class: "nav-link"
     %main.flex-grow-1
       .container.py-4
-        - flash.each do |type, message|
-          .alert.alert-dismissible.fade.show{class: "alert-#{bootstrap_flash_class(type)}", role: "alert"}
-            != message
-            %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
+        #flash
+          - flash.each do |type, message|
+            .alert.alert-dismissible.fade.show{class: "alert-#{bootstrap_flash_class(type)}", role: "alert"}
+              != message
+              %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
         = yield
     %footer.bg-body-tertiary.border-top.py-3
       .container

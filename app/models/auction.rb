@@ -20,6 +20,16 @@ class Auction < ApplicationRecord
   validates :bidding_extension, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :ends_at_after_starts_at
 
+  validate :stagger_interval_immutable_after_start
+
+  def stagger_interval_immutable_after_start
+    return if new_record?
+    return unless end_time_stagger_interval_changed?
+    return if Time.current < starts_at
+
+    errors.add(:end_time_stagger_interval, "cannot change after auction has started")
+  end
+
   scope :unreconciled, -> { where(reconciled: false) }
 
   def self.ransackable_attributes(_auth_object = nil)

@@ -2,35 +2,37 @@
     description: "Browse all listings for sale.",
     og: { title: "Listings", description: "Browse all listings for sale." }
 
-%div{ data: { controller: "view-toggle" } }
-  .d-flex.justify-content-between.align-items-center.mb-3
-    %h1.h3.mb-0 Listings
-    .d-flex.gap-2.align-items-center
-      = form_with url: listings_path, method: :get do |f|
-        = f.hidden_field :tab, value: @tab
-        = f.hidden_field :category_id, value: @category_hashid
-        .d-flex.gap-2
-          .input-group.input-group-sm
-            = f.search_field :search, value: @search, placeholder: "Search listings…", class: "form-control form-control-sm", style: "min-width: 180px"
-            - if @search
-              = link_to listings_path(tab: @tab, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
-                %i.bi.bi-x-lg
-          = f.select :category_id, @categories.map { [it.name, it.hashid] },
-            { include_blank: "All Categories", selected: @category_hashid },
-            class: "form-select form-select-sm w-auto",
-            onchange: "this.form.requestSubmit()"
-      %select.form-select.form-select-sm.w-auto{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
-        %option{ value: "list" } List View
-        %option{ value: "small" } Small Cards
-        %option{ value: "large" } Large Cards
+%h1.h3.mb-4 Auctions &amp; Listings
 
-  %ul.nav.nav-tabs.mb-4
-    %li.nav-item
-      = link_to listings_path(tab: "on_sale", category_id: @category_hashid, search: @search), class: "nav-link #{"active" if @tab == "on_sale"}" do
-        On Sale
-    %li.nav-item
-      = link_to listings_path(tab: "sold", category_id: @category_hashid, search: @search), class: "nav-link #{"active" if @tab == "sold"}" do
-        Sold
+%ul.nav.nav-tabs.mb-4
+  %li.nav-item
+    = link_to auctions_path, class: "nav-link" do
+      %i.bi.bi-hammer.me-2
+      Auctions
+  %li.nav-item
+    = link_to listings_path, class: "nav-link active" do
+      %i.bi.bi-tag.me-2
+      Listings
+
+%div{ data: { controller: "view-toggle" } }
+  = form_with url: listings_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+    .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
+      = f.search_field :search, value: @search, placeholder: "Search…", class: "form-control form-control-sm"
+      - if @search
+        = link_to listings_path(tab: @tab, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+          %i.bi.bi-x-lg
+    = f.select :category_id, @categories.map { [it.name, it.hashid] },
+      { include_blank: "All Categories", selected: @category_hashid },
+      class: "form-select form-select-sm w-auto flex-shrink-0",
+      onchange: "this.form.requestSubmit()"
+    = f.select :tab, [["On Sale", "on_sale"], ["Sold", "sold"]],
+      { selected: @tab },
+      class: "form-select form-select-sm w-auto flex-shrink-0",
+      onchange: "this.form.requestSubmit()"
+    %select.form-select.form-select-sm.w-auto.flex-shrink-0.ms-auto{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
+      %option{ value: "list" } List View
+      %option{ value: "small" } Small Cards
+      %option{ value: "large" } Large Cards
 
   - if @listings.empty? && @search
     = render EmptyStateComponent.new(icon: "search",
@@ -53,4 +55,4 @@
     %div{ data: { controller: "infinite-scroll" } }
       .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings{ data: { "view-toggle-target": "grid" } }
         = render partial: "listings/listing", collection: @listings, as: :listing
-      = render "listings/sentinel", pagy: @pagy, category_id: @category_hashid, tab: @tab
+      = render "listings/sentinel", pagy: @pagy, category_id: @category_hashid, tab: @tab, search: @search

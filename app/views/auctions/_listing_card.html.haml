@@ -1,27 +1,41 @@
 - listing = auction_listing.listing
-.col
+.col{ id: dom_id(auction_listing) }
   .card.h-100.shadow-sm.border-0
     .position-relative
-      - if listing.images.attached?
-        = image_tag listing.images.first, class: "card-img-top object-fit-cover", style: "height: 200px"
-      - elsif listing.videos.attached?
-        %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover", muted: true, playsinline: true, preload: "metadata" }
-          %source{ src: url_for(listing.videos.first) }
-      - elsif listing.lot&.listing_placeholder&.attached?
-        = image_tag listing.lot.listing_placeholder, class: "card-img-top object-fit-cover", style: "height: 200px"
-      - else
-        .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
-          %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
+      = link_to auction_auction_listing_path(auction, auction_listing) do
+        - if listing.images.attached?
+          = image_tag listing.images.first, class: "card-img-top object-fit-cover", style: "height: 200px"
+        - elsif listing.videos.attached?
+          %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover", muted: true, playsinline: true, preload: "metadata" }
+            %source{ src: url_for(listing.videos.first) }
+        - elsif listing.lot&.listing_placeholder&.attached?
+          = image_tag listing.lot.listing_placeholder, class: "card-img-top object-fit-cover", style: "height: 200px"
+        - else
+          .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
+            %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
       - if listing.sold?
         .position-absolute.top-0.start-0.p-2
           = listing_state_badge(listing)
+      - unless auction_listing.reserve_price_cents.present? || listing.sold?
+        .position-absolute.top-0.end-0.p-2
+          %span.badge.text-bg-success No Reserve
     .card-body
       %h5.card-title.fw-semibold.mb-1
-        = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"
+        = link_to listing.name, auction_auction_listing_path(auction, auction_listing), class: "text-decoration-none text-body"
       .d-flex.align-items-center.gap-2.mb-0
-        %p.text-muted.fw-bold.mb-0 No bids
-        - unless auction_listing.reserve_price_cents.present?
-          %span.badge.text-bg-success No Reserve
+        .lh-sm
+          #{auction_listing.ends_at.to_fs(:long)}
+          %small.text-muted.d-block= distance_of_time_in_words(Time.current, auction_listing.ends_at)
+      .d-flex.flex-column.align-items-center.gap-2.mt-3
+        .d-flex.align-items-center.gap-2
+          - bid_count = auction_listing.bids_count || 0
+          - if bid_count == 0
+            %p.text-muted.fw-bold.mb-0 No bids
+          - else
+            %p.text-muted.fw-bold.mb-0
+              = "#{bid_count} #{bid_count == 1 ? 'bid' : 'bids'}"
+        .d-flex.justify-content-center
+          = render BidButtonComponent.new(auction_listing: auction_listing, auction: auction, registration: registration, bidder_token: user_bid_token(auction_listing.highest_bidder_id), button_class: "btn btn-primary btn-sm")
       %p.card-text.text-muted.small.mt-1
         = listing.description.to_plain_text.truncate(120)
         - if listing.categories.any?

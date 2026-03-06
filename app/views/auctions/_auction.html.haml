@@ -1,0 +1,50 @@
+- registration = local_assigns[:registrations_by_auction_id]&.fetch(auction.id, nil)
+.col
+  .card.h-100.shadow-sm.border-0
+    .position-relative
+      = link_to auction_path(auction) do
+        - if auction.poster.attached?
+          = image_tag auction.poster, class: "card-img-top object-fit-cover", style: "height: 200px"
+        - else
+          .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
+            %i.bi.bi-hammer.text-secondary{ style: "font-size: 3rem" }
+      - if auction.ends_at && auction.ends_at < Time.current
+        .position-absolute.top-0.start-0.p-2
+          %span.badge.text-bg-secondary Ended
+      - elsif auction.starts_at && auction.starts_at <= Time.current
+        .position-absolute.top-0.start-0.p-2
+          %span.badge.text-bg-success Live
+      - elsif auction.starts_at
+        .position-absolute.top-0.start-0.p-2
+          %span.badge.text-bg-info Upcoming
+    .card-body.d-flex.flex-column
+      %h5.card-title.fw-semibold.mb-2
+        = link_to auction.name, auction_path(auction), class: "text-decoration-none text-body"
+      - if auction.starts_at
+        .d-flex.align-items-center.gap-2.text-muted.small.mb-1
+          %i.bi.bi-calendar-event.flex-shrink-0
+          %span= auction.starts_at.to_fs(:long)
+      - if auction.ends_at
+        .d-flex.align-items-center.gap-2.text-muted.small.mb-1
+          %i.bi.bi-calendar-check.flex-shrink-0
+          %span= auction.ends_at.to_fs(:long)
+      - if auction.address
+        - addr = auction.address
+        .d-flex.align-items-center.gap-2.text-muted.small.mb-1
+          %i.bi.bi-geo-alt.flex-shrink-0
+          %span= [ addr.city, addr.province ].compact_blank.join(", ")
+      .mt-auto.pt-3
+        - if registration&.pending?
+          .d-flex.align-items-center.gap-2
+            %span.badge.text-bg-warning.py-2.px-3 Registration Pending
+        - elsif registration&.approved?
+          .d-flex.align-items-center.gap-2
+            %span.badge.text-bg-success.py-2.px-3 Registered
+        - elsif registration&.rejected?
+          .d-flex.align-items-center.gap-2
+            %span.badge.text-bg-danger.py-2.px-3 Registration Declined
+        - else
+          %button.btn.btn-primary.w-100{ type: "button", data: { bs_toggle: "modal", bs_target: "#auction-register-modal-#{auction.hashid}" } }
+            %i.bi.bi-person-plus.me-2
+            Register Now
+          = render "auctions/register_modal", auction: auction, modal_id: "auction-register-modal-#{auction.hashid}"

@@ -1,0 +1,34 @@
+- set_meta_tags title: "Auctions", description: "Browse upcoming and active auctions."
+
+%h1.h3.mb-4 Auctions &amp; Listings
+
+%ul.nav.nav-tabs.mb-4
+  %li.nav-item
+    = link_to auctions_path, class: "nav-link active" do
+      %i.bi.bi-hammer.me-2
+      Auctions
+  %li.nav-item
+    = link_to listings_path, class: "nav-link" do
+      %i.bi.bi-tag.me-2
+      Listings
+
+= form_with url: auctions_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+  .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
+    = f.search_field :search, value: @search, placeholder: "Search auctions…", class: "form-control form-control-sm"
+    - if @search
+      = link_to auctions_path(state: @state, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+        %i.bi.bi-x-lg
+  = f.select :category_id, @categories.map { [it.name, it.hashid] },
+    { include_blank: "All Categories", selected: @category_hashid },
+    class: "form-select form-select-sm w-auto flex-shrink-0",
+    onchange: "this.form.requestSubmit()"
+  = f.select :state, [["Live", "live"], ["Upcoming", "upcoming"], ["Ended", "ended"]],
+    { include_blank: "All", selected: @state },
+    class: "form-select form-select-sm w-auto flex-shrink-0",
+    onchange: "this.form.requestSubmit()"
+
+- if @auctions.empty?
+  = render EmptyStateComponent.new(icon: "hammer", message: "No auctions found.")
+- else
+  .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.g-4
+    = render partial: "auctions/auction", collection: @auctions, as: :auction, locals: { registrations_by_auction_id: @registrations_by_auction_id }

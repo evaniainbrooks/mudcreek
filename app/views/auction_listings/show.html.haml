@@ -1,0 +1,55 @@
+:ruby
+  description = @listing.description.to_plain_text.truncate(200)
+  og_image = @listing.images.attached? ? url_for(@listing.images.first) : nil
+  set_meta_tags title: @listing.name,
+    description: description,
+    og: { title: @listing.name, description: description, image: og_image },
+    twitter: { card: (og_image ? "summary_large_image" : "summary"), title: @listing.name, description: description, image: og_image }
+
+  has_images = @listing.images.attached?
+  has_videos = @listing.videos.attached?
+  media_count = @listing.images.count + @listing.videos.count
+
+= turbo_stream_from @auction_listing
+= link_to auction_path(@auction), class: "btn btn-outline-secondary btn-sm mb-4" do
+  %i.bi.bi-arrow-left.me-1
+  Back to auction
+
+.row.g-4.g-lg-5.align-items-start
+  .col-lg-7
+    .position-relative
+      - if has_images || has_videos
+        = render "listings/carousel", listing: @listing, media_count:
+      - elsif @listing.lot&.listing_placeholder&.attached?
+        = image_tag @listing.lot.listing_placeholder, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
+      - else
+        .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
+          %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
+      - unless @auction_listing.reserve_price_cents.present? || @listing.sold?
+        .position-absolute.top-0.end-0.p-2
+          %span.badge.text-bg-success No Reserve
+  .col-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
+    .position-sticky{ style: "top: 1.5rem" }
+      %h1.fw-bold.mb-1= @listing.name
+      .d-flex.align-items-center.gap-2.mb-3
+        .lh-sm
+          = @auction_listing.ends_at.to_fs(:long)
+          %small.text-muted.d-block= distance_of_time_in_words(Time.current, @auction_listing.ends_at)
+      %hr.mb-4
+      = render "auction_listings/bid_panel", auction_listing: @auction_listing, auction: @auction, registration: @registration, bidder_token: @highest_bidder_token
+      .listing-description
+        = @listing.description
+      - if @listing.categories.any?
+        .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")
+
+- if @listing.documents.attached?
+  %hr.mt-5
+  %h2.h5.fw-semibold.mb-3
+    %i.bi.bi-folder2-open.me-2
+    Documents
+  .d-flex.flex-wrap.gap-3
+    - @listing.documents.each do |doc|
+      = link_to rails_blob_path(doc, disposition: "attachment"), class: "text-decoration-none" do
+        .d-flex.flex-column.align-items-center.justify-content-center.border.rounded-3.p-3.bg-body-tertiary{ style: "width: 120px; min-height: 110px" }
+          %i.bi.fs-1{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" ") }
+          %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)

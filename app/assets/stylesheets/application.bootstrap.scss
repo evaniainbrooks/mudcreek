@@ -41,6 +41,18 @@ $min-contrast-ratio: 3;
   }
 }
 
+// Disabled buttons show not-allowed cursor
+// Bootstrap sets pointer-events: none on disabled buttons, so we apply the cursor to a wrapper
+.btn:disabled,
+.btn[disabled] {
+  pointer-events: none;
+}
+
+*:has(> .btn:disabled),
+*:has(> .btn[disabled]) {
+  cursor: not-allowed;
+}
+
 // Inline editable cells
 .inline-editable {
   cursor: pointer;

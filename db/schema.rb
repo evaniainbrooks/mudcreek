@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_03_043033) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,12 +79,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_043033) do
     t.bigint "auction_id", null: false
     t.integer "bid_increment_cents"
     t.datetime "created_at", null: false
+    t.datetime "ends_at"
+    t.integer "extension_count", default: 0, null: false
+    t.string "hashid", null: false
     t.bigint "listing_id", null: false
     t.integer "position"
     t.integer "reserve_price_cents"
     t.integer "starting_bid_cents"
     t.datetime "updated_at", null: false
     t.index ["auction_id"], name: "index_auction_listings_on_auction_id"
+    t.index ["ends_at"], name: "index_auction_listings_on_ends_at"
+    t.index ["hashid"], name: "index_auction_listings_on_hashid", unique: true
     t.index ["listing_id"], name: "index_auction_listings_on_listing_id", unique: true
   end
 

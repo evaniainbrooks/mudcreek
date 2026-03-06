@@ -3,7 +3,8 @@
     %i.bi.bi-tag-fill.me-2
     = @listing.name
   .btn-group
-    = link_to listing_path(@listing), class: "btn btn-outline-secondary", target: "_blank" do
+    - public_path = @listing.auction_listing ? auction_auction_listing_path(@listing.auction_listing.auction, @listing.auction_listing) : listing_path(@listing)
+    = link_to public_path, class: "btn btn-outline-secondary", target: "_blank" do
       %i.bi.bi-box-arrow-up-right.me-1
       Public View
     = link_to edit_admin_listing_path(@listing), class: "btn btn-outline-primary" do
@@ -134,6 +135,11 @@
       #booking-calendar{ data: { controller: "booking-calendar", "booking-calendar-events-value": booking_events.to_json } }
 
 .mt-3
-  = link_to admin_listings_path, class: "btn btn-outline-secondary" do
-    %i.bi.bi-arrow-left.me-1
-    Back to Listings
+  - if (auction = @listing.auction_listing&.auction)
+    = link_to admin_auction_path(auction), class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Auction
+  - else
+    = link_to admin_listings_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Listings

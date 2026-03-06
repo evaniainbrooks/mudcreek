@@ -1,6 +1,44 @@
 class AuctionsController < ApplicationController
   allow_unauthenticated_access
 
+  def index
+    @state           = params[:state].presence_in(%w[live upcoming ended])
+    @search          = params[:search].presence
+    @category_hashid = params[:category_id].presence
+    @categories      = Listings::Category.order(:name)
+
+    scope = Auction.where(published: true).with_attached_poster.includes(:address)
+
+    scope = scope.where("auctions.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
+
+    if @category_hashid
+      category = Listings::Category.find_by(hashid: @category_hashid)
+      scope = scope.where(id: Auction.joins(listings: :categories).where(listings_categories: { id: category.id }).select(:id)) if category
+    end
+
+    scope = case @state
+    when "live"     then scope.where("starts_at <= NOW() AND ends_at > NOW()")
+    when "upcoming" then scope.where("starts_at > NOW()")
+    when "ended"    then scope.where("ends_at < NOW()")
+    else scope
+    end
+
+    @registrations_by_auction_id = if Current.user
+      AuctionRegistration.where(auction: scope, user: Current.user).index_by(&:auction_id)
+    else
+      {}
+    end
+
+    @auctions = scope.order(Arel.sql(<<~SQL.squish))
+      CASE
+        WHEN starts_at <= NOW() AND ends_at > NOW() THEN 0
+        WHEN starts_at > NOW() THEN 1
+        ELSE 2
+      END,
+      starts_at ASC
+    SQL
+  end
+
   def show
     @auction = Auction
       .where(published: true)
@@ -9,7 +47,39 @@ class AuctionsController < ApplicationController
       .includes(:address)
       .find_by!(hashid: params[:hashid])
 
-    @auction_listings = @auction.auction_listings.order(:position).to_a
+    @search          = params[:search].presence
+    @listing_state   = params[:state].presence_in(%w[on_sale sold cancelled])
+    @category_hashid = params[:category_id].presence
+    @categories      = Listings::Category
+      .joins(category_assignments: { listing: :auction_listings })
+      .where(auction_listings: { auction_id: @auction.id })
+      .distinct
+      .order(:name)
+
+    scope = @auction.auction_listings.joins(:listing)
+    scope = scope.where("listings.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
+    scope = scope.where(listings: { state: @listing_state }) if @listing_state
+    if @category_hashid
+      category = Listings::Category.find_by(hashid: @category_hashid)
+      scope = scope.where(listing_id: Listing.joins(:categories).where(listings_categories: { id: category.id }).select(:id)) if category
+    end
+
+    @auction_listings = scope
+      .select(<<~SQL.squish)
+        auction_listings.*,
+        COALESCE(
+          (SELECT COUNT(*) FROM bids WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'),
+          0
+        ) as bids_count,
+        (
+          SELECT auction_registrations.user_id FROM bids
+          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
+          WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'
+          ORDER BY bids.amount_cents DESC, bids.created_at DESC
+          LIMIT 1
+        ) as highest_bidder_id
+      SQL
+      .order(:position).to_a
     listing_ids = @auction_listings.map(&:listing_id)
     listings_by_id = Listing
       .where(id: listing_ids)

@@ -1,0 +1,21 @@
+- if @auction_listing.active?
+  %div{ data: { controller: "bid-button", "bid-button-bidder-token-value": @bidder_token } }
+    %div{ data: { "bid-button-target": "register" }, hidden: true }
+      %button{ class: @button_class, type: "button", data: { bs_toggle: "modal", bs_target: "#auction-register-modal" } }
+        %i.bi.bi-person-plus.me-2
+        Register to Bid
+      = render "auctions/register_modal", auction: @auction
+    %div{ data: { "bid-button-target": "pending" }, hidden: true }
+      %button{ class: @button_class, disabled: true }
+        Approval Pending
+    %div.d-flex.flex-column.align-items-center{ data: { "bid-button-target": "approved" }, hidden: true }
+      - next_amount = @auction_listing.next_bid_amount
+      - if next_amount > 0
+        = button_to auction_auction_listing_bids_path(@auction, @auction_listing), method: :post, class: @button_class, params: { amount_cents: next_amount } do
+          = "Bid #{number_to_currency(next_amount / 100.0)}"
+      - else
+        %button{ class: @button_class, disabled: true }
+          Place Bid
+      %p.text-success.fw-semibold.text-center.mt-1.mb-3{ data: { "bid-button-target": "highestBidder" }, hidden: true }
+        %i.bi.bi-trophy-fill.me-1
+        You are the highest bidder!

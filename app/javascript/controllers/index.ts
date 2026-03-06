@@ -1,5 +1,7 @@
 import { application } from "./application"
 import AddressController from "./address_controller"
+import BidButtonController from "./bid_button_controller"
+import CountdownController from "./countdown_controller"
 import CartController from "./cart_controller"
 import BulkSelectController from "./bulk_select_controller"
 import BookingCalendarController from "./booking_calendar_controller"
@@ -15,6 +17,8 @@ import SquarePaymentController from "./square_payment_controller"
 import ViewToggleController from "./view_toggle_controller"
 
 application.register("address", AddressController)
+application.register("bid-button", BidButtonController)
+application.register("countdown", CountdownController)
 application.register("cart", CartController)
 application.register("bulk-select", BulkSelectController)
 application.register("booking-calendar", BookingCalendarController)

@@ -86,7 +86,7 @@ class Admin::ListingsController < Admin::BaseController
   private
 
   def set_listing
-    @listing = Listing.includes(:categories).with_attached_images.with_attached_videos.with_attached_documents.find_by!(hashid: params[:hashid])
+    @listing = Listing.includes(:categories, auction_listing: :auction).with_attached_images.with_attached_videos.with_attached_documents.find_by!(hashid: params[:hashid])
     authorize(@listing)
   end
 

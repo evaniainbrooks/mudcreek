@@ -8,8 +8,11 @@ Rails.application.routes.draw do
     resources :offers, only: [ :create ]
   end
 
-  resources :auctions, only: [ :show ], param: :hashid do
+  resources :auctions, only: [ :index, :show ], param: :hashid do
     resources :auction_registrations, only: [ :create ]
+    resources :auction_listings, only: [ :show ], param: :hashid, path: :listings do
+      resources :bids, only: [ :create ]
+    end
   end
 
   resource  :cart,                only: [ :show ]
