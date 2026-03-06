@@ -33,10 +33,18 @@ class Auction < ApplicationRecord
   after_create_commit  :schedule_reconciler, if: -> { ends_at.present? }
   after_update_commit  :schedule_reconciler, if: -> { saved_change_to_ends_at? && ends_at.present? }
 
+  def starts_at_in_time_zone
+    starts_at&.in_time_zone(timezone)
+  end
+
+  def ends_at_in_time_zone
+    ends_at&.in_time_zone(timezone)
+  end
+
   scope :unreconciled, -> { where(reconciled: false) }
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[name published reconciled auto_approve starts_at ends_at]
+    %w[name published reconciled auto_approve starts_at ends_at timezone]
   end
 
   private

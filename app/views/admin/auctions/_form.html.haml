@@ -15,6 +15,13 @@
     - if auction.errors[:name].any?
       .invalid-feedback= auction.errors[:name].to_sentence
 
+  .mb-3
+    = f.label :timezone, class: "form-label"
+    = f.time_zone_select :timezone, ActiveSupport::TimeZone.all, { include_blank: false },
+        class: "form-select #{'is-invalid' if auction.errors[:timezone].any?}"
+    - if auction.errors[:timezone].any?
+      .invalid-feedback= auction.errors[:timezone].to_sentence
+
   .row.g-3.mb-3
     .col-md-6
       = f.label :starts_at, "Starts At", class: "form-label"

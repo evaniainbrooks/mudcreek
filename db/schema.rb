@@ -115,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
     t.boolean "reconciled", default: false, null: false
     t.datetime "starts_at"
     t.bigint "tenant_id", null: false
+    t.string "timezone", default: "Eastern Time (US & Canada)", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_auctions_on_hashid", unique: true
     t.index ["tenant_id"], name: "index_auctions_on_tenant_id"
