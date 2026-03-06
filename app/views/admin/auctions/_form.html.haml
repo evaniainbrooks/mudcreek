@@ -16,6 +16,15 @@
       .invalid-feedback= auction.errors[:name].to_sentence
 
   .mb-3
+    = f.label :admin_email_address, "Admin Email Address", class: "form-label"
+    = f.email_field :admin_email_address,
+        class: "form-control #{'is-invalid' if auction.errors[:admin_email_address].any?}",
+        placeholder: auction.tenant_email_address
+    - if auction.errors[:admin_email_address].any?
+      .invalid-feedback= auction.errors[:admin_email_address].to_sentence
+    %small.text-muted Leave blank to use the tenant email address
+
+  .mb-3
     = f.label :timezone, class: "form-label"
     = f.time_zone_select :timezone, ActiveSupport::TimeZone.all, { include_blank: false },
         class: "form-select #{'is-invalid' if auction.errors[:timezone].any?}"

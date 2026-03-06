@@ -20,13 +20,16 @@ module Admin
     private
 
     def tenant_params
-      params.require(:tenant).permit(
+      p = params.require(:tenant).permit(
         :name,
+        :email_address,
         :logo,
         :description,
         :currency,
         address_attributes: %i[id street_address city province postal_code country _destroy]
       )
+      p.delete(:logo) if p[:logo].blank?
+      p
     end
   end
 end

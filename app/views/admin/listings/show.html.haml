@@ -24,7 +24,7 @@
       aria: { controls: "details-pane", selected: "true" }}
       %i.bi.bi-info-circle.me-1
       Details
-  - if @listing.sale?
+  - if @listing.sale? && !@listing.auction_listing
     %li.nav-item{ role: "presentation" }
       %button.nav-link{id: "offers-tab",
         data: { bs_toggle: "tab", bs_target: "#offers-pane" },
@@ -111,31 +111,12 @@
           %dt.col-sm-3 Updated At
           %dd.col-sm-9= @listing.updated_at.to_fs(:long)
 
-  - if @listing.sale?
+  - if @listing.sale? && !@listing.auction_listing
     #offers-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "offers-tab" } }
       - if @offers.empty?
         .text-muted.py-3 No offers yet.
       - else
-        .table-responsive
-          %table.table.align-middle.mb-0
-            %thead
-              %tr
-                %th Buyer
-                %th.text-end Amount
-                %th State
-                %th Message
-                %th Submitted
-                %th
-            %tbody
-              - @offers.each do |offer|
-                %tr
-                  %td= mail_to offer.user.email_address
-                  %td.text-end= humanized_money_with_symbol(offer.amount, no_cents_if_whole: false)
-                  %td= offer_state_badge(offer)
-                  %td.text-muted.small= offer.message.presence || "—"
-                  %td.text-muted.small= offer.created_at.to_fs(:short)
-                  %td.text-end
-                    = link_to "View", admin_offer_path(offer), class: "btn btn-sm btn-outline-primary"
+        = render_listing_offers_table(@offers)
 
   - if @listing.rental?
     #rate-plans-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "rate-plans-tab" } }

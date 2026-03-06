@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_06_200004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "discount_code_type", ["fixed", "percentage"]
+  create_enum "invoice_status", ["unpaid", "paid"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
   create_enum "listing_type", ["sale", "rental"]
@@ -104,6 +105,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
   end
 
   create_table "auctions", force: :cascade do |t|
+    t.string "admin_email_address"
     t.boolean "auto_approve", default: false, null: false
     t.integer "bidding_extension", default: 0, null: false
     t.datetime "created_at", null: false
@@ -134,6 +136,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
 
   create_table "cart_items", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "invoice_item_id"
     t.bigint "listing_id", null: false
     t.datetime "rental_end_at"
     t.integer "rental_price_cents"
@@ -141,6 +144,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["invoice_item_id"], name: "index_cart_items_on_invoice_item_id"
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_sale_only", unique: true, where: "(rental_start_at IS NULL)"
@@ -169,6 +173,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
     t.datetime "updated_at", null: false
     t.index "tenant_id, lower((key)::text)", name: "index_discount_codes_on_tenant_id_and_lower_key", unique: true
     t.check_constraint "amount_cents > 0", name: "discount_codes_amount_cents_positive"
+  end
+
+  create_table "invoice_items", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.bigint "invoice_id", null: false
+    t.bigint "listing_id"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
+    t.index ["listing_id"], name: "index_invoice_items_on_listing_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.bigint "auction_id", null: false
+    t.datetime "created_at", null: false
+    t.string "number", null: false
+    t.enum "status", default: "unpaid", null: false, enum_type: "invoice_status"
+    t.bigint "tenant_id", null: false
+    t.integer "total_cents", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["auction_id"], name: "index_invoices_on_auction_id"
+    t.index ["number"], name: "index_invoices_on_number", unique: true
+    t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
+    t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "listings", force: :cascade do |t|
@@ -494,6 +524,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
     t.datetime "created_at", null: false
     t.string "currency", default: "CAD", null: false
     t.boolean "default", default: false, null: false
+    t.string "email_address"
     t.string "key", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
@@ -540,11 +571,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_032411) do
   add_foreign_key "auctions", "tenants"
   add_foreign_key "bids", "auction_listings"
   add_foreign_key "bids", "auction_registrations"
+  add_foreign_key "cart_items", "invoice_items"
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
+  add_foreign_key "invoice_items", "invoices"
+  add_foreign_key "invoice_items", "listings"
+  add_foreign_key "invoices", "auctions"
+  add_foreign_key "invoices", "tenants"
+  add_foreign_key "invoices", "users"
   add_foreign_key "listings", "lots", on_delete: :nullify
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"

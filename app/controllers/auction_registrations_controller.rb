@@ -10,6 +10,7 @@ class AuctionRegistrationsController < ApplicationController
     @registration = AuctionRegistration.new(auction: @auction, user: Current.user)
 
     if @registration.save
+      AuctionMailer.registration_pending(@registration).deliver_later unless @auction.auto_approve?
       redirect_to auction_path(@auction), notice: "You're registered! You'll receive an email once your registration is approved."
     else
       redirect_to auction_path(@auction), alert: @registration.errors.full_messages.to_sentence

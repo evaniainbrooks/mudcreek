@@ -29,7 +29,7 @@ end
 
 # Roles & Permissions
 all_resources = %w[
-  Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan Auction AuctionListing Tenant AuctionRegistration Bid
+  Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan Auction AuctionListing Tenant AuctionRegistration Bid Invoice
 ]
 
 all_actions = %w[index show create update destroy reorder]
@@ -64,6 +64,19 @@ admin_resources.each do |resource|
       p.tenant = mudcreek
     end
   end
+end
+
+# Invoice-specific permissions
+[ super_admin, admin ].each do |role|
+  %w[index show].each do |action|
+    role.permissions.find_or_create_by!(resource: "Invoice", action: action) do |p|
+      p.tenant = mudcreek
+    end
+  end
+end
+
+super_admin.permissions.find_or_create_by!(resource: "Invoice", action: "pay") do |p|
+  p.tenant = mudcreek
 end
 
 puts "Seeded #{Role.count} roles and #{Permission.count} permissions."
@@ -617,3 +630,62 @@ if Rails.env.local?
     puts "Seeded #{AuctionRegistration.count} auction registrations."
   end
 end
+
+# Invoices for the super_admin user
+Invoice.destroy_all
+
+# Past auction used only for a paid invoice seed
+chapman_tools_auction = Auction.find_or_create_by!(name: "Chapman Farm Tools Sale") do |a|
+  a.tenant                  = mudcreek
+  a.starts_at               = 10.weeks.ago
+  a.ends_at                 = 8.weeks.ago
+  a.end_time_stagger_interval = 0
+  a.bidding_extension       = 0
+  a.published               = true
+  a.reconciled              = true
+  a.auto_approve            = false
+end
+
+henderson_auction = Auction.find_by!(name: "Henderson Estate Auction")
+
+# Unpaid invoice — Henderson Estate Auction
+invoice_unpaid = Invoice.create!(
+  tenant:       mudcreek,
+  user:         admin_user,
+  auction:      henderson_auction,
+  total_cents:  41500
+)
+
+[
+  { name: "Victorian Parlour Chair",       amount_cents: 16_500 },
+  { name: "Clockwork Mantle Clock",        amount_cents: 17_500 },
+  { name: "Crystal Decanter Set",          amount_cents:  7_500 }
+].each do |attrs|
+  invoice_unpaid.invoice_items.create!(
+    listing:      Listing.find_by(name: attrs[:name]),
+    name:         attrs[:name],
+    amount_cents: attrs[:amount_cents]
+  )
+end
+
+# Paid invoice — Chapman Farm Tools Sale
+invoice_paid = Invoice.create!(
+  tenant:       mudcreek,
+  user:         admin_user,
+  auction:      chapman_tools_auction,
+  total_cents:  18_000,
+  status:       :paid
+)
+
+[
+  { name: "Stanley Hand Plane Set", amount_cents: 9_000 },
+  { name: "Cast Iron Bench Vise",   amount_cents: 9_000 }
+].each do |attrs|
+  invoice_paid.invoice_items.create!(
+    listing:      Listing.find_by(name: attrs[:name]),
+    name:         attrs[:name],
+    amount_cents: attrs[:amount_cents]
+  )
+end
+
+puts "Seeded #{Invoice.count} invoices with #{InvoiceItem.count} invoice items."

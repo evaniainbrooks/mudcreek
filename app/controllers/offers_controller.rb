@@ -14,6 +14,7 @@ class OffersController < ApplicationController
     )
 
     if @offer.save
+      ListingMailer.offer_received(@offer).deliver_later
       redirect_to listing_path(@listing), notice: "Your offer has been submitted."
     else
       redirect_to listing_path(@listing), alert: @offer.errors.full_messages.to_sentence

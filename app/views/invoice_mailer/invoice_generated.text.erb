@@ -1,0 +1,12 @@
+Hi <%= @user.first_name %>,
+
+Your auction results for <%= @auction.name %> are ready. You won the following items:
+
+<% @invoice.invoice_items.each do |item| %>
+<%= item.name %> — <%= humanized_money_with_symbol(item.amount) %>
+<% end %>
+
+Total: <%= humanized_money_with_symbol(@invoice.total) %>
+
+View your invoice and pay online:
+<%= invoice_url(@invoice) %>

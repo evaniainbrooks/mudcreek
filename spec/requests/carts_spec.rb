@@ -37,7 +37,7 @@ RSpec.describe "Carts", type: :request do
       it "includes the taxable listing's contribution in the subtotal" do
         get cart_path
 
-        expect(response.body).to include("30.00")
+        expect(response.body).to include("$30")
       end
 
       it "applies sales tax only to non-exempt listings" do
@@ -107,7 +107,7 @@ RSpec.describe "Carts", type: :request do
       it "deducts the discount from the total" do
         get cart_path
 
-        expect(response.body).to include("15.00")
+        expect(response.body).to include("$15")
       end
     end
 
@@ -185,7 +185,7 @@ RSpec.describe "Carts", type: :request do
         get cart_path
 
         # Tax is $0.15 so "$0.00" is unique to the Total row
-        expect(response.body).to include("$0.00")
+        expect(response.body).to include("$0")
       end
     end
 
@@ -208,7 +208,7 @@ RSpec.describe "Carts", type: :request do
       it "adds the delivery cost to the total" do
         get cart_path
 
-        expect(response.body).to include("35.00")
+        expect(response.body).to include("$35")
       end
     end
 

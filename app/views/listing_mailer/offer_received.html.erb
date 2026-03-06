@@ -1,0 +1,18 @@
+<p>You have received a new offer on <strong><%= @listing.name %></strong>.</p>
+
+<p>
+  <strong>Buyer:</strong> <%= @buyer.name %> (<%= @buyer.email_address %>)<br>
+  <strong>Offer amount:</strong> <%= humanized_money_with_symbol(@offer.amount) %><br>
+  <strong>Submitted at:</strong> <%= @offer.created_at.strftime("%B %-d, %Y at %l:%M %p") %>
+</p>
+
+<% if @offer.message.present? %>
+  <p>
+    <strong>Message:</strong><br>
+    <%= @offer.message %>
+  </p>
+<% end %>
+
+<p>
+  <%= link_to "View listing", listing_url(@listing) %>
+</p>

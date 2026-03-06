@@ -17,7 +17,7 @@ class CartsController < ApplicationController
   private
 
   def remove_sold_items
-    sold = @cart_items.select { |item| item.listing.sold? }
+    sold = @cart_items.select { |item| item.listing.sold? && !item.from_invoice? }
     return if sold.empty?
 
     sold.each(&:destroy)

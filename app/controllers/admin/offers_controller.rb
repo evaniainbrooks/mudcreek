@@ -6,6 +6,20 @@ class Admin::OffersController < Admin::BaseController
     @q = Offer.ransack(params[:q])
     scope = @q.result.includes(:listing, :user).order(created_at: :desc)
     @pagy, @offers = pagy(:keyset, scope)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        if params[:page].present?
+          render turbo_stream: [
+            turbo_stream.append("admin-offers-tbody", partial: "admin/offers/offer_row", collection: @offers, as: :offer),
+            turbo_stream.replace("sentinel", partial: "admin/offers/sentinel", locals: { pagy: @pagy, q: params[:q] })
+          ]
+        else
+          render :index, formats: [:html]
+        end
+      end
+    end
   end
 
   def show

@@ -28,6 +28,7 @@ class AuctionReconcilerJob < ApplicationJob
       AuctionReconcilerJob.set(wait_until: next_end_time).perform_later(auction)
     else
       auction.update!(reconciled: true)
+      GenerateAuctionInvoicesJob.perform_later(auction)
     end
   end
 

@@ -1,0 +1,6 @@
+A new registration is pending approval for <%= @auction.name %>.
+
+Registrant: <%= @user.name %> (<%= @user.email_address %>)
+Registered at: <%= @registration.created_at.strftime("%B %-d, %Y at %l:%M %p") %>
+
+Review registration: <%= admin_auction_url(@auction) %>

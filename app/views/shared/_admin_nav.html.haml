@@ -29,7 +29,7 @@
           = link_to admin_lots_path, class: "dropdown-item" do
             %i.bi.bi-map-fill.me-1
             Lots
-- if policy(Offer).index? || policy(DiscountCode).index? || policy(DeliveryMethod).index?
+- if policy(Order).index? || policy(Invoice).index? || policy(Offer).index? || policy(DiscountCode).index? || policy(DeliveryMethod).index?
   %li.nav-item.dropdown
     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
       %i.bi.bi-basket-fill.me-1
@@ -40,6 +40,11 @@
           = link_to admin_orders_path, class: "dropdown-item" do
             %i.bi.bi-bag.me-1
             Orders
+      - if policy(Invoice).index?
+        %li
+          = link_to admin_invoices_path, class: "dropdown-item" do
+            %i.bi.bi-receipt.me-1
+            Invoices
       - if policy(Offer).index?
         %li
           = link_to admin_offers_path, class: "dropdown-item" do

@@ -30,6 +30,9 @@ Rails.application.routes.draw do
   end
 
   resource  :profile,      only: [ :edit, :update ]
+  resources :invoices,     only: [:show], param: :number do
+    member { post :pay }
+  end
   resources :subdivisions, only: [ :index ]
 
   namespace :admin do
@@ -60,6 +63,7 @@ Rails.application.routes.draw do
     end
     resources :auction_listings, only: [ :create ]
     resources :auction_registrations, only: [ :index ]
+    resources :invoices, only: [ :index ], param: :number
     resources :bids, only: [ :update ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

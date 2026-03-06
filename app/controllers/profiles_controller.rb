@@ -3,6 +3,7 @@ class ProfilesController < ApplicationController
     @user = Current.user
     @user.build_address unless @user.address
     @orders = @user.orders.order(created_at: :desc)
+    @invoices = @user.invoices.includes(:auction).order(created_at: :desc)
   end
 
   def update
@@ -13,6 +14,7 @@ class ProfilesController < ApplicationController
       redirect_to edit_profile_path, notice: "Profile updated successfully."
     else
       @orders = @user.orders.order(created_at: :desc)
+      @invoices = @user.invoices.includes(:auction).order(created_at: :desc)
       render :edit, status: :unprocessable_content
     end
   end

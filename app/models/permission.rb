@@ -7,10 +7,10 @@ class Permission < ApplicationRecord
     Offer Order DiscountCode
     DeliveryMethod Listings::RentalRatePlan
     Auction AuctionListing AuctionRegistration
-    Bid Tenant
+    Bid Tenant Invoice
   ].freeze
 
-  ACTIONS   = %w[index show create update destroy reorder].freeze
+  ACTIONS   = %w[index show create update destroy reorder pay].freeze
 
   belongs_to :role
 

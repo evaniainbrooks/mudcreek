@@ -75,7 +75,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def auction_params
     p = params.require(:auction).permit(
-      :name, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :published, :reconciled, :auto_approve, :poster, :description, :timezone,
+      :name, :admin_email_address, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :published, :reconciled, :auto_approve, :poster, :description, :timezone,
       address_attributes: %i[id street_address city province postal_code country _destroy]
     )
     p.delete(:poster) if p[:poster].blank?

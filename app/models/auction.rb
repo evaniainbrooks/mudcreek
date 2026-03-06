@@ -13,7 +13,11 @@ class Auction < ApplicationRecord
   has_many :listings, through: :auction_listings
   has_many :auction_registrations, dependent: :destroy
 
+  delegate :email_address, to: :tenant, prefix: :tenant, allow_nil: true
+
   validates :name, presence: true
+  validates :admin_email_address, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+
   validates :end_time_stagger_interval, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :end_time_stagger_interval, numericality: { greater_than_or_equal_to: 30 },
             if: -> { end_time_stagger_interval.present? && end_time_stagger_interval > 0 }
@@ -39,6 +43,10 @@ class Auction < ApplicationRecord
 
   def ends_at_in_time_zone
     ends_at&.in_time_zone(timezone)
+  end
+
+  def effective_admin_email_address
+    admin_email_address.presence || tenant_email_address
   end
 
   scope :unreconciled, -> { where(reconciled: false) }

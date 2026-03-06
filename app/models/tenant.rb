@@ -22,7 +22,10 @@ class Tenant < ApplicationRecord
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan", dependent: :restrict_with_error
   has_many :auctions, dependent: :restrict_with_error
 
+  normalizes :email_address, with: ->(e) { e.strip.downcase }
+
   validates :name, presence: true
+  validates :email_address, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :key, presence: true, uniqueness: true, format: { with: /\A[a-z_0-9]+\z/, message: "can only contain lowercase letters and underscores" }
   validates :currency, presence: true
   validates :default, inclusion: { in: [ true, false ] }
