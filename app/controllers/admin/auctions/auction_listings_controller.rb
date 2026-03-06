@@ -31,7 +31,7 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
   end
 
   def set_auction_listing
-    @auction_listing = @auction.auction_listings.find(params[:id])
+    @auction_listing = @auction.auction_listings.find_by!(hashid: params[:id])
   end
 
   def auction_listing_params

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_06_200004) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_06_200006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -144,7 +144,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_200004) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["invoice_item_id"], name: "index_cart_items_on_invoice_item_id"
+    t.index ["invoice_item_id"], name: "index_cart_items_on_invoice_item_id_unique", unique: true, where: "(invoice_item_id IS NOT NULL)"
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_sale_only", unique: true, where: "(rental_start_at IS NULL)"
@@ -571,14 +571,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_200004) do
   add_foreign_key "auctions", "tenants"
   add_foreign_key "bids", "auction_listings"
   add_foreign_key "bids", "auction_registrations"
-  add_foreign_key "cart_items", "invoice_items"
+  add_foreign_key "cart_items", "invoice_items", on_delete: :nullify
   add_foreign_key "cart_items", "listings"
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "invoice_items", "invoices"
-  add_foreign_key "invoice_items", "listings"
+  add_foreign_key "invoice_items", "listings", on_delete: :nullify
   add_foreign_key "invoices", "auctions"
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"

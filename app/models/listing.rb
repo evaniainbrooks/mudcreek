@@ -14,6 +14,7 @@ class Listing < ApplicationRecord
 
   has_one  :address, as: :addressable, dependent: :destroy
   has_many :order_items, dependent: :nullify
+  has_many :invoice_items, dependent: :nullify
   has_many :cart_items, dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan",

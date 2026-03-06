@@ -7,6 +7,7 @@ class CartItem < ApplicationRecord
   has_one :rental_booking, dependent: :destroy
 
   validates :listing_id, uniqueness: { scope: :user_id }, unless: :rental?
+  validates :invoice_item_id, uniqueness: true, allow_nil: true
 
   def rental?
     rental_start_at.present?

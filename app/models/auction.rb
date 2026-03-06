@@ -12,6 +12,7 @@ class Auction < ApplicationRecord
   has_many :auction_listings, dependent: :destroy
   has_many :listings, through: :auction_listings
   has_many :auction_registrations, dependent: :destroy
+  has_many :invoices, dependent: :destroy
 
   delegate :email_address, to: :tenant, prefix: :tenant, allow_nil: true
 

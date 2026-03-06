@@ -21,6 +21,7 @@ class Tenant < ApplicationRecord
   has_many :rental_bookings, dependent: :restrict_with_error
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan", dependent: :restrict_with_error
   has_many :auctions, dependent: :restrict_with_error
+  has_many :invoices, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
