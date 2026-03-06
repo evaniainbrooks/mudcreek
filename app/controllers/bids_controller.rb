@@ -97,5 +97,4 @@ class BidsController < ApplicationController
       locals: { auction_listing: fresh_auction_listing, auction: @auction, registration: nil }
     )
   end
-
 end

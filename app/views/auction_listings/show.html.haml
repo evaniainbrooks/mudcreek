@@ -36,7 +36,11 @@
           = @auction_listing.ends_at.to_fs(:long)
           %small.text-muted.d-block= distance_of_time_in_words(Time.current, @auction_listing.ends_at)
       %hr.mb-4
-      = render "auction_listings/bid_panel", auction_listing: @auction_listing, auction: @auction, registration: @registration, bidder_token: @highest_bidder_token
+      = render "auction_listings/bid_panel",
+        auction_listing: @auction_listing,
+        auction: @auction,
+        registration: @registration,
+        bidder_token: @highest_bidder_token
       .listing-description
         = @listing.description
       - if @listing.categories.any?

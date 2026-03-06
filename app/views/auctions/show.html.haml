@@ -63,7 +63,9 @@
       .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
         = f.search_field :search, value: @search, placeholder: "Search listings…", class: "form-control form-control-sm"
         - if @search
-          = link_to auction_path(@auction, state: @listing_state, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+          = link_to(auction_path(@auction, state: @listing_state, category_id: @category_hashid),
+            class: "btn btn-outline-secondary btn-sm",
+            aria: { label: "Clear search" }) do
             %i.bi.bi-x-lg
       = f.select :category_id, @categories.map { [it.name, it.hashid] },
         { include_blank: "All Categories", selected: @category_hashid },
@@ -76,7 +78,10 @@
     = turbo_stream_from @auction
     - if @auction_listings.any?
       .row.row-cols-1.row-cols-sm-2.row-cols-xl-3.g-4
-        = render partial: "auctions/listing_card", collection: @auction_listings, as: :auction_listing, locals: { auction: @auction, registration: @registration }
+        = render(partial: "auctions/listing_card",
+          collection: @auction_listings,
+          as: :auction_listing,
+          locals: { auction: @auction, registration: @registration })
     - else
       .py-5.text-center.text-muted
         %i.bi.bi-tag.mb-3.d-block{ style: "font-size: 3rem" }

@@ -6,4 +6,8 @@
     - else
       %p.text-muted.fw-bold.mb-0
         = "#{bid_count} #{bid_count == 1 ? 'bid' : 'bids'}"
-  = render BidButtonComponent.new(auction_listing: auction_listing, auction: auction, registration: registration, bidder_token: bidder_token, button_class: "btn btn-primary w-100 mb-4")
+  = render BidButtonComponent.new(auction_listing: auction_listing,
+    auction: auction,
+    registration: registration,
+    bidder_token: bidder_token,
+    button_class: "btn btn-primary w-100 mb-4")
