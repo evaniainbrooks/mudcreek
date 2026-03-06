@@ -39,6 +39,14 @@ class AuctionListing < ApplicationRecord
 
   private
 
+  def generate_hashid
+    return if hashid.present?
+    loop do
+      candidate = SecureRandom.alphanumeric(12)
+      break self.hashid = candidate unless self.class.unscoped.exists?(hashid: candidate)
+    end
+  end
+
   def initialize_end_time
     update_column(
       :ends_at,

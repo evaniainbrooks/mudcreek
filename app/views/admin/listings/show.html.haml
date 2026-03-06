@@ -52,6 +52,17 @@
         aria: { controls: "schedule-pane", selected: "false" }}
         %i.bi.bi-calendar3.me-1
         Schedule
+  - if @bids
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{id: "bids-tab",
+        data: { bs_toggle: "tab", bs_target: "#bids-pane" },
+        type: "button",
+        role: "tab",
+        aria: { controls: "bids-pane", selected: "false" }}
+        %i.bi.bi-hammer.me-1
+        Bids
+        - if @bids.any?
+          %span.badge.text-bg-secondary.ms-1= @bids.size
 
 .tab-content#listing-tabs-content
   #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
@@ -133,6 +144,37 @@
     #schedule-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedule-tab" } }
       - booking_events = @rental_bookings.map { |b| { title: b.cart_item.user.email_address, start: b.start_at.iso8601, end: b.end_at.iso8601 } }
       #booking-calendar{ data: { controller: "booking-calendar", "booking-calendar-events-value": booking_events.to_json } }
+
+  - if @bids
+    #bids-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "bids-tab" } }
+      - if @bids.empty?
+        .text-muted.py-3 No bids placed yet.
+      - else
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead.thead-secondary
+              %tr
+                %th Bidder
+                %th.text-end Amount
+                %th State
+                %th Placed At
+                %th
+            %tbody
+              - @bids.each do |bid|
+                %tr
+                  = render TableCellComponent.new(value: bid.auction_registration.user)
+                  %td.text-end= humanized_money_with_symbol(bid.amount, no_cents_if_whole: false)
+                  %td= bid.state.humanize
+                  %td.text-muted.small= bid.created_at.to_fs(:short)
+                  %td.text-end
+                    - if bid.placed?
+                      = button_to "Cancel", admin_bid_path(bid), method: :patch, params: { state: "cancelled" },
+                          class: "btn btn-sm btn-outline-danger",
+                          form: { data: { turbo_confirm: "Cancel this bid?" } }
+                    - elsif bid.cancelled?
+                      = button_to "Restore", admin_bid_path(bid), method: :patch, params: { state: "placed" },
+                          class: "btn btn-sm btn-outline-secondary",
+                          form: { data: { turbo_confirm: "Restore this bid?" } }
 
 .mt-3
   - if (auction = @listing.auction_listing&.auction)

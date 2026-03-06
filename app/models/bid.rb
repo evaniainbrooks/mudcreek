@@ -9,8 +9,8 @@ class Bid < ApplicationRecord
   monetize :amount_cents
 
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validate :registration_must_be_approved
-  validate :cannot_outbid_yourself
+  validate :registration_must_be_approved, on: :create
+  validate :cannot_outbid_yourself, on: :create
 
   private
 

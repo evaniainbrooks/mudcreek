@@ -34,6 +34,11 @@ class Admin::ListingsController < Admin::BaseController
         .includes(cart_item: :user)
         .order(:start_at)
     end
+    if @listing.auction_listing
+      @bids = @listing.auction_listing.bids
+        .includes(auction_registration: :user)
+        .order(amount_cents: :desc, created_at: :desc)
+    end
   end
 
   def new
