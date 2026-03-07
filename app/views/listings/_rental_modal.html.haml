@@ -1,10 +1,10 @@
 #rental-modal.modal.fade{ tabindex: "-1" }
   .modal-dialog.modal-lg
-    .modal-content{ data: {
+    .modal-content{data: {
         controller: "rental-modal",
         "rental-modal-rate-plans-value": listing.rental_rate_plans_to_json,
         action: "rental-availability:dateSelected->rental-modal#dateSelectedFromCalendar"
-      } }
+      }}
       .modal-header
         %h5.modal-title
           %i.bi.bi-calendar-check.me-2
@@ -13,10 +13,10 @@
       = form_with url: cart_items_path, data: { turbo: false } do |f|
         = f.hidden_field :listing_id, value: listing.id
         .modal-body
-          #rental-availability-calendar{ data: {
+          #rental-availability-calendar{data: {
             controller: "rental-availability",
-            "rental-availability-events-value": @booking_events.to_json
-          } }
+            "rental-availability-events-value": booking_events.to_json
+          }}
           .row.g-3.mb-3.mt-2
             .col-md-6
               = f.label :rental_start_at, "Start", class: "form-label"

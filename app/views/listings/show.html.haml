@@ -100,5 +100,5 @@
           %i.bi.fs-1{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" ") }
           %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)
 
-= render("listings/rental_modal", listing: @listing) if @listing.rental? && Current.user
+= render("listings/rental_modal", listing: @listing, booking_events: @booking_events) if @listing.rental? && Current.user
 = render("listings/offer_modal", listing: @listing) if @listing.sale? && @listing.negotiable? && Current.user

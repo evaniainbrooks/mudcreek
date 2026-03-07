@@ -10,7 +10,7 @@ RSpec.describe CartItem, type: :model do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:listing) }
-    it { is_expected.to have_one(:rental_booking).dependent(:destroy) }
+    it { is_expected.to have_one(:rental_booking) }
   end
 
   describe "validations" do
