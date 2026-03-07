@@ -5,7 +5,7 @@ class ProfilesController < ApplicationController
   def edit
     @user = Current.user
     @user.build_address unless @user.address
-    @orders = @user.orders.order(created_at: :desc)
+    @orders = @user.orders.includes(:order_items).order(created_at: :desc)
     @invoices = @user.invoices.includes(:auction, offer: :listing).order(created_at: :desc)
     @pagy_registrations, @bid_registrations = pagy(bid_registrations_scope, limit: BID_REGISTRATIONS_PER_PAGE)
     @pagy_listings, @purchased_listings = pagy(purchased_listings_scope, limit: PURCHASED_LISTINGS_PER_PAGE)
@@ -66,7 +66,7 @@ class ProfilesController < ApplicationController
     if @user.update(profile_params)
       redirect_to edit_profile_path, notice: "Profile updated successfully."
     else
-      @orders = @user.orders.order(created_at: :desc)
+      @orders = @user.orders.includes(:order_items).order(created_at: :desc)
       @invoices = @user.invoices.includes(:auction, offer: :listing).order(created_at: :desc)
       @pagy_registrations, @bid_registrations = pagy(bid_registrations_scope, limit: BID_REGISTRATIONS_PER_PAGE)
       @pagy_listings, @purchased_listings = pagy(purchased_listings_scope, limit: PURCHASED_LISTINGS_PER_PAGE)

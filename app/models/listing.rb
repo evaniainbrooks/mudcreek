@@ -44,7 +44,7 @@ class Listing < ApplicationRecord
   before_validation :set_default_position, on: :create
   before_validation :set_rental_price_default
 
-  validates :position, presence: true, uniqueness: { scope: :tenant_id }, on: :update
+  validates :position, presence: true, uniqueness: { scope: :tenant_id }, on: :update, if: :will_save_change_to_position?
   validates :position, presence: true
   validates :name, presence: true
   validates :description, presence: true

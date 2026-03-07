@@ -6,7 +6,7 @@ class User < ApplicationRecord
   generates_token_for :activation, expires_in: 24.hours do
     activated_at
   end
-  has_many :sessions, dependent: :destroy
+  has_many :sessions, dependent: :destroy, inverse_of: :user
   belongs_to :role, optional: true
   has_many :listings, foreign_key: :owner_id, dependent: :destroy
   has_many :lots, foreign_key: :owner_id, dependent: :destroy
@@ -16,8 +16,10 @@ class User < ApplicationRecord
   has_many :auction_registrations, dependent: :destroy
   has_many :invoices, dependent: :destroy
   has_many :cart_listings, through: :cart_items, source: :listing
-  has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", as: :addressable, dependent: :destroy
-  has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", as: :addressable, dependent: :destroy
+  has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", as: :addressable
+  has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", as: :addressable
+
+  before_destroy { Address.where(addressable: self).delete_all }
   accepts_nested_attributes_for :address, update_only: true
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }

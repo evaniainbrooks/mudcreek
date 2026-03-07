@@ -30,7 +30,7 @@ class AuctionListingsController < ApplicationController
       .with_attached_images
       .with_attached_videos
       .with_attached_documents
-      .includes(lot: { listing_placeholder_attachment: :blob })
+      .includes(:categories, lot: { listing_placeholder_attachment: :blob })
       .find(@auction_listing.listing_id)
   end
 end

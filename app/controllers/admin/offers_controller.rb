@@ -1,5 +1,6 @@
 class Admin::OffersController < Admin::BaseController
   before_action :set_offer, only: [ :show, :update ]
+  before_action :set_listing_has_accepted_offer, only: :show
 
   def index
     authorize(Offer)
@@ -40,6 +41,9 @@ class Admin::OffersController < Admin::BaseController
   def set_offer
     @offer = Offer.find(params[:id])
     authorize(@offer)
+  end
+
+  def set_listing_has_accepted_offer
     @listing_has_accepted_offer = @offer.listing.offers.accepted.where.not(id: @offer.id).exists?
   end
 end

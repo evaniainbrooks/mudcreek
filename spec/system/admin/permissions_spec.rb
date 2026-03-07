@@ -4,13 +4,7 @@ RSpec.describe "Admin::Permissions", type: :system do
   before { driven_by :rack_test }
 
   let(:admin_role) do
-    create(:role).tap do |role|
-      Permission::RESOURCES.each do |resource|
-        Permission::ACTIONS.each do |action|
-          role.permissions.create!(resource: resource, action: action)
-        end
-      end
-    end
+    create(:role).tap(&:grant_all_permissions!)
   end
 
   let(:current_user) { create(:user, role: admin_role) }

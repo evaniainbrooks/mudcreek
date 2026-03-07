@@ -18,10 +18,15 @@ class Role < ApplicationRecord
   end
 
   def grant_all_permissions!
-    Permission::RESOURCES.each do |resource|
-      Permission::ACTIONS.each do |action|
-        permissions.find_or_create_by!(resource:, action:, tenant:)
+    existing = permissions.pluck(:resource, :action).to_set
+
+    missing = Permission::RESOURCES.flat_map do |resource|
+      Permission::ACTIONS.filter_map do |action|
+        next if existing.include?([resource, action])
+        { resource:, action:, role_id: id, tenant_id: }
       end
     end
+
+    Permission.insert_all(missing) if missing.any?
   end
 end

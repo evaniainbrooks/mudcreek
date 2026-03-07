@@ -48,7 +48,13 @@ class ApplicationPolicy
 
   def permitted?(action)
     resource_name = record.is_a?(Class) ? record.name : record.class.name
-    user.role&.permissions&.exists?(resource: resource_name, action: action.to_s) || false
+    cached_permissions.any? { |p| p.resource == resource_name && p.action == action.to_s }
+  end
+
+  def cached_permissions
+    # Cache on the user object so all policy instances within a request share one load
+    user.instance_variable_get(:@_cached_permissions) ||
+      user.instance_variable_set(:@_cached_permissions, Array(user.role&.permissions&.to_a))
   end
 
   class Scope

@@ -23,8 +23,9 @@ RSpec.describe Role, type: :model do
     it "covers every action for each resource" do
       role.grant_all_permissions!
 
+      permissions_by_resource = role.permissions.pluck(:resource, :action).group_by(&:first)
       Permission::RESOURCES.each do |resource|
-        expect(role.permissions.where(resource: resource).pluck(:action)).to match_array(Permission::ACTIONS)
+        expect(permissions_by_resource[resource]&.map(&:last)).to match_array(Permission::ACTIONS)
       end
     end
 

@@ -79,6 +79,10 @@ gem "countries"
 gem "meta-tags"
 
 group :development, :test do
+  # N+1 query detection
+  gem "prosopite"
+  gem "pg_query"
+
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 

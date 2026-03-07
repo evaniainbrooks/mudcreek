@@ -20,7 +20,9 @@ class CartsController < ApplicationController
     sold = @cart_items.select { |item| item.listing.sold? && !item.from_invoice? }
     return if sold.empty?
 
-    sold.each(&:destroy)
+    sold_ids = sold.map(&:id)
+    RentalBooking.where(cart_item_id: sold_ids).update_all(cart_item_id: nil)
+    CartItem.where(id: sold_ids).delete_all
     @cart_items = @cart_items.reject { |item| item.listing.sold? }
 
     names = sold.map { |item| item.listing.name }.to_sentence
