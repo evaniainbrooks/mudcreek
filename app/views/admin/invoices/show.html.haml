@@ -1,0 +1,78 @@
+.d-flex.align-items-center.gap-3.mb-4.flex-wrap
+  %h1.h3.mb-0
+    %i.bi.bi-receipt.me-2
+    Invoice
+  %span.badge.text-bg-secondary.fs-6= @invoice.number
+  = invoice_status_badge(@invoice)
+
+.row.g-4
+  .col-12.col-lg-8
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Buyer
+      .card-body
+        %dl.row.mb-0
+          %dt.col-sm-3 Name
+          %dd.col-sm-9= link_to @invoice.user.name, admin_user_path(@invoice.user)
+          %dt.col-sm-3 Email
+          %dd.col-sm-9= mail_to @invoice.user.email_address
+
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Source
+      .card-body
+        %dl.row.mb-0
+          - if @invoice.auction
+            %dt.col-sm-3 Type
+            %dd.col-sm-9 Auction
+            %dt.col-sm-3 Name
+            %dd.col-sm-9= link_to @invoice.auction.name, admin_auction_path(@invoice.auction)
+          - elsif @invoice.offer
+            %dt.col-sm-3 Type
+            %dd.col-sm-9 Offer
+            %dt.col-sm-3 Listing
+            %dd.col-sm-9= link_to @invoice.offer.listing.name, admin_listing_path(@invoice.offer.listing)
+            %dt.col-sm-3 Offer amount
+            %dd.col-sm-9= humanized_money_with_symbol(@invoice.offer.amount)
+
+    .card.shadow-sm.border-0
+      .card-header.fw-semibold Items
+      .card-body.p-0
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead
+              %tr
+                %th.ps-3 Item
+                %th.text-end.pe-3 Amount
+            %tbody
+              - @invoice.invoice_items.each do |item|
+                %tr
+                  %td.ps-3.fw-semibold= item.name
+                  %td.text-end.pe-3= humanized_money_with_symbol(item.amount)
+
+  .col-12.col-lg-4
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Summary
+      .card-body
+        %table.table.table-sm.mb-0
+          %tbody
+            %tr.border-top.border-2.fw-bold
+              %td Total
+              %td.text-end= humanized_money_with_symbol(@invoice.total)
+
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold Details
+      .card-body
+        %dl.row.mb-0
+          %dt.col-6 Issued
+          %dd.col-6.text-end= @invoice.created_at.to_fs(:long)
+          %dt.col-6 Updated
+          %dd.col-6.text-end= @invoice.updated_at.to_fs(:long)
+
+    .card.shadow-sm.border-0
+      .card-header.fw-semibold Status
+      .card-body
+        %p.text-muted.small.mb-0= invoice_status_badge(@invoice)
+
+.mt-3
+  = link_to admin_invoices_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Invoices

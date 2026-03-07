@@ -1,4 +1,6 @@
 class Admin::InvoicesController < Admin::BaseController
+  before_action :set_invoice, only: [ :show ]
+
   def index
     authorize(Invoice)
     @q = Invoice.ransack(params[:q])
@@ -18,5 +20,15 @@ class Admin::InvoicesController < Admin::BaseController
         end
       end
     end
+  end
+
+  def show
+  end
+
+  private
+
+  def set_invoice
+    @invoice = Invoice.includes(:user, :auction, :offer, invoice_items: :listing).find_by!(number: params[:number])
+    authorize(@invoice)
   end
 end

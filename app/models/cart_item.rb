@@ -19,6 +19,6 @@ class CartItem < ApplicationRecord
 
   def effective_price_cents
     return invoice_item.amount_cents if from_invoice?
-    rental? ? rental_price_cents : listing.price_cents
+    rental? ? rental_price_cents.to_i : listing.price_cents
   end
 end

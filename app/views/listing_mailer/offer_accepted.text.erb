@@ -1,0 +1,11 @@
+Hi <%= @user.first_name %>,
+
+Great news — your offer on <%= @listing.name %> has been accepted.
+An invoice has been generated for you:
+
+<%= @listing.name %> — <%= humanized_money_with_symbol(@offer.amount) %>
+
+Total: <%= humanized_money_with_symbol(@invoice.total) %>
+
+View your invoice and pay online:
+<%= invoice_url(@invoice) %>

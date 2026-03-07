@@ -29,7 +29,11 @@ Rails.application.routes.draw do
     resource :square, only: [ :create ], controller: "square"
   end
 
-  resource  :profile,      only: [ :edit, :update ]
+  resource :profile, only: [ :edit, :update ] do
+    get "auctions/:hashid", action: :auction_bids, as: :auction_bids
+    get "auctions", action: :profile_auctions, as: :profile_auctions
+    get "listings", action: :profile_listings, as: :profile_listings
+  end
   resources :invoices,     only: [:show], param: :number do
     member { post :pay }
   end
@@ -63,7 +67,7 @@ Rails.application.routes.draw do
     end
     resources :auction_listings, only: [ :create ]
     resources :auction_registrations, only: [ :index ]
-    resources :invoices, only: [ :index ], param: :number
+    resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -3,7 +3,8 @@ class Invoice < ApplicationRecord
   include NativeEnum
 
   belongs_to :user
-  belongs_to :auction
+  belongs_to :auction, optional: true
+  belongs_to :offer, optional: true
 
   has_many :invoice_items, dependent: :destroy
 

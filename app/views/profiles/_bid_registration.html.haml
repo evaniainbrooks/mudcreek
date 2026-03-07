@@ -1,0 +1,6 @@
+%tr
+  %td.ps-3.fw-semibold= registration.auction.name
+  %td.text-muted= registration.auction.ends_at&.to_fs(:long)
+  %td.pe-3
+    = link_to "View Bids", auction_bids_profile_path(hashid: registration.auction.hashid),
+        class: "btn btn-sm btn-outline-secondary"

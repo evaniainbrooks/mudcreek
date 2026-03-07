@@ -24,8 +24,7 @@
         = link_to listing.name, auction_auction_listing_path(auction, auction_listing), class: "text-decoration-none text-body"
       .d-flex.align-items-center.gap-2.mb-0
         .lh-sm
-          #{auction_listing.ends_at.to_fs(:long)}
-          %small.text-muted.d-block= distance_of_time_in_words(Time.current, auction_listing.ends_at)
+          = auction_listing.ends_at.to_fs(:long)
       .d-flex.flex-column.align-items-center.gap-2.mt-3
         = render("auction_listings/bid_count", auction_listing:)
         = render("auction_listings/current_bid", auction_listing:)

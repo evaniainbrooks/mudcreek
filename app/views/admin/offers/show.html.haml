@@ -8,9 +8,12 @@
           class: "btn btn-outline-secondary",
           form: { data: { turbo_confirm: "Mark this offer as pending?" } }
     - unless @offer.accepted?
-      = button_to "Accept", admin_offer_path(@offer), method: :patch, params: { state: "accepted" },
-          class: "btn btn-success",
-          form: { data: { turbo_confirm: "Accept this offer?" } }
+      - if @listing_has_accepted_offer
+        %button.btn.btn-success{ disabled: true, title: "Another offer on this listing has already been accepted" } Accept
+      - else
+        = button_to "Accept", admin_offer_path(@offer), method: :patch, params: { state: "accepted" },
+            class: "btn btn-success",
+            form: { data: { turbo_confirm: "Accept this offer?" } }
     - unless @offer.declined?
       = button_to "Decline", admin_offer_path(@offer), method: :patch, params: { state: "declined" },
           class: "btn btn-outline-danger",

@@ -1,0 +1,31 @@
+<p>Hi <%= @user.first_name %>,</p>
+
+<p>
+  Great news — your offer on <strong><%= @listing.name %></strong> has been accepted.
+  An invoice has been generated for you:
+</p>
+
+<table style="width: 100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th style="text-align: left; padding: 6px 0; border-bottom: 1px solid #dee2e6;">Item</th>
+      <th style="text-align: right; padding: 6px 0; border-bottom: 1px solid #dee2e6;">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 6px 0;"><%= @listing.name %></td>
+      <td style="text-align: right; padding: 6px 0;"><%= humanized_money_with_symbol(@offer.amount) %></td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td style="padding: 8px 0; border-top: 1px solid #dee2e6;"><strong>Total</strong></td>
+      <td style="text-align: right; padding: 8px 0; border-top: 1px solid #dee2e6;"><strong><%= humanized_money_with_symbol(@invoice.total) %></strong></td>
+    </tr>
+  </tfoot>
+</table>
+
+<p style="margin-top: 24px;">
+  <%= link_to "View Invoice & Pay", invoice_url(@invoice) %>
+</p>

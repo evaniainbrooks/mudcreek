@@ -2,7 +2,7 @@
   - if listing.sold?
     .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
       = listing_state_badge(listing, extra_css: "fs-6")
-  - if listing.negotiable? && !listing.sold?
+  - if listing.negotiable? && !listing.sold? && !listing.auction_listing
     .position-absolute.top-0.start-0.p-3{ style: "z-index: 10" }
       = listing_pricing_type_badge(listing, extra_css: "fs-6")
   #listing-carousel.carousel.slide{ data: { bs_ride: "false", "listing-carousel-target": "carousel" } }

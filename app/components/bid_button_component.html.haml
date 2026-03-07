@@ -8,14 +8,15 @@
     %div{ data: { "bid-button-target": "pending" }, hidden: true }
       %button{ class: @button_class, disabled: true }
         Approval Pending
-    .d-flex.flex-column.align-items-center{ data: { "bid-button-target": "approved" }, hidden: true }
-      - next_amount = @auction_listing.next_bid_amount
-      - if next_amount > 0
-        = button_to auction_auction_listing_bids_path(@auction, @auction_listing), method: :post, class: @button_class, params: { amount_cents: next_amount } do
-          Bid #{helpers.humanized_money_with_symbol(next_amount)}
-      - else
-        %button{ class: @button_class, disabled: true }
-          Place Bid
-      %p.text-success.fw-semibold.text-center.mt-1.mb-3{ data: { "bid-button-target": "highestBidder" }, hidden: true }
-        %i.bi.bi-trophy-fill.me-1
-        You are the highest bidder!
+    %div{ data: { "bid-button-target": "approved" }, hidden: true }
+      .d-flex.flex-column.align-items-center
+        - next_amount = @auction_listing.next_bid_amount
+        - if next_amount > 0
+          = button_to auction_auction_listing_bids_path(@auction, @auction_listing), method: :post, class: @button_class, params: { amount_cents: next_amount } do
+            Bid #{helpers.humanized_money_with_symbol(next_amount)}
+        - else
+          %button{ class: @button_class, disabled: true }
+            Place Bid
+        %p.text-success.fw-semibold.text-center.mt-1.mb-3{ data: { "bid-button-target": "highestBidder" }, hidden: true }
+          %i.bi.bi-trophy-fill.me-1
+          You are the highest bidder!

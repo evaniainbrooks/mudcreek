@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { Calendar } from "@fullcalendar/core"
 import dayGridPlugin from "@fullcalendar/daygrid"
+import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
 export default class extends Controller {
@@ -12,18 +13,20 @@ export default class extends Controller {
 
   connect(): void {
     this.calendar = new Calendar(this.element as HTMLElement, {
-      plugins: [dayGridPlugin, interactionPlugin],
-      initialView: "dayGridMonth",
+      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+      initialView: "timeGridWeek",
       events: this.eventsValue,
       eventDisplay: "block",
-      displayEventTime: false,
       height: "auto",
       selectable: true,
-      headerToolbar: { left: "prev,next today", center: "title", right: "" },
+      scrollTime: "08:00:00",
+      headerToolbar: { left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek" },
       select: (info) => {
         const fmt = (d: Date) => d.toISOString().slice(0, 16)
-        // info.end is exclusive (next day midnight); subtract 1 min for inclusive feel
-        const end = new Date(info.end.getTime() - 60000)
+        // In timeGrid, info.end is already the exact end time (not exclusive midnight)
+        // In dayGrid, info.end is exclusive next-day midnight; subtract 1 min
+        const isAllDay = info.allDay
+        const end = isAllDay ? new Date(info.end.getTime() - 60000) : info.end
         this.dispatch("dateSelected", {
           detail: { start: fmt(info.start), end: fmt(end) },
           bubbles: true

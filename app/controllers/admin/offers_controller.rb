@@ -40,5 +40,6 @@ class Admin::OffersController < Admin::BaseController
   def set_offer
     @offer = Offer.find(params[:id])
     authorize(@offer)
+    @listing_has_accepted_offer = @offer.listing.offers.accepted.where.not(id: @offer.id).exists?
   end
 end

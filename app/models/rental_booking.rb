@@ -7,9 +7,20 @@ class RentalBooking < ApplicationRecord
   validates :cart_item_id, uniqueness: true, allow_nil: true
   validates :start_at, :end_at, :expires_at, presence: true
   validate  :end_after_start
+  validate  :minimum_duration
   validate  :no_overlap
 
   private
+
+  def minimum_duration
+    return unless listing && start_at && end_at && end_at > start_at
+    min_minutes = listing.rental_rate_plans.minimum(:duration_minutes)
+    return unless min_minutes
+    duration_minutes = (end_at - start_at) / 60
+    if duration_minutes < min_minutes
+      errors.add(:base, "Rental must be at least #{min_minutes} minutes")
+    end
+  end
 
   def end_after_start
     return unless start_at && end_at

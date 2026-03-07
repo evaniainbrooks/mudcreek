@@ -1,0 +1,39 @@
+- set_meta_tags title: "My Bids — #{@auction.name}"
+
+= link_to edit_profile_path(anchor: "auctions"), class: "btn btn-outline-secondary btn-sm mb-4" do
+  %i.bi.bi-arrow-left.me-1
+  Back to Profile
+
+%h1.fw-bold.mb-1= @auction.name
+%p.text-muted.mb-4= @auction.ends_at&.to_fs(:long)
+
+- if @listing_bids.empty?
+  = render EmptyStateComponent.new(icon: "hammer",
+      message: "No bids found for this auction.",
+      link_text: "Back to Profile",
+      link_url: edit_profile_path)
+- else
+  - @listing_bids.each do |auction_listing, bids|
+    .card.shadow-sm.border-0.mb-4
+      .card-header.bg-body.d-flex.align-items-center.justify-content-between
+        %h2.h6.mb-0.fw-semibold= auction_listing.listing.name
+        - if auction_listing.ends_at >= Time.current
+          %span.badge.text-bg-secondary Active
+        - elsif @won_listing_ids.include?(auction_listing.id)
+          %span.badge.text-bg-success
+            %i.bi.bi-trophy-fill.me-1
+            Won
+        - else
+          %span.badge.text-bg-danger Outbid
+      .card-body.p-0
+        .table-responsive
+          %table.table.table-sm.align-middle.mb-0
+            %thead
+              %tr
+                %th.ps-3 Amount
+                %th Date
+            %tbody
+              - bids.each do |bid|
+                %tr
+                  %td.ps-3.fw-semibold= humanized_money_with_symbol(bid.amount)
+                  %td.text-muted.pe-3= bid.created_at.to_fs(:long)
