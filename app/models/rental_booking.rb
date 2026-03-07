@@ -2,7 +2,7 @@ class RentalBooking < ApplicationRecord
   include MultiTenant
 
   belongs_to :listing
-  belongs_to :cart_item
+  belongs_to :cart_item, optional: true
 
   validates :cart_item_id, uniqueness: true, allow_nil: true
   validates :start_at, :end_at, :expires_at, presence: true
