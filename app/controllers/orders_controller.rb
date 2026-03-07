@@ -29,6 +29,16 @@ class OrdersController < ApplicationController
       end
     end
 
+    rental_items = @cart_items.select(&:rental?)
+    rental_items.each do |item|
+      booking = item.rental_booking
+      if booking.nil? || booking.invalid?
+        msg = booking&.errors&.full_messages&.first || "A rental item in your cart is no longer available."
+        redirect_to cart_path, alert: msg
+        return
+      end
+    end
+
     reconcile_discount_code
 
     summary = CartCalculator.new(
@@ -69,6 +79,11 @@ class OrdersController < ApplicationController
 
     ActiveRecord::Base.transaction do
       order.save!
+    end
+
+    # Extend rental booking expiry to past the rental end so they remain visible on calendars
+    rental_items.each do |item|
+      item.rental_booking&.update_columns(expires_at: item.rental_end_at + 1.day)
     end
 
     Current.user.cart_items.destroy_all

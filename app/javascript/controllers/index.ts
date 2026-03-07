@@ -11,6 +11,7 @@ import InfiniteScrollController from "./infinite_scroll_controller"
 import InlineEditController from "./inline_edit_controller"
 import ListingCarouselController from "./listing_carousel_controller"
 import ListingTypeController from "./listing_type_controller"
+import RentalAvailabilityController from "./rental_availability_controller"
 import RentalModalController from "./rental_modal_controller"
 import SortableController from "./sortable_controller"
 import SquarePaymentController from "./square_payment_controller"
@@ -28,6 +29,7 @@ application.register("infinite-scroll", InfiniteScrollController)
 application.register("inline-edit", InlineEditController)
 application.register("listing-carousel", ListingCarouselController)
 application.register("listing-type", ListingTypeController)
+application.register("rental-availability", RentalAvailabilityController)
 application.register("rental-modal", RentalModalController)
 application.register("sortable", SortableController)
 application.register("square-payment", SquarePaymentController)

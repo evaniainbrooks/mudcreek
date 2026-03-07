@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_06_200006) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_06_200007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -346,7 +346,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_200006) do
   end
 
   create_table "rental_bookings", force: :cascade do |t|
-    t.bigint "cart_item_id", null: false
+    t.bigint "cart_item_id"
     t.datetime "created_at", null: false
     t.datetime "end_at", null: false
     t.datetime "expires_at", null: false
@@ -603,7 +603,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_200006) do
   add_foreign_key "orders", "users"
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
-  add_foreign_key "rental_bookings", "cart_items", on_delete: :cascade
+  add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"

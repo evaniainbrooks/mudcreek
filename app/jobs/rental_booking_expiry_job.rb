@@ -3,7 +3,7 @@ class RentalBookingExpiryJob < ApplicationJob
 
   def perform
     RentalBooking.where("expires_at <= ?", Time.current).find_each do |booking|
-      booking.cart_item.destroy
+      booking.cart_item&.destroy || booking.destroy
     end
   end
 end

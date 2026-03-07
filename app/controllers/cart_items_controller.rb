@@ -50,7 +50,7 @@ class CartItemsController < ApplicationController
       redirect_back fallback_location: root_path,
         notice: helpers.safe_join([ "Rental added to cart. ", helpers.link_to("View cart", cart_path) ])
     else
-      errors = (cart_item.errors.full_messages + booking.errors.full_messages).uniq
+      errors = (booking.errors.full_messages + cart_item.errors.reject { |e| e.attribute == :rental_booking }.map(&:full_message)).uniq
       redirect_back fallback_location: listing_path(@listing),
         alert: errors.to_sentence
     end

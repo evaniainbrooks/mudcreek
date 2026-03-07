@@ -16,6 +16,13 @@ export default class extends Controller {
   declare submitTarget:    HTMLButtonElement
   declare ratePlansValue:  RatePlan[]
 
+  dateSelectedFromCalendar(event: CustomEvent): void {
+    const { start, end } = event.detail
+    this.startAtTarget.value = start
+    this.endAtTarget.value   = end
+    this.calculate()
+  }
+
   calculate(): void {
     const start = new Date(this.startAtTarget.value)
     const end   = new Date(this.endAtTarget.value)

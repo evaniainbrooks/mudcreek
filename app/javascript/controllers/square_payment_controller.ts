@@ -34,18 +34,34 @@ export default class extends Controller {
   private card: Card | null = null
 
   async connect(): Promise<void> {
-    if (!window.Square) {
+    const Square = await this.loadSquare()
+
+    if (!Square) {
       this.showError("Square payments are unavailable. Please refresh the page.")
       return
     }
 
-    const payments = window.Square.payments(
+    const payments = Square.payments(
       this.applicationIdValue,
       this.locationIdValue
     )
 
     this.card = await payments.card()
     await this.card.attach(this.containerTarget)
+  }
+
+  private loadSquare(): Promise<typeof window.Square> {
+    if (window.Square) return Promise.resolve(window.Square)
+
+    return new Promise((resolve) => {
+      const script = document.querySelector<HTMLScriptElement>('script[src*="squarecdn.com"]')
+      if (!script) {
+        resolve(undefined)
+        return
+      }
+      script.addEventListener("load", () => resolve(window.Square))
+      script.addEventListener("error", () => resolve(undefined))
+    })
   }
 
   async submit(event: Event): Promise<void> {

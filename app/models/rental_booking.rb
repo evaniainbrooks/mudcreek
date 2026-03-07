@@ -4,7 +4,7 @@ class RentalBooking < ApplicationRecord
   belongs_to :listing
   belongs_to :cart_item
 
-  validates :cart_item_id, uniqueness: true
+  validates :cart_item_id, uniqueness: true, allow_nil: true
   validates :start_at, :end_at, :expires_at, presence: true
   validate  :end_after_start
   validate  :no_overlap

@@ -10,6 +10,11 @@ class ListingsController < ApplicationController
                       .includes(lot: { listing_placeholder_attachment: :blob })
                       .find_by!(hashid: params[:hashid])
     @cart_item = Current.user&.cart_items&.find_by(listing_id: @listing.id)
+    if @listing.rental?
+      @booking_events = @listing.rental_bookings
+        .where("expires_at > ?", Time.current)
+        .map { |b| { title: "Booked", start: b.start_at.iso8601, end: b.end_at.iso8601, color: "#6B3A2A" } }
+    end
   end
 
   def index
