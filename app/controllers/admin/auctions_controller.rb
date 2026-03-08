@@ -17,16 +17,20 @@ class Admin::AuctionsController < Admin::BaseController
     respond_to do |format|
       format.html
       format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.append("auction-listings-tbody",
-            partial: "admin/auctions/auction_listing_row",
-            collection: @auction_listings,
-            locals: { auction: @auction },
-            as: :auction_listing),
-          turbo_stream.replace("auction-listings-sentinel",
-            partial: "admin/auctions/sentinel",
-            locals: { pagy: @pagy, auction: @auction })
-        ]
+        if params[:page].present?
+          render turbo_stream: [
+            turbo_stream.append("auction-listings-tbody",
+              partial: "admin/auctions/auction_listing_row",
+              collection: @auction_listings,
+              locals: { auction: @auction },
+              as: :auction_listing),
+            turbo_stream.replace("auction-listings-sentinel",
+              partial: "admin/auctions/sentinel",
+              locals: { pagy: @pagy, auction: @auction })
+          ]
+        else
+          render :show, formats: [ :html ]
+        end
       end
     end
   end
@@ -34,6 +38,9 @@ class Admin::AuctionsController < Admin::BaseController
   def new
     @auction = Auction.new
     @auction.build_address
+    if Current.tenant.default_terms_and_conditions.attached?
+      @auction.terms_and_conditions.attach(Current.tenant.default_terms_and_conditions.blob)
+    end
     authorize(@auction)
   end
 
@@ -54,6 +61,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def update
     @auction.poster.purge_later if params[:remove_poster].present?
+    @auction.terms_and_conditions.purge_later if params[:remove_terms_and_conditions].present?
     if @auction.update(auction_params)
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
     else
@@ -69,16 +77,17 @@ class Admin::AuctionsController < Admin::BaseController
   private
 
   def set_auction
-    @auction = Auction.with_attached_poster.find_by!(hashid: params[:hashid])
+    @auction = Auction.with_attached_poster.with_attached_terms_and_conditions.find_by!(hashid: params[:hashid])
     authorize(@auction)
   end
 
   def auction_params
     p = params.require(:auction).permit(
-      :name, :admin_email_address, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :published, :reconciled, :auto_approve, :poster, :description, :timezone,
+      :name, :admin_email_address, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :published, :reconciled, :auto_approve, :poster, :terms_and_conditions, :description, :timezone,
       address_attributes: %i[id street_address city province postal_code country _destroy]
     )
     p.delete(:poster) if p[:poster].blank?
+    p.delete(:terms_and_conditions) if p[:terms_and_conditions].blank?
     p
   end
 end

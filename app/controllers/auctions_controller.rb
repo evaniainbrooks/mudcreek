@@ -43,6 +43,7 @@ class AuctionsController < ApplicationController
     @auction = Auction
       .where(published: true)
       .with_attached_poster
+      .with_attached_terms_and_conditions
       .with_rich_text_description
       .includes(:address)
       .find_by!(hashid: params[:hashid])

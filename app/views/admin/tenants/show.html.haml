@@ -43,6 +43,20 @@
                         form: { data: { turbo_confirm: "Remove logo?" } } do
                       %i.bi.bi-x-lg.me-1
                       Remove
+              .mb-3
+                = f.label :default_terms_and_conditions, "Default Terms & Conditions", class: "form-label"
+                = f.file_field :default_terms_and_conditions, class: "form-control #{'is-invalid' if @tenant.errors[:default_terms_and_conditions].any?}", accept: ".pdf,.doc,.docx"
+                - if @tenant.errors[:default_terms_and_conditions].any?
+                  .invalid-feedback= @tenant.errors[:default_terms_and_conditions].to_sentence
+                - if @tenant.default_terms_and_conditions.attached?
+                  .mt-2.d-flex.align-items-center.gap-2
+                    %i.bi.bi-file-earmark-text.text-muted
+                    = link_to @tenant.default_terms_and_conditions.filename.to_s, rails_blob_path(@tenant.default_terms_and_conditions, disposition: "attachment"), class: "text-decoration-none"
+                    = button_to admin_tenant_path, method: :patch, params: { remove_default_terms_and_conditions: true },
+                        class: "btn btn-sm btn-outline-danger",
+                        form: { data: { turbo_confirm: "Remove default terms & conditions?" } } do
+                      %i.bi.bi-x-lg.me-1
+                      Remove
               %h6.mb-3
                 %i.bi.bi-geo-alt.me-1
                 Location (optional)

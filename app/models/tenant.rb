@@ -3,6 +3,8 @@ class Tenant < ApplicationRecord
 
   has_one_attached :logo
 
+  has_one_attached :default_terms_and_conditions
+
   has_one :address, as: :addressable, dependent: :destroy
 
   accepts_nested_attributes_for :address

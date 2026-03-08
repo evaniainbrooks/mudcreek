@@ -14,6 +14,11 @@ class AuctionListingsController < ApplicationController
       SQL
       .find_by!(hashid: params[:hashid])
 
+    @next_auction_listing = @auction.auction_listings
+      .where("position > ?", @auction_listing.position)
+      .order(position: :asc)
+      .first
+
     @registration = AuctionRegistration.find_by(auction: @auction, user: Current.user) if Current.user
 
     highest_bidder_id = @auction_listing.bids

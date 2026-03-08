@@ -6,6 +6,7 @@ class Auction < ApplicationRecord
   accepts_nested_attributes_for :address, allow_destroy: true
 
   has_one_attached :poster
+  has_one_attached :terms_and_conditions
 
   has_rich_text :description
 

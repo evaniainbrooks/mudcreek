@@ -16,7 +16,11 @@
           .form-check.mt-3
             %input#register-terms.form-check-input{type: "checkbox", name: "terms", required: true}
             %label.form-check-label{for: "register-terms"}
-              I agree to the terms and conditions
+              I agree to the
+              - if auction.terms_and_conditions.attached?
+                = link_to "terms and conditions", rails_blob_path(auction.terms_and_conditions, disposition: "inline"), target: "_blank", rel: "noopener"
+              - else
+                terms and conditions
         .modal-footer
           %button.btn.btn-secondary{type: "button", data: { bs_dismiss: "modal" }} Cancel
           = f.submit "Register Now", class: "btn btn-primary"

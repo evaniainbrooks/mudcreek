@@ -9,6 +9,10 @@ class ListingsController < ApplicationController
                       .with_attached_documents
                       .includes(lot: { listing_placeholder_attachment: :blob })
                       .find_by!(hashid: params[:hashid])
+    @next_listing = Listing.where(published: true).not_in_auction
+                           .where("position > ?", @listing.position)
+                           .order(position: :asc, id: :asc)
+                           .first
     @cart_item = Current.user&.cart_items&.find_by(listing_id: @listing.id)
     if @listing.rental?
       @booking_events = @listing.rental_bookings

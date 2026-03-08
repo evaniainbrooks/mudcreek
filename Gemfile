@@ -78,6 +78,9 @@ gem "countries"
 # Open Graph / meta tags
 gem "meta-tags"
 
+# Automatic lazy preloading of associations to prevent N+1 queries
+gem "ar_lazy_preload"
+
 group :development, :test do
   # N+1 query detection
   gem "prosopite"

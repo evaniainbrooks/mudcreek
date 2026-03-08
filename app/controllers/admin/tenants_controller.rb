@@ -10,6 +10,7 @@ module Admin
       authorize(@tenant)
 
       @tenant.logo.purge_later if params[:remove_logo]
+      @tenant.default_terms_and_conditions.purge_later if params[:remove_default_terms_and_conditions]
       if @tenant.update(tenant_params)
         redirect_to admin_tenant_path, notice: "Tenant was successfully updated."
       else
@@ -24,11 +25,13 @@ module Admin
         :name,
         :email_address,
         :logo,
+        :default_terms_and_conditions,
         :description,
         :currency,
         address_attributes: %i[id street_address city province postal_code country _destroy]
       )
       p.delete(:logo) if p[:logo].blank?
+      p.delete(:default_terms_and_conditions) if p[:default_terms_and_conditions].blank?
       p
     end
   end
