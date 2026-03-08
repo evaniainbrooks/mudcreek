@@ -108,7 +108,10 @@
     #report-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "report-tab" } }
       = render "admin/auctions/report", report_listings: @report_listings
 
-.mt-3
+.mt-3.d-flex.justify-content-between
   = link_to admin_auctions_path, class: "btn btn-outline-secondary" do
     %i.bi.bi-arrow-left.me-1
     Back to Auctions
+  = link_to admin_listings_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    Add Listings

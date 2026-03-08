@@ -21,9 +21,14 @@
       %h5.card-title.fw-semibold.mb-2
         = link_to auction.name, auction_path(auction), class: "text-decoration-none text-body"
       - if auction.starts_at
-        .d-flex.align-items-center.gap-2.text-muted.small.mb-1
-          %i.bi.bi-calendar-event.flex-shrink-0
-          %span= auction.starts_at.to_fs(:long)
+        - if auction.starts_at <= Time.current && auction.ends_at && auction.ends_at > Time.current
+          .d-flex.align-items-center.gap-2.text-success.small.mb-1
+            %i.bi.bi-check-circle-fill.flex-shrink-0
+            %strong Auction has started!
+        - else
+          .d-flex.align-items-center.gap-2.text-muted.small.mb-1
+            %i.bi.bi-calendar-event.flex-shrink-0
+            %span= auction.starts_at.to_fs(:long)
       - if auction.ends_at
         .d-flex.align-items-center.gap-2.text-muted.small.mb-1
           %i.bi.bi-calendar-check.flex-shrink-0
