@@ -8,13 +8,15 @@ class Offer < ApplicationRecord
 
   native_enum :state, %i[pending accepted declined]
 
-  monetize :amount_cents
+  monetize :amount_cents, with_model_currency: :currency
 
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :listing_id, uniqueness: { conditions: -> { where(state: :accepted) }, message: "already has an accepted offer" }, if: :accepted?
 
   after_update :mark_listing_sold, if: -> { saved_change_to_state?(to: "accepted") }
   after_update :generate_offer_invoice, if: -> { saved_change_to_state?(to: "accepted") }
+
+  def currency = tenant&.currency
 
   private
 

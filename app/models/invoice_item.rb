@@ -6,5 +6,7 @@ class InvoiceItem < ApplicationRecord
 
   validates :name, presence: true
 
-  monetize :amount_cents
+  monetize :amount_cents, with_model_currency: :currency
+
+  def currency = invoice.tenant&.currency
 end

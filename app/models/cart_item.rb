@@ -18,8 +18,18 @@ class CartItem < ApplicationRecord
     invoice_item_id.present?
   end
 
-  def effective_price_cents
-    return invoice_item.amount_cents if from_invoice?
-    rental? ? rental_price_cents.to_i : listing.price_cents * quantity
+  def effective_item_price
+    if from_invoice?
+      Money.new(invoice_item.amount_cents)
+    elsif rental?
+      Money.new(rental_price_cents.to_i)
+    else
+      Money.new(listing.price_cents)
+    end
+  end
+
+  def effective_price
+    return effective_item_price if from_invoice? || rental?
+    Money.new(listing.price_cents * quantity)
   end
 end

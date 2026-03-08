@@ -11,6 +11,7 @@ class ChargeInvoiceJob < ApplicationJob
 
     response = SquareClient.client.payments.create(
       source_id: card_id,
+      customer_id: invoice.user.square_customer_id,
       idempotency_key: "invoice-#{invoice.id}-#{invoice.number}",
       amount_money: { amount: invoice.total_cents, currency: "CAD" },
       location_id: SquareClient.location_id,

@@ -11,16 +11,18 @@ class Order < ApplicationRecord
 
   native_enum :status, %i[pending paid cancelled]
 
-  monetize :subtotal_cents
-  monetize :tax_cents
-  monetize :discount_cents
-  monetize :delivery_price_cents
-  monetize :total_cents
+  monetize :subtotal_cents,       with_model_currency: :currency
+  monetize :tax_cents,            with_model_currency: :currency
+  monetize :discount_cents,       with_model_currency: :currency
+  monetize :delivery_price_cents, with_model_currency: :currency
+  monetize :total_cents,          with_model_currency: :currency
 
   validates :number, presence: true, uniqueness: true
   validates :square_payment_id, uniqueness: true, allow_nil: true
 
   before_validation :assign_number, on: :create
+
+  def currency = tenant&.currency
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[status created_at]

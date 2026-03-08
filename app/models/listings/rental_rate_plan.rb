@@ -7,12 +7,14 @@ class Listings::RentalRatePlan < ApplicationRecord
 
   before_validation :set_default_position, on: :create
 
-  monetize :price_cents
+  monetize :price_cents, with_model_currency: :currency
 
   validates :position,         presence: true
   validates :label,            presence: true
   validates :duration_minutes, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :price_cents,      presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  def currency = tenant&.currency
 
   private
 

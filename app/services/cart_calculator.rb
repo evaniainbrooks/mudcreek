@@ -11,8 +11,8 @@ class CartCalculator
   end
 
   def calculate
-    subtotal_cents = @cart_items.sum(&:effective_price_cents)
-    taxable_cents  = @cart_items.sum { |i| i.listing.tax_exempt? ? 0 : i.effective_price_cents }
+    subtotal_cents = @cart_items.sum { |i| i.effective_price.cents }
+    taxable_cents  = @cart_items.sum { |i| i.listing.tax_exempt? ? 0 : i.effective_price.cents }
     tax_cents      = (taxable_cents * SALES_TAX_RATE).ceil
     pretax_total   = subtotal_cents + tax_cents
     discount_cents = compute_discount(pretax_total)

@@ -17,7 +17,7 @@ class Orders::PaymentsController < ApplicationController
       transaction = @order.transactions.create!(amount_cents: @order.total_cents, state: :pending)
     end
 
-    ProcessPaymentJob.perform_later(transaction.id, params[:source_id])
+    ProcessPaymentJob.perform_later(transaction.id, params[:source_id], Current.user.square_customer_id)
 
     respond_to do |format|
       format.turbo_stream do

@@ -164,10 +164,7 @@
                               →
                               = item.rental_end_at.to_fs(:short)
                     %td.text-end
-                      - if item.rental?
-                        = humanized_money_with_symbol(item.rental_price))
-                      - else
-                        = humanized_money_with_symbol(item.listing.price))
+                      = humanized_money_with_symbol(item.effective_item_price)
                     %td.text-end
                       - if item.rental?
                         &mdash;
@@ -185,7 +182,7 @@
                                 %i.bi.bi-check
                       - else
                         = item.quantity
-                    %td.text-end= humanized_money_with_symbol(Money.new(item.effective_price_cents))
+                    %td.text-end= humanized_money_with_symbol(item.effective_price)
                     %td.text-end.pe-3
                       = button_to cart_item_path(item),
                           method: :delete, class: "btn btn-sm btn-outline-danger",

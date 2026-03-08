@@ -10,11 +10,13 @@ class Invoice < ApplicationRecord
 
   native_enum :status, %i[unpaid paid]
 
-  monetize :total_cents
+  monetize :total_cents, with_model_currency: :currency
 
   validates :number, presence: true, uniqueness: true
 
   before_validation :assign_number, on: :create
+
+  def currency = tenant&.currency
 
   def to_param
     number

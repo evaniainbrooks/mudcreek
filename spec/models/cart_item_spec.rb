@@ -53,17 +53,31 @@ RSpec.describe CartItem, type: :model do
     end
   end
 
-  describe "#effective_price_cents" do
-    it "returns the listing price for a sale item" do
-      item = build(:cart_item, listing: listing)
+  describe "#effective_item_price" do
+    it "returns the unit listing price for a sale item" do
+      item = build(:cart_item, listing: listing, quantity: 3)
 
-      expect(item.effective_price_cents).to eq(listing.price_cents)
+      expect(item.effective_item_price).to eq(Money.new(listing.price_cents))
+    end
+
+    it "returns the rental price for a rental item" do
+      item = build(:cart_item, :rental, listing: listing, rental_price_cents: 4000)
+
+      expect(item.effective_item_price).to eq(Money.new(4000))
+    end
+  end
+
+  describe "#effective_price" do
+    it "returns the listing price × quantity for a sale item" do
+      item = build(:cart_item, listing: listing, quantity: 2)
+
+      expect(item.effective_price).to eq(Money.new(listing.price_cents * 2))
     end
 
     it "returns rental_price_cents for a rental item" do
       item = build(:cart_item, :rental, listing: listing, rental_price_cents: 4000)
 
-      expect(item.effective_price_cents).to eq(4000)
+      expect(item.effective_price).to eq(Money.new(4000))
     end
   end
 end

@@ -3,7 +3,7 @@ class ProcessPaymentJob < ApplicationJob
 
   queue_as :default
 
-  def perform(transaction_id, source_id)
+  def perform(transaction_id, source_id, customer_id = nil)
     transaction = Transaction.unscoped.find(transaction_id)
     return unless transaction.pending?
 
@@ -13,14 +13,17 @@ class ProcessPaymentJob < ApplicationJob
       order = transaction.order
 
       begin
-        response = SquareClient.client.payments.create(
+        payment_params = {
           source_id:       source_id,
           idempotency_key: transaction.uuid,
           amount_money:    { amount: transaction.amount_cents, currency: "CAD" },
           location_id:     SquareClient.location_id,
           reference_id:    order.number,
           note:            "Order #{order.number}"
-        )
+        }
+        payment_params[:customer_id] = customer_id if customer_id.present?
+
+        response = SquareClient.client.payments.create(**payment_params)
 
         payment = response.payment
 

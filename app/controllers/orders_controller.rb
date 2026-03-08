@@ -70,7 +70,7 @@ class OrdersController < ApplicationController
       order.order_items.build(
         listing:         item.listing,
         name:            item.listing.name,
-        price_cents:     item.effective_price_cents,
+        price_cents:     item.effective_price.cents,
         listing_type:    item.listing.listing_type,
         rental_start_at: item.rental_start_at,
         rental_end_at:   item.rental_end_at

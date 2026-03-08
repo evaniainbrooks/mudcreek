@@ -3,7 +3,9 @@ class DeliveryMethod < ApplicationRecord
 
   has_many :orders, dependent: :nullify
 
-  monetize :price_cents
+  monetize :price_cents, with_model_currency: :currency
+
+  def currency = tenant&.currency
 
   validates :name, presence: true, uniqueness: { scope: :tenant_id, case_sensitive: false }
   validates :price_cents, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

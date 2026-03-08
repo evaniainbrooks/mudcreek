@@ -6,7 +6,9 @@ class DiscountCode < ApplicationRecord
 
   has_many :orders, dependent: :nullify
 
-  monetize :amount_cents
+  monetize :amount_cents, with_model_currency: :currency
+
+  def currency = tenant&.currency
 
   def active?
     return false if start_at.present? && start_at > Time.current

@@ -6,11 +6,13 @@ class Bid < ApplicationRecord
 
   native_enum :state, %i[placed cancelled]
 
-  monetize :amount_cents
+  monetize :amount_cents, with_model_currency: :currency
 
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validate :registration_must_be_approved, on: :create
   validate :cannot_outbid_yourself, on: :create
+
+  def currency = auction_listing.auction.tenant&.currency
 
   private
 

@@ -31,8 +31,8 @@ class Listing < ApplicationRecord
   has_many_attached :videos
   has_many_attached :documents
 
-  monetize :price_cents
-  monetize :acquisition_price_cents, allow_nil: true
+  monetize :price_cents,             with_model_currency: :currency
+  monetize :acquisition_price_cents, with_model_currency: :currency, allow_nil: true
 
   ALLOWED_DOCUMENT_TYPES = %w[
     application/pdf
@@ -54,6 +54,8 @@ class Listing < ApplicationRecord
 
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
+
+  def currency = tenant&.currency
 
   def rental_rate_plans_to_json
     rental_rate_plans.map { { label: it.label, duration_minutes: it.duration_minutes, price_cents: it.price_cents } }.to_json

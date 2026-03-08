@@ -12,7 +12,9 @@ class Transaction < ApplicationRecord
 
   before_validation :ensure_uuid, on: :create
 
-  monetize :amount_cents
+  monetize :amount_cents, with_model_currency: :currency
+
+  def currency = order.tenant&.currency
 
   private
 

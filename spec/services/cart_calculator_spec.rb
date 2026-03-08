@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe CartCalculator do
   def item(price_cents:, tax_exempt: false)
     listing = instance_double(Listing, tax_exempt?: tax_exempt)
-    instance_double(CartItem, effective_price_cents: price_cents, listing: listing)
+    instance_double(CartItem, effective_price: Money.new(price_cents), listing: listing)
   end
 
   def discount(fixed:, amount_cents:)
