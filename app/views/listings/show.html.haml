@@ -71,11 +71,12 @@
                 %i.bi.bi-cart-check.me-2
                 In Cart
             - else
-              = button_to cart_items_path,
-                params: { listing_id: @listing.id },
-                class: "btn btn-primary w-100 mb-3" do
-                %i.bi.bi-cart-plus.me-2
-                Add to Cart
+              = form_with url: cart_items_path, method: :post, class: "mb-3" do |f|
+                = f.hidden_field :listing_id, value: @listing.id
+                .d-flex.gap-2
+                  - if @listing.quantity > 1
+                    = f.number_field :quantity, value: 1, min: 1, max: @listing.quantity, class: "form-control", style: "width: 80px"
+                  = f.submit "Add to Cart", class: "btn btn-primary flex-grow-1"
             - if @listing.sale? && @listing.negotiable?
               %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
                 %i.bi.bi-tag.me-2

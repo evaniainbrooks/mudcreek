@@ -40,7 +40,11 @@ class GenerateAuctionInvoicesJob < ApplicationJob
         )
       end
 
-      InvoiceMailer.invoice_generated(invoice).deliver_later
+      if user.default_square_card_id.present?
+        ChargeInvoiceJob.perform_later(invoice.id)
+      else
+        InvoiceMailer.invoice_generated(invoice).deliver_later
+      end
     end
   end
 end

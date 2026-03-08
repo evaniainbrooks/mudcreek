@@ -97,6 +97,13 @@ class OrdersController < ApplicationController
 
   def show
     @order = Current.user.orders.includes(:order_items).find_by!(number: params[:number])
+    if @order.pending? && Current.user.default_square_card_id.present?
+      @saved_cards = SquareCustomerService.new(Current.user).list_cards
+                       .select { |c| c.id == Current.user.default_square_card_id }
+    end
+    @saved_cards ||= []
+  rescue SquareCustomerService::Error
+    @saved_cards = []
   end
 
   private

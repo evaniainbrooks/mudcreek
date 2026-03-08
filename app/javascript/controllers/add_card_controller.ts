@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { renderStreamMessage, visit } from "@hotwired/turbo"
 import type {
   Payments,
   Card,
@@ -17,10 +16,10 @@ declare global {
 
 export default class extends Controller {
   static targets = ["container", "errorMessage"]
-  static values  = {
+  static values = {
     applicationId: String,
     locationId: String,
-    paymentUrl: String,
+    saveUrl: String,
     csrfToken: String
   }
 
@@ -28,7 +27,7 @@ export default class extends Controller {
   declare readonly errorMessageTarget: HTMLElement
   declare applicationIdValue: string
   declare locationIdValue: string
-  declare paymentUrlValue: string
+  declare saveUrlValue: string
   declare csrfTokenValue: string
 
   private card: Card | null = null
@@ -64,47 +63,11 @@ export default class extends Controller {
     })
   }
 
-  async submitSavedCard(event: Event): Promise<void> {
-    event.preventDefault()
-
-    const button = event.currentTarget as HTMLElement
-    const cardId = button.dataset.squarePaymentCardIdParam
-
-    if (!cardId) {
-      this.showError("No saved card selected.")
-      return
-    }
-
-    this.clearError()
-
-    const response = await fetch(this.paymentUrlValue, {
-      method: "POST",
-      headers: {
-        Accept: "text/vnd.turbo-stream.html",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRF-Token": this.csrfTokenValue
-      },
-      body: new URLSearchParams({ source_id: cardId })
-    })
-
-    if (response.ok) {
-      const contentType = response.headers.get("Content-Type") ?? ""
-
-      if (contentType.includes("vnd.turbo-stream")) {
-        renderStreamMessage(await response.text())
-      } else {
-        visit(response.url)
-      }
-    } else {
-      this.showError("Payment submission failed. Please try again.")
-    }
-  }
-
   async submit(event: Event): Promise<void> {
     event.preventDefault()
 
     if (!this.card) {
-      this.showError("Payment form not ready.")
+      this.showError("Card form not ready.")
       return
     }
 
@@ -113,27 +76,24 @@ export default class extends Controller {
     const result: TokenResult = await this.card.tokenize()
 
     if (result.status === "OK") {
-      const response = await fetch(this.paymentUrlValue, {
-        method: "POST",
-        headers: {
-          Accept: "text/vnd.turbo-stream.html",
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-CSRF-Token": this.csrfTokenValue
-        },
-        body: new URLSearchParams({ source_id: result.token! })
-      })
+      const form = document.createElement("form")
+      form.method = "POST"
+      form.action = this.saveUrlValue
 
-      if (response.ok) {
-        const contentType = response.headers.get("Content-Type") ?? ""
+      const csrfInput = document.createElement("input")
+      csrfInput.type = "hidden"
+      csrfInput.name = "authenticity_token"
+      csrfInput.value = this.csrfTokenValue
+      form.appendChild(csrfInput)
 
-        if (contentType.includes("vnd.turbo-stream")) {
-          renderStreamMessage(await response.text())
-        } else {
-          visit(response.url)
-        }
-      } else {
-        this.showError("Payment submission failed. Please try again.")
-      }
+      const sourceInput = document.createElement("input")
+      sourceInput.type = "hidden"
+      sourceInput.name = "source_id"
+      sourceInput.value = result.token!
+      form.appendChild(sourceInput)
+
+      document.body.appendChild(form)
+      form.submit()
     } else {
       const msg =
         result.errors

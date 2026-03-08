@@ -31,6 +31,10 @@
       Listings
       - if @pagy_listings.count > 0
         %span.badge.text-bg-secondary.ms-1= @pagy_listings.count
+  %li.nav-item
+    %a.nav-link{ href: "#payment-methods", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-credit-card.me-2
+      Payment Methods
 
 .tab-content
   .tab-pane.fade.show.active#profile
@@ -200,3 +204,6 @@
                 %tbody#purchased-listings
                   = render partial: "profiles/purchased_listing", collection: @purchased_listings, as: :listing
         = render "profiles/purchased_listings_sentinel", pagy: @pagy_listings
+
+  .tab-pane.fade#payment-methods
+    = render "profiles/payment_methods", cards: @cards, default_card_id: @default_card_id

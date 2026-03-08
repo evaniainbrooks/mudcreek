@@ -8,6 +8,7 @@ class CartItem < ApplicationRecord
 
   validates :listing_id, uniqueness: { scope: :user_id }, unless: :rental?
   validates :invoice_item_id, uniqueness: true, allow_nil: true
+  validates :quantity, numericality: { only_integer: true, greater_than: 0 }
 
   def rental?
     rental_start_at.present?
@@ -19,6 +20,6 @@ class CartItem < ApplicationRecord
 
   def effective_price_cents
     return invoice_item.amount_cents if from_invoice?
-    rental? ? rental_price_cents.to_i : listing.price_cents
+    rental? ? rental_price_cents.to_i : listing.price_cents * quantity
   end
 end

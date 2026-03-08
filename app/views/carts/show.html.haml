@@ -134,6 +134,8 @@
                 %tr
                   %th.ps-3 Listing
                   %th.text-end Price
+                  %th.text-end Qty
+                  %th.text-end Total
                   %th
               %tbody
                 - @cart_items.each do |item|
@@ -161,6 +163,28 @@
                               = item.rental_start_at.to_fs(:short)
                               →
                               = item.rental_end_at.to_fs(:short)
+                    %td.text-end
+                      - if item.rental?
+                        = humanized_money_with_symbol(item.rental_price))
+                      - else
+                        = humanized_money_with_symbol(item.listing.price))
+                    %td.text-end
+                      - if item.rental?
+                        &mdash;
+                      - elsif item.listing.quantity > 1
+                        %div{ data: { controller: "inline-edit" } }
+                          %span.inline-editable{ data: { inline_edit_target: "display", value: item.quantity, action: "click->inline-edit#edit" } }
+                            = item.quantity
+                          %div{ data: { inline_edit_target: "form" }, hidden: true }
+                            = form_with url: cart_item_path(item), method: :patch, html: { class: "d-flex align-items-center gap-1 justify-content-end" } do |f|
+                              = f.number_field :quantity, value: item.quantity, min: 1, max: item.listing.quantity,
+                                  class: "form-control form-control-sm text-end",
+                                  style: "width: 60px",
+                                  data: { inline_edit_target: "input", action: "keydown->inline-edit#keydown" }
+                              %button.btn.btn-sm.btn-outline-success{ type: "submit" }
+                                %i.bi.bi-check
+                      - else
+                        = item.quantity
                     %td.text-end= humanized_money_with_symbol(Money.new(item.effective_price_cents))
                     %td.text-end.pe-3
                       = button_to cart_item_path(item),

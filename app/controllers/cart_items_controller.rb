@@ -5,10 +5,18 @@ class CartItemsController < ApplicationController
     if @listing.rental?
       create_rental_cart_item
     else
-      Current.user.cart_items.create(listing_id: @listing.id)
+      quantity = params[:quantity].to_i.clamp(1, @listing.quantity)
+      Current.user.cart_items.create(listing_id: @listing.id, quantity:)
       redirect_back fallback_location: root_path,
         notice: helpers.safe_join([ "Added to cart. ", helpers.link_to("View cart", cart_path) ])
     end
+  end
+
+  def update
+    cart_item = Current.user.cart_items.find(params[:id])
+    quantity = params[:quantity].to_i.clamp(1, cart_item.listing.quantity)
+    cart_item.update(quantity:)
+    redirect_back fallback_location: cart_path, notice: "Quantity updated."
   end
 
   def destroy

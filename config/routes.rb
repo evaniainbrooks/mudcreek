@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   resource  :cart_address,        only: [ :create ]
   resource  :cart_discount,       only: [ :create, :destroy ]
   resource  :cart_delivery_method, only: [ :create, :destroy ]
-  resources :cart_items,          only: [ :create, :destroy ]
+  resources :cart_items,          only: [ :create, :update, :destroy ]
 
   resources :orders, only: [ :create, :show ], param: :number do
     resource :payment, only: [ :create ], module: :orders
@@ -33,6 +33,9 @@ Rails.application.routes.draw do
     get "auctions/:hashid", action: :auction_bids, as: :auction_bids
     get "auctions", action: :profile_auctions, as: :profile_auctions
     get "listings", action: :profile_listings, as: :profile_listings
+    resources :payment_methods, only: [ :create, :destroy ] do
+      member { patch :set_default }
+    end
   end
   resources :invoices,     only: [:show], param: :number do
     member { post :pay }

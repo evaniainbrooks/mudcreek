@@ -9,6 +9,8 @@ class ProfilesController < ApplicationController
     @invoices = @user.invoices.includes(:auction, offer: :listing).order(created_at: :desc)
     @pagy_registrations, @bid_registrations = pagy(bid_registrations_scope, limit: BID_REGISTRATIONS_PER_PAGE)
     @pagy_listings, @purchased_listings = pagy(purchased_listings_scope, limit: PURCHASED_LISTINGS_PER_PAGE)
+    @cards = SquareCustomerService.new(@user).list_cards rescue []
+    @default_card_id = @user.default_square_card_id
   end
 
   def profile_auctions
@@ -70,6 +72,8 @@ class ProfilesController < ApplicationController
       @invoices = @user.invoices.includes(:auction, offer: :listing).order(created_at: :desc)
       @pagy_registrations, @bid_registrations = pagy(bid_registrations_scope, limit: BID_REGISTRATIONS_PER_PAGE)
       @pagy_listings, @purchased_listings = pagy(purchased_listings_scope, limit: PURCHASED_LISTINGS_PER_PAGE)
+      @cards = SquareCustomerService.new(@user).list_cards rescue []
+      @default_card_id = @user.default_square_card_id
       render :edit, status: :unprocessable_content
     end
   end

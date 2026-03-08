@@ -1,0 +1,51 @@
+- content_for :head do
+  %script{ src: SquareClient::ENVIRONMENT == "production" ? "https://web.squarecdn.com/v1/square.js" : "https://sandbox.web.squarecdn.com/v1/square.js" }
+
+.row.g-4
+  .col-12.col-lg-7
+    .card.shadow-sm.border-0
+      .card-body.p-4
+        %h2.card-title.h5.mb-4
+          %i.bi.bi-credit-card.me-2
+          Saved Cards
+        - if cards.empty?
+          %p.text-muted.mb-0 No saved cards yet. Add one using the form.
+        - else
+          .list-group.list-group-flush
+            - cards.each do |card|
+              .list-group-item.px-0
+                .d-flex.align-items-center.gap-3
+                  .flex-grow-1
+                    .d-flex.align-items-center.gap-2
+                      %span.fw-semibold= card.card_brand&.titleize
+                      %span •••• #{card.last_4}
+                      - if card.id == default_card_id
+                        %span.badge.text-bg-success Default
+                    %small.text-muted Expires #{card.exp_month}/#{card.exp_year}
+                  .d-flex.gap-2
+                    - unless card.id == default_card_id
+                      = button_to "Set Default",
+                          set_default_profile_payment_method_path(card.id),
+                          method: :patch,
+                          class: "btn btn-sm btn-outline-secondary"
+                    = button_to "Remove",
+                        profile_payment_method_path(card.id),
+                        method: :delete,
+                        class: "btn btn-sm btn-outline-danger",
+                        form: { data: { turbo_confirm: "Remove this card?" } }
+
+  .col-12.col-lg-5
+    .card.shadow-sm.border-0
+      .card-body.p-4{ data: { controller: "add-card",
+          "add-card-application-id-value": SquareClient.application_id,
+          "add-card-location-id-value": SquareClient.location_id,
+          "add-card-save-url-value": profile_payment_methods_path,
+          "add-card-csrf-token-value": form_authenticity_token } }
+        %h2.card-title.h5.mb-4
+          %i.bi.bi-plus-circle.me-2
+          Add a Card
+        %div{ data: { "add-card-target": "container" } }
+        %p.text-danger.small.mt-2{ hidden: true, data: { "add-card-target": "errorMessage" } }
+        %button.btn.btn-primary.w-100.mt-3{ type: "button", data: { action: "click->add-card#submit" } }
+          %i.bi.bi-credit-card.me-2
+          Save Card
