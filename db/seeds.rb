@@ -419,6 +419,7 @@ if stock_images.any?
 end
 
 # Offers
+Current.tenant = mudcreek
 if Rails.env.development? || Rails.env.test?
   buyer_ids = User.where(tenant: mudcreek).where.not(email_address: "admin@mudcreek").pluck(:id)
   negotiable_listings = Listing.where(tenant: mudcreek, pricing_type: :negotiable).to_a
@@ -628,6 +629,93 @@ if Rails.env.local?
     end
 
     puts "Seeded #{AuctionRegistration.count} auction registrations."
+
+    # Bids for the Henderson Estate Auction (past, reconciled)
+    henderson_listings = henderson_auction.auction_listings.order(:position).to_a
+    approved_regs      = henderson_auction.auction_registrations.where(state: :approved).to_a
+
+    if approved_regs.size >= 2 && henderson_listings.any?
+      Bid.where(auction_listing: henderson_listings).delete_all
+
+      bid_scripts = [
+        # Victorian Parlour Chair — 6 bids, 1 extension, competitive finish
+        {
+          listing_index: 0,
+          extension_count: 1,
+          bids: [
+            { reg_index: 0, amount_cents: 10_000 },
+            { reg_index: 1, amount_cents: 11_000 },
+            { reg_index: 0, amount_cents: 12_000 },
+            { reg_index: 1, amount_cents: 13_000 },
+            { reg_index: 0, amount_cents: 14_000 },
+            { reg_index: 1, amount_cents: 16_500 }
+          ]
+        },
+        # Mahogany Dresser with Mirror — 8 bids, 2 extensions, three-way contest
+        {
+          listing_index: 1,
+          extension_count: 2,
+          bids: [
+            { reg_index: 0, amount_cents: 20_000 },
+            { reg_index: 1, amount_cents: 22_000 },
+            { reg_index: 2, amount_cents: 24_000 },
+            { reg_index: 0, amount_cents: 26_000 },
+            { reg_index: 1, amount_cents: 28_000 },
+            { reg_index: 2, amount_cents: 30_000 },
+            { reg_index: 0, amount_cents: 32_000 },
+            { reg_index: 1, amount_cents: 34_000 }
+          ]
+        },
+        # Clockwork Mantle Clock — 4 bids, no extensions
+        {
+          listing_index: 2,
+          extension_count: 0,
+          bids: [
+            { reg_index: 1, amount_cents: 10_000 },
+            { reg_index: 0, amount_cents: 11_000 },
+            { reg_index: 1, amount_cents: 13_000 },
+            { reg_index: 0, amount_cents: 17_500 }
+          ]
+        },
+        # Crystal Decanter Set — 3 bids, no extensions, single winner
+        {
+          listing_index: 3,
+          extension_count: 0,
+          bids: [
+            { reg_index: 2, amount_cents: 5_000 },
+            { reg_index: 0, amount_cents: 6_000 },
+            { reg_index: 2, amount_cents: 7_500 }
+          ]
+        },
+        # Watercolour Landscape Painting — no bids (didn't reach reserve)
+        {
+          listing_index: 4,
+          extension_count: 0,
+          bids: []
+        }
+      ]
+
+      bid_scripts.each do |script|
+        al = henderson_listings[script[:listing_index]]
+        next unless al
+
+        al.update_column(:extension_count, script[:extension_count])
+
+        script[:bids].each do |bid_attrs|
+          reg = approved_regs[bid_attrs[:reg_index]]
+          next unless reg
+
+          Bid.create!(
+            auction_listing:      al,
+            auction_registration: reg,
+            amount_cents:         bid_attrs[:amount_cents],
+            state:                :placed
+          )
+        end
+      end
+
+      puts "Seeded #{Bid.count} bids for Henderson Estate Auction."
+    end
   end
 end
 

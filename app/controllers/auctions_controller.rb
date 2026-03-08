@@ -50,6 +50,7 @@ class AuctionsController < ApplicationController
 
     @search          = params[:search].presence
     @listing_state   = params[:state].presence_in(%w[on_sale sold cancelled])
+    @filter          = params[:filter].presence_in(%w[my_listings my_bids]) if Current.user
     @category_hashid = params[:category_id].presence
     @categories      = Listings::Category
       .joins(category_assignments: { listing: :auction_listings })
@@ -57,9 +58,34 @@ class AuctionsController < ApplicationController
       .distinct
       .order(:name)
 
+    @auction_listing_count = @auction.auction_listings.count
+
     scope = @auction.auction_listings.joins(:listing)
     scope = scope.where("listings.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
-    scope = scope.where(listings: { state: @listing_state }) if @listing_state
+    case @filter
+    when "my_listings"
+      scope = scope.where(listings: { state: "sold" }).where(<<~SQL.squish, Current.user.id)
+        (
+          SELECT auction_registrations.user_id FROM bids
+          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
+          WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'
+          ORDER BY bids.amount_cents DESC, bids.created_at DESC
+          LIMIT 1
+        ) = ?
+      SQL
+    when "my_bids"
+      scope = scope.where(<<~SQL.squish, Current.user.id)
+        EXISTS (
+          SELECT 1 FROM bids
+          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
+          WHERE bids.auction_listing_id = auction_listings.id
+            AND bids.state = 'placed'
+            AND auction_registrations.user_id = ?
+        )
+      SQL
+    else
+      scope = scope.where(listings: { state: @listing_state }) if @listing_state
+    end
     if @category_hashid
       category = Listings::Category.find_by(hashid: @category_hashid)
       scope = scope.where(listing_id: Listing.joins(:categories).where(listings_categories: { id: category.id }).select(:id)) if category

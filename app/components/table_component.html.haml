@@ -16,3 +16,6 @@
               = render(TableCellComponent.new(value: col.block.call(row), html_class: col.html_class))
             - else
               %td{class: col.html_class}= col.block.call(row)
+    - if footer_row
+      %tfoot.fw-semibold
+        %tr= footer_row.call

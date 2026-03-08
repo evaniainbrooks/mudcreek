@@ -21,4 +21,11 @@ class TableComponent < ViewComponent::Base
     @columns << Column.new(header:, sort_attr:, html_class:, typed: true, block:)
     self
   end
+
+  def with_footer_row(&block)
+    @footer_row = block
+    self
+  end
+
+  def footer_row = @footer_row
 end

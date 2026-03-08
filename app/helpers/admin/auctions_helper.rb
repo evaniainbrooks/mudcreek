@@ -1,4 +1,44 @@
 module Admin::AuctionsHelper
+  ReportRow = Struct.new(:id, :listing, :bids_count, :extensions, :winning_bid, :highest_bidder, keyword_init: true)
+
+  def render_auction_report_table(report_listings:)
+    rows = report_listings.map do |al|
+      placed_bids = al.bids.select(&:placed?)
+      winning_bid = placed_bids.max_by(&:amount_cents)
+      ReportRow.new(
+        id:              al.id,
+        listing:         al.listing,
+        bids_count:      placed_bids.size,
+        extensions:      al.extension_count,
+        winning_bid:     winning_bid,
+        highest_bidder:  winning_bid&.auction_registration&.user
+      )
+    end
+
+    total_bids    = rows.sum(&:bids_count)
+    auction_total = Money.new(rows.sum { _1.winning_bid&.amount_cents.to_i })
+
+    table = ::TableComponent.new(rows: rows)
+    table.with_column("Listing")    { |row| link_to(row.listing.name, admin_listing_path(row.listing)) }
+    table.with_column("State")      { |row| listing_state_badge(row.listing) }
+    table.with_column("Bids",       html_class: "text-end") { |row| row.bids_count }
+    table.with_column("Extensions", html_class: "text-end") { |row| row.extensions }
+    table.with_value_column("Highest Bid",    html_class: "text-end") { it.winning_bid&.amount }
+    table.with_value_column("Highest Bidder") { it.highest_bidder }
+    table.with_footer_row do
+      safe_join([
+        content_tag(:td, "Total"),
+        content_tag(:td, ""),
+        content_tag(:td, total_bids,                               class: "text-end"),
+        content_tag(:td, ""),
+        content_tag(:td, humanized_money_with_symbol(auction_total), class: "text-end"),
+        content_tag(:td, "")
+      ])
+    end
+    render(table)
+  end
+
+
   def render_auctions_table(auctions:)
     table = ::TableComponent.new(rows: auctions, tbody_id: "admin-auctions-tbody")
     table.with_column("Name") { |a| link_to(a.name, admin_auction_path(a)) }

@@ -14,6 +14,12 @@ class Admin::AuctionsController < Admin::BaseController
     scope = @auction.auction_listings.includes(:listing).order(:position, :id)
     @pagy, @auction_listings = pagy(:keyset, scope)
 
+    if @auction.reconciled?
+      @report_listings = @auction.auction_listings
+        .includes(:listing, bids: { auction_registration: :user })
+        .order(:position)
+    end
+
     respond_to do |format|
       format.html
       format.turbo_stream do

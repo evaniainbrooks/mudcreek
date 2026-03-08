@@ -39,6 +39,14 @@
       %i.bi.bi-person-check.me-1
       Registrations
       %span.badge.text-bg-secondary.ms-1= @auction_registrations_count
+  - if @auction.reconciled?
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{id: "report-tab",
+        data: { bs_toggle: "tab", bs_target: "#report-pane" },
+        type: "button", role: "tab",
+        aria: { controls: "report-pane", selected: "false" }}
+        %i.bi.bi-bar-chart-line.me-1
+        Report
 
 .tab-content
   #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
@@ -95,6 +103,10 @@
       .text-muted.py-3 No registrations for this auction yet.
     - else
       = render_auction_registrations_table(registrations: registrations)
+
+  - if @auction.reconciled?
+    #report-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "report-tab" } }
+      = render "admin/auctions/report", report_listings: @report_listings
 
 .mt-3
   = link_to admin_auctions_path, class: "btn btn-outline-secondary" do
