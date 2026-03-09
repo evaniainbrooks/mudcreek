@@ -8,5 +8,6 @@ FactoryBot.define do
   factory :auction_listing do
     association :auction
     association :listing
+    starting_bid_cents { 1000 }
   end
 end

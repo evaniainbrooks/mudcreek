@@ -35,7 +35,7 @@ RSpec.describe "Admin::AuctionListings", type: :request do
     end
 
     it "skips listings already assigned to an auction" do
-      AuctionListing.create!(auction: auction, listing: listing)
+      create(:auction_listing, auction: auction, listing: listing)
 
       expect {
         post admin_auction_listings_path, params: { auction_id: auction.id, listing_ids: [listing.id] }
@@ -72,7 +72,7 @@ RSpec.describe "Admin::AuctionListings", type: :request do
   end
 
   describe "DELETE /admin/auctions/:auction_hashid/auction_listings/:id" do
-    let!(:auction_listing) { AuctionListing.create!(auction: auction, listing: listing) }
+    let!(:auction_listing) { create(:auction_listing, auction: auction, listing: listing) }
 
     it "removes the listing from the auction" do
       expect {
@@ -109,11 +109,11 @@ RSpec.describe "Admin::AuctionListings", type: :request do
   end
 
   describe "PATCH /admin/auctions/:auction_hashid/auction_listings/:id" do
-    let!(:auction_listing) { AuctionListing.create!(auction: auction, listing: listing) }
+    let!(:auction_listing) { create(:auction_listing, auction: auction, listing: listing) }
 
     it "updates bid fields and redirects to the auction" do
       patch admin_auction_auction_listing_path(auction, auction_listing),
-        params: { auction_listing: { starting_bid: "150.00", bid_increment: "10.00" } }
+        params: { auction_listing: { starting_bid: "150.00" } }
       expect(response).to redirect_to(admin_auction_path(auction))
       expect(flash[:notice]).to eq("Bid details updated.")
     end
@@ -145,8 +145,8 @@ RSpec.describe "Admin::AuctionListings", type: :request do
   end
 
   describe "PATCH /admin/auctions/:auction_hashid/auction_listings/reorder" do
-    let!(:al1) { AuctionListing.create!(auction: auction, listing: listing) }
-    let!(:al2) { AuctionListing.create!(auction: auction, listing: create(:listing)) }
+    let!(:al1) { create(:auction_listing, auction: auction, listing: listing) }
+    let!(:al2) { create(:auction_listing, auction: auction, listing: create(:listing)) }
 
     it "returns 200" do
       patch reorder_admin_auction_auction_listings_path(auction),
