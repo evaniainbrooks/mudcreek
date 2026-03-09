@@ -1,4 +1,6 @@
 class Admin::AuctionRegistrationsController < Admin::BaseController
+  before_action :set_registration, only: :update
+
   def index
     authorize(AuctionRegistration)
     @q = AuctionRegistration.ransack(params[:q])
@@ -19,5 +21,24 @@ class Admin::AuctionRegistrationsController < Admin::BaseController
         ]
       end
     end
+  end
+
+  def update
+    @registration.update(registration_params)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to admin_auction_registrations_path }
+    end
+  end
+
+  private
+
+  def set_registration
+    @registration = AuctionRegistration.find(params[:id])
+    authorize(@registration)
+  end
+
+  def registration_params
+    params.require(:auction_registration).permit(:state, :admin_notes)
   end
 end

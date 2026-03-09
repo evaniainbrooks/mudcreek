@@ -39,6 +39,8 @@ class Admin::ListingsController < Admin::BaseController
         .includes(auction_registration: :user)
         .order(amount_cents: :desc, created_at: :desc)
     end
+    @categories = Listings::Category.order(:name)
+    @lots = Lot.order(:name)
   end
 
   def new

@@ -22,9 +22,11 @@ class GenerateAuctionInvoicesJob < ApplicationJob
       wins_by_user[user] << { listing: al.listing, amount_cents: winning_bid.amount_cents }
     end
 
+    # Pre-fetch existing invoice user_ids for idempotency check (avoids N+1)
+    existing_user_ids = Invoice.where(auction: auction).pluck(:user_id).to_set
+
     wins_by_user.each do |user, items|
-      # Skip if an invoice already exists for this user/auction (idempotency)
-      next if Invoice.exists?(user: user, auction: auction)
+      next if existing_user_ids.include?(user.id)
 
       invoice = Invoice.create!(
         user: user,
@@ -43,7 +45,9 @@ class GenerateAuctionInvoicesJob < ApplicationJob
       if user.default_square_card_id.present?
         ChargeInvoiceJob.perform_later(invoice.id)
       else
-        InvoiceMailer.invoice_generated(invoice).deliver_later
+        # Reload with associations to avoid N+1 in the mailer view
+        invoice_with_assocs = Invoice.includes(:user, :auction, invoice_items: :listing).find(invoice.id)
+        InvoiceMailer.invoice_generated(invoice_with_assocs).deliver_later
       end
     end
   end

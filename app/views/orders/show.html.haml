@@ -92,17 +92,17 @@
                   %span •••• #{card.last_4}
                   %span.badge.text-bg-success Default
                 %small.text-muted Expires #{card.exp_month}/#{card.exp_year}
-              %button.btn.btn-primary.w-100.mt-3{ type: "button",
+              %button.btn.btn-primary.w-100.mt-3{type: "button",
                   data: { action: "click->square-payment#submitSavedCard",
-                          "square-payment-card-id-param": card.id } }
+                          "square-payment-card-id-param": card.id }}
                 Pay #{humanized_money_with_symbol(@order.total)} with saved card
             %details.mt-2
               %summary.text-muted.small.cursor-pointer Use a different card ↓
               .mt-3
                 %div{ data: { "square-payment-target": "container" } }
                 %p.text-danger.small.mt-2{ hidden: true, data: { "square-payment-target": "errorMessage" } }
-                %button.btn.btn-outline-primary.w-100.mt-3{ type: "button",
-                    data: { action: "click->square-payment#submit" } }
+                %button.btn.btn-outline-primary.w-100.mt-3{type: "button",
+                    data: { action: "click->square-payment#submit" }}
                   Pay #{humanized_money_with_symbol(@order.total)}
           - else
             %div{ data: { "square-payment-target": "container" } }

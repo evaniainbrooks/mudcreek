@@ -82,7 +82,8 @@ module Admin::AuctionsHelper
   def render_auction_registrations_table(registrations:)
     table = ::TableComponent.new(rows: registrations)
     table.with_value_column("User") { it.user }
-    table.with_column("State", html_class: "text-center") { auction_registration_state_badge(it) }
+    table.with_column("State") { |r| auction_registration_state_inline_cell(r) }
+    table.with_column("Notes") { |r| auction_registration_notes_inline_cell(r) }
     table.with_value_column("Registered") { it.created_at }
     table.with_value_column("Updated", sort_attr: :updated_at) { it.updated_at }
     render(table)
@@ -104,7 +105,7 @@ module Admin::AuctionsHelper
     )
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
     table.with_column("Name") { |al| link_to(al.listing.name, admin_listing_path(al.listing)) }
-    table.with_column("State") { |al| listing_state_badge(al.listing) }
+    table.with_column("State") { |al| auction_listing_state_inline_cell(al, auction) }
     table.with_column("End Offset") do |al|
       stagger = auction.end_time_stagger_interval
       next tag.span("—", class: "text-muted") unless stagger.positive?
@@ -124,6 +125,32 @@ module Admin::AuctionsHelper
   end
 
   private
+
+  def auction_listing_state_inline_cell(al, auction)
+    states = { "on_sale" => "On Sale", "sold" => "Sold", "cancelled" => "Cancelled" }
+    current = al.listing_state
+
+    display = tag.span(listing_state_badge(al.listing),
+      hidden: false,
+      style: "cursor: pointer",
+      data: {
+        "inline-edit-target" => "display",
+        action: "click->inline-edit#edit"
+      })
+
+    form = tag.div(hidden: true, data: { "inline-edit-target" => "form" }) do
+      form_with(url: admin_auction_auction_listing_path(auction, al), method: :patch, scope: :auction_listing) do |f|
+        f.select(:listing_state, states.map { |v, l| [l, v] }, { selected: current },
+          class: "form-select form-select-sm",
+          style: "width: auto",
+          data: { "inline-edit-target" => "input", action: "change->inline-edit#autoSubmit" })
+      end
+    end
+
+    tag.div(id: "#{dom_id(al)}_listing_state", data: { controller: "inline-edit" }) do
+      display + form
+    end
+  end
 
   def auction_listing_money_inline_cell(field, al, auction)
     cents = al.send(:"#{field}_cents")

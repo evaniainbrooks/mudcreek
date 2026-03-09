@@ -1,10 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { endsAt: String,  }
+  static values = { endsAt: String, label: String, labelThreshold: Number, reload: Boolean }
   static targets = ["display"]
 
   declare endsAtValue: string
+  declare hasLabelValue: boolean
+  declare labelValue: string
+  declare hasLabelThresholdValue: boolean
+  declare labelThresholdValue: number
+  declare reloadValue: boolean
+  declare hasDisplayTarget: boolean
   declare displayTarget: HTMLElement
 
   private interval: ReturnType<typeof setInterval> | null = null
@@ -22,11 +28,28 @@ export default class extends Controller {
     const diff = new Date(this.endsAtValue).getTime() - Date.now()
 
     if (diff <= 0) {
-      this.displayTarget.textContent = ""
       if (this.interval) {
         clearInterval(this.interval)
         this.interval = null
       }
+      if (this.reloadValue) {
+        window.location.reload()
+      } else if (this.hasDisplayTarget) {
+        this.displayTarget.textContent = ""
+      }
+      return
+    }
+
+    if (!this.hasDisplayTarget) return
+
+    if (this.hasLabelThresholdValue && diff > this.labelThresholdValue * 1000) {
+      this.displayTarget.textContent = this.hasLabelValue ? this.labelValue : ""
+      return
+    }
+
+    if (this.hasLabelThresholdValue) {
+      const seconds = Math.ceil(diff / 1000)
+      this.displayTarget.textContent = `Ending in ${seconds}s`
       return
     }
 

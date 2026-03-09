@@ -20,7 +20,9 @@ RSpec.describe AuctionReconcilerJob do
   def place_bid(auction_listing, amount_cents)
     registration = AuctionRegistration.find_or_create_by!(auction: auction, user: bidder)
     registration.update_column(:state, "approved")
-    auction_listing.bids.create!(auction_registration: registration, amount_cents: amount_cents)
+    bid = auction_listing.bids.build(auction_registration: registration, amount_cents: amount_cents)
+    bid.save!(validate: false)
+    bid
   end
 
   describe "#perform" do

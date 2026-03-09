@@ -56,6 +56,14 @@
             = f.select :auction_id, @auctions.map { [_1.name, _1.id] },
                 { prompt: "Select auction…" },
                 class: "form-select form-select-sm w-auto"
+            = f.select :starting_bid,
+                [["No starting bid", "none"], ["100% of price", "100"], ["50% of price", "50"], ["10% of price", "10"], ["$1", "dollar"]],
+                { selected: "none" },
+                class: "form-select form-select-sm w-auto"
+            = f.select :listing_state,
+                [["Unchanged", ""]] + Listing.states.keys.map { [_1.humanize, _1] },
+                { selected: "" },
+                class: "form-select form-select-sm w-auto"
             %button.btn.btn-primary.btn-sm{type: "button", data: { action: "click->bulk-select#submit" }} Add to Auction
   %div{data: { controller: "infinite-scroll" }}
     = render_listings_table(listings: @listings, q: @q)

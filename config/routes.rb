@@ -69,7 +69,7 @@ Rails.application.routes.draw do
       end
     end
     resources :auction_listings, only: [ :create ]
-    resources :auction_registrations, only: [ :index ]
+    resources :auction_registrations, only: [ :index, :update ]
     resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
   end

@@ -11,7 +11,13 @@ export default class extends Controller {
     this.displayTarget.hidden = true
     this.formTarget.hidden = false
     this.inputTarget.focus()
-    this.inputTarget.select()
+    if (typeof (this.inputTarget as any).select === "function" && this.inputTarget.tagName !== "SELECT") {
+      this.inputTarget.select()
+    }
+  }
+
+  autoSubmit() {
+    this.inputTarget.closest("form")?.requestSubmit()
   }
 
   cancel() {

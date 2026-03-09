@@ -148,10 +148,10 @@ RSpec.describe "Admin::Listings", type: :system do
       expect(page).to have_text(listing.owner.email_address)
     end
 
-    it "has an edit link" do
+    it "has an edit tab" do
       visit admin_listing_path(listing)
 
-      expect(page).to have_link("Edit", href: edit_admin_listing_path(listing))
+      expect(page).to have_button("Edit")
     end
 
     it "has a delete button" do

@@ -22,13 +22,23 @@ class AuctionListing < ApplicationRecord
 
   def currency = auction.tenant&.currency
 
+  def ends_at_in_time_zone = ends_at&.in_time_zone(auction.timezone)
+
+  def listing_state = listing.state
+  def listing_state=(val)
+    listing.update!(state: val)
+  end
+
   def end_offset
     stagger = auction.end_time_stagger_interval || 0
     (position - 1) * stagger
   end
 
   def active?
-    !listing.sold? && Time.current < ends_at
+    listing.on_sale? &&
+      ends_at.present? &&
+      Time.current < ends_at &&
+      (auction.starts_at.nil? || auction.starts_at <= Time.current)
   end
 
   def next_bid_amount

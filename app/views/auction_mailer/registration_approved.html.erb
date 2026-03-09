@@ -1,0 +1,7 @@
+<p>Hi <%= @user.name %>,</p>
+
+<p>Your registration for <strong><%= @auction.name %></strong> has been approved. You can now place bids on auction listings.</p>
+
+<p>
+  <%= link_to "View Auction", auction_url(@auction) %>
+</p>

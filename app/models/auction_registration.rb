@@ -11,6 +11,8 @@ class AuctionRegistration < ApplicationRecord
   has_many :bids, dependent: :destroy
 
   before_create :apply_auto_approve
+  after_create_commit  :send_approval_email, if: -> { approved? }
+  after_update_commit  :send_approval_email, if: -> { saved_change_to_state?(to: "approved") }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[state created_at]
@@ -24,5 +26,9 @@ class AuctionRegistration < ApplicationRecord
 
   def apply_auto_approve
     self.state = :approved if auction.auto_approve?
+  end
+
+  def send_approval_email
+    AuctionMailer.registration_approved(self).deliver_later
   end
 end

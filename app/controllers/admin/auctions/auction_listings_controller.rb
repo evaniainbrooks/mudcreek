@@ -35,6 +35,6 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
   end
 
   def auction_listing_params
-    params.require(:auction_listing).permit(:starting_bid, :bid_increment, :reserve_price)
+    params.require(:auction_listing).permit(:starting_bid, :bid_increment, :reserve_price, :listing_state)
   end
 end

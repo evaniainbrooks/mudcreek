@@ -33,9 +33,6 @@ class Invoice < ApplicationRecord
   private
 
   def assign_number
-    self.number = loop do
-      candidate = "INV-#{SecureRandom.alphanumeric(8).upcase}"
-      break candidate unless Invoice.unscoped.exists?(number: candidate)
-    end
+    self.number ||= "INV-#{SecureRandom.alphanumeric(10).upcase}"
   end
 end

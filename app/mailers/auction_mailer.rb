@@ -9,4 +9,15 @@ class AuctionMailer < ApplicationMailer
       subject: "New registration pending: #{@auction.name}"
     )
   end
+
+  def registration_approved(registration)
+    @registration = registration
+    @auction = registration.auction
+    @user = registration.user
+
+    mail(
+      to: @user.email_address,
+      subject: "Your registration for #{@auction.name} has been approved"
+    )
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_08_100001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_08_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -95,6 +95,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_08_100001) do
   end
 
   create_table "auction_registrations", force: :cascade do |t|
+    t.text "admin_notes"
     t.bigint "auction_id", null: false
     t.datetime "created_at", null: false
     t.string "state", default: "pending", null: false

@@ -36,11 +36,11 @@
 
   .col-12.col-lg-5
     .card.shadow-sm.border-0
-      .card-body.p-4{ data: { controller: "add-card",
+      .card-body.p-4{data: { controller: "add-card",
           "add-card-application-id-value": SquareClient.application_id,
           "add-card-location-id-value": SquareClient.location_id,
           "add-card-save-url-value": profile_payment_methods_path,
-          "add-card-csrf-token-value": form_authenticity_token } }
+          "add-card-csrf-token-value": form_authenticity_token }}
         %h2.card-title.h5.mb-4
           %i.bi.bi-plus-circle.me-2
           Add a Card

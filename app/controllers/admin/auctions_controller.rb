@@ -23,21 +23,17 @@ class Admin::AuctionsController < Admin::BaseController
     respond_to do |format|
       format.html
       format.turbo_stream do
-        if params[:page].present?
-          render turbo_stream: [
-            turbo_stream.append("auction-listings-tbody",
-              partial: "admin/auctions/auction_listing_row",
-              collection: @auction_listings,
-              locals: { auction: @auction },
-              as: :auction_listing),
-            turbo_stream.replace("auction-listings-sentinel",
-              partial: "admin/auctions/sentinel",
-              locals: { pagy: @pagy, auction: @auction })
-          ]
-        else
-          render :show, formats: [ :html ]
-        end
-      end
+        render turbo_stream: [
+          turbo_stream.append("auction-listings-tbody",
+            partial: "admin/auctions/auction_listing_row",
+            collection: @auction_listings,
+            locals: { auction: @auction },
+            as: :auction_listing),
+          turbo_stream.replace("auction-listings-sentinel",
+            partial: "admin/auctions/sentinel",
+            locals: { pagy: @pagy, auction: @auction })
+        ]
+      end if params[:page].present?
     end
   end
 
@@ -51,7 +47,7 @@ class Admin::AuctionsController < Admin::BaseController
   end
 
   def create
-    @auction = Auction.new(auction_params)
+    @auction = Auction.new(timezone_aware_auction_params)
     authorize(@auction)
 
     if @auction.save
@@ -68,7 +64,7 @@ class Admin::AuctionsController < Admin::BaseController
   def update
     @auction.poster.purge_later if params[:remove_poster].present?
     @auction.terms_and_conditions.purge_later if params[:remove_terms_and_conditions].present?
-    if @auction.update(auction_params)
+    if @auction.update(timezone_aware_auction_params)
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
     else
       render :edit, status: :unprocessable_content
@@ -94,6 +90,14 @@ class Admin::AuctionsController < Admin::BaseController
     )
     p.delete(:poster) if p[:poster].blank?
     p.delete(:terms_and_conditions) if p[:terms_and_conditions].blank?
+    p
+  end
+
+  def timezone_aware_auction_params
+    p = auction_params
+    tz = ActiveSupport::TimeZone[p[:timezone].presence || @auction&.timezone || "UTC"] || Time.zone
+    p[:starts_at] = tz.parse(p[:starts_at]) if p[:starts_at].present?
+    p[:ends_at]   = tz.parse(p[:ends_at])   if p[:ends_at].present?
     p
   end
 end

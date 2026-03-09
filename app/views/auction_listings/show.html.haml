@@ -8,7 +8,7 @@
 
   has_images = @listing.images.attached?
   has_videos = @listing.videos.attached?
-  media_count = @listing.images.count + @listing.videos.count
+  media_count = @listing.images.size + @listing.videos.size
 
 = turbo_stream_from @auction_listing
 .d-flex.justify-content-between.align-items-center.mb-4
@@ -36,20 +36,27 @@
   .col-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
     .position-sticky{ style: "top: 1.5rem" }
       %h1.fw-bold.mb-1= @listing.name
-      .d-flex.align-items-center.gap-2.mb-3
-        .lh-sm
-          = @auction_listing.ends_at.to_fs(:long)
-          - if @auction_listing.ends_at.future?
-            .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown", "countdown-ends-at-value": @auction_listing.ends_at.iso8601 } }
-              %i.bi.bi-clock.flex-shrink-0
-              %strong{ data: { "countdown-target": "display" } }
+
+      .mb-3
+        %p.text-muted.small.mb-0 Auction
+        = link_to @auction.name, auction_path(@auction), class: "fw-semibold text-decoration-none"
+
+      - if @auction.starts_at&.future?
+        .mb-3{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601, "countdown-reload-value": true } }
+          %p.text-muted.small.mb-0 Auction starts in
+          %strong{ data: { "countdown-target": "display" } }
+      - elsif @auction_listing.ends_at&.future?
+        .mb-3{ data: { controller: "countdown", "countdown-ends-at-value": @auction_listing.ends_at.iso8601 } }
+          %p.text-muted.small.mb-0 Auction ends in
+          %strong{ data: { "countdown-target": "display" } }
+
       %hr.mb-4
       = render "auction_listings/bid_panel",
         auction_listing: @auction_listing,
         auction: @auction,
         registration: @registration,
         bidder_token: @highest_bidder_token
-      .listing-description
+      .listing-description.mt-4
         = @listing.description
       - if @listing.categories.any?
         .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")

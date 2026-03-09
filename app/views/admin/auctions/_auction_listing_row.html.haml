@@ -2,7 +2,7 @@
   %td.text-center.pe-0
     %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
   %td= link_to auction_listing.listing.name, admin_listing_path(auction_listing.listing)
-  %td= listing_state_badge(auction_listing.listing)
+  %td= auction_listing_state_inline_cell(auction_listing, auction)
   %td= auction_listing_money_inline_cell("starting_bid", auction_listing, auction)
   %td= auction_listing_money_inline_cell("bid_increment", auction_listing, auction)
   %td= auction_listing_money_inline_cell("reserve_price", auction_listing, auction)

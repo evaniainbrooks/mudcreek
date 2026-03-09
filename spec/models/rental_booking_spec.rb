@@ -14,7 +14,7 @@ RSpec.describe RentalBooking, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:listing) }
-    it { is_expected.to belong_to(:cart_item) }
+    it { is_expected.to belong_to(:cart_item).optional }
   end
 
   describe "validations" do

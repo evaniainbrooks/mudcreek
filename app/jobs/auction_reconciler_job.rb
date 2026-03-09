@@ -1,22 +1,38 @@
 class AuctionReconcilerJob < ApplicationJob
   queue_as :default
 
+  FRESH_LISTING_SELECT = <<~SQL.squish
+    auction_listings.*,
+    COALESCE(
+      (SELECT COUNT(*) FROM bids WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'),
+      0
+    ) as bids_count,
+    (
+      SELECT auction_registrations.user_id FROM bids
+      JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
+      WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'
+      ORDER BY bids.amount_cents DESC, bids.created_at DESC
+      LIMIT 1
+    ) as highest_bidder_id
+  SQL
+
   def perform(auction)
     Current.tenant = auction.tenant
 
+    # Preload documents_attachments so the documents_content_type validation
+    # on listing.update! doesn't issue a query per listing.
     ended_listings = auction.auction_listings
       .joins(:listing)
       .where("auction_listings.ends_at <= ?", Time.current)
       .where(listings: { state: "on_sale" })
-      .includes(:current_bid, :listing)
+      .includes(:current_bid, listing: [ :tenant, :rich_text_description, { documents_attachments: :blob } ])
 
     ended_listings.each do |al|
       new_state = reserve_met?(al) ? :sold : :cancelled
       al.listing.update!(state: new_state)
-      fresh = fresh_auction_listing(al, auction)
-      broadcast_listing_card(fresh, auction)
-      broadcast_bid_panel(fresh, auction)
     end
+
+    broadcast_ended_listings(ended_listings, auction)
 
     next_end_time = auction.auction_listings
       .joins(:listing)
@@ -42,31 +58,39 @@ class AuctionReconcilerJob < ApplicationJob
     bid.amount_cents >= auction_listing.reserve_price_cents
   end
 
-  def fresh_auction_listing(auction_listing, auction)
-    fresh = auction.auction_listings
-      .select(<<~SQL.squish)
-        auction_listings.*,
-        COALESCE(
-          (SELECT COUNT(*) FROM bids WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'),
-          0
-        ) as bids_count,
-        (
-          SELECT auction_registrations.user_id FROM bids
-          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
-          WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'
-          ORDER BY bids.amount_cents DESC, bids.created_at DESC
-          LIMIT 1
-        ) as highest_bidder_id
-      SQL
-      .find(auction_listing.id)
+  # Batch-load fresh auction listing data for all ended listings, then broadcast.
+  # Avoids N+1 from calling fresh_auction_listing + Listing.find per listing.
+  def broadcast_ended_listings(ended_listings, auction)
+    return if ended_listings.empty?
 
-    fresh.listing = Listing
+    ids = ended_listings.map(&:id)
+
+    # Single query for all fresh auction listing rows (with subquery virtual attrs)
+    fresh_records = auction.auction_listings
+      .select(FRESH_LISTING_SELECT)
+      .where(id: ids)
+      .to_a
+
+    # Preload current_bid for all fresh records in one query
+    ActiveRecord::Associations::Preloader.new(
+      records: fresh_records, associations: [:current_bid]
+    ).call
+
+    # Batch-load listings with all associations needed by the listing card partial
+    listing_ids = fresh_records.map(&:listing_id)
+    listings_by_id = Listing
       .with_attached_images
       .with_attached_videos
+      .with_rich_text_description
       .includes(:categories, lot: { listing_placeholder_attachment: :blob })
-      .find(auction_listing.listing_id)
+      .where(id: listing_ids)
+      .index_by(&:id)
 
-    fresh
+    fresh_records.each do |fresh|
+      fresh.listing = listings_by_id[fresh.listing_id]
+      broadcast_listing_card(fresh, auction)
+      broadcast_bid_panel(fresh, auction)
+    end
   end
 
   def broadcast_listing_card(auction_listing, auction)

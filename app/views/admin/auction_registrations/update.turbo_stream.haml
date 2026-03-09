@@ -1,0 +1,4 @@
+= turbo_stream.replace "#{dom_id(@registration)}_state" do
+  = auction_registration_state_inline_cell(@registration)
+= turbo_stream.replace "#{dom_id(@registration)}_admin_notes" do
+  = auction_registration_notes_inline_cell(@registration)

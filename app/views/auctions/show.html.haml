@@ -1,6 +1,11 @@
-= link_to auctions_path, class: "btn btn-outline-secondary btn-sm mb-4" do
-  %i.bi.bi-arrow-left.me-1
-  Back to all auctions
+.d-flex.align-items-center.justify-content-between.mb-4
+  = link_to auctions_path, class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    Back to all auctions
+  - if Current.user&.role&.permissions&.any?
+    = link_to admin_auction_path(@auction), class: "btn btn-outline-secondary btn-sm" do
+      %i.bi.bi-gear.me-1
+      Admin View
 
 .row.g-0.align-items-stretch{ style: "min-height: 70vh" }
   .col-lg-4.bg-body.border-end.p-4.p-lg-5
@@ -11,17 +16,17 @@
       %h1.fw-bold.lh-tight.mb-2= @auction.name
 
       - if @registration
-        - if @registration.pending?
-          .d-flex.align-items-center.gap-2.mb-4
-            %span.badge.text-bg-warning.py-2.px-3 Registration Pending
-            %small.text-muted You'll be notified by email when approved.
-        - elsif @registration.approved?
-          .mb-4
+        .mb-4
+          %p.text-muted.small.mb-1 Registration status
+          - if @registration.pending?
+            .d-flex.align-items-center.gap-2
+              %span.badge.text-bg-warning.py-2.px-3 Registration Pending
+              %small.text-muted You'll be notified by email when approved.
+          - elsif @registration.approved?
             %span.badge.text-bg-success.py-2.px-3 Registered
-        - elsif @registration.rejected?
-          .mb-4
+          - elsif @registration.rejected?
             %span.badge.text-bg-danger.py-2.px-3 Registration Declined
-      - else
+      - elsif !@auction.reconciled? && (@auction.ends_at.nil? || @auction.ends_at > Time.current)
         %button.btn.btn-primary.w-100.mb-4{data: { bs_toggle: "modal", bs_target: "#auction-register-modal" }}
           %i.bi.bi-person-plus.me-2
           Register Now
@@ -32,27 +37,43 @@
           %strong Auction has ended!
       - elsif @auction.starts_at
         - if @auction.starts_at > Time.current
-          .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601 } }
+          .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601, "countdown-reload-value": true } }
             %i.bi.bi-clock.flex-shrink-0
             %strong{ data: { "countdown-target": "display" } }
         - else
           .d-flex.align-items-center.gap-2.mb-2.text-success
             %i.bi.bi-check-circle-fill.flex-shrink-0
             %strong Auction has started!
-        .d-flex.align-items-center.gap-2.mb-2.text-muted
-          %i.bi.bi-calendar-event.flex-shrink-0
-          %span= @auction.starts_at.to_fs(:long)
+      - if @auction.starts_at
+        .mb-2
+          %p.text-muted.small.mb-0 Starts at
+          .d-flex.align-items-center.gap-2
+            %i.bi.bi-calendar-event.flex-shrink-0
+            %span= @auction.starts_at_in_time_zone.to_fs(:long)
+            %small.text-muted= @auction.starts_at_in_time_zone.strftime("%Z")
 
       - if @auction.ends_at
-        .d-flex.align-items-center.gap-2.mb-2.text-muted
-          %i.bi.bi-calendar-check.flex-shrink-0
-          %span= @auction.ends_at.to_fs(:long)
+        .mb-2
+          %p.text-muted.small.mb-0 Ends at
+          .d-flex.align-items-center.gap-2
+            %i.bi.bi-calendar-check.flex-shrink-0
+            %span= @auction.ends_at_in_time_zone.to_fs(:long)
+            %small.text-muted= @auction.ends_at_in_time_zone.strftime("%Z")
 
       - if @auction.address&.any?
         - addr = @auction.address
-        .d-flex.align-items-start.gap-2.mb-2.text-muted
-          %i.bi.bi-geo-alt-fill.flex-shrink-0.mt-1
-          %span= [ addr.street_address, addr.city, addr.province, addr.country ].compact_blank.join(", ")
+        .mb-2
+          %p.text-muted.small.mb-0 Location
+          .d-flex.align-items-start.gap-2
+            %i.bi.bi-geo-alt-fill.flex-shrink-0.mt-1
+            %span= [ addr.street_address, addr.city, addr.province, addr.country ].compact_blank.join(", ")
+
+      - if @auction.terms_and_conditions.attached?
+        .mb-2
+          %p.text-muted.small.mb-0 Terms &amp; Conditions
+          .d-flex.align-items-center.gap-2
+            %i.bi.bi-file-earmark-text.flex-shrink-0
+            = link_to "View Terms & Conditions", rails_blob_path(@auction.terms_and_conditions, disposition: "inline"), target: "_blank", class: "text-decoration-none"
 
       - if @auction.description.present?
         %hr.my-4
@@ -61,16 +82,22 @@
       %hr.my-4
       %p.fw-semibold.mb-2= "#{@auction_listing_count} #{"listing".pluralize(@auction_listing_count)} on auction"
       - if Current.user
-        .btn-group.w-100{ role: "group", aria: { label: "Listing filter" } }
+        .d-flex.gap-2.mt-3
           = link_to auction_path(@auction),
-              class: "btn btn-sm btn-outline-secondary #{'active' if @filter.nil?}" do
-            All Listings
+              class: "btn btn-outline-secondary flex-fill py-3 #{'active' if @filter.nil?}" do
+            .d-flex.flex-column.align-items-center.gap-1
+              %i.bi.bi-grid{ style: "font-size: 1.5rem" }
+              %span.small.fw-semibold All Listings
           = link_to auction_path(@auction, filter: "my_listings"),
-              class: "btn btn-sm btn-outline-secondary #{'active' if @filter == 'my_listings'}" do
-            My Listings
+              class: "btn btn-outline-secondary flex-fill py-3 #{'active' if @filter == 'my_listings'}" do
+            .d-flex.flex-column.align-items-center.gap-1
+              %i.bi.bi-trophy{ style: "font-size: 1.5rem" }
+              %span.small.fw-semibold My Listings
           = link_to auction_path(@auction, filter: "my_bids"),
-              class: "btn btn-sm btn-outline-secondary #{'active' if @filter == 'my_bids'}" do
-            My Bids
+              class: "btn btn-outline-secondary flex-fill py-3 #{'active' if @filter == 'my_bids'}" do
+            .d-flex.flex-column.align-items-center.gap-1
+              %i.bi.bi-hammer{ style: "font-size: 1.5rem" }
+              %span.small.fw-semibold My Bids
 
   .col-lg-8.bg-body-secondary.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
     - unless @filter

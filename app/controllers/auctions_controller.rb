@@ -61,6 +61,8 @@ class AuctionsController < ApplicationController
     @auction_listing_count = @auction.auction_listings.count
 
     scope = @auction.auction_listings.joins(:listing)
+      .where.not(starting_bid_cents: nil)
+      .where.not(bid_increment_cents: nil)
     scope = scope.where("listings.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
     case @filter
     when "my_listings"

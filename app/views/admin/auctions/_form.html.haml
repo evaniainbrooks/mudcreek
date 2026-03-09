@@ -48,15 +48,17 @@
           .col-sm-6
             = f.label :starts_at, "Starts At", class: "form-label"
             = f.datetime_local_field :starts_at, class: "form-control #{'is-invalid' if auction.errors[:starts_at].any?}",
-                value: auction.starts_at&.strftime("%Y-%m-%dT%H:%M")
+                value: auction.starts_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
             - if auction.errors[:starts_at].any?
               .invalid-feedback= auction.errors[:starts_at].to_sentence
           .col-sm-6
             = f.label :ends_at, "Ends At", class: "form-label"
             = f.datetime_local_field :ends_at, class: "form-control #{'is-invalid' if auction.errors[:ends_at].any?}",
-                value: auction.ends_at&.strftime("%Y-%m-%dT%H:%M")
+                value: auction.ends_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
             - if auction.errors[:ends_at].any?
               .invalid-feedback= auction.errors[:ends_at].to_sentence
+        - if auction.timezone.present?
+          %small.text-muted Times are in #{auction.timezone}
         .row.g-3
           .col-sm-6
             = f.label :end_time_stagger_interval, "Lot end time stagger (seconds)", class: "form-label"
@@ -148,4 +150,4 @@
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"
-    = link_to "Cancel", admin_auctions_path, class: "btn btn-outline-secondary"
+    = link_to "Cancel", auction.persisted? ? admin_auction_path(auction) : admin_auctions_path, class: "btn btn-outline-secondary"
