@@ -51,6 +51,7 @@ class Admin::AuctionsController < Admin::BaseController
     authorize(@auction)
 
     if @auction.save
+      schedule_reconciler(@auction)
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully created."
     else
       render :new, status: :unprocessable_content
@@ -65,6 +66,7 @@ class Admin::AuctionsController < Admin::BaseController
     @auction.poster.purge_later if params[:remove_poster].present?
     @auction.terms_and_conditions.purge_later if params[:remove_terms_and_conditions].present?
     if @auction.update(timezone_aware_auction_params)
+      schedule_reconciler(@auction) if @auction.saved_change_to_ends_at?
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
     else
       render :edit, status: :unprocessable_content
@@ -99,5 +101,15 @@ class Admin::AuctionsController < Admin::BaseController
     p[:starts_at] = tz.parse(p[:starts_at]) if p[:starts_at].present?
     p[:ends_at]   = tz.parse(p[:ends_at])   if p[:ends_at].present?
     p
+  end
+
+  def schedule_reconciler(auction)
+    return unless auction.ends_at.present?
+
+    tz = ActiveSupport::TimeZone[auction.timezone] || Time.zone
+    run_at = auction.auction_listings.minimum(:ends_at)&.in_time_zone(tz) ||
+             auction.ends_at.in_time_zone(tz)
+
+    AuctionReconcilerJob.set(wait_until: run_at).perform_later(auction)
   end
 end

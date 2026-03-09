@@ -1,14 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { endsAt: String, label: String, labelThreshold: Number, reload: Boolean }
+  static values = { endsAt: String, badge: Boolean, reload: Boolean }
   static targets = ["display"]
 
   declare endsAtValue: string
-  declare hasLabelValue: boolean
-  declare labelValue: string
-  declare hasLabelThresholdValue: boolean
-  declare labelThresholdValue: number
+  declare badgeValue: boolean
   declare reloadValue: boolean
   declare hasDisplayTarget: boolean
   declare displayTarget: HTMLElement
@@ -42,14 +39,14 @@ export default class extends Controller {
 
     if (!this.hasDisplayTarget) return
 
-    if (this.hasLabelThresholdValue && diff > this.labelThresholdValue * 1000) {
-      this.displayTarget.textContent = this.hasLabelValue ? this.labelValue : ""
-      return
-    }
-
-    if (this.hasLabelThresholdValue) {
-      const seconds = Math.ceil(diff / 1000)
-      this.displayTarget.textContent = `Ending in ${seconds}s`
+    if (this.badgeValue) {
+      if (diff >= 60000) {
+        const mins = Math.floor(diff / 60000)
+        this.displayTarget.textContent = `Ending Soon! ${mins}m`
+      } else {
+        const secs = Math.floor(diff / 1000)
+        this.displayTarget.textContent = `Ending Soon! ${secs}s`
+      }
       return
     }
 

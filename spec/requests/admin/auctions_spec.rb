@@ -134,6 +134,35 @@ RSpec.describe "Admin::Auctions", type: :request do
       end
     end
 
+    context "reconciler scheduling" do
+      let(:timezone)        { "Pacific Time (US & Canada)" }
+      let(:ends_at_str)     { "2026-09-01 14:00" }
+      let(:expected_run_at) { ActiveSupport::TimeZone[timezone].parse(ends_at_str) }
+
+      context "when ends_at and timezone are provided" do
+        it "enqueues AuctionReconcilerJob at the UTC-equivalent of the local end time" do
+          expect {
+            post admin_auctions_path, params: {
+              auction: {
+                name: "Fall Auction",
+                starts_at: "2026-09-01 10:00",
+                ends_at: ends_at_str,
+                timezone: timezone
+              }
+            }
+          }.to have_enqueued_job(AuctionReconcilerJob).at(expected_run_at)
+        end
+      end
+
+      context "when ends_at is not provided" do
+        it "does not enqueue AuctionReconcilerJob" do
+          expect {
+            post admin_auctions_path, params: { auction: { name: "Undated Auction" } }
+          }.not_to have_enqueued_job(AuctionReconcilerJob)
+        end
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 
@@ -204,6 +233,42 @@ RSpec.describe "Admin::Auctions", type: :request do
         }
 
         expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "reconciler scheduling" do
+      # Auction factory default timezone is "Eastern Time (US & Canada)"
+      let(:auction) do
+        create(:auction,
+          timezone:   "Eastern Time (US & Canada)",
+          starts_at:  "2026-10-01 09:00:00 -0400",
+          ends_at:    "2026-10-01 17:00:00 -0400")
+      end
+
+      context "when ends_at is changed" do
+        let(:new_ends_at_str) { "2026-10-02 18:00" }
+        let(:expected_run_at) { ActiveSupport::TimeZone["Eastern Time (US & Canada)"].parse(new_ends_at_str) }
+
+        it "enqueues AuctionReconcilerJob at the new end time in the auction's timezone" do
+          expect {
+            patch admin_auction_path(auction), params: {
+              auction: {
+                ends_at:  new_ends_at_str,
+                timezone: "Eastern Time (US & Canada)"
+              }
+            }
+          }.to have_enqueued_job(AuctionReconcilerJob).at(expected_run_at)
+        end
+      end
+
+      context "when ends_at is not changed" do
+        it "does not enqueue AuctionReconcilerJob" do
+          clear_enqueued_jobs
+
+          expect {
+            patch admin_auction_path(auction), params: { auction: { name: "Renamed Auction" } }
+          }.not_to have_enqueued_job(AuctionReconcilerJob)
+        end
       end
     end
 

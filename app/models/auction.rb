@@ -36,9 +36,6 @@ class Auction < ApplicationRecord
     errors.add(:end_time_stagger_interval, "cannot change after auction has started")
   end
 
-  after_create_commit  :schedule_reconciler, if: -> { ends_at.present? }
-  after_update_commit  :schedule_reconciler, if: -> { saved_change_to_ends_at? && ends_at.present? }
-
   def starts_at_in_time_zone
     starts_at&.in_time_zone(timezone)
   end
@@ -59,13 +56,9 @@ class Auction < ApplicationRecord
 
   private
 
-  def schedule_reconciler
-    run_at = auction_listings.minimum(:ends_at) || ends_at
-    AuctionReconcilerJob.set(wait_until: run_at).perform_later(self)
-  end
-
   def ends_at_after_starts_at
     return unless starts_at.present? && ends_at.present?
     errors.add(:ends_at, "must be after start time") if ends_at <= starts_at
   end
 end
+

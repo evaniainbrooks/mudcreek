@@ -16,9 +16,9 @@
       - if listing.sold? || listing.cancelled?
         .position-absolute.top-0.start-0.p-2
           = listing_state_badge(listing)
-      - elsif auction_listing.ends_at && auction_listing.ends_at > Time.current && auction_listing.ends_at < 5.minutes.from_now
+      - elsif auction_listing.ends_at && auction_listing.ends_at > Time.current && auction_listing.ends_at < 10.minutes.from_now
         .position-absolute.top-0.start-0.p-2
-          %span.badge.text-bg-danger{ data: { controller: "countdown", "countdown-ends-at-value": auction_listing.ends_at.iso8601, "countdown-label-value": "Ending Soon!", "countdown-label-threshold-value": 60 } }
+          %span.badge.text-bg-warning{ data: { controller: "countdown", "countdown-ends-at-value": auction_listing.ends_at.iso8601, "countdown-badge-value": true } }
             %span{ data: { "countdown-target": "display" } } Ending Soon!
       - unless auction_listing.reserve_price_cents.present? || listing.sold? || listing.cancelled?
         .position-absolute.top-0.end-0.p-2

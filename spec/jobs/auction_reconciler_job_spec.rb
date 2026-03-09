@@ -137,48 +137,4 @@ RSpec.describe AuctionReconcilerJob do
     end
   end
 
-  describe "scheduling" do
-    context "when ends_at is set on a new auction" do
-      it "enqueues AuctionReconcilerJob" do
-        auction = create(:auction)
-
-        expect {
-          auction.update!(starts_at: 1.hour.from_now, ends_at: 2.hours.from_now)
-        }.to have_enqueued_job(AuctionReconcilerJob)
-      end
-
-      it "schedules at ends_at when there are no listings" do
-        freeze_time do
-          auction = create(:auction)
-          run_at = 2.hours.from_now
-
-          expect {
-            auction.update!(starts_at: 1.hour.from_now, ends_at: run_at)
-          }.to have_enqueued_job(AuctionReconcilerJob).at(run_at)
-        end
-      end
-    end
-
-    context "when ends_at is changed on an existing auction" do
-      it "enqueues AuctionReconcilerJob" do
-        auction = create(:auction, starts_at: 1.hour.from_now, ends_at: 2.hours.from_now)
-        clear_enqueued_jobs
-
-        expect {
-          auction.update!(ends_at: 3.hours.from_now)
-        }.to have_enqueued_job(AuctionReconcilerJob)
-      end
-    end
-
-    context "when a field other than ends_at is updated" do
-      it "does not enqueue AuctionReconcilerJob" do
-        auction = create(:auction, starts_at: 1.hour.from_now, ends_at: 2.hours.from_now)
-        clear_enqueued_jobs
-
-        expect {
-          auction.update!(name: "Updated Name")
-        }.not_to have_enqueued_job(AuctionReconcilerJob)
-      end
-    end
-  end
 end
