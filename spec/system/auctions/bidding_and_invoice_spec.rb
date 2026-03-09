@@ -22,15 +22,21 @@ RSpec.describe "Auction bidding and invoice generation", type: :system do
   # Listing 2: no reserve price — bidder wins it
   let(:listing2) { create(:listing, state: :on_sale, published: true, owner: owner) }
 
+  let!(:schedule) do
+    s = BidIncrementSchedule.create!(auction_id: nil)
+    s.tiers.create!(min_amount_cents: 0, increment_cents: 500)
+    s
+  end
+
   # ends_at is auto-set to auction.ends_at via initialize_end_time
   let!(:auction_listing1) do
     create(:auction_listing, auction: auction, listing: listing1,
-      starting_bid_cents: 1_000, bid_increment_cents: 500,
+      starting_bid_cents: 1_000,
       reserve_price_cents: 10_000)
   end
   let!(:auction_listing2) do
     create(:auction_listing, auction: auction, listing: listing2,
-      starting_bid_cents: 2_000, bid_increment_cents: 500)
+      starting_bid_cents: 2_000)
   end
 
   before { ActionMailer::Base.deliveries.clear }

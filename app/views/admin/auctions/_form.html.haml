@@ -40,6 +40,25 @@
           - if auction.errors[:description].any?
             .invalid-feedback.d-block= auction.errors[:description].to_sentence
 
+      %fieldset.mb-4{ data: { controller: "bid-increment-schedule" } }
+        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
+          %i.bi.bi-ladder.me-1
+          Bid Increment Schedule
+        = f.fields_for :bid_increment_schedule do |s|
+          .tier-container{ data: { bid_increment_schedule_target: "tiersContainer" } }
+            .d-flex.gap-2.mb-1
+              %small.text-muted.w-50 Min Amount (cents)
+              %small.text-muted.w-50 Increment (cents)
+            = s.fields_for :tiers do |t|
+              = render "admin/shared/bid_increment_tier_fields", tier_form: t
+          .mt-2
+            %button.btn.btn-sm.btn-outline-secondary{ type: "button", data: { action: "bid-increment-schedule#addTier" } }
+              %i.bi.bi-plus-lg.me-1
+              Add Tier
+          %template{ data: { bid_increment_schedule_target: "tierTemplate" } }
+            = s.fields_for :tiers, BidIncrementTier.new, child_index: "new_tier" do |t|
+              = render "admin/shared/bid_increment_tier_fields", tier_form: t
+
       %fieldset
         %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
           %i.bi.bi-calendar-range.me-1

@@ -48,7 +48,12 @@
           .d-flex.align-items-center.gap-2
             %span.badge.text-bg-danger.py-2.px-3 Registration Declined
         - elsif !auction.reconciled? && (auction.ends_at.nil? || auction.ends_at > Time.current)
-          %button.btn.btn-primary.w-100{ type: "button", data: { bs_toggle: "modal", bs_target: "#auction-register-modal-#{auction.hashid}" } }
-            %i.bi.bi-person-plus.me-2
-            Register Now
-          = render "auctions/register_modal", auction: auction, modal_id: "auction-register-modal-#{auction.hashid}"
+          - if Current.user
+            %button.btn.btn-primary.w-100{ type: "button", data: { bs_toggle: "modal", bs_target: "#auction-register-modal-#{auction.hashid}" } }
+              %i.bi.bi-person-plus.me-2
+              Register Now
+            = render "auctions/register_modal", auction: auction, modal_id: "auction-register-modal-#{auction.hashid}"
+          - else
+            = link_to new_session_path(return_to: auction_path(auction)), class: "btn btn-primary w-100" do
+              %i.bi.bi-person-plus.me-2
+              Sign In to Register

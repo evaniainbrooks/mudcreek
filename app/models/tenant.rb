@@ -25,6 +25,13 @@ class Tenant < ApplicationRecord
   has_many :auctions, dependent: :restrict_with_error
   has_many :invoices, dependent: :destroy
 
+  has_one :default_bid_increment_schedule,
+    -> { where(auction_id: nil) },
+    class_name: "BidIncrementSchedule",
+    dependent: :destroy
+
+  accepts_nested_attributes_for :default_bid_increment_schedule
+
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   validates :name, presence: true

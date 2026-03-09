@@ -8,13 +8,11 @@ class Admin::AuctionListingsController < Admin::BaseController
 
     listings.each do |listing|
       starting_bid_cents = compute_starting_bid(listing.price_cents)
-      bid_increment_cents = starting_bid_cents ? (starting_bid_cents * 0.1).ceil : nil
 
       AuctionListing.create!(
         auction: auction,
         listing_id: listing.id,
-        starting_bid_cents: starting_bid_cents,
-        bid_increment_cents: bid_increment_cents
+        starting_bid_cents: starting_bid_cents
       )
       listing.update_column(:state, new_state) if new_state.present?
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
@@ -29,10 +27,10 @@ class Admin::AuctionListingsController < Admin::BaseController
 
   def compute_starting_bid(price_cents)
     case params[:starting_bid]
-    when "100" then price_cents
-    when "50"  then (price_cents * 0.5).ceil
-    when "10"  then (price_cents * 0.1).ceil
+    when "50"     then (price_cents * 0.5).ceil
+    when "10"     then (price_cents * 0.1).ceil
     when "dollar" then 100
+    else price_cents
     end
   end
 end

@@ -57,8 +57,8 @@
                 { prompt: "Select auction…" },
                 class: "form-select form-select-sm w-auto"
             = f.select :starting_bid,
-                [["No starting bid", "none"], ["100% of price", "100"], ["50% of price", "50"], ["10% of price", "10"], ["$1", "dollar"]],
-                { selected: "none" },
+                [["100% of price", "100"], ["50% of price", "50"], ["10% of price", "10"], ["$1", "dollar"]],
+                { selected: "100" },
                 class: "form-select form-select-sm w-auto"
             = f.select :listing_state,
                 [["Unchanged", ""]] + Listing.states.keys.map { [_1.humanize, _1] },

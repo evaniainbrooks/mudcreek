@@ -15,6 +15,9 @@ class Auction < ApplicationRecord
   has_many :auction_registrations, dependent: :destroy
   has_many :invoices, dependent: :destroy
 
+  has_one :bid_increment_schedule, dependent: :destroy
+  accepts_nested_attributes_for :bid_increment_schedule, allow_destroy: true
+
   delegate :email_address, to: :tenant, prefix: :tenant, allow_nil: true
 
   validates :name, presence: true
@@ -46,6 +49,10 @@ class Auction < ApplicationRecord
 
   def effective_admin_email_address
     admin_email_address.presence || tenant_email_address
+  end
+
+  def effective_bid_increment_schedule
+    bid_increment_schedule || tenant&.default_bid_increment_schedule
   end
 
   scope :unreconciled, -> { where(reconciled: false) }

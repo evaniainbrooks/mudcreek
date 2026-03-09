@@ -43,6 +43,7 @@ class Admin::AuctionsController < Admin::BaseController
     if Current.tenant.default_terms_and_conditions.attached?
       @auction.terms_and_conditions.attach(Current.tenant.default_terms_and_conditions.blob)
     end
+    prepopulate_bid_increment_schedule(@auction)
     authorize(@auction)
   end
 
@@ -60,6 +61,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def edit
     @auction.build_address unless @auction.address
+    prepopulate_bid_increment_schedule(@auction)
   end
 
   def update
@@ -88,7 +90,11 @@ class Admin::AuctionsController < Admin::BaseController
   def auction_params
     p = params.require(:auction).permit(
       :name, :admin_email_address, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :published, :reconciled, :auto_approve, :poster, :terms_and_conditions, :description, :timezone,
-      address_attributes: %i[id street_address city province postal_code country _destroy]
+      address_attributes: %i[id street_address city province postal_code country _destroy],
+      bid_increment_schedule_attributes: [
+        :id,
+        tiers_attributes: [:id, :min_amount_cents, :increment_cents, :_destroy]
+      ]
     )
     p.delete(:poster) if p[:poster].blank?
     p.delete(:terms_and_conditions) if p[:terms_and_conditions].blank?
@@ -101,6 +107,15 @@ class Admin::AuctionsController < Admin::BaseController
     p[:starts_at] = tz.parse(p[:starts_at]) if p[:starts_at].present?
     p[:ends_at]   = tz.parse(p[:ends_at])   if p[:ends_at].present?
     p
+  end
+
+  def prepopulate_bid_increment_schedule(auction)
+    return if auction.bid_increment_schedule.present?
+    schedule = auction.build_bid_increment_schedule
+    Current.tenant.default_bid_increment_schedule&.tiers&.each do |tier|
+      schedule.tiers.build(min_amount_cents: tier.min_amount_cents, increment_cents: tier.increment_cents)
+    end
+    schedule.tiers.build if schedule.tiers.none?
   end
 
   def schedule_reconciler(auction)

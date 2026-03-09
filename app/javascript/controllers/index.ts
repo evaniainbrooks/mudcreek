@@ -1,5 +1,6 @@
 import { application } from "./application"
 import AddCardController from "./add_card_controller"
+import BidIncrementScheduleController from "./bid_increment_schedule_controller"
 import AddressController from "./address_controller"
 import BidButtonController from "./bid_button_controller"
 import CountdownController from "./countdown_controller"
@@ -20,6 +21,7 @@ import ViewToggleController from "./view_toggle_controller"
 
 application.register("add-card", AddCardController)
 application.register("address", AddressController)
+application.register("bid-increment-schedule", BidIncrementScheduleController)
 application.register("bid-button", BidButtonController)
 application.register("countdown", CountdownController)
 application.register("cart", CartController)

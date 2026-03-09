@@ -113,7 +113,6 @@ module Admin::AuctionsHelper
       tag.span("#{seconds}s", class: seconds.zero? ? "text-muted" : nil)
     end
     table.with_column("Starting Bid") { |al| auction_listing_money_inline_cell("starting_bid", al, auction) }
-    table.with_column("Bid Increment") { |al| auction_listing_money_inline_cell("bid_increment", al, auction) }
     table.with_column("Reserve") { |al| auction_listing_money_inline_cell("reserve_price", al, auction) }
     table.with_column("Actions", html_class: "text-end") do |al|
       button_to("Remove", admin_auction_auction_listing_path(auction, al),

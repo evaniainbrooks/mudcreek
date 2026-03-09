@@ -9,7 +9,12 @@ RSpec.describe "Bids", type: :request do
   let(:user)    { create(:user) }
   let(:listing) { create(:listing, published: true) }
   let(:auction) { create(:auction, published: true, auto_approve: true, starts_at: 1.day.ago, ends_at: 1.day.from_now) }
-  let!(:auction_listing) { create(:auction_listing, auction: auction, listing: listing, starting_bid_cents: 1000, bid_increment_cents: 500) }
+  let!(:schedule) do
+    s = BidIncrementSchedule.create!(auction_id: nil)
+    s.tiers.create!(min_amount_cents: 0, increment_cents: 500)
+    s
+  end
+  let!(:auction_listing) { create(:auction_listing, auction: auction, listing: listing, starting_bid_cents: 1000) }
 
   let(:bid_path) { auction_auction_listing_bids_path(auction, auction_listing) }
 

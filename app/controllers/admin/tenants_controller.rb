@@ -3,6 +3,8 @@ module Admin
     def show
       @tenant = Current.tenant
       authorize(@tenant)
+      @tenant.build_default_bid_increment_schedule if @tenant.default_bid_increment_schedule.nil?
+      @tenant.default_bid_increment_schedule.tiers.build if @tenant.default_bid_increment_schedule.tiers.none?
     end
 
     def update
@@ -29,7 +31,11 @@ module Admin
         :description,
         :currency,
         :custom_domain,
-        address_attributes: %i[id street_address city province postal_code country _destroy]
+        address_attributes: %i[id street_address city province postal_code country _destroy],
+        default_bid_increment_schedule_attributes: [
+          :id,
+          { tiers_attributes: [:id, :min_amount_cents, :increment_cents, :_destroy] }
+        ]
       )
       p.delete(:logo) if p[:logo].blank?
       p.delete(:default_terms_and_conditions) if p[:default_terms_and_conditions].blank?

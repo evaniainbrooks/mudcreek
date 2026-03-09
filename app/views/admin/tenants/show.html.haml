@@ -86,6 +86,30 @@
                     = addr.label :country, "Country", class: "form-label"
                     = addr.text_field :country, class: "form-control"
 
+              %h6.mb-3
+                %i.bi.bi-ladder.me-1
+                Default Bid Increment Schedule
+
+              .mb-3{ data: { controller: "bid-increment-schedule" } }
+                = f.fields_for :default_bid_increment_schedule do |s|
+                  .mb-2
+                    %small.text-muted
+                      Set price bands and required bid increments. Individual auctions can override this with their own schedule.
+                  .tier-container{ data: { bid_increment_schedule_target: "tiersContainer" } }
+                    .d-flex.gap-2.mb-1
+                      %small.text-muted.w-50 Min Amount (cents)
+                      %small.text-muted.w-50 Increment (cents)
+                    = s.fields_for :tiers do |t|
+                      = render "admin/shared/bid_increment_tier_fields", tier_form: t
+                  .mt-2
+                    %button.btn.btn-sm.btn-outline-secondary{ type: "button", data: { action: "bid-increment-schedule#addTier" } }
+                      %i.bi.bi-plus-lg.me-1
+                      Add Tier
+                  %template{ data: { bid_increment_schedule_target: "tierTemplate" } }
+                    - schedule = @tenant.default_bid_increment_schedule
+                    = s.fields_for :tiers, schedule.tiers.build, child_index: "new_tier" do |t|
+                      = render "admin/shared/bid_increment_tier_fields", tier_form: t
+
               .d-flex.gap-2.mt-4
                 = f.submit class: "btn btn-primary"
                 = link_to "Cancel", admin_auctions_path, class: "btn btn-outline-secondary"

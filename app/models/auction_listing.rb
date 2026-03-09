@@ -6,8 +6,8 @@ class AuctionListing < ApplicationRecord
 
   acts_as_list scope: :auction
 
-  monetize :starting_bid_cents,  with_model_currency: :currency, allow_nil: true
-  monetize :bid_increment_cents, with_model_currency: :currency, allow_nil: true
+  monetize :starting_bid_cents,  with_model_currency: :currency
+  validates :starting_bid_cents, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   monetize :reserve_price_cents, with_model_currency: :currency, allow_nil: true
 
   has_many :bids, dependent: :destroy
@@ -42,15 +42,20 @@ class AuctionListing < ApplicationRecord
   end
 
   def next_bid_amount
-    cents = if current_bid
-      current_bid.amount_cents + (bid_increment_cents || 0)
+    if current_bid
+      increment = effective_bid_increment_cents(current_bid.amount_cents)
+      Money.new(current_bid.amount_cents + increment, currency)
     else
-      starting_bid_cents || 0
+      Money.new(starting_bid_cents, currency)
     end
-    Money.new(cents, currency)
   end
 
   private
+
+  def effective_bid_increment_cents(current_amount_cents)
+    schedule = auction.effective_bid_increment_schedule
+    schedule&.increment_for(current_amount_cents) || 0
+  end
 
   def generate_hashid
     return if hashid.present?

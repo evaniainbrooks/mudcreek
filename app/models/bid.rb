@@ -31,8 +31,8 @@ class Bid < ApplicationRecord
 
   def listing_must_have_bid_configuration
     return unless auction_listing
-    return if auction_listing.starting_bid_cents.present? && auction_listing.bid_increment_cents.present?
-    errors.add(:base, "this listing does not have a starting bid and bid increment configured")
+    return if auction_listing.auction.effective_bid_increment_schedule.present?
+    errors.add(:base, "this listing does not have a bid increment configured")
   end
 
   def cannot_outbid_yourself

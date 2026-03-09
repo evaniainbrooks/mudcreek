@@ -507,6 +507,22 @@ end
 
 puts "Seeded #{DeliveryMethod.count} delivery methods."
 
+# Default Bid Increment Schedule
+Current.tenant = mudcreek
+schedule = BidIncrementSchedule.find_or_create_by!(auction_id: nil)
+schedule.tiers.destroy_all
+[
+  { min_amount_cents:       0, increment_cents:   500 },  # $0+      → $5
+  { min_amount_cents:  10_000, increment_cents: 1_000 },  # $100+    → $10
+  { min_amount_cents:  25_000, increment_cents: 2_500 },  # $250+    → $25
+  { min_amount_cents:  50_000, increment_cents: 5_000 },  # $500+    → $50
+  { min_amount_cents: 100_000, increment_cents: 10_000 }  # $1,000+  → $100
+].each do |attrs|
+  schedule.tiers.create!(attrs)
+end
+puts "Seeded default bid increment schedule with #{schedule.tiers.count} tiers."
+Current.tenant = nil
+
 # Auctions
 AuctionListing.destroy_all
 Auction.destroy_all
@@ -594,8 +610,7 @@ auctions = auction_data.map do |attrs|
       auction: auction,
       listing: listing,
       position: idx + 1,
-      starting_bid_cents:  listing_attrs[:starting_bid]  ? listing_attrs[:starting_bid]  * 100 : nil,
-      bid_increment_cents: listing_attrs[:bid_increment] ? listing_attrs[:bid_increment] * 100 : nil,
+      starting_bid_cents:  listing_attrs[:starting_bid] * 100,
       reserve_price_cents: listing_attrs[:reserve_price] ? listing_attrs[:reserve_price] * 100 : nil
     )
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_08_232845) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_000004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,7 +78,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_08_232845) do
 
   create_table "auction_listings", force: :cascade do |t|
     t.bigint "auction_id", null: false
-    t.integer "bid_increment_cents"
     t.datetime "created_at", null: false
     t.datetime "ends_at"
     t.integer "extension_count", default: 0, null: false
@@ -86,7 +85,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_08_232845) do
     t.bigint "listing_id", null: false
     t.integer "position"
     t.integer "reserve_price_cents"
-    t.integer "starting_bid_cents"
+    t.integer "starting_bid_cents", null: false
     t.datetime "updated_at", null: false
     t.index ["auction_id"], name: "index_auction_listings_on_auction_id"
     t.index ["ends_at"], name: "index_auction_listings_on_ends_at"
@@ -122,6 +121,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_08_232845) do
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_auctions_on_hashid", unique: true
     t.index ["tenant_id"], name: "index_auctions_on_tenant_id"
+  end
+
+  create_table "bid_increment_schedules", force: :cascade do |t|
+    t.bigint "auction_id"
+    t.datetime "created_at", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["auction_id"], name: "index_bid_increment_schedules_on_auction_id", unique: true
+    t.index ["tenant_id"], name: "index_bid_increment_schedules_on_tenant_id"
+  end
+
+  create_table "bid_increment_tiers", force: :cascade do |t|
+    t.bigint "bid_increment_schedule_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "increment_cents", null: false
+    t.integer "min_amount_cents", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["bid_increment_schedule_id"], name: "index_bid_increment_tiers_on_bid_increment_schedule_id"
   end
 
   create_table "bids", force: :cascade do |t|
