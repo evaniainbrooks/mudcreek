@@ -45,7 +45,7 @@
                           %span.badge.rounded-pill.bg-primary.ms-1= cart_item_count
                     - if Current.user.role&.permissions&.any?
                       %li
-                        = link_to admin_listings_path, class: "dropdown-item" do
+                        = link_to admin_root_path, class: "dropdown-item" do
                           %i.bi.bi-gear-fill.me-1
                           Admin
                     %li

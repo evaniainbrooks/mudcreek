@@ -53,7 +53,8 @@ RSpec.describe "Bids", type: :request do
       before do
         other_user = create(:user)
         registration = AuctionRegistration.create!(auction: auction, user: other_user)
-        auction_listing.bids.create!(auction_registration: registration, amount_cents: 2000)
+        bid = auction_listing.bids.build(auction_registration: registration, amount_cents: 2000)
+        bid.save!(validate: false)
       end
 
       it "does not create a bid when the submitted amount does not exceed the current bid" do

@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :subdivisions, only: [ :index ]
 
   namespace :admin do
+    root to: "dashboard#index"
     resource :tenant, only: [ :show, :update ]
     resources :users, only: [ :index, :show ]
     resources :lots, only: [ :index, :create, :update, :destroy ] do

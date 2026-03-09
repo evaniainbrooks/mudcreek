@@ -1,9 +1,9 @@
 class ApplicationController < ActionController::Base
   include Authentication
-  include PauseProsopite
   include Pagy::Method
 
   around_action :scan_for_n_plus_one if Rails.env.local?
+  include PauseProsopite
   before_action :set_current_tenant
   before_action :resume_session
   before_action :set_default_meta_tags

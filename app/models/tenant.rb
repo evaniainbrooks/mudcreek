@@ -33,6 +33,7 @@ class Tenant < ApplicationRecord
   validates :currency, presence: true
   validates :default, inclusion: { in: [ true, false ] }
   validates :default, uniqueness: { if: :default? }
+  validates :custom_domain, format: { with: /\A[a-z0-9\-\.]+\z/, message: "can only contain lowercase letters, numbers, hyphens, and dots" }, allow_blank: true
 
   def self.default = find_by!(default: true)
 

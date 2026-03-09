@@ -26,6 +26,12 @@
                 - if @tenant.errors[:email_address].any?
                   .invalid-feedback= @tenant.errors[:email_address].to_sentence
               .mb-3
+                = f.label :custom_domain, "Custom Domain", class: "form-label"
+                = f.text_field :custom_domain, class: "form-control #{'is-invalid' if @tenant.errors[:custom_domain].any?}", placeholder: "example.com"
+                %div.form-text Used for generating absolute URLs in emails and broadcasts.
+                - if @tenant.errors[:custom_domain].any?
+                  .invalid-feedback= @tenant.errors[:custom_domain].to_sentence
+              .mb-3
                 = f.label :description, class: "form-label"
                 = f.rich_text_area :description, class: "form-control #{'is-invalid' if @tenant.errors[:description].any?}"
                 - if @tenant.errors[:description].any?

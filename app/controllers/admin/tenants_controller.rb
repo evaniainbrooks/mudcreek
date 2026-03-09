@@ -28,6 +28,7 @@ module Admin
         :default_terms_and_conditions,
         :description,
         :currency,
+        :custom_domain,
         address_attributes: %i[id street_address city province postal_code country _destroy]
       )
       p.delete(:logo) if p[:logo].blank?

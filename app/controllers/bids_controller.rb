@@ -93,8 +93,10 @@ class BidsController < ApplicationController
     Turbo::StreamsChannel.broadcast_replace_to(
       @auction,
       target: ActionView::RecordIdentifier.dom_id(fresh_auction_listing),
-      partial: "auctions/listing_card",
-      locals: { auction_listing: fresh_auction_listing, auction: @auction, registration: nil }
+      html: render_to_string(
+        partial: "auctions/listing_card",
+        locals: { auction_listing: fresh_auction_listing, auction: @auction, registration: nil }
+      )
     )
   end
 end

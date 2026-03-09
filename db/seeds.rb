@@ -421,7 +421,7 @@ end
 # Offers
 Current.tenant = mudcreek
 if Rails.env.development? || Rails.env.test?
-  buyer_ids = User.where(tenant: mudcreek).where.not(email_address: "admin@mudcreek").pluck(:id)
+  buyer_ids = User.where(tenant: mudcreek).where.not(email_address: "admin@mudcreek.com").pluck(:id)
   negotiable_listings = Listing.where(tenant: mudcreek, pricing_type: :negotiable).to_a
 
   offer_data = [
@@ -705,12 +705,12 @@ if Rails.env.local?
           reg = approved_regs[bid_attrs[:reg_index]]
           next unless reg
 
-          Bid.create!(
+          Bid.new(
             auction_listing:      al,
             auction_registration: reg,
             amount_cents:         bid_attrs[:amount_cents],
             state:                :placed
-          )
+          ).save!(validate: false)
         end
       end
 

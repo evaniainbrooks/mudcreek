@@ -8,6 +8,8 @@ RSpec.describe "Admin::Users index", type: :system do
   before { sign_in_as(current_user) }
 
   it "shows the users heading and table" do
+    visit admin_users_path
+
     expect(page).to have_text("Users")
     expect(page).to have_css("table")
   end
