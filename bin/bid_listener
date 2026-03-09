@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require_relative "../config/environment"
+require_relative "../lib/bid_listener"
+require_relative "../lib/bid_listener_process"
+
+BidListenerProcess.run

@@ -4,8 +4,13 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
-  <<: *default
-  database: mudcreek_development
+  primary:
+    <<: *default
+    database: mudcreek_development
+  cable:
+    <<: *default
+    database: mudcreek_development
+    database_tasks: false
 
 test:
   <<: *default

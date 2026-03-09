@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_000004) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -643,4 +643,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_000004) do
   add_foreign_key "transactions", "orders"
   add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"
+
+  create_function :notify_bid_event, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.notify_bid_event()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+        PERFORM pg_notify(
+          'bid_events',
+          json_build_object(
+            'bid_id',                  NEW.id,
+            'auction_listing_id',      NEW.auction_listing_id,
+            'auction_registration_id', NEW.auction_registration_id,
+            'amount_cents',            NEW.amount_cents,
+            'state',                   NEW.state
+          )::text
+        );
+        RETURN NEW;
+      END;
+      $function$
+  SQL
+
+  create_trigger :bid_event_trigger, sql_definition: <<-SQL
+      CREATE TRIGGER bid_event_trigger AFTER INSERT OR UPDATE ON public.bids FOR EACH ROW EXECUTE FUNCTION notify_bid_event()
+  SQL
 end

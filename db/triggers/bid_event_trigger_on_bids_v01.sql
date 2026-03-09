@@ -1,0 +1,3 @@
+CREATE TRIGGER bid_event_trigger
+AFTER INSERT OR UPDATE ON bids
+FOR EACH ROW EXECUTE FUNCTION notify_bid_event();

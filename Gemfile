@@ -63,6 +63,9 @@ gem "pagy"
 # Safe database migrations
 gem "strong_migrations"
 
+# Database functions and triggers
+gem "fx"
+
 # Ordered list management
 gem "acts_as_list"
 
