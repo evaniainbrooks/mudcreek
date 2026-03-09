@@ -1,7 +1,7 @@
 %div{ id: dom_id(auction_listing, :bid_panel) }
-  .d-flex.flex-column.align-items-center.gap-2.mt-3
-    = render("auction_listings/bid_count", auction_listing:)
+  .d-flex.flex-row.align-items-center.gap-2.mt-3
     = render("auction_listings/current_bid", auction_listing:)
+    = render("auction_listings/bid_count", auction_listing:)
   = render BidButtonComponent.new(auction_listing: auction_listing,
     auction: auction,
     registration: registration,

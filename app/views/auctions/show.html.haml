@@ -51,6 +51,9 @@
             %i.bi.bi-calendar-event.flex-shrink-0
             %span= @auction.starts_at_in_time_zone.to_fs(:long)
             %small.text-muted= @auction.starts_at_in_time_zone.strftime("%Z")
+          - if @auction.starts_at > Time.current
+            .text-muted.small{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601 } }
+              %span{ data: { "countdown-target": "display" } }
 
       - if @auction.ends_at
         .mb-2
@@ -59,6 +62,9 @@
             %i.bi.bi-calendar-check.flex-shrink-0
             %span= @auction.ends_at_in_time_zone.to_fs(:long)
             %small.text-muted= @auction.ends_at_in_time_zone.strftime("%Z")
+          - if @auction.ends_at > Time.current
+            .text-muted.small{ data: { controller: "countdown", "countdown-ends-at-value": @auction.ends_at.iso8601 } }
+              %span{ data: { "countdown-target": "display" } }
 
       - if @auction.address&.any?
         - addr = @auction.address

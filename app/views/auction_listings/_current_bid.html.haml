@@ -1,5 +1,5 @@
 - if auction_listing.current_bid
   - if auction_listing.listing.sold?
-    %span.badge.text-bg-success.fs-6{ style: "font-family: Georgia, serif; letter-spacing: 0.02em;" } Sold for #{humanized_money_with_symbol(auction_listing.current_bid.amount)}
+    %span.badge.text-bg-danger.fs-6{ style: "font-family: Georgia, serif; letter-spacing: 0.02em;" } Sold for #{humanized_money_with_symbol(auction_listing.current_bid.amount)}
   - else
-    %span.small High Bid #{humanized_money_with_symbol(auction_listing.current_bid.amount)}
+    %span.badge.text-bg-dark.fs-6{ style: "font-family: Georgia, serif; letter-spacing: 0.02em;" } High Bid #{humanized_money_with_symbol(auction_listing.current_bid.amount)}
