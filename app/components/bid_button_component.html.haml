@@ -12,7 +12,10 @@
       .d-flex.flex-column.align-items-center
         - next_amount = @auction_listing.next_bid_amount
         - if next_amount > 0
-          = button_to auction_auction_listing_bids_path(@auction, @auction_listing), method: :post, class: @button_class, params: { amount_cents: next_amount.cents } do
+          = button_to auction_auction_listing_bids_path(@auction, @auction_listing),
+            method: :post,
+            class: @button_class,
+            params: { amount_cents: next_amount.cents } do
             Bid #{helpers.humanized_money_with_symbol(next_amount)}
         - else
           %button{ class: @button_class, disabled: true }

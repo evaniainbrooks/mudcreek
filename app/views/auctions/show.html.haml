@@ -42,7 +42,9 @@
           %strong Auction has ended!
       - elsif @auction.starts_at
         - if @auction.starts_at > Time.current
-          .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601, "countdown-reload-value": true } }
+          .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown",
+            "countdown-ends-at-value": @auction.starts_at.iso8601,
+            "countdown-reload-value": true } }
             %i.bi.bi-clock.flex-shrink-0
             %strong{ data: { "countdown-target": "display" } }
         - else
@@ -57,7 +59,8 @@
             %span= @auction.starts_at_in_time_zone.to_fs(:long)
             %small.text-muted= @auction.starts_at_in_time_zone.strftime("%Z")
           - if @auction.starts_at > Time.current
-            .text-muted.small{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601 } }
+            .text-muted.small{ data: { controller: "countdown",
+              "countdown-ends-at-value": @auction.starts_at.iso8601 } }
               %span{ data: { "countdown-target": "display" } }
 
       - if @auction.ends_at
@@ -68,7 +71,8 @@
             %span= @auction.ends_at_in_time_zone.to_fs(:long)
             %small.text-muted= @auction.ends_at_in_time_zone.strftime("%Z")
           - if @auction.ends_at > Time.current
-            .text-muted.small{ data: { controller: "countdown", "countdown-ends-at-value": @auction.ends_at.iso8601 } }
+            .text-muted.small{ data: { controller: "countdown",
+              "countdown-ends-at-value": @auction.ends_at.iso8601 } }
               %span{ data: { "countdown-target": "display" } }
 
       - if @auction.address&.any?
@@ -84,14 +88,17 @@
           %p.text-muted.small.mb-0 Terms &amp; Conditions
           .d-flex.align-items-center.gap-2
             %i.bi.bi-file-earmark-text.flex-shrink-0
-            = link_to "View Terms & Conditions", rails_blob_path(@auction.terms_and_conditions, disposition: "inline"), target: "_blank", class: "text-decoration-none"
+              = link_to "View Terms & Conditions",
+                rails_blob_path(@auction.terms_and_conditions, disposition: "inline"),
+                target: "_blank",
+                class: "text-decoration-none"
 
       - if @auction.description.present?
         %hr.my-4
         .auction-description= @auction.description
 
       %hr.my-4
-      %p.fw-semibold.mb-2= "#{@auction_listing_count} #{"listing".pluralize(@auction_listing_count)} on auction"
+      %p.fw-semibold.mb-2 #{@auction_listing_count} #{"listing".pluralize(@auction_listing_count)} on auction
       - if Current.user
         .d-flex.gap-2.mt-3
           = link_to auction_path(@auction),
@@ -109,25 +116,7 @@
             .d-flex.flex-column.align-items-center.gap-1
               %i.bi.bi-hammer{ style: "font-size: 1.5rem" }
               %span.small.fw-semibold My Bids
-
-      - schedule = @auction.effective_bid_increment_schedule
-      - if schedule&.tiers&.any?
-        %hr.my-4
-        %p.fw-semibold.mb-2
-          %i.bi.bi-ladder.me-1
-          Bid Increments
-        %table.table.table-sm.table-bordered.mb-0
-          %thead.table-light
-            %tr
-              %th.text-muted.fw-normal.small Starting Bid
-              %th.text-muted.fw-normal.small Increment
-          %tbody
-            - schedule.tiers.each_with_index do |tier, i|
-              - next_min = schedule.tiers[i + 1]&.min_amount_cents
-              %tr
-                %td.small= next_min ? "#{number_to_currency(tier.min_amount_cents / 100.0)} – #{number_to_currency((next_min - 1) / 100.0)}" : "#{number_to_currency(tier.min_amount_cents / 100.0)}+"
-                %td.small= number_to_currency(tier.increment_cents / 100.0)
-
+      = render "auctions/bid_increment_schedule", schedule: @auction.effective_bid_increment_schedule
   .col-lg-8.bg-body-secondary.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
     - unless @filter
       = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|

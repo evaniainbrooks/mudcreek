@@ -1,0 +1,33 @@
+%ul.nav.nav-tabs.mb-4
+  %li.nav-item
+    %a.nav-link.active{ href: "#profile", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-person-fill.me-2
+      Profile
+  %li.nav-item
+    %a.nav-link{ href: "#orders", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-bag.me-2
+      Orders
+      - if orders.present?
+        %span.badge.text-bg-secondary.ms-1= orders.size
+  %li.nav-item
+    %a.nav-link{ href: "#invoices", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-receipt.me-2
+      Invoices
+      - if invoices.present?
+        %span.badge.text-bg-secondary.ms-1= invoices.size
+  %li.nav-item
+    %a.nav-link{ href: "#auctions", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-hammer.me-2
+      Auctions
+      - if pagy_registrations.count > 0
+        %span.badge.text-bg-secondary.ms-1= pagy_registrations.count
+  %li.nav-item
+    %a.nav-link{ href: "#listings", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-tag.me-2
+      Listings
+      - if pagy_listings.count > 0
+        %span.badge.text-bg-secondary.ms-1= pagy_listings.count
+  %li.nav-item
+    %a.nav-link{ href: "#payment-methods", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-credit-card.me-2
+      Payment Methods

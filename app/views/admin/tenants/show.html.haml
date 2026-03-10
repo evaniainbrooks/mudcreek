@@ -22,23 +22,28 @@
                 = f.text_field :name, required: true, class: "form-control"
               .mb-3
                 = f.label :email_address, "Email Address", class: "form-label"
-                = f.email_field :email_address, class: "form-control #{'is-invalid' if @tenant.errors[:email_address].any?}"
+                = f.email_field :email_address,
+                  class: "form-control #{'is-invalid' if @tenant.errors[:email_address].any?}"
                 - if @tenant.errors[:email_address].any?
                   .invalid-feedback= @tenant.errors[:email_address].to_sentence
               .mb-3
                 = f.label :custom_domain, "Custom Domain", class: "form-label"
-                = f.text_field :custom_domain, class: "form-control #{'is-invalid' if @tenant.errors[:custom_domain].any?}", placeholder: "example.com"
-                %div.form-text Used for generating absolute URLs in emails and broadcasts.
+                = f.text_field :custom_domain,
+                  class: "form-control #{'is-invalid' if @tenant.errors[:custom_domain].any?}", placeholder: "example.com"
+                .form-text Used for generating absolute URLs in emails and broadcasts.
                 - if @tenant.errors[:custom_domain].any?
                   .invalid-feedback= @tenant.errors[:custom_domain].to_sentence
               .mb-3
                 = f.label :description, class: "form-label"
-                = f.rich_text_area :description, class: "form-control #{'is-invalid' if @tenant.errors[:description].any?}"
+                = f.rich_text_area :description,
+                  class: "form-control #{'is-invalid' if @tenant.errors[:description].any?}"
                 - if @tenant.errors[:description].any?
                   .invalid-feedback.d-block= @tenant.errors[:description].to_sentence
               .mb-3
                 = f.label :logo, class: "form-label"
-                = f.file_field :logo, class: "form-control #{'is-invalid' if @tenant.errors[:logo].any?}", accept: "image/*"
+                = f.file_field :logo,
+                  class: "form-control #{'is-invalid' if @tenant.errors[:logo].any?}",
+                  accept: "image/*"
                 - if @tenant.errors[:logo].any?
                   .invalid-feedback= @tenant.errors[:logo].to_sentence
                 - if @tenant.logo.attached?
@@ -51,13 +56,17 @@
                       Remove
               .mb-3
                 = f.label :default_terms_and_conditions, "Default Terms & Conditions", class: "form-label"
-                = f.file_field :default_terms_and_conditions, class: "form-control #{'is-invalid' if @tenant.errors[:default_terms_and_conditions].any?}", accept: ".pdf,.doc,.docx"
+                = f.file_field :default_terms_and_conditions,
+                  class: "form-control #{'is-invalid' if @tenant.errors[:default_terms_and_conditions].any?}",
+                  accept: ".pdf,.doc,.docx"
                 - if @tenant.errors[:default_terms_and_conditions].any?
                   .invalid-feedback= @tenant.errors[:default_terms_and_conditions].to_sentence
                 - if @tenant.default_terms_and_conditions.attached?
                   .mt-2.d-flex.align-items-center.gap-2
                     %i.bi.bi-file-earmark-text.text-muted
-                    = link_to @tenant.default_terms_and_conditions.filename.to_s, rails_blob_path(@tenant.default_terms_and_conditions, disposition: "attachment"), class: "text-decoration-none"
+                    = link_to @tenant.default_terms_and_conditions.filename.to_s,
+                      rails_blob_path(@tenant.default_terms_and_conditions, disposition: "attachment"),
+                      class: "text-decoration-none"
                     = button_to admin_tenant_path, method: :patch, params: { remove_default_terms_and_conditions: true },
                         class: "btn btn-sm btn-outline-danger",
                         form: { data: { turbo_confirm: "Remove default terms & conditions?" } } do
@@ -85,11 +94,9 @@
                   .col-md-6
                     = addr.label :country, "Country", class: "form-label"
                     = addr.text_field :country, class: "form-control"
-
               %h6.mb-3
                 %i.bi.bi-ladder.me-1
                 Default Bid Increment Schedule
-
               .mb-3{ data: { controller: "bid-increment-schedule" } }
                 = f.fields_for :default_bid_increment_schedule do |s|
                   .mb-2
@@ -102,7 +109,8 @@
                     = s.fields_for :tiers do |t|
                       = render "admin/shared/bid_increment_tier_fields", tier_form: t
                   .mt-2
-                    %button.btn.btn-sm.btn-outline-secondary{ type: "button", data: { action: "bid-increment-schedule#addTier" } }
+                    %button.btn.btn-sm.btn-outline-secondary{ type: "button",
+                      data: { action: "bid-increment-schedule#addTier" } }
                       %i.bi.bi-plus-lg.me-1
                       Add Tier
                   %template{ data: { bid_increment_schedule_target: "tierTemplate" } }

@@ -1,29 +1,5 @@
 %h1.h3.fw-bold.mb-1 Admin
 %p.text-muted.mb-5 Welcome back, #{Current.user.first_name}.
 
-- catalog_links = []
-- catalog_links << { label: "Listings",      icon: "bi-tag-fill",       path: admin_listings_path,              policy: policy(Listing) }             if policy(Listing).index?
-- catalog_links << { label: "Auctions",      icon: "bi-hammer",         path: admin_auctions_path,              policy: policy(Auction) }             if policy(Auction).index?
-- catalog_links << { label: "Registrations", icon: "bi-person-check",   path: admin_auction_registrations_path, policy: nil }                         if policy(AuctionRegistration).index?
-- catalog_links << { label: "Categories",    icon: "bi-tags-fill",      path: admin_listings_categories_path,   policy: nil }                         if policy(Listings::Category).index?
-- catalog_links << { label: "Lots",          icon: "bi-map-fill",       path: admin_lots_path,                  policy: nil }                         if policy(Lot).index?
-
-- sales_links = []
-- sales_links << { label: "Orders",    icon: "bi-bag",                    path: admin_orders_path,          policy: nil } if policy(Order).index?
-- sales_links << { label: "Invoices",  icon: "bi-receipt",                path: admin_invoices_path,         policy: nil } if policy(Invoice).index?
-- sales_links << { label: "Offers",    icon: "bi-tag",                    path: admin_offers_path,           policy: nil } if policy(Offer).index?
-- sales_links << { label: "Discounts", icon: "bi-ticket-perforated-fill", path: admin_discount_codes_path,   policy: nil } if policy(DiscountCode).index?
-- sales_links << { label: "Delivery",  icon: "bi-truck",                  path: admin_delivery_methods_path, policy: nil } if policy(DeliveryMethod).index?
-
-- settings_links = []
-- settings_links << { label: "Users",  icon: "bi-people-fill", path: admin_users_path,  policy: nil } if policy(User).index?
-- settings_links << { label: "Roles",  icon: "bi-shield-fill", path: admin_roles_path,  policy: nil } if policy(Role).index?
-- settings_links << { label: "Tenant", icon: "bi-globe",       path: admin_tenant_path, policy: nil } if policy(Tenant).index?
-
-- sections = []
-- sections << { title: "Catalog",  links: catalog_links  } if catalog_links.any?
-- sections << { title: "Sales",    links: sales_links    } if sales_links.any?
-- sections << { title: "Settings", links: settings_links } if settings_links.any?
-
-- sections.each do |section|
+- Admin::Dashboard::NavSectionComponent.sections(self).each do |section|
   = render Admin::Dashboard::NavSectionComponent.new(title: section[:title], links: section[:links])

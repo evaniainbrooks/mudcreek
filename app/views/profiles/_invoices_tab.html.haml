@@ -1,0 +1,39 @@
+- if invoices.blank?
+  = render EmptyStateComponent.new(icon: "receipt",
+      message: "You have no invoices yet.",
+      link_text: "Browse Auctions",
+      link_url: auctions_path)
+- else
+  .card.shadow-sm.border-0
+    .card-body.p-0
+      .table-responsive
+        %table.table.align-middle.mb-0
+          %thead
+            %tr
+              %th.ps-3 Invoice
+              %th Auction
+              %th Date
+              %th Status
+              %th.text-end Total
+              %th
+          %tbody
+            - invoices.each do |invoice|
+              %tr
+                %td.ps-3
+                  = link_to invoice.number, invoice_path(invoice), class: "fw-semibold text-decoration-none"
+                %td.text-muted= invoice.auction&.name || invoice.offer&.listing&.name
+                %td.text-muted= invoice.created_at.to_fs(:long)
+                %td
+                  - if invoice.paid?
+                    %span.badge.text-bg-success Paid
+                  - else
+                    %span.badge.text-bg-warning.text-dark Unpaid
+                %td.text-end= humanized_money_with_symbol(invoice.total)
+                %td.pe-3
+                  - unless invoice.paid?
+                    = button_to pay_invoice_path(invoice),
+                        method: :post,
+                        class: "btn btn-sm btn-primary",
+                        form: { data: { turbo_confirm: "Paying this invoice will clear your current cart. Continue?" } } do
+                      %i.bi.bi-credit-card.me-1
+                      Pay

@@ -1,0 +1,26 @@
+- if orders.blank?
+  = render EmptyStateComponent.new(icon: "bag-x",
+      message: "You haven't placed any orders yet.",
+      link_text: "Browse Listings",
+      link_url: listings_path)
+- else
+  .card.shadow-sm.border-0
+    .card-body.p-0
+      .table-responsive
+        %table.table.align-middle.mb-0
+          %thead
+            %tr
+              %th.ps-3 Order
+              %th Date
+              %th Status
+              %th.text-end.pe-3 Total
+          %tbody
+            - orders.each do |order|
+              %tr
+                %td.ps-3
+                  = link_to order.number, order_path(order), class: "fw-semibold text-decoration-none"
+                  %small.text-muted.ms-2= pluralize(order.order_items.size, "item")
+                %td.text-muted= order.created_at.to_fs(:long)
+                %td
+                  = order_status_badge(order)
+                %td.text-end.pe-3= humanized_money_with_symbol(order.total)

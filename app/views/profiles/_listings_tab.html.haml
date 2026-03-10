@@ -1,0 +1,18 @@
+- if purchased_listings.empty?
+  = render EmptyStateComponent.new(icon: "tag",
+      message: "You haven't purchased any listings yet.",
+      link_text: "Browse Listings",
+      link_url: listings_path)
+- else
+  %div{ data: { controller: "infinite-scroll" } }
+    .card.shadow-sm.border-0
+      .card-body.p-0
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead
+              %tr
+                %th.ps-3 Listing
+                %th Price
+            %tbody#purchased-listings
+              = render partial: "profiles/purchased_listing", collection: purchased_listings, as: :listing
+    = render "profiles/purchased_listings_sentinel", pagy: pagy_listings

@@ -1,0 +1,21 @@
+- if schedule&.tiers&.any?
+  %hr.my-4
+  %p.fw-semibold.mb-2
+    %i.bi.bi-ladder.me-1
+    Bid Increments
+  %table.table.table-sm.table-bordered.mb-0
+    %thead.table-light
+      %tr
+        %th.text-muted.fw-normal.small Starting Bid
+        %th.text-muted.fw-normal.small Increment
+    %tbody
+      - schedule.tiers.each_with_index do |tier, i|
+        - next_min = schedule.tiers[i + 1]&.min_amount_cents
+        %tr
+          %td.small
+            - if next_min
+              #{number_to_currency(tier.min_amount_cents / 100.0)} – #{number_to_currency((next_min - 1) / 100.0)}
+            - else
+              #{number_to_currency(tier.min_amount_cents / 100.0)}+
+          %td.small
+            = number_to_currency(tier.increment_cents / 100.0)
