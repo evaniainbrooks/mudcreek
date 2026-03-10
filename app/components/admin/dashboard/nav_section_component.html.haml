@@ -1,0 +1,5 @@
+%h2.h5.fw-semibold.text-muted.text-uppercase.ls-wide.mb-3= @title
+.row.row-cols-2.row-cols-sm-3.row-cols-md-4.row-cols-lg-5.g-3.mb-5
+  - @links.each do |item|
+    .col
+      = render Admin::Dashboard::NavCardComponent.new(label: item[:label], icon: item[:icon], path: item[:path])
