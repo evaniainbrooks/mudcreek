@@ -44,5 +44,4 @@ class BidsController < ApplicationController
       format.html { redirect_back_or_to fallback }
     end
   end
-
 end

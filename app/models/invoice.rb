@@ -13,6 +13,7 @@ class Invoice < ApplicationRecord
   monetize :total_cents, with_model_currency: :currency
 
   validates :number, presence: true, uniqueness: true
+  validates :offer_id, uniqueness: true, allow_nil: true
 
   before_validation :assign_number, on: :create
 

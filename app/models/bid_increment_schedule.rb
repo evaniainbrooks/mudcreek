@@ -3,6 +3,8 @@ class BidIncrementSchedule < ApplicationRecord
 
   belongs_to :auction, optional: true
 
+  validates :auction_id, uniqueness: true, allow_nil: true
+
   has_many :tiers,
     -> { order(:min_amount_cents) },
     class_name: "BidIncrementTier",

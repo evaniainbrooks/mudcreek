@@ -7,3 +7,44 @@ ActiveStorage::Blob:
   enabled: false
 ActiveStorage::VariantRecord:
   enabled: false
+
+# Conditional validators paired with partial indexes — database_consistency cannot
+# correlate them, but both the DB constraint and the model validation are in place.
+# UniqueIndexChecker uses index name as the key; MissingUniqueIndexChecker uses column name(s).
+Transaction:
+  index_transactions_on_order_id_succeeded:
+    UniqueIndexChecker:
+      enabled: false
+  order_id:
+    MissingUniqueIndexChecker:
+      enabled: false
+
+Tenant:
+  index_tenants_on_default_true:
+    UniqueIndexChecker:
+      enabled: false
+  default:
+    MissingUniqueIndexChecker:
+      enabled: false
+
+Offer:
+  index_offers_on_listing_id_where_accepted:
+    UniqueIndexChecker:
+      enabled: false
+  listing_id:
+    MissingUniqueIndexChecker:
+      enabled: false
+
+CartItem:
+  index_cart_items_on_invoice_item_id_unique:
+    UniqueIndexChecker:
+      enabled: false
+  index_cart_items_on_user_id_and_listing_id_sale_only:
+    UniqueIndexChecker:
+      enabled: false
+  invoice_item_id:
+    MissingUniqueIndexChecker:
+      enabled: false
+  listing_id+user_id:
+    MissingUniqueIndexChecker:
+      enabled: false

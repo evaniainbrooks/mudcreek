@@ -12,7 +12,7 @@
 - sales_links << { label: "Orders",   icon: "bi-bag",                    path: admin_orders_path,         policy: nil } if policy(Order).index?
 - sales_links << { label: "Invoices", icon: "bi-receipt",                path: admin_invoices_path,        policy: nil } if policy(Invoice).index?
 - sales_links << { label: "Offers",   icon: "bi-tag",                    path: admin_offers_path,          policy: nil } if policy(Offer).index?
-- sales_links << { label: "Discounts",icon: "bi-ticket-perforated-fill", path: admin_discount_codes_path,  policy: nil } if policy(DiscountCode).index?
+- sales_links << { label: "Discounts", icon: "bi-ticket-perforated-fill", path: admin_discount_codes_path,  policy: nil } if policy(DiscountCode).index?
 - sales_links << { label: "Delivery", icon: "bi-truck",                  path: admin_delivery_methods_path, policy: nil } if policy(DeliveryMethod).index?
 
 - settings_links = []

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_100002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -191,6 +191,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index "tenant_id, lower((key)::text)", name: "index_discount_codes_on_tenant_id_and_lower_key", unique: true
+    t.index ["key"], name: "index_discount_codes_on_key"
     t.check_constraint "amount_cents > 0", name: "discount_codes_amount_cents_positive"
   end
 
@@ -219,7 +220,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
     t.bigint "user_id", null: false
     t.index ["auction_id"], name: "index_invoices_on_auction_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
-    t.index ["offer_id"], name: "index_invoices_on_offer_id"
+    t.index ["offer_id"], name: "index_invoices_on_offer_id_unique", unique: true
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
@@ -584,6 +585,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index "lower((email_address)::text)", name: "index_users_on_lower_email_address", unique: true
+    t.index ["email_address"], name: "index_users_on_email_address"
     t.index ["role_id"], name: "index_users_on_role_id"
     t.index ["tenant_id"], name: "index_users_on_tenant_id"
   end
@@ -595,6 +597,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
   add_foreign_key "auction_registrations", "auctions"
   add_foreign_key "auction_registrations", "users"
   add_foreign_key "auctions", "tenants"
+  add_foreign_key "bid_increment_schedules", "auctions", on_delete: :cascade
+  add_foreign_key "bid_increment_schedules", "tenants"
+  add_foreign_key "bid_increment_tiers", "bid_increment_schedules", on_delete: :cascade
   add_foreign_key "bids", "auction_listings"
   add_foreign_key "bids", "auction_registrations"
   add_foreign_key "cart_items", "invoice_items", on_delete: :nullify
@@ -606,6 +611,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_062654) do
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "listings", on_delete: :nullify
   add_foreign_key "invoices", "auctions"
+  add_foreign_key "invoices", "offers", on_delete: :nullify
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
   add_foreign_key "listings", "lots", on_delete: :nullify

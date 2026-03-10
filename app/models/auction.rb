@@ -68,4 +68,3 @@ class Auction < ApplicationRecord
     errors.add(:ends_at, "must be after start time") if ends_at <= starts_at
   end
 end
-

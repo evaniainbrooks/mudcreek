@@ -136,5 +136,4 @@ RSpec.describe AuctionReconcilerJob do
       end
     end
   end
-
 end
