@@ -226,7 +226,6 @@ RSpec.describe "Auctions", type: :request do
           expect(response.body).to include("Blue Table")
           expect(response.body).not_to include("Red Chair")
         end
-
       end
 
       context "search filter" do
@@ -260,7 +259,6 @@ RSpec.describe "Auctions", type: :request do
           expect(response.body).to include("Red Chair")
           expect(response.body).not_to include("Blue Table")
         end
-
       end
     end
 

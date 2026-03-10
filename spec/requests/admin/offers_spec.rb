@@ -32,13 +32,13 @@ RSpec.describe "Admin::Offers", type: :request do
       expect(response.body).to include(offer.listing.name)
     end
 
-    context "infinite scroll — turbo stream page request" do
+    context "turbo stream page request" do
       before { create_list(:offer, 25) }
 
       it "appends rows and replaces the sentinel" do
         get admin_offers_path
 
-        next_url  = response.body[/data-url="([^"]+)"/, 1]
+        next_url  = response.body[/href="([^"]*page=[^"]+)"/, 1]
         next_page = URI.decode_www_form(URI.parse(next_url).query).to_h["page"]
 
         get admin_offers_path(page: next_page),
