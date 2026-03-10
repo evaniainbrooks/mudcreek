@@ -115,6 +115,72 @@ RSpec.describe "CartItems", type: :request do
     end
   end
 
+  describe "PATCH /cart_items/:id" do
+    let!(:listing)   { create(:listing, quantity: 10) }
+    let!(:cart_item) { user.cart_items.create!(listing: listing, quantity: 1) }
+
+    it "updates the quantity" do
+      patch cart_item_path(cart_item), params: { quantity: 3 }
+
+      expect(cart_item.reload.quantity).to eq(3)
+    end
+
+    it "sets a notice flash" do
+      patch cart_item_path(cart_item), params: { quantity: 2 }
+
+      expect(flash[:notice]).to eq("Quantity updated.")
+    end
+
+    it "redirects back" do
+      patch cart_item_path(cart_item), params: { quantity: 2 }
+
+      expect(response).to have_http_status(:redirect)
+    end
+
+    context "when quantity exceeds the listing's stock" do
+      it "clamps to the listing quantity" do
+        patch cart_item_path(cart_item), params: { quantity: 999 }
+
+        expect(cart_item.reload.quantity).to eq(listing.quantity)
+      end
+    end
+
+    context "when quantity is less than 1" do
+      it "clamps to 1" do
+        patch cart_item_path(cart_item), params: { quantity: 0 }
+
+        expect(cart_item.reload.quantity).to eq(1)
+      end
+    end
+
+    context "when the cart item belongs to another user" do
+      let(:other_user) { create(:user) }
+      let!(:other_item) { other_user.cart_items.create!(listing: listing) }
+
+      it "returns 404" do
+        patch cart_item_path(other_item), params: { quantity: 2 }
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not update the other user's cart item" do
+        patch cart_item_path(other_item), params: { quantity: 5 }
+
+        expect(other_item.reload.quantity).to eq(1)
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        patch cart_item_path(cart_item), params: { quantity: 2 }
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
   describe "DELETE /cart_items/:id" do
     let!(:cart_item) { user.cart_items.create!(listing: listing) }
 
