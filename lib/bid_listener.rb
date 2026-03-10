@@ -27,9 +27,6 @@ class BidListener
                       "listing_id=#{data['auction_listing_id']} " \
                       "amount_cents=#{data['amount_cents']} state=#{data['state']}"
 
-    pp "[BidListener] event bid_id=#{data['bid_id']} " \
-                      "listing_id=#{data['auction_listing_id']} " \
-                      "amount_cents=#{data['amount_cents']} state=#{data['state']}"
     on_bid_event(data)
   rescue => e
     Rails.logger.error "[BidListener] Error handling payload: #{e.message}"

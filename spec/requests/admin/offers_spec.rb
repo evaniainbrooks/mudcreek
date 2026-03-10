@@ -32,6 +32,44 @@ RSpec.describe "Admin::Offers", type: :request do
       expect(response.body).to include(offer.listing.name)
     end
 
+    context "infinite scroll — turbo stream page request" do
+      before { create_list(:offer, 25) }
+
+      it "appends rows and replaces the sentinel" do
+        get admin_offers_path
+
+        next_url  = response.body[/data-url="([^"]+)"/, 1]
+        next_page = URI.decode_www_form(URI.parse(next_url).query).to_h["page"]
+
+        get admin_offers_path(page: next_page),
+          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response.content_type).to start_with("text/vnd.turbo-stream.html")
+        expect(response.body).to include('action="append" target="admin-offers-tbody"')
+        expect(response.body).to include('action="replace" target="sentinel"')
+      end
+    end
+
+    context "Turbo Stream without page param" do
+      it "renders the HTML index" do
+        get admin_offers_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(offer.listing.name)
+      end
+    end
+
+    context "ransack filtering by state" do
+      let!(:declined_offer) { create(:offer, state: "declined") }
+
+      it "returns only matching offers" do
+        get admin_offers_path, params: { q: { state_eq: "pending" } }
+
+        expect(response.body).to include(offer.listing.name)
+        expect(response.body).not_to include(declined_offer.listing.name)
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 
@@ -62,6 +100,24 @@ RSpec.describe "Admin::Offers", type: :request do
       get admin_offer_path(offer)
 
       expect(response.body).to include(offer.user.email_address)
+    end
+
+    context "when another accepted offer exists for the same listing" do
+      let!(:accepted_offer) { create(:offer, listing: offer.listing, state: "accepted") }
+
+      it "returns 200" do
+        get admin_offer_path(offer)
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when no other accepted offer exists for the listing" do
+      it "returns 200" do
+        get admin_offer_path(offer)
+
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     context "when unauthenticated" do
@@ -102,6 +158,37 @@ RSpec.describe "Admin::Offers", type: :request do
 
         expect(response).to redirect_to(admin_offer_path(offer))
         expect(flash[:notice]).to eq("Offer accepted.")
+      end
+
+      it "creates an invoice for the user" do
+        expect {
+          patch admin_offer_path(offer), params: { state: "accepted" }
+        }.to change { offer.user.invoices.count }.by(1)
+      end
+
+      it "enqueues an offer accepted mailer" do
+        expect {
+          patch admin_offer_path(offer), params: { state: "accepted" }
+        }.to have_enqueued_mail(ListingMailer, :offer_accepted)
+      end
+    end
+
+    context "when accepting would violate the uniqueness constraint" do
+      let!(:other_offer) { create(:offer, listing: offer.listing) }
+
+      before { patch admin_offer_path(offer), params: { state: "accepted" } }
+
+      it "redirects with an alert when the second offer is accepted" do
+        patch admin_offer_path(other_offer), params: { state: "accepted" }
+
+        expect(response).to redirect_to(admin_offer_path(other_offer))
+        expect(flash[:alert]).to be_present
+      end
+
+      it "does not change the second offer's state" do
+        expect {
+          patch admin_offer_path(other_offer), params: { state: "accepted" }
+        }.not_to change { other_offer.reload.state }
       end
     end
 
