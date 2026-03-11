@@ -1,0 +1,10 @@
+.d-flex.align-items-center.gap-2.mb-2
+  = property_form.text_field :name,
+      class: "form-control form-control-sm flex-grow-1",
+      placeholder: "e.g. Manufacturer"
+  = property_form.text_field :value,
+      class: "form-control form-control-sm flex-grow-1",
+      placeholder: "e.g. John Deere"
+  .form-check.ms-1
+    = property_form.check_box :_destroy, class: "form-check-input"
+    = property_form.label :_destroy, "Remove", class: "form-check-label small text-danger"

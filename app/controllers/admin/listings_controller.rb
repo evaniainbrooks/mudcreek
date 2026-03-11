@@ -93,7 +93,7 @@ class Admin::ListingsController < Admin::BaseController
   private
 
   def set_listing
-    @listing = Listing.includes(:categories, auction_listing: :auction).with_attached_images.with_attached_videos.with_attached_documents.find_by!(hashid: params[:hashid])
+    @listing = Listing.includes(:categories, :properties, auction_listing: :auction).with_attached_images.with_attached_videos.with_attached_documents.find_by!(hashid: params[:hashid])
     authorize(@listing)
   end
 
@@ -101,7 +101,8 @@ class Admin::ListingsController < Admin::BaseController
     base = %i[name description price acquisition_price quantity tax_exempt physical owner_id lot_id published pricing_type]
     base.unshift(:listing_type) if action_name == "create"
     p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [],
-      rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy])
+      rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],
+      properties_attributes: [:id, :name, :value, :_destroy])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

@@ -52,19 +52,11 @@
         auction: @auction,
         registration: @registration,
         bidder_token: @highest_bidder_token
-      .listing-description.mt-4
+      %hr.mb-4
+      .listing-description
         = @listing.description
       - if @listing.categories.any?
         .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")
 
-- if @listing.documents.attached?
-  %hr.mt-5
-  %h2.h5.fw-semibold.mb-3
-    %i.bi.bi-folder2-open.me-2
-    Documents
-  .d-flex.flex-wrap.gap-3
-    - @listing.documents.each do |doc|
-      = link_to rails_blob_path(doc, disposition: "attachment"), class: "text-decoration-none" do
-        .d-flex.flex-column.align-items-center.justify-content-center.border.rounded-3.p-3.bg-body-tertiary{ style: "width: 120px; min-height: 110px" }
-          %i.bi.fs-1{ class: [document_icon_class(doc.content_type), "text-secondary"].compact_blank.join(" ") }
-          %span.text-center.text-body.small.mt-2.lh-sm{ style: "word-break: break-all; max-width: 96px" }= doc.filename.to_s.truncate(32)
+= render("listings/properties", listing: @listing)
+= render("listings/documents", listing: @listing)

@@ -107,6 +107,16 @@
             - else
               %span.text-muted —
 
+          %dt.col-sm-3 Properties
+          %dd.col-sm-9
+            - if @listing.properties.any?
+              - @listing.properties.order(:position).each do |p|
+                .d-flex.gap-2.small
+                  %span.fw-semibold= "#{p.name}:"
+                  %span= p.value
+            - else
+              %span.text-muted —
+
           %dt.col-sm-3 Description
           %dd.col-sm-9= @listing.description
 

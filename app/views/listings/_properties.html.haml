@@ -1,0 +1,12 @@
+- if listing.properties.any?
+  %hr.mt-5
+  %h2.h5.fw-semibold.mb-3
+    %i.bi.bi-list-check.me-2
+    Specifications
+  %table.table.table-sm.table-bordered.w-auto
+    %tbody
+      - listing.properties.order(:position).each do |p|
+        %tr
+          %th.fw-semibold.text-nowrap.bg-body-secondary= p.name
+          %td= p.value
+

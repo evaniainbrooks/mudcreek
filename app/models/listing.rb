@@ -19,6 +19,7 @@ class Listing < ApplicationRecord
   has_many :offers, dependent: :destroy
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan",
     dependent: :destroy, foreign_key: :listing_id
+  has_many :properties, class_name: "Listings::Property", dependent: :destroy
   has_many :rental_bookings, dependent: :destroy
   has_many :category_assignments, class_name: "Listings::CategoryAssignment", dependent: :destroy
   has_many :categories, through: :category_assignments, class_name: "Listings::Category", source: :category
@@ -54,6 +55,7 @@ class Listing < ApplicationRecord
 
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :properties, allow_destroy: true, reject_if: :all_blank
 
   def currency = tenant&.currency
 

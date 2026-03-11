@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_013508) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_020000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -270,6 +270,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_013508) do
     t.datetime "updated_at", null: false
     t.index ["listing_id", "listings_category_id"], name: "idx_on_listing_id_listings_category_id_11916b414d", unique: true
     t.index ["listings_category_id"], name: "index_listings_category_assignments_on_listings_category_id"
+  end
+
+  create_table "listings_properties", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "listing_id", null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "value", null: false
+    t.index ["listing_id", "position"], name: "index_listings_properties_on_listing_id_and_position"
+    t.index ["listing_id"], name: "index_listings_properties_on_listing_id"
+    t.index ["tenant_id"], name: "index_listings_properties_on_tenant_id"
   end
 
   create_table "listings_rental_rate_plans", force: :cascade do |t|
@@ -636,6 +649,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_013508) do
   add_foreign_key "listings_categories", "tenants"
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
+  add_foreign_key "listings_properties", "listings"
+  add_foreign_key "listings_properties", "tenants"
   add_foreign_key "listings_rental_rate_plans", "listings"
   add_foreign_key "listings_rental_rate_plans", "tenants"
   add_foreign_key "lots", "tenants"
