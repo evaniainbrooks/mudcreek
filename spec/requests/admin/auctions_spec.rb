@@ -236,6 +236,72 @@ RSpec.describe "Admin::Auctions", type: :request do
       end
     end
 
+    context "removing the poster" do
+      before do
+        auction.poster.attach(
+          io: StringIO.new("fake image data"),
+          filename: "poster.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "detaches the poster" do
+        perform_enqueued_jobs do
+          patch admin_auction_path(auction), params: { remove_poster: "1", auction: { name: auction.name } }
+        end
+
+        expect(auction.reload.poster).not_to be_attached
+      end
+
+      it "redirects with a notice" do
+        patch admin_auction_path(auction), params: { remove_poster: "1", auction: { name: auction.name } }
+
+        expect(response).to redirect_to(admin_auction_path(auction))
+        expect(flash[:notice]).to include("successfully updated")
+      end
+
+      it "does not detach the poster when remove_poster is absent" do
+        perform_enqueued_jobs do
+          patch admin_auction_path(auction), params: { auction: { name: auction.name } }
+        end
+
+        expect(auction.reload.poster).to be_attached
+      end
+    end
+
+    context "removing the terms and conditions" do
+      before do
+        auction.terms_and_conditions.attach(
+          io: StringIO.new("terms content"),
+          filename: "terms.pdf",
+          content_type: "application/pdf"
+        )
+      end
+
+      it "detaches the terms and conditions" do
+        perform_enqueued_jobs do
+          patch admin_auction_path(auction), params: { remove_terms_and_conditions: "1", auction: { name: auction.name } }
+        end
+
+        expect(auction.reload.terms_and_conditions).not_to be_attached
+      end
+
+      it "redirects with a notice" do
+        patch admin_auction_path(auction), params: { remove_terms_and_conditions: "1", auction: { name: auction.name } }
+
+        expect(response).to redirect_to(admin_auction_path(auction))
+        expect(flash[:notice]).to include("successfully updated")
+      end
+
+      it "does not detach terms when remove_terms_and_conditions is absent" do
+        perform_enqueued_jobs do
+          patch admin_auction_path(auction), params: { auction: { name: auction.name } }
+        end
+
+        expect(auction.reload.terms_and_conditions).to be_attached
+      end
+    end
+
     context "reconciler scheduling" do
       # Auction factory default timezone is "Eastern Time (US & Canada)"
       let(:auction) do

@@ -9,6 +9,7 @@ RSpec.describe "Admin::Invoices", type: :request do
   let(:role) do
     Role.create!(name: "invoice_manager", description: "Manage invoices").tap do |r|
       r.permissions.create!(resource: "Invoice", action: "index")
+      r.permissions.create!(resource: "Invoice", action: "show")
     end
   end
 
@@ -178,6 +179,102 @@ RSpec.describe "Admin::Invoices", type: :request do
 
       it "raises Pundit::NotAuthorizedError" do
         expect { get admin_invoices_path }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "GET /admin/invoices/:number" do
+    it "returns 200" do
+      get admin_invoice_path(invoice)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "displays the invoice number" do
+      get admin_invoice_path(invoice)
+
+      expect(response.body).to include(invoice.number)
+    end
+
+    it "displays the buyer email" do
+      get admin_invoice_path(invoice)
+
+      expect(response.body).to include(buyer.email_address)
+    end
+
+    it "displays the unpaid status badge" do
+      get admin_invoice_path(invoice)
+
+      expect(response.body).to include("Unpaid")
+    end
+
+    context "with a paid invoice" do
+      let!(:invoice) { create(:invoice, :paid, user: buyer, auction: auction) }
+
+      it "displays the paid status badge" do
+        get admin_invoice_path(invoice)
+
+        expect(response.body).to include("Paid")
+      end
+    end
+
+    context "with invoice items" do
+      let!(:invoice) { create(:invoice, :with_items, user: buyer, auction: auction) }
+
+      it "displays the item names" do
+        get admin_invoice_path(invoice)
+
+        expect(response.body).to include("Second Item")
+      end
+    end
+
+    context "when the invoice has an auction source" do
+      it "displays the auction name" do
+        get admin_invoice_path(invoice)
+
+        expect(response.body).to include(auction.name)
+      end
+    end
+
+    context "when the invoice has an offer source" do
+      let(:listing) { create(:listing) }
+      let(:offer)   { create(:offer, listing: listing, user: buyer) }
+      let!(:invoice) { create(:invoice, user: buyer, auction: nil, offer: offer, total_cents: offer.amount_cents) }
+
+      it "displays the listing name" do
+        get admin_invoice_path(invoice)
+
+        expect(response.body).to include(listing.name)
+      end
+    end
+
+    context "with an unknown invoice number" do
+      it "returns 404" do
+        get "/admin/invoices/INV-DOESNOTEXIST"
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        get admin_invoice_path(invoice)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the show permission" do
+      let(:role) do
+        Role.create!(name: "index_only", description: "Index only").tap do |r|
+          r.permissions.create!(resource: "Invoice", action: "index")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { get admin_invoice_path(invoice) }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
