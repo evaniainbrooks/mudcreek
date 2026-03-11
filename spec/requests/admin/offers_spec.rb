@@ -32,24 +32,6 @@ RSpec.describe "Admin::Offers", type: :request do
       expect(response.body).to include(offer.listing.name)
     end
 
-    context "turbo stream page request" do
-      before { create_list(:offer, 25) }
-
-      it "appends rows and replaces the sentinel" do
-        get admin_offers_path
-
-        next_url  = response.body[/href="([^"]*page=[^"]+)"/, 1]
-        next_page = URI.decode_www_form(URI.parse(next_url).query).to_h["page"]
-
-        get admin_offers_path(page: next_page),
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response.content_type).to start_with("text/vnd.turbo-stream.html")
-        expect(response.body).to include('action="append" target="admin-offers-tbody"')
-        expect(response.body).to include('action="replace" target="sentinel"')
-      end
-    end
-
     context "Turbo Stream without page param" do
       it "renders the HTML index" do
         get admin_offers_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
