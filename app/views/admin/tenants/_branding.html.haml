@@ -1,0 +1,95 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-image.me-2
+    Branding &amp; Media
+  .card-body.p-4
+    .mb-3
+      = form.label :logo, class: "form-label"
+      = form.file_field :logo,
+        class: "form-control #{'is-invalid' if tenant.errors[:logo].any?}",
+        accept: "image/*"
+      - if tenant.errors[:logo].any?
+        .invalid-feedback= tenant.errors[:logo].to_sentence
+      - if tenant.logo.attached?
+        .mt-2.d-flex.align-items-center.gap-2
+          = image_tag tenant.logo.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+          = link_to admin_tenant_path(remove_logo: "1"),
+              class: "btn btn-sm btn-outline-danger",
+              data: { turbo_method: :patch, turbo_confirm: "Remove logo?" } do
+            %i.bi.bi-x-lg.me-1
+            Remove
+    .mb-3
+      = form.label :listing_placeholder, "Listing Placeholder Image", class: "form-label"
+      .form-text.mb-1 Shown on listing cards when a listing has no images and no lot placeholder.
+      = form.file_field :listing_placeholder,
+        class: "form-control #{'is-invalid' if tenant.errors[:listing_placeholder].any?}",
+        accept: "image/*"
+      - if tenant.errors[:listing_placeholder].any?
+        .invalid-feedback= tenant.errors[:listing_placeholder].to_sentence
+      - if tenant.listing_placeholder.attached?
+        .mt-2.d-flex.align-items-center.gap-2
+          = image_tag tenant.listing_placeholder.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+          = link_to admin_tenant_path(remove_listing_placeholder: "1"),
+              class: "btn btn-sm btn-outline-danger",
+              data: { turbo_method: :patch, turbo_confirm: "Remove listing placeholder?" } do
+            %i.bi.bi-x-lg.me-1
+            Remove
+    .mb-3
+      = form.label :auction_placeholder, "Auction Placeholder Image", class: "form-label"
+      .form-text.mb-1 Shown on auction cards when an auction has no poster.
+      = form.file_field :auction_placeholder,
+        class: "form-control #{'is-invalid' if tenant.errors[:auction_placeholder].any?}",
+        accept: "image/*"
+      - if tenant.errors[:auction_placeholder].any?
+        .invalid-feedback= tenant.errors[:auction_placeholder].to_sentence
+      - if tenant.auction_placeholder.attached?
+        .mt-2.d-flex.align-items-center.gap-2
+          = image_tag tenant.auction_placeholder.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+          = link_to admin_tenant_path(remove_auction_placeholder: "1"),
+              class: "btn btn-sm btn-outline-danger",
+              data: { turbo_method: :patch, turbo_confirm: "Remove auction placeholder?" } do
+            %i.bi.bi-x-lg.me-1
+            Remove
+    .mb-0
+      = form.label :default_terms_and_conditions, "Default Terms & Conditions", class: "form-label"
+      = form.file_field :default_terms_and_conditions,
+        class: "form-control #{'is-invalid' if tenant.errors[:default_terms_and_conditions].any?}",
+        accept: ".pdf,.doc,.docx"
+      - if tenant.errors[:default_terms_and_conditions].any?
+        .invalid-feedback= tenant.errors[:default_terms_and_conditions].to_sentence
+      - if tenant.default_terms_and_conditions.attached?
+        .mt-2.d-flex.align-items-center.gap-2
+          %i.bi.bi-file-earmark-text.text-muted
+          = link_to tenant.default_terms_and_conditions.filename.to_s,
+            rails_blob_path(tenant.default_terms_and_conditions, disposition: "attachment"),
+            class: "text-decoration-none"
+          = link_to admin_tenant_path(remove_default_terms_and_conditions: "1"),
+              class: "btn btn-sm btn-outline-danger",
+              data: { turbo_method: :patch, turbo_confirm: "Remove default terms & conditions?" } do
+            %i.bi.bi-x-lg.me-1
+            Remove
+
+%fieldset.card.shadow-sm.border-0{ data: { controller: "bid-increment-schedule" } }
+  %legend.card-header.fw-semibold
+    %i.bi.bi-ladder.me-2
+    Default Bid Increment Schedule
+  .card-body.p-4
+    = form.fields_for :default_bid_increment_schedule do |s|
+      .mb-2
+        %small.text-muted
+          Set price bands and required bid increments. Individual auctions can override this with their own schedule.
+      .tier-container{ data: { bid_increment_schedule_target: "tiersContainer" } }
+        .d-flex.gap-2.mb-1
+          %small.text-muted.w-50 Min Amount (cents)
+          %small.text-muted.w-50 Increment (cents)
+        = s.fields_for :tiers do |t|
+          = render "admin/shared/bid_increment_tier_fields", tier_form: t
+      .mt-2
+        %button.btn.btn-sm.btn-outline-secondary{ type: "button",
+          data: { action: "bid-increment-schedule#addTier" } }
+          %i.bi.bi-plus-lg.me-1
+          Add Tier
+      %template{ data: { bid_increment_schedule_target: "tierTemplate" } }
+        - schedule = tenant.default_bid_increment_schedule
+        = s.fields_for :tiers, schedule.tiers.build, child_index: "new_tier" do |t|
+          = render "admin/shared/bid_increment_tier_fields", tier_form: t

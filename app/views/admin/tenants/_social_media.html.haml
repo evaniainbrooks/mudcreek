@@ -1,0 +1,20 @@
+%fieldset.card.shadow-sm.border-0{ data: { controller: "social-media-account" } }
+  %legend.card-header.fw-semibold
+    %i.bi.bi-share.me-2
+    Social Media
+  .card-body.p-4
+    .d-flex.gap-2.mb-1
+      %small.text-muted{ style: "width: 160px; flex-shrink: 0" } Platform
+      %small.text-muted.flex-grow-1 Username / Slug
+      %small.text-muted{ style: "width: 180px; flex-shrink: 0" } Icon class
+    .account-container{ data: { social_media_account_target: "accountsContainer" } }
+      = form.fields_for :social_media_accounts do |a|
+        = render "admin/shared/social_media_account_fields", account_form: a
+    .mt-2
+      %button.btn.btn-sm.btn-outline-secondary{ type: "button",
+        data: { action: "social-media-account#addAccount" } }
+        %i.bi.bi-plus-lg.me-1
+        Add Account
+    %template{ data: { social_media_account_target: "accountTemplate" } }
+      = form.fields_for :social_media_accounts, SocialMediaAccount.new, child_index: "new_account" do |a|
+        = render "admin/shared/social_media_account_fields", account_form: a
