@@ -1,0 +1,51 @@
+%footer.bg-body-tertiary.border-top.py-5
+  .container
+    .row.g-0
+      .col-lg-4.px-4.py-2.d-flex.flex-column
+        %p.h5.fw-bold.mb-2.text-center= tenant.name
+        - if tenant.description.present?
+          .text-muted.small.mb-3= tenant.description.to_plain_text.truncate(200)
+        .d-flex.flex-column.gap-1
+          = link_to auctions_path, class: "text-decoration-none text-muted small" do
+            %i.bi.bi-hammer.me-1
+            Auctions
+          = link_to listings_path, class: "text-decoration-none text-muted small" do
+            %i.bi.bi-tag.me-1
+            Listings
+        %small.text-muted.mt-auto.pt-3
+          &copy;
+          = Date.current.year
+          = tenant.name
+
+      .col-lg-4.px-4.py-2.border-start
+        %p.h5.fw-bold.mb-3.text-center Contact
+        .d-flex.flex-column.gap-2
+          - if address&.any?
+            .d-flex.align-items-start.gap-2.text-muted.small
+              %i.bi.bi-geo-alt.flex-shrink-0.mt-1
+              %span= address.to_fs(:short)
+          - if tenant.custom_domain.present?
+            .d-flex.align-items-center.gap-2.text-muted.small
+              %i.bi.bi-globe.flex-shrink-0
+              = link_to tenant.custom_domain, "https://#{tenant.custom_domain}", class: "text-decoration-none text-muted", target: "_blank", rel: "noopener"
+          - if tenant.email_address.present?
+            .d-flex.align-items-center.gap-2.text-muted.small
+              %i.bi.bi-envelope.flex-shrink-0
+              = mail_to tenant.email_address, tenant.email_address, class: "text-decoration-none text-muted"
+          - if tenant.phone_number.present?
+            .d-flex.align-items-center.gap-2.text-muted.small
+              %i.bi.bi-telephone.flex-shrink-0
+              = link_to tenant.phone_number, "tel:#{tenant.phone_number}", class: "text-decoration-none text-muted"
+
+      - if social_media_accounts.any?
+        .col-lg-4.px-4.py-2.border-start
+          %p.h5.fw-bold.mb-3.text-center Follow Us
+          .d-flex.flex-wrap.gap-3
+            - social_media_accounts.each do |account|
+              = link_to social_media_url(account),
+                  class: "text-muted",
+                  target: "_blank",
+                  rel: "noopener",
+                  title: "#{account.platform.humanize}: @#{account.slug}" do
+                %i{ class: account.icon, style: "font-size: 1.5rem" }
+

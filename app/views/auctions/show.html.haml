@@ -11,7 +11,9 @@
   .col-lg-4.bg-body.border-end.p-4.p-lg-5
     .position-sticky{ style: "top: 1.5rem" }
       - if @auction.poster.attached?
-        = image_tag @auction.poster, class: "img-fluid rounded-3 mb-4 shadow-sm w-100 object-fit-cover"
+        = optimized_image_tag @auction.poster, preset: :poster, class: "img-fluid rounded-3 mb-4 shadow-sm w-100 object-fit-cover"
+      - elsif Current.tenant.auction_placeholder.attached?
+        = optimized_image_tag Current.tenant.auction_placeholder, preset: :poster, class: "img-fluid rounded-3 mb-4 shadow-sm w-100 object-fit-cover"
 
       %h1.fw-bold.lh-tight.mb-2= @auction.name
 

@@ -10,7 +10,7 @@
       - slide = 0
       - listing.images.each do |image|
         .carousel-item{ class: slide.zero? ? "active" : "" }
-          = image_tag image, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
+          = optimized_image_tag image, preset: :carousel_slide, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
         - slide += 1
       - listing.videos.each do |video|
         .carousel-item{ class: slide.zero? ? "active" : "" }
@@ -38,7 +38,8 @@
   .d-flex.flex-wrap.gap-2.mt-3
     - thumb_index = 0
     - listing.images.each do |image|
-      = image_tag image,
+      = optimized_image_tag image,
+        preset: :carousel_thumb,
         class: "rounded-2 object-fit-cover flex-shrink-0",
         style: "width: 76px; height: 76px; cursor: pointer; outline: 2px solid transparent",
         data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index }

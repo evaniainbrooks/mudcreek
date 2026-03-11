@@ -140,3 +140,5 @@ group :test do
   # GitHub Actions formatter for RSpec
   gem "rspec-github", require: false
 end
+
+gem "imgproxy", "~> 3.0"

@@ -11,165 +11,171 @@
 
   .row.g-4
     .col-lg-6
-      %fieldset.mb-4
-        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
           %i.bi.bi-info-circle.me-1
           General
-        .mb-3
-          = f.label :name, class: "form-label"
-          = f.text_field :name, class: "form-control #{'is-invalid' if auction.errors[:name].any?}", required: true
-          - if auction.errors[:name].any?
-            .invalid-feedback= auction.errors[:name].to_sentence
-        .mb-3
-          = f.label :admin_email_address, "Admin Email Address", class: "form-label"
-          = f.email_field :admin_email_address,
-              class: "form-control #{'is-invalid' if auction.errors[:admin_email_address].any?}",
-              placeholder: auction.tenant_email_address
-          - if auction.errors[:admin_email_address].any?
-            .invalid-feedback= auction.errors[:admin_email_address].to_sentence
-          %small.text-muted Leave blank to use the tenant email address
-        .mb-3
-          = f.label :timezone, class: "form-label"
-          = f.time_zone_select :timezone, ActiveSupport::TimeZone.all, { include_blank: false },
-              class: "form-select #{'is-invalid' if auction.errors[:timezone].any?}"
-          - if auction.errors[:timezone].any?
-            .invalid-feedback= auction.errors[:timezone].to_sentence
-        .mb-3
-          = f.label :description, class: "form-label"
-          = f.rich_text_area :description, class: "form-control #{'is-invalid' if auction.errors[:description].any?}"
-          - if auction.errors[:description].any?
-            .invalid-feedback.d-block= auction.errors[:description].to_sentence
+        .card-body.p-4
+          .mb-3
+            = f.label :name, class: "form-label"
+            = f.text_field :name, class: "form-control #{'is-invalid' if auction.errors[:name].any?}", required: true
+            - if auction.errors[:name].any?
+              .invalid-feedback= auction.errors[:name].to_sentence
+          .mb-3
+            = f.label :admin_email_address, "Admin Email Address", class: "form-label"
+            = f.email_field :admin_email_address,
+                class: "form-control #{'is-invalid' if auction.errors[:admin_email_address].any?}",
+                placeholder: auction.tenant_email_address
+            - if auction.errors[:admin_email_address].any?
+              .invalid-feedback= auction.errors[:admin_email_address].to_sentence
+            %small.text-muted Leave blank to use the tenant email address
+          .mb-3
+            = f.label :timezone, class: "form-label"
+            = f.time_zone_select :timezone, ActiveSupport::TimeZone.all, { include_blank: false },
+                class: "form-select #{'is-invalid' if auction.errors[:timezone].any?}"
+            - if auction.errors[:timezone].any?
+              .invalid-feedback= auction.errors[:timezone].to_sentence
+          .mb-0
+            = f.label :description, class: "form-label"
+            = f.rich_text_area :description, class: "form-control #{'is-invalid' if auction.errors[:description].any?}"
+            - if auction.errors[:description].any?
+              .invalid-feedback.d-block= auction.errors[:description].to_sentence
 
-      %fieldset.mb-4{ data: { controller: "bid-increment-schedule" } }
-        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
+      %fieldset.card.shadow-sm.border-0.mb-4{ data: { controller: "bid-increment-schedule" } }
+        %legend.card-header.fw-semibold
           %i.bi.bi-ladder.me-1
           Bid Increment Schedule
-        = f.fields_for :bid_increment_schedule do |s|
-          .tier-container{ data: { bid_increment_schedule_target: "tiersContainer" } }
-            .d-flex.gap-2.mb-1
-              %small.text-muted.w-50 Min Amount (cents)
-              %small.text-muted.w-50 Increment (cents)
-            = s.fields_for :tiers do |t|
-              = render "admin/shared/bid_increment_tier_fields", tier_form: t
-          .mt-2
-            %button.btn.btn-sm.btn-outline-secondary{ type: "button", data: { action: "bid-increment-schedule#addTier" } }
-              %i.bi.bi-plus-lg.me-1
-              Add Tier
-          %template{ data: { bid_increment_schedule_target: "tierTemplate" } }
-            = s.fields_for :tiers, BidIncrementTier.new, child_index: "new_tier" do |t|
-              = render "admin/shared/bid_increment_tier_fields", tier_form: t
+        .card-body.p-4
+          = f.fields_for :bid_increment_schedule do |s|
+            .tier-container{ data: { bid_increment_schedule_target: "tiersContainer" } }
+              .d-flex.gap-2.mb-1
+                %small.text-muted.w-50 Min Amount (cents)
+                %small.text-muted.w-50 Increment (cents)
+              = s.fields_for :tiers do |t|
+                = render "admin/shared/bid_increment_tier_fields", tier_form: t
+            .mt-2
+              %button.btn.btn-sm.btn-outline-secondary{ type: "button", data: { action: "bid-increment-schedule#addTier" } }
+                %i.bi.bi-plus-lg.me-1
+                Add Tier
+            %template{ data: { bid_increment_schedule_target: "tierTemplate" } }
+              = s.fields_for :tiers, BidIncrementTier.new, child_index: "new_tier" do |t|
+                = render "admin/shared/bid_increment_tier_fields", tier_form: t
 
-      %fieldset
-        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
           %i.bi.bi-calendar-range.me-1
           Scheduling
-        .row.g-3.mb-3
-          .col-sm-6
-            = f.label :starts_at, "Starts At", class: "form-label"
-            = f.datetime_local_field :starts_at, class: "form-control #{'is-invalid' if auction.errors[:starts_at].any?}",
-                value: auction.starts_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
-            - if auction.errors[:starts_at].any?
-              .invalid-feedback= auction.errors[:starts_at].to_sentence
-          .col-sm-6
-            = f.label :ends_at, "Ends At", class: "form-label"
-            = f.datetime_local_field :ends_at, class: "form-control #{'is-invalid' if auction.errors[:ends_at].any?}",
-                value: auction.ends_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
-            - if auction.errors[:ends_at].any?
-              .invalid-feedback= auction.errors[:ends_at].to_sentence
-        - if auction.timezone.present?
-          %small.text-muted Times are in #{auction.timezone}
-        .row.g-3
-          .col-sm-6
-            = f.label :end_time_stagger_interval, "Lot end time stagger (seconds)", class: "form-label"
-            = f.number_field :end_time_stagger_interval,
-                class: "form-control #{'is-invalid' if auction.errors[:end_time_stagger_interval].any?}",
-                min: 0, step: 1, placeholder: "0"
-            - if auction.errors[:end_time_stagger_interval].any?
-              .invalid-feedback= auction.errors[:end_time_stagger_interval].to_sentence
-            %small.text-muted 0 = no stagger; minimum 30 when enabled
-          .col-sm-6
-            = f.label :bidding_extension, "Bidding extension (seconds)", class: "form-label"
-            = f.number_field :bidding_extension,
-                class: "form-control #{'is-invalid' if auction.errors[:bidding_extension].any?}",
-                min: 0, step: 1, placeholder: "0"
-            - if auction.errors[:bidding_extension].any?
-              .invalid-feedback= auction.errors[:bidding_extension].to_sentence
-            %small.text-muted 0 = disabled; extends lot when bid placed within 1 minute of close
-
-    .col-lg-6
-      %fieldset.mb-4
-        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
-          %i.bi.bi-toggles.me-1
-          Status
-        .mb-2.form-check
-          = f.check_box :published, class: "form-check-input"
-          = f.label :published, class: "form-check-label"
-        .mb-2.form-check
-          = f.check_box :reconciled, class: "form-check-input"
-          = f.label :reconciled, class: "form-check-label"
-        .form-check
-          = f.check_box :auto_approve, class: "form-check-input"
-          = f.label :auto_approve, "Auto-approve registrations", class: "form-check-label"
-
-      %fieldset.mb-4
-        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
-          %i.bi.bi-image.me-1
-          Media
-        .mb-3
-          = f.label :poster, class: "form-label"
-          = f.file_field :poster, class: "form-control #{'is-invalid' if auction.errors[:poster].any?}", accept: "image/*"
-          - if auction.errors[:poster].any?
-            .invalid-feedback= auction.errors[:poster].to_sentence
-          - if auction.poster.attached?
-            .mt-2.d-flex.align-items-center.gap-2
-              = image_tag auction.poster.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
-              = button_to admin_auction_path(auction), method: :patch, params: { remove_poster: true },
-                  class: "btn btn-sm btn-outline-danger",
-                  form: { data: { turbo_confirm: "Remove poster?" } } do
-                %i.bi.bi-x-lg.me-1
-                Remove
-        .mb-3
-          = f.label :terms_and_conditions, "Terms & Conditions", class: "form-label"
-          = f.file_field :terms_and_conditions,
-            class: "form-control #{'is-invalid' if auction.errors[:terms_and_conditions].any?}",
-            accept: ".pdf,.doc,.docx"
-          - if auction.errors[:terms_and_conditions].any?
-            .invalid-feedback= auction.errors[:terms_and_conditions].to_sentence
-          - if auction.terms_and_conditions.attached?
-            .mt-2.d-flex.align-items-center.gap-2
-              %i.bi.bi-file-earmark-text.text-muted
-              = link_to auction.terms_and_conditions.filename.to_s,
-                rails_blob_path(auction.terms_and_conditions, disposition: "attachment"),
-                class: "text-decoration-none"
-              - if auction.persisted?
-                = button_to admin_auction_path(auction), method: :patch, params: { remove_terms_and_conditions: true },
-                    class: "btn btn-sm btn-outline-danger",
-                    form: { data: { turbo_confirm: "Remove terms & conditions?" } } do
-                  %i.bi.bi-x-lg.me-1
-                  Remove
-
-      %fieldset
-        %legend.h6.fw-semibold.border-bottom.pb-2.mb-3
-          %i.bi.bi-geo-alt.me-1
-          Location (optional)
-        = f.fields_for :address do |addr|
-          .mb-3
-            = addr.label :street_address, "Street Address", class: "form-label"
-            = addr.text_field :street_address, class: "form-control"
+        .card-body.p-4
           .row.g-3.mb-3
             .col-sm-6
-              = addr.label :city, "City", class: "form-label"
-              = addr.text_field :city, class: "form-control"
+              = f.label :starts_at, "Starts At", class: "form-label"
+              = f.datetime_local_field :starts_at, class: "form-control #{'is-invalid' if auction.errors[:starts_at].any?}",
+                  value: auction.starts_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
+              - if auction.errors[:starts_at].any?
+                .invalid-feedback= auction.errors[:starts_at].to_sentence
             .col-sm-6
-              = addr.label :province, "Province / State", class: "form-label"
-              = addr.text_field :province, class: "form-control"
+              = f.label :ends_at, "Ends At", class: "form-label"
+              = f.datetime_local_field :ends_at, class: "form-control #{'is-invalid' if auction.errors[:ends_at].any?}",
+                  value: auction.ends_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
+              - if auction.errors[:ends_at].any?
+                .invalid-feedback= auction.errors[:ends_at].to_sentence
+          - if auction.timezone.present?
+            %small.text-muted Times are in #{auction.timezone}
           .row.g-3
             .col-sm-6
-              = addr.label :postal_code, "Postal Code", class: "form-label"
-              = addr.text_field :postal_code, class: "form-control"
+              = f.label :end_time_stagger_interval, "Lot end time stagger (seconds)", class: "form-label"
+              = f.number_field :end_time_stagger_interval,
+                  class: "form-control #{'is-invalid' if auction.errors[:end_time_stagger_interval].any?}",
+                  min: 0, step: 1, placeholder: "0"
+              - if auction.errors[:end_time_stagger_interval].any?
+                .invalid-feedback= auction.errors[:end_time_stagger_interval].to_sentence
+              %small.text-muted 0 = no stagger; minimum 30 when enabled
             .col-sm-6
-              = addr.label :country, "Country", class: "form-label"
-              = addr.text_field :country, class: "form-control"
+              = f.label :bidding_extension, "Bidding extension (seconds)", class: "form-label"
+              = f.number_field :bidding_extension,
+                  class: "form-control #{'is-invalid' if auction.errors[:bidding_extension].any?}",
+                  min: 0, step: 1, placeholder: "0"
+              - if auction.errors[:bidding_extension].any?
+                .invalid-feedback= auction.errors[:bidding_extension].to_sentence
+              %small.text-muted 0 = disabled; extends lot when bid placed within 1 minute of close
+
+    .col-lg-6
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-toggles.me-1
+          Status
+        .card-body.p-4
+          .mb-2.form-check
+            = f.check_box :published, class: "form-check-input"
+            = f.label :published, class: "form-check-label"
+          .mb-2.form-check
+            = f.check_box :reconciled, class: "form-check-input"
+            = f.label :reconciled, class: "form-check-label"
+          .form-check
+            = f.check_box :auto_approve, class: "form-check-input"
+            = f.label :auto_approve, "Auto-approve registrations", class: "form-check-label"
+
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-image.me-1
+          Media
+        .card-body.p-4
+          .mb-3
+            = f.label :poster, class: "form-label"
+            = f.file_field :poster, class: "form-control #{'is-invalid' if auction.errors[:poster].any?}", accept: "image/*"
+            - if auction.errors[:poster].any?
+              .invalid-feedback= auction.errors[:poster].to_sentence
+            - if auction.poster.attached?
+              .mt-2.d-flex.align-items-center.gap-2
+                = image_tag auction.poster.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+                = link_to admin_auction_path(auction, remove_poster: "1"),
+                    class: "btn btn-sm btn-outline-danger",
+                    data: { turbo_method: :patch, turbo_confirm: "Remove poster?" } do
+                  %i.bi.bi-x-lg.me-1
+                  Remove
+          .mb-0
+            = f.label :terms_and_conditions, "Terms & Conditions", class: "form-label"
+            = f.file_field :terms_and_conditions,
+              class: "form-control #{'is-invalid' if auction.errors[:terms_and_conditions].any?}",
+              accept: ".pdf,.doc,.docx"
+            - if auction.errors[:terms_and_conditions].any?
+              .invalid-feedback= auction.errors[:terms_and_conditions].to_sentence
+            - if auction.terms_and_conditions.attached?
+              .mt-2.d-flex.align-items-center.gap-2
+                %i.bi.bi-file-earmark-text.text-muted
+                = link_to auction.terms_and_conditions.filename.to_s,
+                  rails_blob_path(auction.terms_and_conditions, disposition: "attachment"),
+                  class: "text-decoration-none"
+                - if auction.persisted?
+                  = link_to admin_auction_path(auction, remove_terms_and_conditions: "1"),
+                      class: "btn btn-sm btn-outline-danger",
+                      data: { turbo_method: :patch, turbo_confirm: "Remove terms & conditions?" } do
+                    %i.bi.bi-x-lg.me-1
+                    Remove
+
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
+          %i.bi.bi-geo-alt.me-1
+          Location (optional)
+        .card-body.p-4
+          = f.fields_for :address do |addr|
+            .mb-3
+              = addr.label :street_address, "Street Address", class: "form-label"
+              = addr.text_field :street_address, class: "form-control"
+            .row.g-3.mb-3
+              .col-sm-6
+                = addr.label :city, "City", class: "form-label"
+                = addr.text_field :city, class: "form-control"
+              .col-sm-6
+                = addr.label :province, "Province / State", class: "form-label"
+                = addr.text_field :province, class: "form-control"
+            .row.g-3
+              .col-sm-6
+                = addr.label :postal_code, "Postal Code", class: "form-label"
+                = addr.text_field :postal_code, class: "form-control"
+              .col-sm-6
+                = addr.label :country, "Country", class: "form-label"
+                = addr.text_field :country, class: "form-control"
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

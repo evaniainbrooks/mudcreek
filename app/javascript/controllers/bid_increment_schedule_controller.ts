@@ -9,7 +9,7 @@ export default class BidIncrementScheduleController extends Controller {
   addTier(event: Event) {
     event.preventDefault()
     const template = this.tierTemplateTarget
-    const content = template.innerHTML.replace(/new_tier/g, `new_${Date.now()}`)
+    const content = template.innerHTML.replace(/new_tier/g, Date.now().toString())
     this.tiersContainerTarget.insertAdjacentHTML("beforeend", content)
   }
 }

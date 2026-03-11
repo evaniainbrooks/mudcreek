@@ -1,5 +1,7 @@
-web: env RUBY_DEBUG_OPEN=true bin/rails server
+web: env RUBY_DEBUG_OPEN=true IMGPROXY_URL=http://localhost:8080 bin/rails server
 js: yarn watch:js
 css: yarn watch:css
 mail: mailhog
 listener: bin/bid_listener
+imgproxy: env IMGPROXY_BIND=:8080 IMGPROXY_ALLOW_LOOPBACK_SOURCE_ADDRESSES=true imgproxy
+ngrok: bin/ngrok

@@ -68,7 +68,10 @@ class Admin::AuctionsController < Admin::BaseController
     @auction.poster.purge_later if params[:remove_poster].present?
     @auction.terms_and_conditions.purge_later if params[:remove_terms_and_conditions].present?
     if @auction.update(timezone_aware_auction_params)
-      schedule_reconciler(@auction) if @auction.saved_change_to_ends_at?
+      if @auction.saved_change_to_ends_at? || @auction.saved_change_to_end_time_stagger_interval?
+        @auction.recalculate_listing_end_times!
+        schedule_reconciler(@auction)
+      end
       redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
     else
       render :edit, status: :unprocessable_content

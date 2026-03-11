@@ -55,6 +55,13 @@ class Auction < ApplicationRecord
     bid_increment_schedule || tenant&.default_bid_increment_schedule
   end
 
+  def recalculate_listing_end_times!
+    return unless ends_at.present?
+    auction_listings.order(:position).each do |al|
+      al.update_column(:ends_at, ends_at + al.end_offset)
+    end
+  end
+
   scope :unreconciled, -> { where(reconciled: false) }
 
   def self.ransackable_attributes(_auth_object = nil)

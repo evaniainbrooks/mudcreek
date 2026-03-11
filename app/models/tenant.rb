@@ -2,6 +2,8 @@ class Tenant < ApplicationRecord
   has_rich_text :description
 
   has_one_attached :logo
+  has_one_attached :listing_placeholder
+  has_one_attached :auction_placeholder
 
   has_one_attached :default_terms_and_conditions
 
@@ -24,6 +26,10 @@ class Tenant < ApplicationRecord
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan", dependent: :restrict_with_error
   has_many :auctions, dependent: :restrict_with_error
   has_many :invoices, dependent: :destroy
+
+  has_many :social_media_accounts, dependent: :destroy
+
+  accepts_nested_attributes_for :social_media_accounts, allow_destroy: true, reject_if: :all_blank
 
   has_one :default_bid_increment_schedule,
     -> { where(auction_id: nil) },

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_100002) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_013508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_100002) do
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
   create_enum "listing_type", ["sale", "rental"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
+  create_enum "social_media_platform", ["facebook", "instagram", "youtube", "twitter", "tiktok", "snapchat", "linkedin", "discord", "patreon", "onlyfans", "twitch"]
   create_enum "transaction_state", ["pending", "succeeded", "failed"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
@@ -402,6 +403,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_100002) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "social_media_accounts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "icon", null: false
+    t.enum "platform", null: false, enum_type: "social_media_platform"
+    t.integer "position", default: 0, null: false
+    t.string "slug", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "platform"], name: "index_social_media_accounts_on_tenant_id_and_platform", unique: true
+    t.index ["tenant_id"], name: "index_social_media_accounts_on_tenant_id"
+  end
+
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
@@ -552,6 +565,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_100002) do
     t.string "email_address"
     t.string "key", null: false
     t.string "name", null: false
+    t.string "phone_number"
+    t.string "tagline"
+    t.string "timezone"
     t.datetime "updated_at", null: false
     t.index ["default"], name: "index_tenants_on_default_true", unique: true, where: "(\"default\" = true)"
     t.index ["key"], name: "index_tenants_on_key", unique: true
@@ -640,6 +656,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_100002) do
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
   add_foreign_key "sessions", "users"
+  add_foreign_key "social_media_accounts", "tenants"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

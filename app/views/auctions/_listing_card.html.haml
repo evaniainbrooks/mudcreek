@@ -4,7 +4,7 @@
     .position-relative
       = link_to auction_auction_listing_path(auction, auction_listing) do
         - if listing.images.attached?
-          = image_tag listing.images.first, class: "card-img-top object-fit-cover", style: "height: 200px"
+          = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
         - elsif listing.videos.attached?
           %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover",
             muted: true,
@@ -12,7 +12,9 @@
             preload: "metadata" }
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.lot&.listing_placeholder&.attached?
-          = image_tag listing.lot.listing_placeholder, class: "card-img-top object-fit-cover", style: "height: 200px"
+          = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+        - elsif Current.tenant.listing_placeholder.attached?
+          = optimized_image_tag Current.tenant.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
         - else
           .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
             %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
@@ -33,9 +35,14 @@
         = link_to listing.name,
           auction_auction_listing_path(auction, auction_listing),
           class: "text-decoration-none text-body"
-      .d-flex.align-items-center.gap-2.mb-0
-        .lh-sm
-          = auction_listing.ends_at_in_time_zone.to_fs(:long)
+      - if auction.starts_at.present?
+        .d-flex.align-items-center.gap-2.mb-1.text-muted.small
+          %i.bi.bi-calendar-event.flex-shrink-0
+          %span= auction.starts_at_in_time_zone.to_fs(:long)
+      - if auction_listing.ends_at.present?
+        .d-flex.align-items-center.gap-2.mb-0.text-muted.small
+          %i.bi.bi-calendar-check.flex-shrink-0
+          %span= auction_listing.ends_at_in_time_zone.to_fs(:long)
       .d-flex.flex-row.align-items-center.gap-2.mt-3
         = render("auction_listings/current_bid", auction_listing:)
         = render("auction_listings/bid_count", auction_listing:)

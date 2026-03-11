@@ -20,7 +20,8 @@
         = image_tag(Current.tenant.logo, style: "max-width: 75px; margin-right: 0.5rem") if Current.tenant.logo.attached?
         .lh-sm
           = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
-          %span.text-muted.d-block= Current.tenant.description
+          - if Current.tenant.tagline.present?
+            %span.text-muted.d-block.small= Current.tenant.tagline
         %button.navbar-toggler{type: "button",
           "data-bs-toggle": "collapse",
           "data-bs-target": "#main-nav",
@@ -71,9 +72,4 @@
               != message
               %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
         = yield
-    %footer.bg-body-tertiary.border-top.py-3
-      .container
-        %p.text-center.text-muted.small.mb-0
-          &copy;
-          = Date.current.year
-          = Current.tenant.name
+    = render FooterComponent.new(tenant: Current.tenant)

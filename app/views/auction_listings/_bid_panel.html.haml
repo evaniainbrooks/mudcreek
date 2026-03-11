@@ -1,4 +1,8 @@
 %div{ id: dom_id(auction_listing, :bid_panel) }
+  - if auction_listing.ends_at&.future?
+    .mb-3{ data: { controller: "countdown", "countdown-ends-at-value": auction_listing.ends_at.iso8601 } }
+      %p.text-muted.small.mb-0 Auction ends in
+      %strong{ data: { "countdown-target": "display" } }
   .d-flex.flex-row.align-items-center.gap-2.mt-3
     = render("auction_listings/current_bid", auction_listing:)
     = render("auction_listings/bid_count", auction_listing:)

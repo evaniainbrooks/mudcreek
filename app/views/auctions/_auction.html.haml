@@ -4,7 +4,9 @@
     .position-relative
       = link_to auction_path(auction) do
         - if auction.poster.attached?
-          = image_tag auction.poster, class: "card-img-top object-fit-cover", style: "height: 200px"
+          = optimized_image_tag auction.poster, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+        - elsif Current.tenant.auction_placeholder.attached?
+          = optimized_image_tag Current.tenant.auction_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
         - else
           .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
             %i.bi.bi-hammer.text-secondary{ style: "font-size: 3rem" }
