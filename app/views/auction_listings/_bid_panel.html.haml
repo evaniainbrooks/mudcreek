@@ -6,7 +6,7 @@
   .d-flex.flex-row.align-items-center.gap-2.mt-3.justify-content-center.mb-1
     = render("auction_listings/current_bid", auction_listing:)
     = render("auction_listings/bid_count", auction_listing:)
-  = render BidButtonComponent.new(auction_listing: auction_listing,
+  .mt-3= render BidButtonComponent.new(auction_listing: auction_listing,
     auction: auction,
     registration: registration,
     bidder_token: bidder_token,

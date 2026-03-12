@@ -53,10 +53,12 @@
         registration: @registration,
         bidder_token: @highest_bidder_token
       %hr.mb-4
-      .listing-description
+      %p.text-muted.small.mb-0 Description
+      .listing-description.mb-3
         = @listing.description
       - if @listing.categories.any?
-        .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")
+        %p.text-muted.small.mb-0 Categories
+        = listing_categories_badges(@listing, css: "text-bg-dark")
 
 = render("listings/properties", listing: @listing)
 = render("listings/documents", listing: @listing)
