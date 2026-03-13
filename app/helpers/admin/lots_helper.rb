@@ -62,6 +62,9 @@ module Admin::LotsHelper
     table.with_column("Number") { |lot| inline_edit_cell(lot, :number, lot.number.to_s, url: admin_lot_path(lot), scope: :lot) }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Placeholder") { |lot| lot_placeholder_cell(lot) }
+    table.with_column("State") { |lot| tag.span(lot.state, class: "badge text-bg-secondary") }
+    table.with_value_column("Commission") { |lot| lot.commission_rate ? "#{lot.commission_rate}%" : "—" }
+    table.with_value_column("Seller Fee") { |lot| lot.seller_fee&.format || "—" }
     table.with_value_column("Listings") { it.listings.size }
     table.with_column("Actions", html_class: "text-end") do |lot|
       tag.div(class: "d-flex gap-2 justify-content-end") do

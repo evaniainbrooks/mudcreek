@@ -1,8 +1,15 @@
-%fieldset.card.shadow-sm.border-0{ data: { controller: "listing-property" } }
+%fieldset.card.shadow-sm.border-0{ data: { controller: "listing-property",
+    "listing-property-property-set-fields-base-value": admin_listings_property_sets_path } }
   %legend.card-header.fw-semibold
     %i.bi.bi-list-check.me-2
     Properties
   .card-body.p-4
+    - if property_sets.present?
+      .mb-3
+        = select_tag :property_set_selector,
+            options_for_select([[ "— Apply a property set —", "" ]] + property_sets.map { |ps| [ps.name, ps.id] }),
+            class: "form-select form-select-sm",
+            data: { action: "change->listing-property#applyPropertySet" }
     .d-flex.gap-2.mb-1
       %small.text-muted.flex-grow-1 Name
       %small.text-muted.flex-grow-1 Value
@@ -14,6 +21,6 @@
           data: { action: "listing-property#addRow" } }
         %i.bi.bi-plus-lg.me-1
         Add Property
-    %template{ data: { listing_property_target: "rowTemplate" } }
-      = form.fields_for :properties, Listings::Property.new, child_index: "new_property" do |f|
-        = render "admin/listings/properties/fields", property_form: f
+  %template{ data: { listing_property_target: "rowTemplate" } }
+    = form.fields_for :properties, Listings::Property.new, child_index: "new_property" do |f|
+      = render "admin/listings/properties/fields", property_form: f

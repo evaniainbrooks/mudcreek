@@ -6,7 +6,7 @@
         %p.text-muted.small.mb-4 Enter your email and we'll send you reset instructions.
         = form_with url: passwords_path do |f|
           .mb-3
-            = f.label :email_address, "Email address", class: "form-label"
+            = f.label :email_address, "Email address", class: "form-label required"
             = f.email_field :email_address,
               required: true,
               autofocus: true,

@@ -12,6 +12,12 @@ class Admin::Listings::PropertySetsController < Admin::BaseController
     @property = @property_set.properties.build
   end
 
+  def listing_fields
+    @property_set = Current.tenant.property_sets.find(params[:id])
+    authorize(@property_set, :show?)
+    render json: @property_set.properties.order(:position).map { |p| { name: p.name, value: p.value } }
+  end
+
   def update
     @property_set = Current.tenant.property_sets.find(params[:id])
     authorize(@property_set)

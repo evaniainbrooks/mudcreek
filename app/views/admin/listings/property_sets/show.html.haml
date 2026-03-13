@@ -12,11 +12,11 @@
           = @property.errors.full_messages.to_sentence
       .row.g-3
         .col-sm-5
-          = f.label :name, class: "form-label form-label-sm"
+          = f.label :name, class: "form-label form-label-sm required"
           = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:name].any?}",
               required: true, placeholder: "e.g. Release Year"
         .col-sm-5
-          = f.label :value, "Example Value", class: "form-label form-label-sm"
+          = f.label :value, "Example Value", class: "form-label form-label-sm required"
           = f.text_field :value, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:value].any?}",
               required: true, placeholder: "e.g. 1998"
         .col-sm-auto.d-flex.align-items-end

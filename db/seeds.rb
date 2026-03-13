@@ -250,6 +250,224 @@ end
 
 puts "Seeded #{Listing.count} listings."
 
+# Listing Properties
+listing_properties = {
+  # Furniture
+  "Victorian Parlour Chair" => [
+    { name: "Material",   value: "Carved walnut" },
+    { name: "Style",      value: "Victorian" },
+    { name: "Upholstery", value: "Original needlepoint" },
+    { name: "Condition",  value: "Good — minimal wear" }
+  ],
+  "Oak Dining Table with Six Chairs" => [
+    { name: "Material",   value: "Quarter-sawn oak" },
+    { name: "Seats",      value: "6 (extends to 10)" },
+    { name: "Base",       value: "Pedestal" },
+    { name: "Condition",  value: "Good — light surface scratches" }
+  ],
+  "Mahogany Dresser with Mirror" => [
+    { name: "Material",   value: "Mahogany" },
+    { name: "Drawers",    value: "7" },
+    { name: "Hardware",   value: "Original brass" },
+    { name: "Mirror",     value: "Bevelled swivel" }
+  ],
+  "Brass Bed Frame" => [
+    { name: "Material",   value: "Brass" },
+    { name: "Size",       value: "Full" },
+    { name: "Circa",      value: "1910" },
+    { name: "Includes",   value: "Side rails and slats" }
+  ],
+  "Antique Writing Desk" => [
+    { name: "Material",   value: "Cherry" },
+    { name: "Style",      value: "Drop-front secretary" },
+    { name: "Interior",   value: "Pigeon holes, small drawers" },
+    { name: "Keys",       value: "Skeleton keys included" }
+  ],
+  "Chesterfield Sofa" => [
+    { name: "Material",   value: "Leather" },
+    { name: "Colour",     value: "Burgundy" },
+    { name: "Style",      value: "Rolled-arm, button tufted" },
+    { name: "Condition",  value: "Good — armrest patina" }
+  ],
+  "Rocking Chair" => [
+    { name: "Material",   value: "Oak" },
+    { name: "Style",      value: "Pressed-back" },
+    { name: "Condition",  value: "Good — normal rocker wear" }
+  ],
+
+  # Antiques & Collectibles
+  "Wedgwood Tea Service" => [
+    { name: "Maker",      value: "Wedgwood" },
+    { name: "Pattern",    value: "Cornucopia" },
+    { name: "Pieces",     value: "22" },
+    { name: "Condition",  value: "Excellent — no chips or cracks" }
+  ],
+  "Clockwork Mantle Clock" => [
+    { name: "Movement",   value: "8-day French" },
+    { name: "Strike",     value: "Half and hour" },
+    { name: "Case",       value: "Black slate and marble" },
+    { name: "Key",        value: "Included" }
+  ],
+  "Sterling Silver Cutlery Set" => [
+    { name: "Material",   value: "Sterling silver" },
+    { name: "Maker",      value: "Birks" },
+    { name: "Pattern",    value: "Chantilly" },
+    { name: "Pieces",     value: "60 (service for 12)" },
+    { name: "Weight",     value: "Over 2 kg" }
+  ],
+  "Pewter Tankard Set" => [
+    { name: "Material",   value: "English pewter" },
+    { name: "Quantity",   value: "6" },
+    { name: "Circa",      value: "1890" },
+    { name: "Includes",   value: "Original wooden rack" }
+  ],
+  "Crystal Decanter Set" => [
+    { name: "Pattern",    value: "Greek key" },
+    { name: "Pieces",     value: "9 (decanter + 8 glasses)" },
+    { name: "Condition",  value: "Excellent — no damage" },
+    { name: "Storage",    value: "Original felt-lined box" }
+  ],
+  "Cast Iron Dutch Oven" => [
+    { name: "Maker",      value: "Griswold" },
+    { name: "Logo",       value: "Large block, Erie PA" },
+    { name: "Size",       value: "No. 10" },
+    { name: "Condition",  value: "Seasoned black — no cracks" }
+  ],
+
+  # Jewelry & Watches
+  "Gold Locket Necklace" => [
+    { name: "Metal",      value: "Yellow gold (10K)" },
+    { name: "Era",        value: "Circa 1890–1910" },
+    { name: "Weight",     value: "3.4 g" },
+    { name: "Condition",  value: "Good — minor surface wear" }
+  ],
+  "Gentleman's Pocket Watch" => [
+    { name: "Maker",      value: "Illinois Watch Co." },
+    { name: "Grade",      value: "Bunn Special" },
+    { name: "Jewels",     value: "21" },
+    { name: "Case",       value: "Yellow gold-filled, screw-back" },
+    { name: "Dial",       value: "Hairline near six o'clock" }
+  ],
+  "Amethyst Ring" => [
+    { name: "Metal",      value: "Silver" },
+    { name: "Stone",      value: "Oval cushion-cut amethyst, ~3 ct" },
+    { name: "Accents",    value: "Seed pearls" },
+    { name: "Ring Size",  value: "6.5" },
+    { name: "Style",      value: "Victorian cluster" }
+  ],
+  "Silver Cufflinks" => [
+    { name: "Metal",      value: "Sterling silver" },
+    { name: "Style",      value: "Engine-turned" },
+    { name: "Hallmark",   value: "Birmingham, 1927" },
+    { name: "Backs",      value: "Toggle" }
+  ],
+
+  # Tools & Workshop
+  "Stanley Hand Plane Set" => [
+    { name: "Maker",      value: "Stanley" },
+    { name: "Planes",     value: "#3, #4, #5, #6, #7" },
+    { name: "Quantity",   value: "5" },
+    { name: "Condition",  value: "Some surface rust — irons sound" }
+  ],
+  "Cast Iron Bench Vise" => [
+    { name: "Jaw Width",  value: "5\"" },
+    { name: "Base",       value: "Swivel" },
+    { name: "Pipe Jaws",  value: "Yes" },
+    { name: "Condition",  value: "Good — smooth action, no cracks" }
+  ],
+  "Crosscut Hand Saw" => [
+    { name: "Maker",      value: "Disston" },
+    { name: "Model",      value: "No. 12" },
+    { name: "Blade",      value: "26\"" },
+    { name: "Condition",  value: "Sharpened and set" }
+  ],
+
+  # Books & Media
+  "Encyclopedia Britannica Set" => [
+    { name: "Edition",    value: "1965" },
+    { name: "Volumes",    value: "24 + index" },
+    { name: "Binding",    value: "Burgundy cloth, gilt titles" },
+    { name: "Includes",   value: "Original wooden bookends" }
+  ],
+  "Vinyl Record Collection" => [
+    { name: "Quantity",   value: "Approx. 80 LPs" },
+    { name: "Genres",     value: "Jazz, classical, easy listening" },
+    { name: "Era",        value: "1950s–70s" },
+    { name: "Condition",  value: "Spot-checked — all play" }
+  ],
+
+  # Art & Decor
+  "Watercolour Landscape Painting" => [
+    { name: "Artist",     value: "E. Sutton" },
+    { name: "Year",       value: "1938" },
+    { name: "Medium",     value: "Watercolour" },
+    { name: "Size",       value: "18\" × 24\"" },
+    { name: "Frame",      value: "Original gilt" }
+  ],
+  "Tiffany-style Table Lamp" => [
+    { name: "Shade",      value: "Leaded glass, dragonfly motif" },
+    { name: "Shade Diameter", value: "20\"" },
+    { name: "Height",     value: "26\"" },
+    { name: "Condition",  value: "All panels intact, wired and tested" }
+  ],
+  "Bronze Horse Figurine" => [
+    { name: "Material",   value: "Solid bronze" },
+    { name: "Height",     value: "8\"" },
+    { name: "Base",       value: "Marble plinth" },
+    { name: "Signed",     value: "Dubois" }
+  ],
+
+  # Clothing & Accessories
+  "Men's Tweed Hunting Jacket" => [
+    { name: "Material",   value: "Harris Tweed" },
+    { name: "Colour",     value: "Olive herringbone" },
+    { name: "Size",       value: "42 Long" },
+    { name: "Style",      value: "Norfolk jacket" }
+  ],
+  "Mink Stole" => [
+    { name: "Material",   value: "Natural mink" },
+    { name: "Lining",     value: "Ivory satin" },
+    { name: "Closure",    value: "Hook-and-eye" },
+    { name: "Condition",  value: "Good — minimal shedding" }
+  ],
+
+  # Electronics
+  "Grundig Shortwave Radio" => [
+    { name: "Model",      value: "Satellit 500" },
+    { name: "Bands",      value: "AM, FM, shortwave" },
+    { name: "Condition",  value: "Tested and functional" },
+    { name: "Includes",   value: "Original case and manual" }
+  ],
+  "Vintage Rotary Telephone" => [
+    { name: "Maker",      value: "Western Electric" },
+    { name: "Model",      value: "500" },
+    { name: "Colour",     value: "Harvest gold" },
+    { name: "Use",        value: "Decorative" }
+  ],
+  "8mm Film Projector" => [
+    { name: "Maker",      value: "Eumig" },
+    { name: "Model",      value: "P8 Phonomatic" },
+    { name: "Format",     value: "8mm" },
+    { name: "Includes",   value: "Two reels of family film" }
+  ]
+}
+
+listing_properties.each do |listing_name, properties|
+  next if properties.empty?
+  listing = Listing.find_by(name: listing_name)
+  next unless listing
+
+  properties.each_with_index do |attrs, idx|
+    listing.properties.find_or_create_by!(name: attrs[:name]) do |p|
+      p.tenant   = mudcreek
+      p.value    = attrs[:value]
+      p.position = idx + 1
+    end
+  end
+end
+
+puts "Seeded listing properties."
+
 # Rental listing
 rental = Listing.find_or_create_by!(name: "Folding Tables & Chairs") do |l|
   l.tenant       = mudcreek

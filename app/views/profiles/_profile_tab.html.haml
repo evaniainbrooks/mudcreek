@@ -12,10 +12,10 @@
             %i.bi.bi-person-fill.me-2
             Personal Information
           .mb-3
-            = f.label :first_name, "First name", class: "form-label"
+            = f.label :first_name, "First name", class: "form-label required"
             = f.text_field :first_name, required: true, autocomplete: "given-name", class: "form-control"
           .mb-3
-            = f.label :last_name, "Last name", class: "form-label"
+            = f.label :last_name, "Last name", class: "form-label required"
             = f.text_field :last_name, required: true, autocomplete: "family-name", class: "form-control"
           .mb-3
             = f.label :email_address, "Email address", class: "form-label"

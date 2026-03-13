@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_000004) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_124850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_000004) do
   create_enum "listing_pricing_type", ["firm", "negotiable"]
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
   create_enum "listing_type", ["sale", "rental"]
+  create_enum "lot_state", ["submitted", "received", "auctioned", "settled", "paid"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
   create_enum "social_media_platform", ["facebook", "instagram", "youtube", "twitter", "tiktok", "snapchat", "linkedin", "discord", "patreon", "onlyfans", "twitch"]
   create_enum "transaction_state", ["pending", "succeeded", "failed"]
@@ -311,10 +312,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_000004) do
   end
 
   create_table "lots", force: :cascade do |t|
+    t.integer "commission_rate"
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.string "number"
     t.bigint "owner_id", null: false
+    t.datetime "paid_at"
+    t.integer "payout_amount_cents"
+    t.integer "seller_fee_cents"
+    t.datetime "settled_at"
+    t.enum "state", default: "submitted", null: false, enum_type: "lot_state"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_lots_on_owner_id"

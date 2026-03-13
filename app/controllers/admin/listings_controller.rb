@@ -46,13 +46,11 @@ class Admin::ListingsController < Admin::BaseController
   def new
     @listing = Listing.new
     authorize(@listing)
-    @categories = Listings::Category.order(:name)
-    @lots = Lot.order(:name)
+    load_form_collections
   end
 
   def edit
-    @categories = Listings::Category.order(:name)
-    @lots = Lot.order(:name)
+    load_form_collections
   end
 
   def create
@@ -62,8 +60,7 @@ class Admin::ListingsController < Admin::BaseController
     if @listing.save
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully created."
     else
-      @categories = Listings::Category.order(:name)
-      @lots = Lot.order(:name)
+      load_form_collections
       render :new, status: :unprocessable_content
     end
   end
@@ -72,8 +69,7 @@ class Admin::ListingsController < Admin::BaseController
     if @listing.update(listing_params)
       redirect_to admin_listing_path(@listing), notice: "Listing was successfully updated."
     else
-      @categories = Listings::Category.order(:name)
-      @lots = Lot.order(:name)
+      load_form_collections
       render :edit, status: :unprocessable_content
     end
   end
@@ -91,6 +87,12 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   private
+
+  def load_form_collections
+    @categories    = Listings::Category.order(:name)
+    @lots          = Lot.order(:name)
+    @property_sets = Listings::PropertySet.order(:name)
+  end
 
   def set_listing
     @listing = Listing.includes(:categories, :properties, auction_listing: :auction).with_attached_images.with_attached_videos.with_attached_documents.find_by!(hashid: params[:hashid])

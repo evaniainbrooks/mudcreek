@@ -16,7 +16,7 @@ class Listings::Property < ApplicationRecord
   private
 
   def listing_or_property_set_present
-    errors.add(:base, "must belong to a listing or a property set") if listing_id.nil? && property_set_id.nil?
+    errors.add(:base, "must belong to a listing or a property set") if listing.nil? && property_set.nil?
   end
 
   def set_default_position

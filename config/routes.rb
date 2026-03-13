@@ -56,6 +56,7 @@ resource :session
       resources :categories,    only: [ :index, :create, :update, :destroy ], param: :hashid
       resources :property_sets, only: [ :index, :create, :show, :destroy, :update ] do
         collection { patch :reorder }
+        member { get :listing_fields }
         resources :properties, only: [ :create, :destroy, :update ], module: :property_sets
       end
     end

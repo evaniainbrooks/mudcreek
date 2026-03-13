@@ -12,11 +12,11 @@
           = @delivery_method.errors.full_messages.to_sentence
       .row.g-3
         .col-sm-5
-          = f.label :name, class: "form-label form-label-sm"
+          = f.label :name, class: "form-label form-label-sm required"
           = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @delivery_method.errors[:name].any?}",
               required: true, placeholder: "e.g. Local Pickup"
         .col-sm-3
-          = f.label :price, "Price", class: "form-label form-label-sm"
+          = f.label :price, "Price", class: "form-label form-label-sm required"
           .input-group.input-group-sm
             %span.input-group-text $
             = f.number_field :price, value: @delivery_method.price&.to_f,

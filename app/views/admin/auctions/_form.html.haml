@@ -17,7 +17,7 @@
           General
         .card-body.p-4
           .mb-3
-            = f.label :name, class: "form-label"
+            = f.label :name, class: "form-label required"
             = f.text_field :name, class: "form-control #{'is-invalid' if auction.errors[:name].any?}", required: true
             - if auction.errors[:name].any?
               .invalid-feedback= auction.errors[:name].to_sentence

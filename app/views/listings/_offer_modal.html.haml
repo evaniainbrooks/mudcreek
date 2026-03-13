@@ -9,7 +9,7 @@
       = form_with url: listing_offers_path(listing), scope: :offer do |f|
         .modal-body
           .mb-3
-            = f.label :amount, "Your offer", class: "form-label"
+            = f.label :amount, "Your offer", class: "form-label required"
             .input-group
               %span.input-group-text $
               = f.number_field :amount, class: "form-control", required: true, min: "0.01", step: "0.01", placeholder: "0.00"

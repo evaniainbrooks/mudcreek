@@ -11,7 +11,7 @@
         .alert.alert-danger.mb-3
           = @category.errors.full_messages.to_sentence
       .mb-3
-        = f.label :name, class: "form-label form-label-sm"
+        = f.label :name, class: "form-label form-label-sm required"
         = f.text_field :name,
           class: "form-control form-control-sm #{'is-invalid' if @category.errors[:name].any?}",
           required: true,

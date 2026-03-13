@@ -12,7 +12,7 @@
           = @lot.errors.full_messages.to_sentence
       .row.g-3
         .col-sm-4
-          = f.label :name, class: "form-label form-label-sm"
+          = f.label :name, class: "form-label form-label-sm required"
           = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @lot.errors[:name].any?}", required: true, placeholder: "e.g. Lot A"
         .col-sm-3
           = f.label :number, class: "form-label form-label-sm"

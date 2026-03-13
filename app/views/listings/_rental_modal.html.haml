@@ -19,12 +19,12 @@
           }}
           .row.g-3.mb-3.mt-2
             .col-md-6
-              = f.label :rental_start_at, "Start", class: "form-label"
+              = f.label :rental_start_at, "Start", class: "form-label required"
               = f.datetime_local_field :rental_start_at, class: "form-control",
                   required: true,
                   data: { "rental-modal-target": "startAt", action: "change->rental-modal#calculate" }
             .col-md-6
-              = f.label :rental_end_at, "End", class: "form-label"
+              = f.label :rental_end_at, "End", class: "form-label required"
               = f.datetime_local_field :rental_end_at, class: "form-control",
                   required: true,
                   data: { "rental-modal-target": "endAt", action: "change->rental-modal#calculate" }

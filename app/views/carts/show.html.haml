@@ -83,7 +83,7 @@
               = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
                 %div{data: { controller: "address" }}
                   .mb-2
-                    = f.label :street_address, "Street address", class: "form-label form-label-sm"
+                    = f.label :street_address, "Street address", class: "form-label form-label-sm required"
                     = f.text_field :street_address,
                         value: @cart_address[:street_address],
                         required: true,
@@ -92,14 +92,14 @@
                         class: "form-control form-control-sm"
                   .row.g-2.mb-2
                     .col
-                      = f.label :city, "City", class: "form-label form-label-sm"
+                      = f.label :city, "City", class: "form-label form-label-sm required"
                       = f.text_field :city,
                           value: @cart_address[:city],
                           required: true,
                           autocomplete: "address-level2",
                           class: "form-control form-control-sm"
                     .col
-                      = f.label :postal_code, "Postal code", class: "form-label form-label-sm"
+                      = f.label :postal_code, "Postal code", class: "form-label form-label-sm required"
                       = f.text_field :postal_code,
                           value: @cart_address[:postal_code],
                           required: true,
@@ -107,14 +107,14 @@
                           placeholder: "A1A 1A1",
                           class: "form-control form-control-sm"
                   .mb-2
-                    = f.label :country, "Country", class: "form-label form-label-sm"
+                    = f.label :country, "Country", class: "form-label form-label-sm required"
                     = f.select :country, all_countries,
                         { selected: @cart_address[:country] },
                         required: true,
                         class: "form-select form-select-sm",
                         data: { address_target: "country", action: "change->address#countryChanged" }
                   .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
-                    = f.label :province, "Province / State", class: "form-label form-label-sm"
+                    = f.label :province, "Province / State", class: "form-label form-label-sm required"
                     = f.select :province, initial_subdivisions,
                         { include_blank: "Select…", selected: @cart_address[:province] },
                         required: !initial_subdivisions.empty?,

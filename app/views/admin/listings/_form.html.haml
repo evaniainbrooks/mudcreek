@@ -25,12 +25,12 @@
             - else
               %p.form-control-plaintext= listing.listing_type.humanize
           .mb-3
-            = f.label :name, class: "form-label"
+            = f.label :name, class: "form-label required"
             = f.text_field :name, class: "form-control #{'is-invalid' if listing.errors[:name].any?}", required: true
             - if listing.errors[:name].any?
               .invalid-feedback= listing.errors[:name].to_sentence
           .mb-3
-            = f.label :owner_id, "Owner", class: "form-label"
+            = f.label :owner_id, "Owner", class: "form-label required"
             = f.collection_select :owner_id, User.order(:email_address), :id, :email_address,
               { prompt: "Select an owner..." },
               { class: "form-select #{'is-invalid' if listing.errors[:owner].any?}", required: true }
@@ -79,7 +79,7 @@
           Pricing
         .card-body.p-4
           .mb-3
-            = f.label :price, class: "form-label"
+            = f.label :price, class: "form-label #{'required' unless listing.rental?}"
             .input-group
               %span.input-group-text $
               = f.text_field :price,
@@ -106,7 +106,7 @@
             - if listing.errors[:acquisition_price_cents].any?
               .invalid-feedback.d-block= listing.errors[:acquisition_price_cents].to_sentence
           .mb-0
-            = f.label :quantity, class: "form-label"
+            = f.label :quantity, class: "form-label #{'required' unless listing.rental?}"
             = f.number_field :quantity,
               class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}",
               min: 0,
@@ -119,7 +119,7 @@
         = render "admin/listings/rental_rate_plans/section", listing: listing, form: f
 
       .mb-4
-        = render "admin/listings/properties/section", listing: listing, form: f
+        = render "admin/listings/properties/section", listing: listing, form: f, property_sets: @property_sets
 
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold

@@ -12,7 +12,7 @@
           = @discount_code.errors.full_messages.to_sentence
       .row.g-3
         .col-sm-3
-          = f.label :key, class: "form-label form-label-sm"
+          = f.label :key, class: "form-label form-label-sm required"
           = f.text_field :key,
             class: "form-control form-control-sm #{'is-invalid' if @discount_code.errors[:key].any?}",
             required: true,
@@ -22,7 +22,7 @@
           = f.select :discount_type, DiscountCode.discount_types.keys.map { [it.humanize, it] }, {},
               class: "form-select form-select-sm #{'is-invalid' if @discount_code.errors[:discount_type].any?}"
         .col-sm-2
-          = f.label :amount, class: "form-label form-label-sm"
+          = f.label :amount, class: "form-label form-label-sm required"
           .input-group.input-group-sm
             %span.input-group-text $/%
             = f.number_field :amount, value: @discount_code.amount&.to_f,
