@@ -6,10 +6,10 @@
         - if listing.images.attached?
           = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
         - elsif listing.videos.attached?
-          %video.card-img-top.w-100{ style: "height: 200px; object-fit: cover",
+          %video.card-img-top.w-100{style: "height: 200px; object-fit: cover",
             muted: true,
             playsinline: true,
-            preload: "metadata" }
+            preload: "metadata"}
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.lot&.listing_placeholder&.attached?
           = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
@@ -23,9 +23,9 @@
           = listing_state_badge(listing)
       - elsif auction_listing.ends_at && auction_listing.ends_at > Time.current && auction_listing.ends_at < 10.minutes.from_now
         .position-absolute.top-0.start-0.p-2
-          %span.badge.text-bg-warning{ data: { controller: "countdown",
+          %span.badge.text-bg-warning{data: { controller: "countdown",
             "countdown-ends-at-value": auction_listing.ends_at.iso8601,
-            "countdown-badge-value": true } }
+            "countdown-badge-value": true }}
             %span{ data: { "countdown-target": "display" } } Ending Soon!
       - unless auction_listing.reserve_price_cents.present? || listing.sold? || listing.cancelled?
         .position-absolute.top-0.end-0.p-2

@@ -52,9 +52,9 @@
           %strong Auction has ended!
       - elsif @auction.starts_at
         - if @auction.starts_at > Time.current
-          .d-flex.align-items-center.gap-2.mb-2{ data: { controller: "countdown",
+          .d-flex.align-items-center.gap-2.mb-2{data: { controller: "countdown",
             "countdown-ends-at-value": @auction.starts_at.iso8601,
-            "countdown-reload-value": true } }
+            "countdown-reload-value": true }}
             %i.bi.bi-clock.flex-shrink-0
             %strong{ data: { "countdown-target": "display" } }
         - else
@@ -69,8 +69,8 @@
             %span= @auction.starts_at_in_time_zone.to_fs(:long)
             %small.text-muted= @auction.starts_at_in_time_zone.strftime("%Z")
           - if @auction.starts_at > Time.current
-            .text-muted.small{ data: { controller: "countdown",
-              "countdown-ends-at-value": @auction.starts_at.iso8601 } }
+            .text-muted.small{data: { controller: "countdown",
+              "countdown-ends-at-value": @auction.starts_at.iso8601 }}
               %span{ data: { "countdown-target": "display" } }
 
       - if @auction.ends_at
@@ -81,8 +81,8 @@
             %span= @auction.ends_at_in_time_zone.to_fs(:long)
             %small.text-muted= @auction.ends_at_in_time_zone.strftime("%Z")
           - if @auction.ends_at > Time.current
-            .text-muted.small{ data: { controller: "countdown",
-              "countdown-ends-at-value": @auction.ends_at.iso8601 } }
+            .text-muted.small{data: { controller: "countdown",
+              "countdown-ends-at-value": @auction.ends_at.iso8601 }}
               %span{ data: { "countdown-target": "display" } }
 
       - if @auction.address&.any?

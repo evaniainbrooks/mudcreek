@@ -11,8 +11,8 @@
       = form.fields_for :social_media_accounts do |a|
         = render "admin/shared/social_media_account_fields", account_form: a
     .mt-2
-      %button.btn.btn-sm.btn-outline-secondary{ type: "button",
-        data: { action: "social-media-account#addAccount" } }
+      %button.btn.btn-sm.btn-outline-secondary{type: "button",
+        data: { action: "social-media-account#addAccount" }}
         %i.bi.bi-plus-lg.me-1
         Add Account
     %template{ data: { social_media_account_target: "accountTemplate" } }

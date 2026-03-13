@@ -1,4 +1,4 @@
-- if policy(Listing).index? || policy(Listings::Category).index? || policy(Listings::PropertySet).index? || policy(Lot).index? || policy(Auction).index? || policy(AuctionRegistration).index?
+- if admin_catalog_nav?
   %li.nav-item.dropdown
     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
       %i.bi.bi-tag-fill.me-1
@@ -34,7 +34,7 @@
           = link_to admin_lots_path, class: "dropdown-item" do
             %i.bi.bi-map-fill.me-1
             Lots
-- if policy(Order).index? || policy(Invoice).index? || policy(Offer).index? || policy(DiscountCode).index? || policy(DeliveryMethod).index?
+- if admin_sales_nav?
   %li.nav-item.dropdown
     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
       %i.bi.bi-basket-fill.me-1
@@ -65,7 +65,7 @@
           = link_to admin_delivery_methods_path, class: "dropdown-item" do
             %i.bi.bi-truck.me-1
             Delivery
-- if policy(User).index? || policy(Role).index? || policy(Tenant).index?
+- if admin_settings_nav?
   %li.nav-item.dropdown
     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
       %i.bi.bi-gear-fill.me-1
