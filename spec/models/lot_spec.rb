@@ -16,7 +16,7 @@ RSpec.describe Lot, type: :model do
   describe "destroying a lot" do
     it "nullifies the lot_id on associated listings rather than deleting them" do
       lot     = create(:lot)
-      listing = create(:listing, lot: lot)
+      listing = create(:listing, lot: lot, owner: nil)
 
       lot.destroy
 

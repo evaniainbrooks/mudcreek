@@ -151,7 +151,7 @@ RSpec.describe "Admin::Listings::Categories", type: :request do
           headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(response.body).to include('action="replace"')
-        expect(response.body).to include("#{dom_id(category)}_name")
+        expect(response.body).to include("#{ActionView::RecordIdentifier.dom_id(category)}_name")
       end
     end
 

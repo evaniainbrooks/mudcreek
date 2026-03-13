@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin::Listings new with property set", type: :system do
+RSpec.describe "Admin::Listings new with property set", :js, type: :system do
   before { driven_by :rack_test }
 
   let(:current_user) { create(:user, :super_admin) }
@@ -14,7 +14,7 @@ RSpec.describe "Admin::Listings new with property set", type: :system do
     ps
   end
 
-  describe "creating a listing via ?property_set_id query param" do
+  describe "creating a listing" do
     it "pre-populates properties, allows editing, and saves successfully" do
       visit new_admin_listing_path(property_set_id: property_set.id)
 
@@ -25,6 +25,9 @@ RSpec.describe "Admin::Listings new with property set", type: :system do
       find("[name='listing[description]']", visible: :all).set("A beautiful antique dresser.")
 
       # Properties are pre-populated from the property set
+      #
+      select "Furniture", from: :property_set_selector
+      click_on "Add Property"
       expect(page).to have_field("listing[properties_attributes][0][name]", with: "Material")
       expect(page).to have_field("listing[properties_attributes][0][value]", with: "Oak")
       expect(page).to have_field("listing[properties_attributes][1][name]", with: "Condition")
