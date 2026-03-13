@@ -1,0 +1,4 @@
+= turbo_stream.replace "#{dom_id(@property)}_name" do
+  = inline_edit_cell(@property, :name, @property.name, url: admin_listings_property_set_property_path(@property_set, @property), scope: :listings_property)
+= turbo_stream.replace "#{dom_id(@property)}_value" do
+  = inline_edit_cell(@property, :value, @property.value, url: admin_listings_property_set_property_path(@property_set, @property), scope: :listings_property)

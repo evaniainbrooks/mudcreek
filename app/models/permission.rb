@@ -8,6 +8,8 @@ class Permission < ApplicationRecord
     DeliveryMethod Listings::RentalRatePlan
     Auction AuctionListing AuctionRegistration
     Bid Tenant Invoice
+    Listings::PropertySet
+    Listings::Property
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze

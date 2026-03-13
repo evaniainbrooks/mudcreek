@@ -54,7 +54,7 @@
           = addr.text_field :postal_code, class: "form-control"
         .col-md-6
           = addr.label :country, "Country", class: "form-label"
-          = addr.text_field :country, class: "form-control"
+          = addr.select :country, all_countries, { include_blank: "— Select country —" }, class: "form-select"
     .mb-0
       = form.label :timezone, class: "form-label"
       = form.time_zone_select :timezone, ActiveSupport::TimeZone.all, { include_blank: "— Inherit system default —" },

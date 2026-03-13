@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_020000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_000004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -274,15 +274,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_020000) do
 
   create_table "listings_properties", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "listing_id", null: false
+    t.bigint "listing_id"
     t.string "name", null: false
     t.integer "position", default: 0, null: false
+    t.bigint "property_set_id"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.string "value", null: false
     t.index ["listing_id", "position"], name: "index_listings_properties_on_listing_id_and_position"
     t.index ["listing_id"], name: "index_listings_properties_on_listing_id"
+    t.index ["property_set_id"], name: "index_listings_properties_on_property_set_id"
     t.index ["tenant_id"], name: "index_listings_properties_on_tenant_id"
+  end
+
+  create_table "listings_property_sets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_listings_property_sets_on_tenant_id"
   end
 
   create_table "listings_rental_rate_plans", force: :cascade do |t|
@@ -650,7 +660,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_020000) do
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "listings_properties", "listings"
+  add_foreign_key "listings_properties", "listings_property_sets", column: "property_set_id"
   add_foreign_key "listings_properties", "tenants"
+  add_foreign_key "listings_property_sets", "tenants"
   add_foreign_key "listings_rental_rate_plans", "listings"
   add_foreign_key "listings_rental_rate_plans", "tenants"
   add_foreign_key "lots", "tenants"

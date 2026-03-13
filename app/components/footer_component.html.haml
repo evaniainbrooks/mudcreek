@@ -23,7 +23,17 @@
           - if address&.any?
             .d-flex.align-items-start.gap-2.text-muted.small
               %i.bi.bi-geo-alt.flex-shrink-0.mt-1
-              %span= address.to_fs(:short)
+              %address.mb-0
+                - if address.street_address.present?
+                  = address.street_address
+                  %br/
+                - city_line = [ address.city, address.province ].compact_blank.join(", ")
+                - city_line += "  #{address.postal_code}" if address.postal_code.present?
+                - if city_line.present?
+                  = city_line
+                  %br/
+                - if address.country.present?
+                  = address.country
           - if tenant.custom_domain.present?
             .d-flex.align-items-center.gap-2.text-muted.small
               %i.bi.bi-globe.flex-shrink-0

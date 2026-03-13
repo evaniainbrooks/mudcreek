@@ -1,0 +1,30 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-list-columns.me-2
+    = @property_set.name
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold New Property
+  .card-body
+    = form_with model: @property, url: admin_listings_property_set_properties_path(@property_set) do |f|
+      - if @property.errors.any?
+        .alert.alert-danger.mb-3
+          = @property.errors.full_messages.to_sentence
+      .row.g-3
+        .col-sm-5
+          = f.label :name, class: "form-label form-label-sm"
+          = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:name].any?}",
+              required: true, placeholder: "e.g. Release Year"
+        .col-sm-5
+          = f.label :value, "Example Value", class: "form-label form-label-sm"
+          = f.text_field :value, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:value].any?}",
+              required: true, placeholder: "e.g. 1998"
+        .col-sm-auto.d-flex.align-items-end
+          = f.submit "Add", class: "btn btn-primary btn-sm"
+
+= render_properties_table(properties: @properties, property_set: @property_set)
+
+.mt-3
+  = link_to admin_listings_property_sets_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Property Sets

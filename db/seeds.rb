@@ -11,6 +11,25 @@ Tenant.find_or_create_by!(key: "whitelabel") do |t|
   t.default = false
 end
 
+mudcreek.create_address!(
+  address_type:   "primary",
+  street_address: "101 River Road",
+  city:           "Kamloops",
+  province:       "BC",
+  postal_code:    "V2C 2A1",
+  country:        "CA"
+) unless mudcreek.address
+
+[
+  { platform: :facebook,  slug: "mudcreekauctions" },
+  { platform: :instagram, slug: "mudcreekauctions" },
+  { platform: :youtube,   slug: "@mudcreekauctions" }
+].each do |attrs|
+  mudcreek.social_media_accounts.find_or_create_by!(platform: attrs[:platform]) do |a|
+    a.slug = attrs[:slug]
+  end
+end
+
 unless mudcreek.logo.attached?
   mudcreek.logo.attach(
     io: Rails.root.join("spec/fixtures/images/mudcreek_logo.png").open("rb"),
@@ -30,6 +49,7 @@ end
 # Roles & Permissions
 all_resources = %w[
   Listing Lot User Role Permission Listings::Category Offer Order DiscountCode DeliveryMethod Listings::RentalRatePlan Auction AuctionListing Tenant AuctionRegistration Bid Invoice
+  Listings::PropertySet Listings::Property
 ]
 
 all_actions = %w[index show create update destroy reorder]
@@ -396,6 +416,193 @@ category_assignments.each do |listing_name, cat_names|
 end
 
 puts "Seeded #{Listings::Category.count} listing categories."
+
+# Property Sets
+property_set_data = [
+  {
+    name: "Books",
+    properties: [
+      { name: "Author",        value: "Ernest Hemingway" },
+      { name: "Publisher",     value: "Scribner" },
+      { name: "Year",          value: "1952" },
+      { name: "Edition",       value: "First Edition" },
+      { name: "ISBN",          value: "978-0-684-80122-3" },
+      { name: "Genre",         value: "Fiction" },
+      { name: "Condition",     value: "Good" }
+    ]
+  },
+  {
+    name: "Vinyl Records",
+    properties: [
+      { name: "Artist",        value: "Miles Davis" },
+      { name: "Album Title",   value: "Kind of Blue" },
+      { name: "Label",         value: "Columbia" },
+      { name: "Release Year",  value: "1959" },
+      { name: "Format",        value: "LP" },
+      { name: "Speed",         value: "33 RPM" },
+      { name: "Condition",     value: "VG+" }
+    ]
+  },
+  {
+    name: "Vehicles",
+    properties: [
+      { name: "Make",          value: "Ford" },
+      { name: "Model",         value: "F-100" },
+      { name: "Year",          value: "1967" },
+      { name: "Colour",        value: "Poppy Red" },
+      { name: "Mileage",       value: "87,400 miles" },
+      { name: "Engine",        value: "360 FE V8" },
+      { name: "Transmission",  value: "3-speed manual" },
+      { name: "VIN",           value: "F10YK7A12345" },
+      { name: "Condition",     value: "Running, needs cosmetics" }
+    ]
+  },
+  {
+    name: "Farm Equipment",
+    properties: [
+      { name: "Make",          value: "John Deere" },
+      { name: "Model",         value: "4020" },
+      { name: "Year",          value: "1968" },
+      { name: "Hours",         value: "4,200" },
+      { name: "Serial Number", value: "T213R012345" },
+      { name: "Drive",         value: "2WD" },
+      { name: "Condition",     value: "Field ready" }
+    ]
+  },
+  {
+    name: "Paintings & Prints",
+    properties: [
+      { name: "Artist",        value: "E. Sutton" },
+      { name: "Title",         value: "River Valley at Dawn" },
+      { name: "Medium",        value: "Oil on canvas" },
+      { name: "Dimensions",    value: "24\" × 30\"" },
+      { name: "Year",          value: "1938" },
+      { name: "Signed",        value: "Lower right" },
+      { name: "Framed",        value: "Yes — carved gilt" },
+      { name: "Condition",     value: "Good; minor craquelure" }
+    ]
+  },
+  {
+    name: "Jewelry",
+    properties: [
+      { name: "Metal",         value: "Yellow gold" },
+      { name: "Karat",         value: "10K" },
+      { name: "Gemstone",      value: "Amethyst" },
+      { name: "Weight",        value: "3.4 g" },
+      { name: "Hallmarks",     value: "Birks, 10K" },
+      { name: "Period",        value: "Victorian, c. 1890" },
+      { name: "Condition",     value: "Excellent" }
+    ]
+  },
+  {
+    name: "Hand Tools",
+    properties: [
+      { name: "Manufacturer",  value: "Stanley" },
+      { name: "Type",          value: "Bench plane" },
+      { name: "Model",         value: "No. 5" },
+      { name: "Size",          value: "14\" blade" },
+      { name: "Material",      value: "Cast iron, rosewood" },
+      { name: "Era",           value: "c. 1940s" },
+      { name: "Condition",     value: "Good; light surface rust" }
+    ]
+  },
+  {
+    name: "Furniture",
+    properties: [
+      { name: "Style",         value: "Victorian" },
+      { name: "Primary Wood",  value: "Quarter-sawn oak" },
+      { name: "Dimensions",    value: "72\"H × 38\"W × 20\"D" },
+      { name: "Hardware",      value: "Original brass" },
+      { name: "Finish",        value: "Original shellac" },
+      { name: "Joinery",       value: "Dovetailed" },
+      { name: "Condition",     value: "Good; minor patina" }
+    ]
+  },
+  {
+    name: "Clocks & Watches",
+    properties: [
+      { name: "Maker",         value: "Seth Thomas" },
+      { name: "Movement",      value: "8-day, key-wind" },
+      { name: "Case Material", value: "Black slate and marble" },
+      { name: "Dial",          value: "Porcelain, Roman numerals" },
+      { name: "Year",          value: "c. 1895" },
+      { name: "Running",       value: "Yes" },
+      { name: "Condition",     value: "Good" }
+    ]
+  },
+  {
+    name: "Ceramics & Pottery",
+    properties: [
+      { name: "Maker",         value: "Wedgwood" },
+      { name: "Pattern",       value: "Cornucopia" },
+      { name: "Glaze",         value: "Creamware" },
+      { name: "Pieces",        value: "22" },
+      { name: "Period",        value: "c. 1900" },
+      { name: "Marks",         value: "Wedgwood England impressed" },
+      { name: "Condition",     value: "No chips or cracks" }
+    ]
+  },
+  {
+    name: "Silver & Silverplate",
+    properties: [
+      { name: "Pattern",       value: "Chantilly" },
+      { name: "Maker",         value: "Birks" },
+      { name: "Metal",         value: "Sterling (.925)" },
+      { name: "Hallmarks",     value: "Birks Sterling Canada" },
+      { name: "Pieces",        value: "60" },
+      { name: "Weight",        value: "2.1 kg" },
+      { name: "Condition",     value: "Tarnished; polishes well" }
+    ]
+  },
+  {
+    name: "Cameras & Photography",
+    properties: [
+      { name: "Make",          value: "Leica" },
+      { name: "Model",         value: "M3" },
+      { name: "Year",          value: "1955" },
+      { name: "Film Format",   value: "35mm" },
+      { name: "Lens",          value: "Summicron 50mm f/2" },
+      { name: "Serial Number", value: "700123" },
+      { name: "Condition",     value: "Excellent; shutter works" }
+    ]
+  },
+  {
+    name: "Rugs & Textiles",
+    properties: [
+      { name: "Origin",        value: "Persia (Iran)" },
+      { name: "Type",          value: "Hand-knotted wool" },
+      { name: "Dimensions",    value: "4' × 6'" },
+      { name: "Pile",          value: "Wool on cotton warp" },
+      { name: "Age",           value: "c. 1920" },
+      { name: "Colours",       value: "Navy, ivory, rust" },
+      { name: "Condition",     value: "Good; even wear" }
+    ]
+  },
+  {
+    name: "Coins & Currency",
+    properties: [
+      { name: "Country",       value: "Canada" },
+      { name: "Denomination",  value: "50 cents" },
+      { name: "Year",          value: "1921" },
+      { name: "Mint",          value: "Ottawa" },
+      { name: "Metal",         value: "80% silver" },
+      { name: "Grade",         value: "F-12" },
+      { name: "Notes",         value: "Key date" }
+    ]
+  }
+]
+
+property_set_data.each do |set_attrs|
+  ps = Listings::PropertySet.find_or_create_by!(name: set_attrs[:name], tenant: mudcreek)
+  set_attrs[:properties].each do |prop_attrs|
+    ps.properties.find_or_create_by!(name: prop_attrs[:name]) do |p|
+      p.tenant = mudcreek
+      p.value  = prop_attrs[:value]
+    end
+  end
+end
+
+puts "Seeded #{Listings::PropertySet.count} property sets with #{Listings::Property.where(listing_id: nil).count} template properties."
 
 # Load a pool of stock images from fixtures, then assign one per listing.
 FIXTURES_IMAGE_DIR = Rails.root.join("spec/fixtures/images")

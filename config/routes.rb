@@ -53,7 +53,11 @@ resource :session
       resources :permissions, only: [ :index, :create, :destroy ]
     end
     namespace :listings do
-      resources :categories, only: [ :index, :create, :update, :destroy ], param: :hashid
+      resources :categories,    only: [ :index, :create, :update, :destroy ], param: :hashid
+      resources :property_sets, only: [ :index, :create, :show, :destroy, :update ] do
+        collection { patch :reorder }
+        resources :properties, only: [ :create, :destroy, :update ], module: :property_sets
+      end
     end
     resources :orders, only: [ :index, :show, :update ], param: :number
     resources :offers, only: [ :index, :show, :update ]

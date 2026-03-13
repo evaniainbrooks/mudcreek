@@ -175,7 +175,7 @@
                 = addr.text_field :postal_code, class: "form-control"
               .col-sm-6
                 = addr.label :country, "Country", class: "form-label"
-                = addr.text_field :country, class: "form-control"
+                = addr.select :country, all_countries, { include_blank: "— Select country —" }, class: "form-select"
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

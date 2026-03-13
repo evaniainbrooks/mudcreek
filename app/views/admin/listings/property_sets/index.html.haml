@@ -1,0 +1,21 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-list-columns.me-2
+    Property Sets
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold New Property Set
+  .card-body
+    = form_with model: @property_set, url: admin_listings_property_sets_path do |f|
+      - if @property_set.errors.any?
+        .alert.alert-danger.mb-3
+          = @property_set.errors.full_messages.to_sentence
+      .row.g-3
+        .col-sm-6
+          = f.label :name, class: "form-label form-label-sm"
+          = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @property_set.errors[:name].any?}",
+              required: true, placeholder: "e.g. Vehicle Details"
+        .col-sm-auto.d-flex.align-items-end
+          = f.submit "Add", class: "btn btn-primary btn-sm"
+
+= render_property_sets_table(property_sets: @property_sets)

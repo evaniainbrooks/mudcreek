@@ -81,7 +81,9 @@
                 .d-flex.gap-2
                   - if @listing.quantity > 1
                     = f.number_field :quantity, value: 1, min: 1, max: @listing.quantity, class: "form-control", style: "width: 80px"
-                  = f.submit "Add to Cart", class: "btn btn-primary flex-grow-1"
+                  = f.button class: "btn btn-primary flex-grow-1" do
+                    %i.bi.bi-cart-plus.me-2
+                    Add to Cart
             - if @listing.sale? && @listing.negotiable?
               %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
                 %i.bi.bi-tag.me-2

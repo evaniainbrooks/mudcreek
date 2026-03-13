@@ -110,7 +110,7 @@
               = f.text_field :postal_code, class: "form-control form-control-sm", placeholder: "A1A 1A1"
             .col
               = f.label :country, "Country", class: "form-label form-label-sm"
-              = f.text_field :country, class: "form-control form-control-sm", placeholder: "CA"
+              = f.select :country, all_countries, { include_blank: "— Select —" }, class: "form-select form-select-sm"
           = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
 
     - if policy(@order).update?
