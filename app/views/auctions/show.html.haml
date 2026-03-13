@@ -93,15 +93,7 @@
             %i.bi.bi-geo-alt-fill.flex-shrink-0.mt-1
             %span= [ addr.street_address, addr.city, addr.province, addr.country ].compact_blank.join(", ")
 
-      - if @auction.terms_and_conditions.attached?
-        .mb-2
-          %p.text-muted.small.mb-0 Terms &amp; Conditions
-          .d-flex.align-items-center.gap-2
-            %i.bi.bi-file-earmark-text.flex-shrink-0
-              = link_to "View Terms & Conditions",
-                rails_blob_path(@auction.terms_and_conditions, disposition: "inline"),
-                target: "_blank",
-                class: "text-decoration-none"
+
 
       - if @auction.description.present?
         %hr.my-4
@@ -127,6 +119,14 @@
               %i.bi.bi-hammer{ style: "font-size: 1.5rem" }
               %span.small.fw-semibold My Bids
       = render "auctions/bid_increment_schedule", schedule: @auction.effective_bid_increment_schedule
+      %hr.my-4
+      - if @auction.terms_and_conditions.attached?
+        .mb-2
+          %p.fw-semibold.mb-2 Terms &amp; Conditions
+          = link_to rails_blob_path(@auction.terms_and_conditions, disposition: "attachment"), class: "text-decoration-none" do
+            .d-flex.flex-column.align-items-center.justify-content-center.border.rounded-3.p-3.bg-body-tertiary{ style: "width: 120px; min-height: 110px" }
+              %i.bi.fs-1{ class: [document_icon_class(@auction.terms_and_conditions.content_type), "text-secondary"].compact_blank.join(" ") }
+              %span.text-center.text-body.small.mt-2.lh-sm.text-nowrap terms.pdf
   .col-lg-8.bg-body-secondary.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
     - unless @filter
       = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|

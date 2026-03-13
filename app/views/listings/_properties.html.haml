@@ -7,5 +7,5 @@
     %tbody
       - listing.properties.order(:position).each do |p|
         %tr
-          %th.fw-semibold.text-nowrap.bg-body-secondary= p.name
-          %td= p.value
+          %th.fw-semibold.text-nowrap.bg-body-secondary.px-3= p.name
+          %td.px-3= p.value
