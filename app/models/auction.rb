@@ -3,7 +3,7 @@ class Auction < ApplicationRecord
   include HasHashid
 
   has_one :address, as: :addressable, dependent: :destroy
-  accepts_nested_attributes_for :address, allow_destroy: true
+  accepts_nested_attributes_for :address, allow_destroy: true, update_only: true
 
   has_one_attached :poster
   has_one_attached :terms_and_conditions
@@ -16,7 +16,7 @@ class Auction < ApplicationRecord
   has_many :invoices, dependent: :destroy
 
   has_one :bid_increment_schedule, dependent: :destroy
-  accepts_nested_attributes_for :bid_increment_schedule, allow_destroy: true
+  accepts_nested_attributes_for :bid_increment_schedule, allow_destroy: true, update_only: true
 
   delegate :email_address, to: :tenant, prefix: :tenant, allow_nil: true
 
@@ -27,6 +27,7 @@ class Auction < ApplicationRecord
   validates :end_time_stagger_interval, numericality: { greater_than_or_equal_to: 30 },
             if: -> { end_time_stagger_interval.present? && end_time_stagger_interval > 0 }
   validates :bidding_extension, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :buyers_premium_rate, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :ends_at_after_starts_at
 
   validate :stagger_interval_immutable_after_start

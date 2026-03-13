@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_124850) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_162535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -110,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_124850) do
     t.string "admin_email_address"
     t.boolean "auto_approve", default: false, null: false
     t.integer "bidding_extension", default: 0, null: false
+    t.integer "buyers_premium_rate", default: 0, null: false
     t.datetime "created_at", null: false
     t.integer "end_time_stagger_interval", default: 0, null: false
     t.datetime "ends_at"
@@ -312,6 +313,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_124850) do
   end
 
   create_table "lots", force: :cascade do |t|
+    t.text "admin_notes"
     t.integer "commission_rate"
     t.datetime "created_at", null: false
     t.string "name", null: false

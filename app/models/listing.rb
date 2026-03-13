@@ -51,6 +51,11 @@ class Listing < ApplicationRecord
   validates :description, presence: true
   validates :price_cents, presence: true
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :owner_id, absence: true, if: :lot_id?
+
+  def owner
+    super || lot&.owner
+  end
   validate :documents_content_type
 
   accepts_nested_attributes_for :address, allow_destroy: true

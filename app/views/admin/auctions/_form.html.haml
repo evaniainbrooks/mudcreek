@@ -81,6 +81,14 @@
                 .invalid-feedback= auction.errors[:ends_at].to_sentence
           - if auction.timezone.present?
             %small.text-muted Times are in #{auction.timezone}
+          .mb-3
+            = f.label :buyers_premium_rate, "Buyer's Premium (%)", class: "form-label"
+            = f.number_field :buyers_premium_rate,
+                class: "form-control #{'is-invalid' if auction.errors[:buyers_premium_rate].any?}",
+                min: 0, step: 1, placeholder: "0"
+            - if auction.errors[:buyers_premium_rate].any?
+              .invalid-feedback= auction.errors[:buyers_premium_rate].to_sentence
+            %small.text-muted 0 = no buyer's premium; applies to all winning bids
           .row.g-3
             .col-sm-6
               = f.label :end_time_stagger_interval, "Lot end time stagger (seconds)", class: "form-label"

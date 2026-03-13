@@ -18,7 +18,19 @@ class Lot < ApplicationRecord
 
   def currency = tenant&.currency
 
+  scope :commission_present, ->(val = nil) {
+    return all if val.nil? || val.to_s.blank?
+    ActiveModel::Type::Boolean.new.cast(val) ? where.not(commission_rate: nil) : where(commission_rate: nil)
+  }
+
   def self.ransackable_attributes(_auth_object = nil)
-    %w[id name number]
+    %w[id name number owner_id]
   end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[]
+  end
+
+  def self.ransackable_scopes(_auth_object = nil) = %w[commission_present]
+  def self.ransackable_scopes_skip_sanitize_args(_auth_object = nil) = %w[commission_present]
 end

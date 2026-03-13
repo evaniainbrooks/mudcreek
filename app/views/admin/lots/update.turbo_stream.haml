@@ -1,3 +1,9 @@
+= turbo_stream.replace "#{dom_id(@lot)}_commission_rate" do
+  = lot_commission_rate_cell(@lot)
+= turbo_stream.replace "#{dom_id(@lot)}_seller_fee" do
+  = lot_seller_fee_cell(@lot)
+= turbo_stream.replace "#{dom_id(@lot)}_admin_notes" do
+  = inline_edit_cell(@lot, :admin_notes, @lot.admin_notes.to_s, url: admin_lot_path(@lot), scope: :lot)
 = turbo_stream.replace "#{dom_id(@lot)}_name" do
   = inline_edit_cell(@lot, :name, @lot.name, url: admin_lot_path(@lot), scope: :lot)
 = turbo_stream.replace "#{dom_id(@lot)}_number" do

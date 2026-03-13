@@ -5,7 +5,8 @@ class Admin::LotsController < Admin::BaseController
     authorize(Lot)
     @lot = Lot.new
     @users = User.order(:email_address)
-    @lots = Lot.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
+    @q = Lot.ransack(params[:q])
+    @lots = @q.result.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
   end
 
   def create
@@ -15,7 +16,8 @@ class Admin::LotsController < Admin::BaseController
       redirect_to admin_lots_path, notice: "Lot \"#{@lot.name}\" was successfully created."
     else
       @users = User.order(:email_address)
-      @lots = Lot.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
+      @q = Lot.ransack(nil)
+      @lots = @q.result.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
       render :index, status: :unprocessable_content
     end
   end
@@ -42,6 +44,6 @@ class Admin::LotsController < Admin::BaseController
   end
 
   def lot_params
-    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder)
+    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee)
   end
 end

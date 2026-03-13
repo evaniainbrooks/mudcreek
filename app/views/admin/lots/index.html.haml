@@ -4,6 +4,24 @@
     Lots
 
 .card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Filter
+  .card-body
+    = search_form_for @q, url: admin_lots_path, html: { class: "row g-2 align-items-end" } do |f|
+      .col-md-3
+        = f.label :name_cont, "Name", class: "form-label form-label-sm"
+        = f.search_field :name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
+      .col-md-3
+        = f.label :owner_id_eq, "Owner", class: "form-label form-label-sm"
+        = f.select :owner_id_eq, @users.map { [it.email_address, it.id] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-md-2
+        = f.label :commission_present, "Commission?", class: "form-label form-label-sm"
+        = f.select :commission_present, [["Yes", true], ["No", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
+      .col-auto
+        = f.submit "Search", class: "btn btn-primary btn-sm"
+      .col-auto
+        = link_to "Clear", admin_lots_path, class: "btn btn-outline-secondary btn-sm"
+
+.card.shadow-sm.border-0.mb-4
   .card-header.fw-semibold New Lot
   .card-body
     = form_with model: @lot, url: admin_lots_path do |f|

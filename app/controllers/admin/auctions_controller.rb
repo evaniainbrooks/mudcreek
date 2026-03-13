@@ -92,7 +92,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def auction_params
     p = params.require(:auction).permit(
-      :name, :admin_email_address, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :published, :reconciled, :auto_approve, :poster, :terms_and_conditions, :description, :timezone,
+      :name, :admin_email_address, :starts_at, :ends_at, :end_time_stagger_interval, :bidding_extension, :buyers_premium_rate, :published, :reconciled, :auto_approve, :poster, :terms_and_conditions, :description, :timezone,
       address_attributes: %i[id street_address city province postal_code country _destroy],
       bid_increment_schedule_attributes: [
         :id,
