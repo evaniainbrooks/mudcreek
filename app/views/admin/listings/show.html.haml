@@ -128,7 +128,12 @@
 
   #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
     .pt-3
-      = render "admin/listings/form", listing: @listing, categories: @categories, lots: @lots, property_sets: @property_sets, delivery_method_sets: @delivery_method_sets
+      = render("admin/listings/form",
+        listing: @listing,
+        categories: @categories,
+        lots: @lots,
+        property_sets: @property_sets,
+        delivery_method_sets: @delivery_method_sets)
 
   - if @listing.sale? && !@listing.auction_listing
     #offers-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "offers-tab" } }

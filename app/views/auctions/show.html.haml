@@ -16,7 +16,7 @@
       Admin View
 
 .row.g-0.align-items-stretch{ style: "min-height: 70vh" }
-  = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count
+  = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count, filter: @filter
   .col-lg-8.bg-body-secondary.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
     - unless @filter
       = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|

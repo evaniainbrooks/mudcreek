@@ -86,17 +86,17 @@
     - if Current.user
       .d-flex.gap-2.mt-3
         = link_to auction_path(auction),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if @filter.nil?}" do
+            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter.nil?}" do
           .d-flex.flex-column.align-items-center.gap-1
             %i.bi.bi-grid{ style: "font-size: 1.5rem" }
             %span.small.fw-semibold All Listings
         = link_to auction_path(auction, filter: "my_listings"),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if @filter == 'my_listings'}" do
+            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter == 'my_listings'}" do
           .d-flex.flex-column.align-items-center.gap-1
             %i.bi.bi-trophy{ style: "font-size: 1.5rem" }
             %span.small.fw-semibold My Listings
         = link_to auction_path(auction, filter: "my_bids"),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if @filter == 'my_bids'}" do
+            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter == 'my_bids'}" do
           .d-flex.flex-column.align-items-center.gap-1
             %i.bi.bi-hammer{ style: "font-size: 1.5rem" }
             %span.small.fw-semibold My Bids
