@@ -47,6 +47,12 @@ class Admin::ListingsController < Admin::BaseController
     @listing = Listing.new
     authorize(@listing)
     load_form_collections
+    if params[:property_set_id].present?
+      property_set = Listings::PropertySet.find_by(id: params[:property_set_id])
+      property_set&.properties&.order(:position)&.each_with_index do |prop, idx|
+        @listing.properties.build(name: prop.name, value: prop.value, position: idx + 1)
+      end
+    end
   end
 
   def edit
@@ -104,7 +110,7 @@ class Admin::ListingsController < Admin::BaseController
     base.unshift(:listing_type) if action_name == "create"
     p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [],
       rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],
-      properties_attributes: [:id, :name, :value, :_destroy])
+      properties_attributes: [:id, :name, :value, :position, :_destroy])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

@@ -53,7 +53,7 @@ class ProcessPaymentJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_action_to(
       "order_payment_#{order.id}",
       action: "redirect",
-      target: order_path(order)
+      target: order_path(order, paid: "1")
     )
   end
 

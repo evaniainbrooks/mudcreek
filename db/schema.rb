@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_162535) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -235,7 +235,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_162535) do
     t.enum "listing_type", default: "sale", null: false, enum_type: "listing_type"
     t.bigint "lot_id"
     t.string "name", null: false
-    t.bigint "owner_id", null: false
+    t.bigint "owner_id"
     t.boolean "physical", default: false, null: false
     t.integer "position", null: false
     t.integer "price_cents", null: false
@@ -250,6 +250,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_162535) do
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "acquisition_price_cents >= 0", name: "listings_acquisition_price_cents_non_negative"
+    t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
     t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"

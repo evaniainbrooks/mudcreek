@@ -1,5 +1,10 @@
 - set_meta_tags title: "Order #{@order.number}"
 
+- if params[:paid] == "1"
+  .alert.alert-success.d-flex.align-items-center.gap-2.mb-4
+    %i.bi.bi-check-circle-fill.fs-5
+    %span Thank you for your payment! Your order has been confirmed.
+
 - if @order.pending?
   = turbo_stream_from "order_payment_#{@order.id}"
   - content_for :head do

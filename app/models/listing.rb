@@ -3,7 +3,7 @@ class Listing < ApplicationRecord
   include HasHashid
   include NativeEnum
 
-  belongs_to :owner, class_name: "User"
+  belongs_to :owner, class_name: "User", optional: true
   belongs_to :lot, optional: true
 
   acts_as_list scope: :tenant, add_new_at: :bottom
@@ -52,6 +52,11 @@ class Listing < ApplicationRecord
   validates :price_cents, presence: true
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :owner_id, absence: true, if: :lot_id?
+  validate :owner_or_lot_present
+
+  def owner_or_lot_present
+    errors.add(:base, "must have an owner or a lot") if owner_id.nil? && lot_id.nil?
+  end
 
   def owner
     super || lot&.owner
