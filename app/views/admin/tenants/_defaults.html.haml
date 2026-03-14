@@ -1,0 +1,12 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-box-seam.me-2
+    Listing Defaults
+  .card-body.p-4
+    .mb-0
+      = form.label :default_delivery_method_set_id, "Default Delivery Method Set", class: "form-label"
+      = form.select :default_delivery_method_set_id,
+        delivery_method_sets.map { [it.name, it.id] },
+        { include_blank: "— None —" },
+        class: "form-select"
+      .form-text Applied automatically when creating a new listing.

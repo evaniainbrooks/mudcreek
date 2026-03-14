@@ -48,6 +48,7 @@ resource :session
     resources :users, only: [ :index, :show ]
     resources :lots, only: [ :index, :create, :update, :destroy ] do
       resource :listing_placeholder, only: [ :destroy ], module: :lots
+      resource :settlement,          only: [ :show ],    module: :lots
     end
     resources :roles, only: [ :index, :create, :destroy ] do
       resources :permissions, only: [ :index, :create, :destroy ]

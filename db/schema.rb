@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_14_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   create_enum "listing_type", ["sale", "rental"]
   create_enum "lot_state", ["submitted", "received", "auctioned", "settled", "paid"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
+  create_enum "settlement_line_item_type", ["hammer_price", "buyers_premium", "tax", "seller_commission", "seller_fee"]
   create_enum "social_media_platform", ["facebook", "instagram", "youtube", "twitter", "tiktok", "snapchat", "linkedin", "discord", "patreon", "onlyfans", "twitch"]
   create_enum "transaction_state", ["pending", "succeeded", "failed"]
 
@@ -169,7 +170,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.index ["invoice_item_id"], name: "index_cart_items_on_invoice_item_id_unique", unique: true, where: "(invoice_item_id IS NOT NULL)"
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
-    t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_sale_only", unique: true, where: "(rental_start_at IS NULL)"
+    t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_non_invoice", unique: true, where: "((rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
   end
 
   create_table "delivery_methods", force: :cascade do |t|
@@ -257,24 +258,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
-  create_table "listings_deliveries", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "delivery_method_id", null: false
-    t.bigint "delivery_method_set_id", null: false
-    t.bigint "tenant_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["delivery_method_id"], name: "index_listings_deliveries_on_delivery_method_id"
-    t.index ["delivery_method_set_id"], name: "index_listings_deliveries_on_delivery_method_set_id"
-  end
-
-  create_table "listings_delivery_method_sets", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.bigint "tenant_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_listings_delivery_method_sets_on_tenant_id"
-  end
-
   create_table "listings_categories", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "hashid", null: false
@@ -292,6 +275,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.datetime "updated_at", null: false
     t.index ["listing_id", "listings_category_id"], name: "idx_on_listing_id_listings_category_id_11916b414d", unique: true
     t.index ["listings_category_id"], name: "index_listings_category_assignments_on_listings_category_id"
+  end
+
+  create_table "listings_deliveries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "delivery_method_id", null: false
+    t.bigint "delivery_method_set_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delivery_method_id"], name: "index_listings_deliveries_on_delivery_method_id"
+    t.index ["delivery_method_set_id"], name: "index_listings_deliveries_on_delivery_method_set_id"
+  end
+
+  create_table "listings_delivery_method_sets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_listings_delivery_method_sets_on_tenant_id"
   end
 
   create_table "listings_properties", force: :cascade do |t|
@@ -455,6 +456,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "settlement_line_items", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.enum "line_item_type", null: false, enum_type: "settlement_line_item_type"
+    t.bigint "listing_id"
+    t.bigint "settlement_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["listing_id"], name: "index_settlement_line_items_on_listing_id"
+    t.index ["settlement_id"], name: "index_settlement_line_items_on_settlement_id"
+    t.index ["tenant_id"], name: "index_settlement_line_items_on_tenant_id"
+  end
+
+  create_table "settlements", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "lot_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lot_id"], name: "index_settlements_on_lot_id", unique: true
+    t.index ["tenant_id"], name: "index_settlements_on_tenant_id"
+  end
+
   create_table "social_media_accounts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "icon", null: false
@@ -614,6 +638,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.string "currency", default: "CAD", null: false
     t.string "custom_domain"
     t.boolean "default", default: false, null: false
+    t.bigint "default_delivery_method_set_id"
     t.string "email_address"
     t.string "key", null: false
     t.string "name", null: false
@@ -622,6 +647,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.string "timezone"
     t.datetime "updated_at", null: false
     t.index ["default"], name: "index_tenants_on_default_true", unique: true, where: "(\"default\" = true)"
+    t.index ["default_delivery_method_set_id"], name: "index_tenants_on_default_delivery_method_set_id"
     t.index ["key"], name: "index_tenants_on_key", unique: true
   end
 
@@ -687,12 +713,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
   add_foreign_key "listings_categories", "tenants"
+  add_foreign_key "listings_category_assignments", "listings"
+  add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "listings_deliveries", "delivery_methods"
   add_foreign_key "listings_deliveries", "listings_delivery_method_sets", column: "delivery_method_set_id"
   add_foreign_key "listings_deliveries", "tenants"
   add_foreign_key "listings_delivery_method_sets", "tenants"
-  add_foreign_key "listings_category_assignments", "listings"
-  add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "listings_properties", "listings"
   add_foreign_key "listings_properties", "listings_property_sets", column: "property_set_id"
   add_foreign_key "listings_properties", "tenants"
@@ -717,6 +743,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
   add_foreign_key "sessions", "users"
+  add_foreign_key "settlement_line_items", "listings", on_delete: :nullify
+  add_foreign_key "settlement_line_items", "settlements", on_delete: :cascade
+  add_foreign_key "settlement_line_items", "tenants"
+  add_foreign_key "settlements", "lots", on_delete: :cascade
+  add_foreign_key "settlements", "tenants"
   add_foreign_key "social_media_accounts", "tenants"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -724,6 +755,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
   add_foreign_key "transactions", "orders"
   add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"

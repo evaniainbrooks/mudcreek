@@ -1,0 +1,10 @@
+Hi <%= @owner.first_name %>,
+
+Your consignment account for <%= @lot.name %> has been updated.
+Here is a summary of all activity to date:
+
+<% @line_items.each do |item| %>
+<%= item.description %> (<%= item.line_item_type.humanize %>) — <%= humanized_money_with_symbol(item.amount) %>
+<% end %>
+
+Net Payout: <%= humanized_money_with_symbol(@settlement.net_payout) %>

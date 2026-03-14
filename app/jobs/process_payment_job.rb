@@ -35,6 +35,11 @@ class ProcessPaymentJob < ApplicationJob
 
         order.with_lock { order.update!(status: :paid) if order.pending? }
 
+        order.order_items.includes(:listing).each do |item|
+          next unless item.listing_id.present?
+          CreateLotSettlementJob.perform_later(item.listing_id, hammer_price_cents: item.price_cents)
+        end
+
         broadcast_success(order)
 
       rescue Square::Errors::ResponseError => e

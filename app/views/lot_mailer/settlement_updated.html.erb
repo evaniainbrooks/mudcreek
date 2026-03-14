@@ -1,0 +1,31 @@
+<p>Hi <%= @owner.first_name %>,</p>
+
+<p>
+  Your consignment account for <strong><%= @lot.name %></strong> has been updated.
+  Here is a summary of all activity to date:
+</p>
+
+<table style="width: 100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th style="text-align: left; padding: 6px 0; border-bottom: 1px solid #dee2e6;">Description</th>
+      <th style="text-align: left; padding: 6px 0; border-bottom: 1px solid #dee2e6;">Type</th>
+      <th style="text-align: right; padding: 6px 0; border-bottom: 1px solid #dee2e6;">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @line_items.each do |item| %>
+      <tr>
+        <td style="padding: 6px 0;"><%= item.description %></td>
+        <td style="padding: 6px 0;"><%= item.line_item_type.humanize %></td>
+        <td style="text-align: right; padding: 6px 0;"><%= humanized_money_with_symbol(item.amount) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2" style="padding: 8px 0; border-top: 1px solid #dee2e6;"><strong>Net Payout</strong></td>
+      <td style="text-align: right; padding: 8px 0; border-top: 1px solid #dee2e6;"><strong><%= humanized_money_with_symbol(@settlement.net_payout) %></strong></td>
+    </tr>
+  </tfoot>
+</table>

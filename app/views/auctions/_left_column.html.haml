@@ -28,7 +28,7 @@
           %i.bi.bi-person-plus.me-2
           Sign In to Register
 
-    - if auction.ends_at && auction.ends_at <= Time.current
+    - if auction.ends_at && auction.ends_at <= Time.current && auction.reconciled?
       .d-flex.align-items-center.gap-2.mb-2.text-secondary
         %i.bi.bi-calendar-x-fill.flex-shrink-0
         %strong Auction has ended!

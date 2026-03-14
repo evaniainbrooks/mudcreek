@@ -160,6 +160,13 @@ module Admin::LotsHelper
       end
     end
     table.with_column("Admin Notes") { |lot| inline_edit_cell(lot, :admin_notes, lot.admin_notes.to_s, url: admin_lot_path(lot), scope: :lot) }
+    table.with_column("Settlement") do |lot|
+      if lot.settlement
+        link_to("View", admin_lot_settlement_path(lot), class: "btn btn-sm btn-outline-primary")
+      else
+        tag.span("—", class: "text-muted")
+      end
+    end
     table.with_column("Actions", html_class: "text-end") do |lot|
       button_to(admin_lot_path(lot), method: :delete, class: "btn btn-sm btn-outline-danger",
         form: { data: { turbo_confirm: "Delete lot \"#{lot.name}\"? Listings will be unassigned." } }) do

@@ -35,6 +35,7 @@ class Offer < ApplicationRecord
       name: listing.name,
       amount_cents: amount_cents
     )
+    CreateLotSettlementJob.perform_later(listing.id, hammer_price_cents: amount_cents)
     ListingMailer.offer_accepted(invoice).deliver_later
   end
 

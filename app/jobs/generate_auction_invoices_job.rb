@@ -56,6 +56,12 @@ class GenerateAuctionInvoicesJob < ApplicationJob
             amount_cents: premium_cents_per_item[idx]
           )
         end
+
+        CreateLotSettlementJob.perform_later(
+          item[:listing].id,
+          hammer_price_cents: item[:amount_cents],
+          buyers_premium_cents: premium_cents_per_item[idx]
+        )
       end
 
       if user.default_square_card_id.present?

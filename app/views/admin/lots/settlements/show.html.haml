@@ -1,0 +1,37 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-receipt.me-2
+    Settlement — #{@lot.name}
+  = link_to "← Back to Lots", admin_lots_path, class: "btn btn-outline-secondary btn-sm"
+
+.mb-3
+  %p.mb-1
+    %strong Owner:
+    = @lot.owner.email_address
+  %p.mb-0
+    %strong Lot:
+    = @lot.name
+
+- if @settlement.nil?
+  .alert.alert-info No settlement has been created for this lot yet.
+- else
+  .card.shadow-sm.border-0
+    .card-header.fw-semibold Line Items
+    .card-body.p-0
+      %table.table.table-sm.mb-0
+        %thead
+          %tr
+            %th Description
+            %th Type
+            %th.text-end Amount
+        %tbody
+          - @settlement.settlement_line_items.order(:created_at).each do |item|
+            %tr
+              %td= item.description
+              %td
+                %span.badge.text-bg-secondary= item.line_item_type.humanize
+              %td.text-end= humanized_money_with_symbol(item.amount)
+        %tfoot
+          %tr.fw-bold
+            %td{colspan: 2} Net Payout
+            %td.text-end= humanized_money_with_symbol(@settlement.net_payout)

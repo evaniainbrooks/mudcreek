@@ -3,6 +3,7 @@ module Admin
     def show
       @tenant = Current.tenant
       authorize(@tenant)
+      @delivery_method_sets = @tenant.delivery_method_sets.order(:name)
       @tenant.build_default_bid_increment_schedule if @tenant.default_bid_increment_schedule.nil?
       @tenant.default_bid_increment_schedule.tiers.build if @tenant.default_bid_increment_schedule.tiers.none?
     end
@@ -27,6 +28,7 @@ module Admin
       if @tenant.update(tenant_params)
         redirect_to admin_tenant_path, notice: "Tenant was successfully updated."
       else
+        @delivery_method_sets = @tenant.delivery_method_sets.order(:name)
         render :show, status: :unprocessable_content
       end
     end
@@ -36,6 +38,7 @@ module Admin
     def tenant_params
       params.require(:tenant).permit(
         :name,
+        :default_delivery_method_set_id,
         :email_address,
         :phone_number,
         :timezone,

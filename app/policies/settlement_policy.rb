@@ -1,0 +1,2 @@
+class SettlementPolicy < ApplicationPolicy
+end

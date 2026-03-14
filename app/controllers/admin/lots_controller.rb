@@ -6,7 +6,7 @@ class Admin::LotsController < Admin::BaseController
     @lot = Lot.new
     @users = User.order(:email_address)
     @q = Lot.ransack(params[:q])
-    @lots = @q.result.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
+    @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
   end
 
   def create
@@ -17,7 +17,7 @@ class Admin::LotsController < Admin::BaseController
     else
       @users = User.order(:email_address)
       @q = Lot.ransack(nil)
-      @lots = @q.result.includes(:owner, :listings).with_attached_listing_placeholder.order(:name)
+      @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
       render :index, status: :unprocessable_content
     end
   end

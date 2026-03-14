@@ -43,7 +43,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def new
-    @listing = Listing.new
+    @listing = Listing.new(delivery_method_set_id: Current.tenant.default_delivery_method_set_id)
     authorize(@listing)
     load_form_collections
     if params[:property_set_id].present?
