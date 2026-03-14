@@ -5,6 +5,7 @@ class Listing < ApplicationRecord
 
   belongs_to :owner, class_name: "User", optional: true
   belongs_to :lot, optional: true
+  belongs_to :delivery_method_set, class_name: "Listings::DeliveryMethodSet", optional: true
 
   acts_as_list scope: :tenant, add_new_at: :bottom
 
@@ -66,6 +67,8 @@ class Listing < ApplicationRecord
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :properties, allow_destroy: true, reject_if: :all_blank
+
+  def requires_delivery? = delivery_method_set_id?
 
   def currency = tenant&.currency
 

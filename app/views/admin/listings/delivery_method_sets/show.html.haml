@@ -1,0 +1,27 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-truck.me-2
+    = @delivery_method_set.name
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold Add Delivery Method
+  .card-body
+    - if @available_methods.any?
+      = form_with url: admin_listings_delivery_method_set_delivery_methods_path(@delivery_method_set), method: :post do |f|
+        .row.g-3
+          .col-sm-6
+            = f.select :delivery_method_id,
+                @available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{humanized_money_with_symbol(m.price)})", m.id] },
+                { include_blank: "Select a method…" },
+                { class: "form-select form-select-sm", required: true }
+          .col-sm-auto.d-flex.align-items-end
+            = f.submit "Add", class: "btn btn-primary btn-sm"
+    - else
+      %p.text-muted.mb-0.small All available delivery methods are already in this set.
+
+= render_deliveries_table(deliveries: @deliveries, delivery_method_set: @delivery_method_set)
+
+.mt-3
+  = link_to admin_listings_delivery_method_sets_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Delivery Method Sets

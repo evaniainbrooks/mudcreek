@@ -53,11 +53,14 @@ resource :session
       resources :permissions, only: [ :index, :create, :destroy ]
     end
     namespace :listings do
-      resources :categories,    only: [ :index, :create, :update, :destroy ], param: :hashid
-      resources :property_sets, only: [ :index, :create, :show, :destroy, :update ] do
+      resources :categories,            only: [ :index, :create, :update, :destroy ], param: :hashid
+      resources :property_sets,         only: [ :index, :create, :show, :destroy, :update ] do
         collection { patch :reorder }
         member { get :listing_fields }
         resources :properties, only: [ :create, :destroy, :update ], module: :property_sets
+      end
+      resources :delivery_method_sets,  only: [ :index, :create, :show, :destroy, :update ] do
+        resources :delivery_methods, only: [ :create, :destroy ], module: :delivery_method_sets
       end
     end
     resources :orders, only: [ :index, :show, :update ], param: :number

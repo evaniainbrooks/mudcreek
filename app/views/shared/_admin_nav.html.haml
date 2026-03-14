@@ -60,9 +60,9 @@
           = link_to admin_discount_codes_path, class: "dropdown-item" do
             %i.bi.bi-ticket-perforated-fill.me-1
             Discounts
-      - if policy(DeliveryMethod).index?
+      - if policy(Listings::DeliveryMethodSet).index?
         %li
-          = link_to admin_delivery_methods_path, class: "dropdown-item" do
+          = link_to admin_listings_delivery_method_sets_path, class: "dropdown-item" do
             %i.bi.bi-truck.me-1
             Delivery
 - if admin_settings_nav?

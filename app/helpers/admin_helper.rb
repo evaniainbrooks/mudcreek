@@ -13,7 +13,7 @@ module AdminHelper
       policy(Invoice).index? ||
       policy(Offer).index? ||
       policy(DiscountCode).index? ||
-      policy(DeliveryMethod).index?
+      policy(Listings::DeliveryMethodSet).index?
   end
 
   def admin_settings_nav?

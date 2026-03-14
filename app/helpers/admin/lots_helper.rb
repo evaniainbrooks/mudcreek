@@ -44,13 +44,17 @@ module Admin::LotsHelper
           end
         end
       else
-        form_with(url: admin_lot_path(lot), method: :patch, scope: :lot, multipart: true) do |f|
-          tag.div(class: "input-group input-group-sm") do
-            f.file_field(:listing_placeholder, accept: "image/*", class: "form-control form-control-sm") +
-            f.button(type: "submit", class: "btn btn-outline-primary") do
-              tag.i("", class: "bi bi-upload")
+        tag.div(data: { controller: "direct-upload" }) do
+          form_with(url: admin_lot_path(lot), method: :patch, scope: :lot) do |f|
+            tag.div(class: "input-group input-group-sm") do
+              f.file_field(:listing_placeholder, accept: "image/*", direct_upload: true,
+                class: "form-control form-control-sm") +
+              f.button(type: "submit", class: "btn btn-outline-primary") do
+                tag.i("", class: "bi bi-upload")
+              end
             end
-          end
+          end +
+          tag.div(data: { "direct-upload-target": "progressContainer" }, hidden: true)
         end
       end
     end

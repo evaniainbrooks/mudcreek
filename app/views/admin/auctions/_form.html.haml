@@ -123,14 +123,14 @@
             = f.check_box :auto_approve, class: "form-check-input"
             = f.label :auto_approve, "Auto-approve registrations", class: "form-check-label"
 
-      %fieldset.card.shadow-sm.border-0.mb-4
+      %fieldset.card.shadow-sm.border-0.mb-4{ data: { controller: "direct-upload" } }
         %legend.card-header.fw-semibold
           %i.bi.bi-image.me-1
           Media
         .card-body.p-4
           .mb-3
             = f.label :poster, class: "form-label"
-            = f.file_field :poster, class: "form-control #{'is-invalid' if auction.errors[:poster].any?}", accept: "image/*"
+            = f.file_field :poster, direct_upload: true, class: "form-control #{'is-invalid' if auction.errors[:poster].any?}", accept: "image/*"
             - if auction.errors[:poster].any?
               .invalid-feedback= auction.errors[:poster].to_sentence
             - if auction.poster.attached?
@@ -144,6 +144,7 @@
           .mb-0
             = f.label :terms_and_conditions, "Terms & Conditions", class: "form-label"
             = f.file_field :terms_and_conditions,
+              direct_upload: true,
               class: "form-control #{'is-invalid' if auction.errors[:terms_and_conditions].any?}",
               accept: ".pdf,.doc,.docx"
             - if auction.errors[:terms_and_conditions].any?
@@ -160,6 +161,7 @@
                       data: { turbo_method: :patch, turbo_confirm: "Remove terms & conditions?" } do
                     %i.bi.bi-x-lg.me-1
                     Remove
+          .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold

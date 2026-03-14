@@ -1,4 +1,4 @@
-%fieldset.card.shadow-sm.border-0.mb-4
+%fieldset.card.shadow-sm.border-0.mb-4{ data: { controller: "direct-upload" } }
   %legend.card-header.fw-semibold
     %i.bi.bi-image.me-2
     Branding &amp; Media
@@ -6,6 +6,7 @@
     .mb-3
       = form.label :logo, class: "form-label"
       = form.file_field :logo,
+        direct_upload: true,
         class: "form-control #{'is-invalid' if tenant.errors[:logo].any?}",
         accept: "image/*"
       - if tenant.errors[:logo].any?
@@ -22,6 +23,7 @@
       = form.label :listing_placeholder, "Listing Placeholder Image", class: "form-label"
       .form-text.mb-1 Shown on listing cards when a listing has no images and no lot placeholder.
       = form.file_field :listing_placeholder,
+        direct_upload: true,
         class: "form-control #{'is-invalid' if tenant.errors[:listing_placeholder].any?}",
         accept: "image/*"
       - if tenant.errors[:listing_placeholder].any?
@@ -38,6 +40,7 @@
       = form.label :auction_placeholder, "Auction Placeholder Image", class: "form-label"
       .form-text.mb-1 Shown on auction cards when an auction has no poster.
       = form.file_field :auction_placeholder,
+        direct_upload: true,
         class: "form-control #{'is-invalid' if tenant.errors[:auction_placeholder].any?}",
         accept: "image/*"
       - if tenant.errors[:auction_placeholder].any?
@@ -53,6 +56,7 @@
     .mb-0
       = form.label :default_terms_and_conditions, "Default Terms & Conditions", class: "form-label"
       = form.file_field :default_terms_and_conditions,
+        direct_upload: true,
         class: "form-control #{'is-invalid' if tenant.errors[:default_terms_and_conditions].any?}",
         accept: ".pdf,.doc,.docx"
       - if tenant.errors[:default_terms_and_conditions].any?
@@ -68,6 +72,7 @@
               data: { turbo_method: :patch, turbo_confirm: "Remove default terms & conditions?" } do
             %i.bi.bi-x-lg.me-1
             Remove
+    .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
 %fieldset.card.shadow-sm.border-0{ data: { controller: "bid-increment-schedule" } }
   %legend.card-header.fw-semibold

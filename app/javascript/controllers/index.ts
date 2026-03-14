@@ -1,5 +1,6 @@
 import { application } from "./application"
 import AddCardController from "./add_card_controller"
+import DirectUploadController from "./direct_upload_controller"
 import BidIncrementScheduleController from "./bid_increment_schedule_controller"
 import AddressController from "./address_controller"
 import BidButtonController from "./bid_button_controller"
@@ -22,6 +23,7 @@ import SquarePaymentController from "./square_payment_controller"
 import ViewToggleController from "./view_toggle_controller"
 
 application.register("add-card", AddCardController)
+application.register("direct-upload", DirectUploadController)
 application.register("address", AddressController)
 application.register("bid-increment-schedule", BidIncrementScheduleController)
 application.register("bid-button", BidButtonController)

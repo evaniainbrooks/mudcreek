@@ -231,12 +231,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   create_table "listings", force: :cascade do |t|
     t.integer "acquisition_price_cents"
     t.datetime "created_at", null: false
+    t.bigint "delivery_method_set_id"
     t.string "hashid", null: false
     t.enum "listing_type", default: "sale", null: false, enum_type: "listing_type"
     t.bigint "lot_id"
     t.string "name", null: false
     t.bigint "owner_id"
-    t.boolean "physical", default: false, null: false
     t.integer "position", null: false
     t.integer "price_cents", null: false
     t.enum "pricing_type", default: "firm", null: false, enum_type: "listing_pricing_type"
@@ -246,6 +246,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.boolean "tax_exempt", default: false, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["delivery_method_set_id"], name: "index_listings_on_delivery_method_set_id"
     t.index ["hashid"], name: "index_listings_on_hashid", unique: true
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
@@ -254,6 +255,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
     t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
+  end
+
+  create_table "listings_deliveries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "delivery_method_id", null: false
+    t.bigint "delivery_method_set_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delivery_method_id"], name: "index_listings_deliveries_on_delivery_method_id"
+    t.index ["delivery_method_set_id"], name: "index_listings_deliveries_on_delivery_method_set_id"
+  end
+
+  create_table "listings_delivery_method_sets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_listings_delivery_method_sets_on_tenant_id"
   end
 
   create_table "listings_categories", force: :cascade do |t|
@@ -663,10 +682,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_004649) do
   add_foreign_key "invoices", "offers", on_delete: :nullify
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
+  add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify
   add_foreign_key "listings", "lots", on_delete: :nullify
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
   add_foreign_key "listings_categories", "tenants"
+  add_foreign_key "listings_deliveries", "delivery_methods"
+  add_foreign_key "listings_deliveries", "listings_delivery_method_sets", column: "delivery_method_set_id"
+  add_foreign_key "listings_deliveries", "tenants"
+  add_foreign_key "listings_delivery_method_sets", "tenants"
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "listings_properties", "listings"

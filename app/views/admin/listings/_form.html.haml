@@ -43,14 +43,6 @@
               { class: "form-select #{'is-invalid' if listing.errors[:lot].any?}" }
             - if listing.errors[:lot].any?
               .invalid-feedback= listing.errors[:lot].to_sentence
-          .mb-3
-            = f.label :category_ids, "Categories", class: "form-label"
-            = f.collection_select :category_ids,
-              categories,
-              :id,
-              :name,
-              {},
-              { multiple: true, class: "form-select", size: [categories.size, 6].min }
           .mb-0
             = f.label :description, class: "form-label"
             = f.rich_text_area :description, class: "form-control #{'is-invalid' if listing.errors[:description].any?}"
@@ -60,17 +52,27 @@
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold
           %i.bi.bi-toggles.me-1
-          Status
+          Configuration
         .card-body.p-4
-          .mb-2.form-check
+          .mb-3.form-check
             = f.check_box :published, class: "form-check-input"
             = f.label :published, class: "form-check-label"
-          .mb-2.form-check
+          .mb-3.form-check
             = f.check_box :tax_exempt, class: "form-check-input"
             = f.label :tax_exempt, "Tax Exempt", class: "form-check-label"
-          .form-check
-            = f.check_box :physical, class: "form-check-input"
-            = f.label :physical, "Physical / Requires Delivery", class: "form-check-label"
+          .mb-3
+            = f.label :category_ids, "Categories", class: "form-label"
+            = f.collection_select :category_ids,
+              categories,
+              :id,
+              :name,
+              {},
+              { multiple: true, class: "form-select", size: [categories.size, 6].min }
+          .mb-0
+            = f.label :delivery_method_set_id, "Delivery Method Set", class: "form-label"
+            = f.collection_select :delivery_method_set_id, delivery_method_sets, :id, :name,
+                { include_blank: "— No delivery required —" },
+                { class: "form-select" }
 
     .col-lg-6
       %fieldset.card.shadow-sm.border-0.mb-4{ data: { "listing-type-target": "priceField" }, hidden: listing.rental? }
@@ -121,7 +123,7 @@
       .mb-4
         = render "admin/listings/properties/section", listing: listing, form: f, property_sets: property_sets
 
-      %fieldset.card.shadow-sm.border-0
+      %fieldset.card.shadow-sm.border-0{ data: { controller: "direct-upload" } }
         %legend.card-header.fw-semibold
           %i.bi.bi-image.me-1
           Media
@@ -130,6 +132,7 @@
             = f.label :images, class: "form-label"
             = f.file_field :images,
               multiple: true,
+              direct_upload: true,
               class: "form-control #{'is-invalid' if listing.errors[:images].any?}",
               accept: "image/*"
             - if listing.errors[:images].any?
@@ -149,6 +152,7 @@
             = f.label :videos, class: "form-label"
             = f.file_field :videos,
               multiple: true,
+              direct_upload: true,
               class: "form-control #{'is-invalid' if listing.errors[:videos].any?}",
               accept: "video/*"
             - if listing.errors[:videos].any?
@@ -168,6 +172,7 @@
             = f.label :documents, class: "form-label"
             = f.file_field :documents,
               multiple: true,
+              direct_upload: true,
               class: "form-control #{'is-invalid' if listing.errors[:documents].any?}",
               accept: ".pdf,.doc,.docx,.xlsx"
             - if listing.errors[:documents].any?
@@ -183,6 +188,7 @@
                       class: "text-danger ms-1",
                       aria: { label: "Remove #{attachment.filename}" } do
                       %i.bi.bi-x-lg
+          .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

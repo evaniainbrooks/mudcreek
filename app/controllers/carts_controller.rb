@@ -7,7 +7,7 @@ class CartsController < ApplicationController
     reconcile_delivery_method
     build_cart_address
 
-    @has_physical_items = @cart_items.any? { |item| item.listing.physical? }
+    @has_physical_items = @cart_items.any? { |item| item.listing.requires_delivery? }
 
     @cart_summary = CartCalculator.new(
       @cart_items, discount_code: @discount_code, delivery_method: @delivery_method

@@ -142,3 +142,4 @@ group :test do
 end
 
 gem "imgproxy", "~> 3.0"
+gem "aws-sdk-s3", require: false

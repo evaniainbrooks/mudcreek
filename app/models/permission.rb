@@ -10,6 +10,8 @@ class Permission < ApplicationRecord
     Bid Tenant Invoice
     Listings::PropertySet
     Listings::Property
+    Listings::DeliveryMethodSet
+    Listings::Delivery
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze

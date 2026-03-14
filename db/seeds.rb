@@ -3,6 +3,7 @@ default_password = Rails.application.credentials&.seeds&.default_user_password |
 # Tenants
 mudcreek = Tenant.find_or_create_by!(key: "mudcreek") do |t|
   t.name = "Mudcreek"
+  t.tagline = "Auctions & Consignment"
   t.default = true
 end
 
@@ -147,16 +148,16 @@ puts "Seeded #{Lot.count} lots."
 
 listing_data = [
   # Furniture
-  { name: "Victorian Parlour Chair",       price: 185,  pricing_type: :negotiable, description: "Beautifully carved walnut parlour chair with original needlepoint upholstery in a floral medallion pattern. Sturdy legs, minimal wear — a genuine Victorian-era piece from the Henderson drawing room.", published: true, physical: true },
-  { name: "Oak Dining Table with Six Chairs", price: 450, description: "Solid quarter-sawn oak dining suite with a pedestal base and six matching ladder-back chairs with rush seats. Extends to seat ten. Light surface scratches only.", published: true, physical: true },
-  { name: "Mahogany Dresser with Mirror",  price: 320,  pricing_type: :negotiable, description: "Seven-drawer mahogany dresser with a bevelled swivel mirror and original brass hardware. Dovetail joinery throughout. Excellent original finish with minor patina.", published: true, physical: true },
-  { name: "Brass Bed Frame",              price: 275,  description: "Full-size ornate brass bed frame with original side rails. Thick tubing, solid castings, and fully functional. Includes slats. Circa 1910.", published: true, physical: true },
-  { name: "Antique Writing Desk",         price: 385,  pricing_type: :negotiable, description: "Drop-front secretary desk in cherry with fitted interior — pigeon holes, small drawers, and a pull-out writing surface. Three lower drawers with original locks and skeleton keys.", published: true, physical: true },
-  { name: "Windsor Chairs Set of Four",   price: 220,  pricing_type: :negotiable, description: "Matched set of four bow-back Windsor chairs in original black paint with gold pinstriping. Solid and sturdy with minor paint loss. Farm-fresh from the Chapman dining room.", published: true, physical: true },
-  { name: "Cedar Chest",                  price: 165,  pricing_type: :negotiable, description: "Aromatic red cedar hope chest with tray insert and original hardware. Interior cedar is fragrant and unlined. Some light exterior scratches. Ideal for linens or blankets.", published: true, physical: true },
-  { name: "Chesterfield Sofa",            price: 495,  pricing_type: :negotiable, description: "Classic rolled-arm Chesterfield in original burgundy leather with deep button tufting. Some patina on the armrests consistent with age. Extremely comfortable and structurally sound.", published: true, physical: true },
-  { name: "Teak Garden Bench",            price: 140,  description: "Three-seat teak garden bench with slatted back and armrests. Silvered to a handsome grey with age. Hardware intact, no rot. Great outdoor piece.", published: true, physical: true },
-  { name: "Rocking Chair",                price: 95,   pricing_type: :negotiable, description: "Pressed-back oak rocking chair with a carved floral crest rail and turned spindles. Original finish in good condition. Rockers show normal wear. Comfortable and solid.", published: true, physical: true },
+  { name: "Victorian Parlour Chair",       price: 185,  pricing_type: :negotiable, description: "Beautifully carved walnut parlour chair with original needlepoint upholstery in a floral medallion pattern. Sturdy legs, minimal wear — a genuine Victorian-era piece from the Henderson drawing room.", published: true },
+  { name: "Oak Dining Table with Six Chairs", price: 450, description: "Solid quarter-sawn oak dining suite with a pedestal base and six matching ladder-back chairs with rush seats. Extends to seat ten. Light surface scratches only.", published: true },
+  { name: "Mahogany Dresser with Mirror",  price: 320,  pricing_type: :negotiable, description: "Seven-drawer mahogany dresser with a bevelled swivel mirror and original brass hardware. Dovetail joinery throughout. Excellent original finish with minor patina.", published: true },
+  { name: "Brass Bed Frame",              price: 275,  description: "Full-size ornate brass bed frame with original side rails. Thick tubing, solid castings, and fully functional. Includes slats. Circa 1910.", published: true },
+  { name: "Antique Writing Desk",         price: 385,  pricing_type: :negotiable, description: "Drop-front secretary desk in cherry with fitted interior — pigeon holes, small drawers, and a pull-out writing surface. Three lower drawers with original locks and skeleton keys.", published: true },
+  { name: "Windsor Chairs Set of Four",   price: 220,  pricing_type: :negotiable, description: "Matched set of four bow-back Windsor chairs in original black paint with gold pinstriping. Solid and sturdy with minor paint loss. Farm-fresh from the Chapman dining room.", published: true },
+  { name: "Cedar Chest",                  price: 165,  pricing_type: :negotiable, description: "Aromatic red cedar hope chest with tray insert and original hardware. Interior cedar is fragrant and unlined. Some light exterior scratches. Ideal for linens or blankets.", published: true },
+  { name: "Chesterfield Sofa",            price: 495,  pricing_type: :negotiable, description: "Classic rolled-arm Chesterfield in original burgundy leather with deep button tufting. Some patina on the armrests consistent with age. Extremely comfortable and structurally sound.", published: true },
+  { name: "Teak Garden Bench",            price: 140,  description: "Three-seat teak garden bench with slatted back and armrests. Silvered to a handsome grey with age. Hardware intact, no rot. Great outdoor piece.", published: true },
+  { name: "Rocking Chair",                price: 95,   pricing_type: :negotiable, description: "Pressed-back oak rocking chair with a carved floral crest rail and turned spindles. Original finish in good condition. Rockers show normal wear. Comfortable and solid.", published: true },
 
   # Antiques & Collectibles
   { name: "Wedgwood Tea Service",         price: 145,  description: "Twenty-two piece Wedgwood Cornucopia tea service including teapot, creamer, sugar, six cups and saucers, and serving plates. Minor gilt wear, no chips or cracks.", published: true },
@@ -181,12 +182,12 @@ listing_data = [
   # Tools & Workshop
   { name: "Stanley Hand Plane Set",       price: 85,   pricing_type: :negotiable, description: "Collection of five Stanley bench planes: #3, #4, #5, #6, and #7. All original with tight mouths and functional totes. Some surface rust — irons are sound.", published: true },
   { name: "Woodworking Chisel Set",       price: 55,   description: "Set of eight socket chisels in a canvas roll — graduated from ¼\" to 1½\". Handles are sound, blades hold an edge well. Stamped 'P.S.&W.' manufacturer.", published: true },
-  { name: "Cast Iron Bench Vise",         price: 95,   description: "Heavy 5\" jaw cast iron bench vise with swivel base and pipe jaws. Smooth action, no cracks or stripped threads. Mounts securely to a workbench.", published: true, physical: true },
+  { name: "Cast Iron Bench Vise",         price: 95,   description: "Heavy 5\" jaw cast iron bench vise with swivel base and pipe jaws. Smooth action, no cracks or stripped threads. Mounts securely to a workbench.", published: true },
   { name: "Crosscut Hand Saw",            price: 40,   description: "Disston No. 12 crosscut hand saw with a turned apple handle and 26\" blade. Teeth have been sharpened and set. Cuts cleanly. Medallion intact.", published: true },
   { name: "Vintage Level Set",            price: 35,   description: "Three vintage wood and brass spirit levels — 12\", 24\", and 36\" — all with readable bubbles. Some finish wear. Great for display or use.", published: true },
 
   # Books & Media
-  { name: "Encyclopedia Britannica Set",  price: 95,   description: "Complete 1965 Encyclopedia Britannica in 24 volumes plus index. Burgundy cloth with gilt titles. All spines tight, pages clean. Includes original wooden bookends.", published: true, physical: true },
+  { name: "Encyclopedia Britannica Set",  price: 95,   description: "Complete 1965 Encyclopedia Britannica in 24 volumes plus index. Burgundy cloth with gilt titles. All spines tight, pages clean. Includes original wooden bookends.", published: true },
   { name: "Vinyl Record Collection",      price: 85,   pricing_type: :negotiable, description: "Box of approximately 80 LP records — jazz, classical, and easy listening. Mostly 1950s–70s pressings. Several in original sleeves. Spot-checked: all play without skipping.", published: true },
   { name: "First Edition Poetry Collection", price: 125, description: "Twelve early twentieth-century poetry volumes including a signed Robert Service first edition and a fine Kipling Barrack-Room Ballads. All in original boards.", published: true },
 
@@ -199,10 +200,10 @@ listing_data = [
 
   # Art & Decor
   { name: "Watercolour Landscape Painting", price: 225, pricing_type: :negotiable, description: "Framed original watercolour of a misty river valley, signed lower right 'E. Sutton 1938.' 18\" × 24\" sheet in original gilt frame. Light mat foxing only.", published: true },
-  { name: "Hand-hooked Wool Rug",         price: 195,  description: "Circa 1920 hand-hooked wool rug, 4' × 6', depicting a folk art floral wreath on a navy ground. Wool is dense and colours are vibrant. Bound edges intact.", published: true, physical: true },
+  { name: "Hand-hooked Wool Rug",         price: 195,  description: "Circa 1920 hand-hooked wool rug, 4' × 6', depicting a folk art floral wreath on a navy ground. Wool is dense and colours are vibrant. Bound edges intact.", published: true },
   { name: "Framed Botanical Prints Set",  price: 85,   description: "Set of six antique hand-coloured botanical lithographs in matching mahogany frames. Circa 1870. Consistent minor foxing typical for age. Attractive grouping.", published: true },
   { name: "Bronze Horse Figurine",        price: 165,  description: "Solid bronze sculpture of a trotting horse on a marble plinth, signed 'Dubois' on the base. 8\" tall. Rich dark patina. No damage.", published: true },
-  { name: "Tiffany-style Table Lamp",     price: 285,  pricing_type: :negotiable, description: "Leaded glass dragonfly shade on a cast metal base. 20\" shade diameter, overall height 26\". Wired and tested — all panels intact with no repairs.", published: true, physical: true },
+  { name: "Tiffany-style Table Lamp",     price: 285,  pricing_type: :negotiable, description: "Leaded glass dragonfly shade on a cast metal base. 20\" shade diameter, overall height 26\". Wired and tested — all panels intact with no repairs.", published: true },
   { name: "Oil Portrait",                 price: 195,  pricing_type: :negotiable, description: "19th-century oil on canvas portrait of a seated gentleman in a dark coat. 24\" × 30\" canvas in carved gilt frame. Some inpainting visible under raking light.", published: true },
 
   # Vintage Clothing & Accessories
@@ -217,9 +218,9 @@ listing_data = [
   { name: "8mm Film Projector",           price: 75,   pricing_type: :negotiable, description: "Eumig P8 Phonomatic 8mm film projector with built-in speaker and reverse function. Lamp works, motor runs smoothly. Two reels of family film included.", published: true },
 
   # Garden & Outdoor
-  { name: "Cast Iron Garden Urns",        price: 165,  description: "Pair of matching cast iron garden urns on pedestal bases. Classical acanthus leaf design. Light surface rust — structurally sound. 18\" tall each.", published: true, physical: true },
-  { name: "Antique Wheelbarrow",          price: 85,   pricing_type: :negotiable, description: "Vintage wooden wheelbarrow with iron wheel and banded hardwood tray. Painted red, well-worn. Functional and charming as a garden planter.", published: true, physical: true },
-  { name: "Copper Garden Lanterns",       price: 95,   description: "Set of three wall-mount copper lanterns in graduated sizes. Aged verdigris patina. Glass panels intact. Wired for standard bulbs.", published: true, physical: true }
+  { name: "Cast Iron Garden Urns",        price: 165,  description: "Pair of matching cast iron garden urns on pedestal bases. Classical acanthus leaf design. Light surface rust — structurally sound. 18\" tall each.", published: true },
+  { name: "Antique Wheelbarrow",          price: 85,   pricing_type: :negotiable, description: "Vintage wooden wheelbarrow with iron wheel and banded hardwood tray. Painted red, well-worn. Functional and charming as a garden planter.", published: true },
+  { name: "Copper Garden Lanterns",       price: 95,   description: "Set of three wall-mount copper lanterns in graduated sizes. Aged verdigris patina. Glass panels intact. Wired for standard bulbs.", published: true }
 ]
 
 listing_data.each do |attrs|
@@ -229,7 +230,6 @@ listing_data.each do |attrs|
     l.pricing_type = attrs[:pricing_type] || :firm
     l.description  = attrs[:description]
     l.published    = attrs[:published]
-    l.physical     = attrs[:physical] || false
     l.owner_id     = user_ids.sample
     l.state        = [ :sold, :on_sale ].sample
   end
@@ -517,7 +517,7 @@ lot_assignments.each do |lot_name, listing_names|
   lot = lots[lot_name]
   next unless lot
   listing_names.each do |listing_name|
-    Listing.where(name: listing_name).update_all(lot_id: lot.id)
+    Listing.where(name: listing_name).update_all(lot_id: lot.id, owner_id: nil)
   end
 end
 
@@ -794,6 +794,161 @@ property_set_data = [
       { name: "Grade",         value: "F-12" },
       { name: "Notes",         value: "Key date" }
     ]
+  },
+  {
+    name: "Power Tools",
+    properties: [
+      { name: "Manufacturer",  value: "DeWalt" },
+      { name: "Model",         value: "DW618" },
+      { name: "Type",          value: "Fixed-base router" },
+      { name: "Voltage",       value: "120V" },
+      { name: "Amperage",      value: "12A" },
+      { name: "Included",      value: "Collets, edge guide" },
+      { name: "Condition",     value: "Good; runs well" }
+    ]
+  },
+  {
+    name: "Sporting & Outdoor",
+    properties: [
+      { name: "Type",          value: "Fly rod" },
+      { name: "Manufacturer",  value: "Hardy" },
+      { name: "Model",         value: "Palakona" },
+      { name: "Length",        value: "9'" },
+      { name: "Line Weight",   value: "#6" },
+      { name: "Material",      value: "Split cane" },
+      { name: "Condition",     value: "Good; original bag and tube" }
+    ]
+  },
+  {
+    name: "Lighting & Lamps",
+    properties: [
+      { name: "Style",         value: "Art Nouveau" },
+      { name: "Maker",         value: "Bradley & Hubbard" },
+      { name: "Base Material", value: "Cast spelter" },
+      { name: "Shade",         value: "Slag glass, 18\" dia." },
+      { name: "Height",        value: "24\"" },
+      { name: "Period",        value: "c. 1910" },
+      { name: "Condition",     value: "Very good; rewired" }
+    ]
+  },
+  {
+    name: "Toys & Collectibles",
+    properties: [
+      { name: "Manufacturer",  value: "Dinky Toys" },
+      { name: "Item",          value: "No. 139a Ford Fordor Sedan" },
+      { name: "Year",          value: "c. 1948" },
+      { name: "Scale",         value: "1:43" },
+      { name: "Box",           value: "No" },
+      { name: "Colour",        value: "Fawn" },
+      { name: "Condition",     value: "Good; minor paint wear" }
+    ]
+  },
+  {
+    name: "Militaria",
+    properties: [
+      { name: "Country",       value: "Canada" },
+      { name: "Branch",        value: "Royal Canadian Air Force" },
+      { name: "Period",        value: "Second World War" },
+      { name: "Item",          value: "Navigator's brevets" },
+      { name: "Markings",      value: "King's crown, RCAF" },
+      { name: "Provenance",    value: "With service record" },
+      { name: "Condition",     value: "Very good" }
+    ]
+  },
+  {
+    name: "Maps & Ephemera",
+    properties: [
+      { name: "Title",         value: "Map of the Province of British Columbia" },
+      { name: "Cartographer",  value: "Dept. of Lands" },
+      { name: "Date",          value: "1922" },
+      { name: "Dimensions",    value: "32\" × 48\"" },
+      { name: "Colour",        value: "Hand-coloured" },
+      { name: "Condition",     value: "Good; folds as issued" }
+    ]
+  },
+  {
+    name: "Musical Instruments",
+    properties: [
+      { name: "Type",          value: "Acoustic guitar" },
+      { name: "Maker",         value: "Gibson" },
+      { name: "Model",         value: "J-45" },
+      { name: "Year",          value: "1963" },
+      { name: "Serial Number", value: "123456" },
+      { name: "Finish",        value: "Sunburst" },
+      { name: "Case",          value: "Original hardshell" },
+      { name: "Condition",     value: "Good; plays well" }
+    ]
+  },
+  {
+    name: "Glass & Crystal",
+    properties: [
+      { name: "Maker",         value: "Waterford" },
+      { name: "Pattern",       value: "Lismore" },
+      { name: "Pieces",        value: "12" },
+      { name: "Type",          value: "Wine glasses" },
+      { name: "Height",        value: "7\"" },
+      { name: "Marks",         value: "Waterford etched base" },
+      { name: "Condition",     value: "Excellent; no chips" }
+    ]
+  },
+  {
+    name: "Architectural Salvage",
+    properties: [
+      { name: "Type",          value: "Stained glass window" },
+      { name: "Dimensions",    value: "24\" × 48\"" },
+      { name: "Colours",       value: "Ruby, amber, clear" },
+      { name: "Period",        value: "c. 1905" },
+      { name: "Origin",        value: "Church demolition, Ontario" },
+      { name: "Frame",         value: "Lead came, oak surround" },
+      { name: "Condition",     value: "Good; one small crack" }
+    ]
+  },
+  {
+    name: "Electronics & Radio",
+    properties: [
+      { name: "Manufacturer",  value: "RCA" },
+      { name: "Model",         value: "Victor 66X11" },
+      { name: "Type",          value: "Tabletop AM radio" },
+      { name: "Year",          value: "1946" },
+      { name: "Cabinet",       value: "Bakelite, brown" },
+      { name: "Working",       value: "Yes" },
+      { name: "Condition",     value: "Very good" }
+    ]
+  },
+  {
+    name: "Native & Indigenous Art",
+    properties: [
+      { name: "Nation / Region", value: "Haida, British Columbia" },
+      { name: "Artist",          value: "Unknown" },
+      { name: "Type",            value: "Argillite carving" },
+      { name: "Dimensions",      value: "6\" × 3\"" },
+      { name: "Period",          value: "Early 20th century" },
+      { name: "Provenance",      value: "Private collection, Vancouver" },
+      { name: "Condition",       value: "Very good" }
+    ]
+  },
+  {
+    name: "Vintage Clothing & Accessories",
+    properties: [
+      { name: "Type",          value: "Mink stole" },
+      { name: "Era",           value: "1950s" },
+      { name: "Size",          value: "One size" },
+      { name: "Colour",        value: "Natural brown" },
+      { name: "Maker",         value: "Holt Renfrew" },
+      { name: "Condition",     value: "Good; minor wear at clasp" }
+    ]
+  },
+  {
+    name: "Scientific & Medical",
+    properties: [
+      { name: "Type",          value: "Brass microscope" },
+      { name: "Maker",         value: "R. & J. Beck" },
+      { name: "Model",         value: "No. 12" },
+      { name: "Period",        value: "c. 1895" },
+      { name: "Objectives",    value: "1\", 2/3\", 1/5\"" },
+      { name: "Case",          value: "Original mahogany" },
+      { name: "Condition",     value: "Good; optics clear" }
+    ]
   }
 ]
 
@@ -918,6 +1073,24 @@ puts "Seeded #{DiscountCode.count} discount codes."
 end
 
 puts "Seeded #{DeliveryMethod.count} delivery methods."
+
+# Delivery Method Sets
+pickup  = DeliveryMethod.find_by!(name: "Local Pickup",  tenant: mudcreek)
+mail    = DeliveryMethod.find_by!(name: "Standard Mail", tenant: mudcreek)
+courier = DeliveryMethod.find_by!(name: "Courier",       tenant: mudcreek)
+
+[
+  { name: "Standard",    methods: [ pickup, mail, courier ] },
+  { name: "No pickup",   methods: [ mail, courier ] },
+  { name: "Pickup only", methods: [ pickup ] }
+].each do |attrs|
+  set = Listings::DeliveryMethodSet.find_or_create_by!(name: attrs[:name], tenant: mudcreek)
+  attrs[:methods].each do |dm|
+    set.deliveries.find_or_create_by!(delivery_method: dm, tenant: mudcreek)
+  end
+end
+
+puts "Seeded #{Listings::DeliveryMethodSet.count} delivery method sets."
 
 # Default Bid Increment Schedule
 Current.tenant = mudcreek

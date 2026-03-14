@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
 
     reconcile_delivery_method
 
-    if @cart_items.any? { |item| item.listing.physical? } && @delivery_method.nil?
+    if @cart_items.any? { |item| item.listing.requires_delivery? } && @delivery_method.nil?
       redirect_to cart_path, alert: "Please select a delivery method."
       return
     end

@@ -39,8 +39,7 @@ class Admin::ListingsController < Admin::BaseController
         .includes(auction_registration: :user)
         .order(amount_cents: :desc, created_at: :desc)
     end
-    @categories = Listings::Category.order(:name)
-    @lots = Lot.order(:name)
+    load_form_collections
   end
 
   def new
@@ -95,9 +94,10 @@ class Admin::ListingsController < Admin::BaseController
   private
 
   def load_form_collections
-    @categories    = Listings::Category.order(:name)
-    @lots          = Lot.order(:name)
-    @property_sets = Listings::PropertySet.order(:name)
+    @categories          = Listings::Category.order(:name)
+    @lots                = Lot.order(:name)
+    @property_sets       = Listings::PropertySet.order(:name)
+    @delivery_method_sets = Listings::DeliveryMethodSet.order(:name)
   end
 
   def set_listing
@@ -106,7 +106,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    base = %i[name description price acquisition_price quantity tax_exempt physical owner_id lot_id published pricing_type]
+    base = %i[name description price acquisition_price quantity tax_exempt delivery_method_set_id owner_id lot_id published pricing_type]
     base.unshift(:listing_type) if action_name == "create"
     p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [],
       rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],

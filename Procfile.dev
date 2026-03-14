@@ -5,3 +5,4 @@ mail: mailhog
 listener: bin/bid_listener
 imgproxy: env IMGPROXY_BIND=:8080 IMGPROXY_ALLOW_LOOPBACK_SOURCE_ADDRESSES=true imgproxy
 ngrok: bin/ngrok
+localstack: docker run --rm -p 4566:4566 -e SERVICES=s3 -e DEFAULT_REGION=us-east-1 -e PERSISTENCE=1 -v localstack-data:/var/lib/localstack localstack/localstack

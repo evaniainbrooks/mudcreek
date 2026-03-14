@@ -1,0 +1,2 @@
+= turbo_stream.replace "#{dom_id(@delivery_method_set)}_name" do
+  = inline_edit_cell(@delivery_method_set, :name, @delivery_method_set.name, url: admin_listings_delivery_method_set_path(@delivery_method_set), scope: :listings_delivery_method_set)
