@@ -6,7 +6,7 @@ RSpec.describe Lot, type: :model do
 
   describe "associations" do
     it { is_expected.to belong_to(:owner).class_name("User") }
-    it { is_expected.to have_many(:listings).dependent(:nullify) }
+    it { is_expected.to have_many(:listings).dependent(:destroy) }
   end
 
   describe "validations" do
@@ -14,13 +14,13 @@ RSpec.describe Lot, type: :model do
   end
 
   describe "destroying a lot" do
-    it "nullifies the lot_id on associated listings rather than deleting them" do
+    it "destroys associated listings", :skip_n_plus_one do
       lot     = create(:lot)
       listing = create(:listing, lot: lot, owner: nil)
 
       lot.destroy
 
-      expect(listing.reload.lot_id).to be_nil
+      expect { listing.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

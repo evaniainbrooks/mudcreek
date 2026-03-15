@@ -25,7 +25,7 @@ RSpec.describe "Orders", type: :request do
     context "when the cart contains a physical item but no delivery method is selected" do
       before do
         create(:delivery_method)
-        user.cart_items.create!(listing: create(:listing, physical: true))
+        user.cart_items.create!(listing: create(:listing, delivery_method_set: create(:listings_delivery_method_set)))
       end
 
       it "redirects to the cart with an alert" do
@@ -141,9 +141,10 @@ RSpec.describe "Orders", type: :request do
 
     context "when the cart contains a physical item with a valid delivery method" do
       let!(:delivery_method) { create(:delivery_method, address_required: false) }
+      let!(:delivery_set)    { create(:listings_delivery_method_set) }
 
       before do
-        user.cart_items.create!(listing: create(:listing, physical: true))
+        user.cart_items.create!(listing: create(:listing, delivery_method_set: delivery_set))
         post cart_delivery_method_path, params: { delivery_method_id: delivery_method.id }
       end
 

@@ -18,8 +18,10 @@ RSpec.describe TenantResolution, type: :request do
     end
 
     context "when no default tenant exists" do
-      it "raises a routing error" do
-        expect { get auctions_path }.to raise_error(ActionController::RoutingError, /Tenant not found/)
+      it "returns 404" do
+        get auctions_path
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -38,8 +40,10 @@ RSpec.describe TenantResolution, type: :request do
     end
 
     context "when no tenant matches the subdomain" do
-      it "raises a routing error" do
-        expect { get auctions_path }.to raise_error(ActionController::RoutingError, /Tenant not found/)
+      it "returns 404" do
+        get auctions_path
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
