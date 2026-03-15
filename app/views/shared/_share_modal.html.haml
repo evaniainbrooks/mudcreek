@@ -22,15 +22,15 @@
           Share on WhatsApp
         %div{ data: { controller: "share", "share-url-value": url } }
           .input-group{ style: "cursor: pointer", data: { action: "click->share#copy" } }
-            %input.form-control.form-control-sm{ type: "text", value: url, readonly: true,
-                style: "cursor: pointer", aria: { label: "Share URL" } }
+            %input.form-control.form-control-sm{type: "text", value: url, readonly: true,
+                style: "cursor: pointer", aria: { label: "Share URL" }}
             %button.btn.btn-outline-secondary.btn-sm{ type: "button", tabindex: "-1" }
               %i.bi.bi-clipboard.me-1
               Copy
           .toast-container.position-fixed.bottom-0.end-0.p-3{ style: "z-index: 1200" }
-            .toast.align-items-center.text-bg-success.border-0{ role: "alert",
+            .toast.align-items-center.text-bg-success.border-0{role: "alert",
                 aria: { live: "assertive", atomic: "true" },
-                data: { "share-target": "toast", bs_autohide: "true", bs_delay: "2000" } }
+                data: { "share-target": "toast", bs_autohide: "true", bs_delay: "2000" }}
               .d-flex
                 .toast-body
                   %i.bi.bi-check-circle.me-2
