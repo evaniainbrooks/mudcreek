@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_14_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_14_223249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -337,6 +337,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_120000) do
     t.text "admin_notes"
     t.integer "commission_rate"
     t.datetime "created_at", null: false
+    t.string "hashid", null: false
     t.string "name", null: false
     t.string "number"
     t.bigint "owner_id", null: false
@@ -347,6 +348,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_14_120000) do
     t.enum "state", default: "submitted", null: false, enum_type: "lot_state"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["hashid"], name: "index_lots_on_hashid", unique: true
     t.index ["owner_id"], name: "index_lots_on_owner_id"
     t.index ["tenant_id"], name: "index_lots_on_tenant_id"
   end

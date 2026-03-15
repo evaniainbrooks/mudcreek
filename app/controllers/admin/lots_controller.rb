@@ -39,7 +39,7 @@ class Admin::LotsController < Admin::BaseController
   private
 
   def set_lot
-    @lot = Lot.find(params[:id])
+    @lot = Lot.find_by!(hashid: params[:hashid])
     authorize(@lot)
   end
 

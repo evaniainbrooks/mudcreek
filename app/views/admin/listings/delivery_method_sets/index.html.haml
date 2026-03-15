@@ -1,7 +1,14 @@
-.d-flex.justify-content-between.align-items-center.mb-4
-  %h1.h3.mb-0
-    %i.bi.bi-truck.me-2
-    Delivery Method Sets
+%h1.h3.mb-0
+  %i.bi.bi-truck.me-2
+  Delivery
+
+%ul.nav.nav-tabs.mb-4.mt-3
+  %li.nav-item
+    = link_to admin_listings_delivery_method_sets_path, class: "nav-link active" do
+      Sets
+  %li.nav-item
+    = link_to admin_delivery_methods_path, class: "nav-link" do
+      Methods
 
 .card.shadow-sm.border-0.mb-4
   .card-header.fw-semibold New Delivery Method Set
@@ -20,7 +27,3 @@
 
 = render_delivery_method_sets_table(delivery_method_sets: @delivery_method_sets)
 
-.mt-3
-  = link_to admin_delivery_methods_path, class: "btn btn-sm btn-outline-secondary" do
-    %i.bi.bi-gear.me-1
-    Manage Delivery Methods

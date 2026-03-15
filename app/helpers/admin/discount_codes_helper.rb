@@ -8,7 +8,7 @@ module Admin::DiscountCodesHelper
     end
     table.with_column("Amount") do |dc|
       if dc.fixed?
-        humanized_money_with_symbol(dc.amount, no_cents_if_whole: false)
+        humanized_money_with_symbol(dc.amount)
       else
         "#{dc.amount_cents / 100}%"
       end

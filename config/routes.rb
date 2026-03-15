@@ -46,9 +46,11 @@ resource :session
     root to: "dashboard#index"
     resource :tenant, only: [ :show, :update ]
     resources :users, only: [ :index, :show ]
-    resources :lots, only: [ :index, :create, :update, :destroy ] do
+    resources :lots, only: [ :index, :create, :update, :destroy ], param: :hashid do
       resource :listing_placeholder, only: [ :destroy ], module: :lots
-      resource :settlement,          only: [ :show ],    module: :lots
+      resource :settlement,          only: [ :show ],    module: :lots do
+        post :pay
+      end
     end
     resources :roles, only: [ :index, :create, :destroy ] do
       resources :permissions, only: [ :index, :create, :destroy ]

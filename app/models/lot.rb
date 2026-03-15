@@ -1,6 +1,7 @@
 class Lot < ApplicationRecord
   include MultiTenant
   include NativeEnum
+  include HasHashid
 
   belongs_to :owner, class_name: "User"
   has_one    :address, as: :addressable, dependent: :destroy

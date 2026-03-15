@@ -4,7 +4,7 @@ module Admin::DeliveryMethodsHelper
     in_edit = errors.any?
 
     display = tag.span(
-      dm.price_cents.zero? ? tag.span("Free", class: "badge text-bg-success") : humanized_money_with_symbol(dm.price, no_cents_if_whole: false),
+      dm.price_cents.zero? ? tag.span("Free", class: "badge text-bg-success") : humanized_money_with_symbol(dm.price),
       class: "inline-editable",
       hidden: in_edit,
       data: {

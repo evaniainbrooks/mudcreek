@@ -1,0 +1,37 @@
+- encoded_url  = ERB::Util.url_encode(url)
+- encoded_text = ERB::Util.url_encode("#{title} #{url}")
+
+#share-modal.modal.fade{ tabindex: "-1", aria: { labelledby: "share-modal-label", hidden: "true" } }
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        %h5.modal-title#share-modal-label
+          %i.bi.bi-share.me-2
+          Share
+        %button.btn-close{ type: "button", data: { "bs-dismiss": "modal" }, aria: { label: "Close" } }
+      .modal-body.d-grid.gap-2
+        = link_to "https://www.facebook.com/sharer/sharer.php?u=#{encoded_url}",
+            target: "_blank", rel: "noopener noreferrer",
+            class: "btn btn-outline-primary" do
+          %i.bi.bi-facebook.me-2
+          Share on Facebook
+        = link_to "https://wa.me/?text=#{encoded_text}",
+            target: "_blank", rel: "noopener noreferrer",
+            class: "btn btn-outline-success" do
+          %i.bi.bi-whatsapp.me-2
+          Share on WhatsApp
+        %div{ data: { controller: "share", "share-url-value": url } }
+          .input-group{ style: "cursor: pointer", data: { action: "click->share#copy" } }
+            %input.form-control.form-control-sm{ type: "text", value: url, readonly: true,
+                style: "cursor: pointer", aria: { label: "Share URL" } }
+            %button.btn.btn-outline-secondary.btn-sm{ type: "button", tabindex: "-1" }
+              %i.bi.bi-clipboard.me-1
+              Copy
+          .toast-container.position-fixed.bottom-0.end-0.p-3{ style: "z-index: 1200" }
+            .toast.align-items-center.text-bg-success.border-0{ role: "alert",
+                aria: { live: "assertive", atomic: "true" },
+                data: { "share-target": "toast", bs_autohide: "true", bs_delay: "2000" } }
+              .d-flex
+                .toast-body
+                  %i.bi.bi-check-circle.me-2
+                  Copied to clipboard!

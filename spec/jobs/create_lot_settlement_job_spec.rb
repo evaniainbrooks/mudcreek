@@ -66,27 +66,6 @@ RSpec.describe CreateLotSettlementJob, type: :job do
     end
   end
 
-  context "buyer's premium" do
-    it "creates a buyers_premium line item when amount is > 0" do
-      perform(hammer_price_cents: 10_000, buyers_premium_cents: 1_500)
-
-      item = lot.settlement.settlement_line_items.find_by(line_item_type: :buyers_premium)
-      expect(item).to have_attributes(amount_cents: 1_500)
-    end
-
-    it "does not create a buyers_premium line item when amount is 0" do
-      perform(hammer_price_cents: 10_000, buyers_premium_cents: 0)
-
-      expect(lot.settlement.settlement_line_items.where(line_item_type: :buyers_premium)).to be_empty
-    end
-
-    it "does not create a buyers_premium line item when omitted from sale_context" do
-      perform(hammer_price_cents: 10_000)
-
-      expect(lot.settlement.settlement_line_items.where(line_item_type: :buyers_premium)).to be_empty
-    end
-  end
-
   context "seller commission" do
     before { lot.update!(commission_rate: 15) }
 
@@ -156,11 +135,10 @@ RSpec.describe CreateLotSettlementJob, type: :job do
     end
 
     it "returns hammer price minus commission and seller fee" do
-      perform(hammer_price_cents: 10_000, buyers_premium_cents: 1_500)
+      perform(hammer_price_cents: 10_000)
 
       settlement = lot.settlement
       # hammer=10_000, commission=1_000, seller_fee=1_000 → net=8_000
-      # buyers_premium is not deducted (buyer cost)
       expect(settlement.net_payout_cents).to eq(8_000)
     end
   end

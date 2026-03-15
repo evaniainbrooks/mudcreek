@@ -9,7 +9,7 @@ class Admin::Lots::ListingPlaceholdersController < Admin::BaseController
   private
 
   def set_lot
-    @lot = Lot.find(params[:lot_id])
+    @lot = Lot.find_by!(hashid: params[:lot_hashid])
     authorize(@lot, :update?)
   end
 end

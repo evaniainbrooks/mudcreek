@@ -26,12 +26,25 @@
             %th.text-end Amount
         %tbody
           - @settlement.settlement_line_items.order(:created_at).each do |item|
+            - deduction = %w[seller_commission seller_fee].include?(item.line_item_type)
             %tr
               %td= item.description
               %td
-                %span.badge.text-bg-secondary= item.line_item_type.humanize
-              %td.text-end= humanized_money_with_symbol(item.amount)
+                %span.badge{class: deduction ? "text-bg-danger" : "text-bg-success"}= item.line_item_type.humanize
+              %td.text-end{class: deduction ? "text-danger" : ""}
+                = deduction ? "−" : ""
+                = humanized_money_with_symbol(item.amount)
         %tfoot
           %tr.fw-bold
             %td{colspan: 2} Net Payout
             %td.text-end= humanized_money_with_symbol(@settlement.net_payout)
+  - if @lot.paid?
+    .alert.alert-success.mt-3
+      %strong Paid
+      — #{humanized_money_with_symbol(@lot.payout_amount)} sent on #{@lot.paid_at.to_fs(:long)}
+  - elsif @settlement.net_payout_cents > 0
+    .mt-3
+      = button_to "Mark as Paid", pay_admin_lot_settlement_path(@lot),
+          method: :post,
+          class: "btn btn-success",
+          form: { data: { turbo_confirm: "Record a payout of #{humanized_money_with_symbol(@settlement.net_payout)} to #{@lot.owner.email_address}?" } }

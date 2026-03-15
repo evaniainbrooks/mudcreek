@@ -10,10 +10,14 @@
   = link_to auctions_path, class: "btn btn-outline-secondary btn-sm" do
     %i.bi.bi-arrow-left.me-1
     Back to all auctions
-  - if Current.user&.role&.permissions&.any?
-    = link_to admin_auction_path(@auction), class: "btn btn-outline-secondary btn-sm" do
-      %i.bi.bi-gear.me-1
-      Admin View
+  .d-flex.gap-2
+    - if Current.user&.role&.permissions&.any?
+      = link_to admin_auction_path(@auction), class: "btn btn-outline-secondary btn-sm" do
+        %i.bi.bi-gear.me-1
+        Admin View
+    %button.btn.btn-outline-secondary.btn-sm{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#share-modal" } }
+      %i.bi.bi-share.me-1
+      Share
 
 .row.g-0.align-items-stretch{ style: "min-height: 70vh" }
   = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count, filter: @filter
@@ -49,3 +53,4 @@
 
 - if Current.user && !@registration
   = render "register_modal", auction: @auction
+= render "shared/share_modal", url: auction_url(@auction), title: @auction.name

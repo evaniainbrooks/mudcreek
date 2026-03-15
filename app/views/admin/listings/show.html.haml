@@ -82,7 +82,7 @@
 
           - if @listing.sale?
             %dt.col-sm-3 Price
-            %dd.col-sm-9= humanized_money_with_symbol(@listing.price, no_cents_if_whole: false)
+            %dd.col-sm-9= humanized_money_with_symbol(@listing.price)
 
             %dt.col-sm-3 Pricing
             %dd.col-sm-9= listing_pricing_type_badge(@listing)
@@ -168,7 +168,7 @@
               - @bids.each do |bid|
                 %tr
                   = render TableCellComponent.new(value: bid.auction_registration.user)
-                  %td.text-end= humanized_money_with_symbol(bid.amount, no_cents_if_whole: false)
+                  %td.text-end= humanized_money_with_symbol(bid.amount)
                   %td= bid.state.humanize
                   %td.text-muted.small= bid.created_at.to_fs(:short)
                   %td.text-end

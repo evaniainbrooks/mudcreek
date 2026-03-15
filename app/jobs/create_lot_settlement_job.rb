@@ -14,9 +14,7 @@ class CreateLotSettlementJob < ApplicationJob
       .where(line_item_type: :hammer_price, listing_id: listing.id)
       .exists?
 
-    hammer_price_cents    = sale_context[:hammer_price_cents]
-    buyers_premium_cents  = sale_context.fetch(:buyers_premium_cents, 0)
-    tax_cents             = sale_context.fetch(:tax_cents, 0)
+    hammer_price_cents = sale_context[:hammer_price_cents]
 
     settlement.settlement_line_items.create!(
       listing:       listing,
@@ -24,24 +22,6 @@ class CreateLotSettlementJob < ApplicationJob
       amount_cents:  hammer_price_cents,
       description:   "Hammer price \u2014 #{listing.name}"
     )
-
-    if buyers_premium_cents > 0
-      settlement.settlement_line_items.create!(
-        listing:       listing,
-        line_item_type: :buyers_premium,
-        amount_cents:  buyers_premium_cents,
-        description:   "Buyer's premium \u2014 #{listing.name}"
-      )
-    end
-
-    if tax_cents > 0
-      settlement.settlement_line_items.create!(
-        listing:       listing,
-        line_item_type: :tax,
-        amount_cents:  tax_cents,
-        description:   "Tax \u2014 #{listing.name}"
-      )
-    end
 
     if lot.commission_rate.present?
       rate = lot.commission_rate

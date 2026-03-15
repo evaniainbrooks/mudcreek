@@ -23,6 +23,9 @@
       = link_to listing_path(@next_listing), class: "btn btn-outline-secondary btn-sm" do
         Next listing
         %i.bi.bi-arrow-right.ms-1
+    %button.btn.btn-outline-secondary.btn-sm{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#share-modal" } }
+      %i.bi.bi-share.me-1
+      Share
 
 .row.g-4.g-lg-5.align-items-start
   .col-lg-7
@@ -105,3 +108,4 @@
 = render("listings/documents", listing: @listing)
 = render("listings/rental_modal", listing: @listing, booking_events: @booking_events) if @listing.rental? && Current.user
 = render("listings/offer_modal", listing: @listing) if @listing.sale? && @listing.negotiable? && Current.user
+= render "shared/share_modal", url: listing_url(@listing), title: @listing.name

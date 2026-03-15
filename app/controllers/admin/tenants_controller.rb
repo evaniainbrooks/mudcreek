@@ -19,8 +19,11 @@ module Admin
           @tenant.public_send(name).purge_later
         else
           file = params.dig(:tenant, name)
-          if file.is_a?(ActionDispatch::Http::UploadedFile) && file.original_filename.present?
-            @tenant.public_send(name).attach(file)
+          case file
+          when ActionDispatch::Http::UploadedFile
+            @tenant.public_send(name).attach(file) if file.original_filename.present?
+          when String
+            @tenant.public_send(name).attach(file) if file.present?
           end
         end
       end

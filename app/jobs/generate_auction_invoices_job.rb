@@ -59,8 +59,7 @@ class GenerateAuctionInvoicesJob < ApplicationJob
 
         CreateLotSettlementJob.perform_later(
           item[:listing].id,
-          hammer_price_cents: item[:amount_cents],
-          buyers_premium_cents: premium_cents_per_item[idx]
+          hammer_price_cents: item[:amount_cents]
         )
       end
 

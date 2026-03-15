@@ -5,7 +5,7 @@ class SettlementLineItem < ApplicationRecord
   belongs_to :settlement
   belongs_to :listing, optional: true
 
-  native_enum :line_item_type, %i[hammer_price buyers_premium tax seller_commission seller_fee]
+  native_enum :line_item_type, %i[hammer_price seller_commission seller_fee]
 
   validates :description, :amount_cents, presence: true
 

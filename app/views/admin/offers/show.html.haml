@@ -29,7 +29,7 @@
       %dd.col-sm-9= mail_to @offer.user.email_address
 
       %dt.col-sm-3 Amount
-      %dd.col-sm-9= humanized_money_with_symbol(@offer.amount, no_cents_if_whole: false)
+      %dd.col-sm-9= humanized_money_with_symbol(@offer.amount)
 
       %dt.col-sm-3 State
       %dd.col-sm-9= offer_state_badge(@offer)

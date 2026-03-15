@@ -1,0 +1,5 @@
+Hi <%= @owner.first_name %>,
+
+Great news! Your payout of <%= humanized_money_with_symbol(@settlement.net_payout) %> for <%= @lot.name %> has been sent.
+
+Please allow a few business days for the funds to arrive.
