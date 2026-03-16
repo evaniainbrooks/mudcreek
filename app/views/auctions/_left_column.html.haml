@@ -84,26 +84,26 @@
     %hr.my-4
     %p.fw-semibold.mb-2 #{auction_listing_count} #{"listing".pluralize(auction_listing_count)} on auction
     - if Current.user
-      .d-flex.gap-2.mt-3
+      .d-flex.gap-1.mt-3
         = link_to auction_path(auction),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter.nil?}" do
-          .d-flex.flex-column.align-items-center.gap-1
-            %i.bi.bi-grid{ style: "font-size: 1.5rem" }
+            class: "btn btn-outline-secondary py-2 #{'active' if filter.nil?}", style: "flex: 1 0 0%" do
+          .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
+            %i.bi.bi-grid{ style: "font-size: 1.25rem" }
             %span.small.fw-semibold All Listings
         = link_to auction_path(auction, filter: "my_listings"),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter == 'my_listings'}" do
-          .d-flex.flex-column.align-items-center.gap-1
-            %i.bi.bi-trophy{ style: "font-size: 1.5rem" }
+            class: "btn btn-outline-secondary py-2 #{'active' if filter == 'my_listings'}", style: "flex: 1 0 0%" do
+          .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
+            %i.bi.bi-trophy{ style: "font-size: 1.25rem" }
             %span.small.fw-semibold My Listings
         = link_to auction_path(auction, filter: "my_bids"),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter == 'my_bids'}" do
-          .d-flex.flex-column.align-items-center.gap-1
-            %i.bi.bi-hammer{ style: "font-size: 1.5rem" }
+            class: "btn btn-outline-secondary py-2 #{'active' if filter == 'my_bids'}", style: "flex: 1 0 0%" do
+          .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
+            %i.bi.bi-hammer{ style: "font-size: 1.25rem" }
             %span.small.fw-semibold My Bids
         = link_to auction_path(auction, filter: "watchlist"),
-            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter == 'watchlist'}" do
-          .d-flex.flex-column.align-items-center.gap-1
-            %i.bi.bi-bookmark{ style: "font-size: 1.5rem" }
+            class: "btn btn-outline-secondary py-2 #{'active' if filter == 'watchlist'}", style: "flex: 1 0 0%" do
+          .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
+            %i.bi.bi-bookmark{ style: "font-size: 1.25rem" }
             %span.small.fw-semibold Watchlist
     = render "auctions/bid_increment_schedule", schedule: auction.effective_bid_increment_schedule
     - if auction.terms_and_conditions.attached?
