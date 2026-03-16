@@ -50,7 +50,7 @@ class AuctionsController < ApplicationController
 
     @search          = params[:search].presence
     @listing_state   = params[:state].presence_in(%w[on_sale sold cancelled])
-    @filter          = params[:filter].presence_in(%w[my_listings my_bids]) if Current.user
+    @filter          = params[:filter].presence_in(%w[my_listings my_bids watchlist]) if Current.user
     @category_hashid = params[:category_id].presence
     @categories      = Listings::Category
       .joins(category_assignments: { listing: :auction_listings })
@@ -83,6 +83,10 @@ class AuctionsController < ApplicationController
             AND auction_registrations.user_id = ?
         )
       SQL
+    when "watchlist"
+      scope = scope.where(
+        listing_id: WatchlistItem.where(user: Current.user).select(:listing_id)
+      )
     else
       scope = scope.where(listings: { state: @listing_state }) if @listing_state
     end

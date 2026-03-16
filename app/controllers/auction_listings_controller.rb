@@ -20,6 +20,7 @@ class AuctionListingsController < ApplicationController
       .first
 
     @registration = AuctionRegistration.find_by(auction: @auction, user: Current.user) if Current.user
+    @watchlist_item = Current.user&.watchlist_items&.find_by(listing_id: @auction_listing.listing_id)
 
     highest_bidder_id = @auction_listing.bids
       .where(state: "placed")

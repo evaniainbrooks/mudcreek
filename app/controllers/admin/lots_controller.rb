@@ -44,6 +44,6 @@ class Admin::LotsController < Admin::BaseController
   end
 
   def lot_params
-    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee)
+    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee, :state)
   end
 end

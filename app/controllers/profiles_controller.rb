@@ -37,6 +37,12 @@ class ProfilesController < ApplicationController
     end
   end
 
+  def watchlist
+    @watchlist_items = Current.user.watchlist_items
+      .includes(listing: [ :images_attachments, :categories, lot: :listing_placeholder_attachment ])
+      .order(created_at: :desc)
+  end
+
   def auction_bids
     @auction = Auction.find_by!(hashid: params[:hashid])
     @registration = Current.user.auction_registrations.find_by!(auction: @auction)

@@ -144,13 +144,51 @@ module Admin::LotsHelper
     end
   end
 
+  LOT_STATE_BADGE_CLASS = {
+    "submitted" => "text-bg-secondary",
+    "received"  => "text-bg-info",
+    "auctioned" => "text-bg-primary",
+    "settled"   => "text-bg-warning",
+    "paid"      => "text-bg-success"
+  }.freeze
+
+  def lot_state_cell(lot)
+    state   = lot.state.to_s
+    options = Lot.states.keys.map { |s| [s.humanize, s] }
+
+    display = tag.span(state.humanize,
+      class: "badge #{LOT_STATE_BADGE_CLASS.fetch(state, "text-bg-secondary")} inline-editable",
+      hidden: false,
+      data: {
+        "inline-edit-target" => "display",
+        action: "click->inline-edit#edit",
+        value: state
+      })
+
+    form = tag.div(hidden: true, data: { "inline-edit-target" => "form" }) do
+      form_with(url: admin_lot_path(lot), method: :patch, scope: :lot) do |f|
+        f.select(:state, options, {},
+          class: "form-select form-select-sm",
+          style: "width: 130px",
+          data: {
+            "inline-edit-target" => "input",
+            action: "change->inline-edit#autoSubmit"
+          })
+      end
+    end
+
+    tag.div(id: "#{dom_id(lot)}_state", data: { controller: "inline-edit" }) do
+      display + form
+    end
+  end
+
   def render_lots_table(lots:, users:)
     table = ::TableComponent.new(rows: lots)
     table.with_column("Name") { |lot| inline_edit_cell(lot, :name, lot.name, url: admin_lot_path(lot), scope: :lot) }
     table.with_column("Number") { |lot| inline_edit_cell(lot, :number, lot.number.to_s, url: admin_lot_path(lot), scope: :lot) }
     table.with_value_column("Owner") { it.owner }
     table.with_column("Placeholder") { |lot| lot_placeholder_cell(lot) }
-    table.with_column("State") { |lot| tag.span(lot.state, class: "badge text-bg-secondary") }
+    table.with_column("State") { |lot| lot_state_cell(lot) }
     table.with_column("Commission") { |lot| lot_commission_rate_cell(lot) }
     table.with_column("Seller Fee") { |lot| lot_seller_fee_cell(lot) }
     table.with_column("Listings") do |lot|

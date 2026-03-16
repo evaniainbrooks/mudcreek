@@ -96,7 +96,7 @@
           %dt.col-sm-3 Lot
           %dd.col-sm-9
             - if @listing.lot
-              = link_to @listing.lot.name, admin_lots_path
+              = link_to @listing.lot.name, admin_lots_path(q: { name_cont: @listing.lot.name })
             - else
               %span.text-muted —
 

@@ -14,6 +14,7 @@ class ListingsController < ApplicationController
                            .order(position: :asc, id: :asc)
                            .first
     @cart_item = Current.user&.cart_items&.find_by(listing_id: @listing.id)
+    @watchlist_item = Current.user&.watchlist_items&.find_by(listing: @listing)
     if @listing.rental?
       @booking_events = @listing.rental_bookings
         .where("expires_at > ?", Time.current)

@@ -11,7 +11,7 @@
   media_count = @listing.images.size + @listing.videos.size
 
 .d-flex.justify-content-between.align-items-center.mb-4
-  = link_to listings_path, class: "btn btn-outline-secondary btn-sm" do
+  = link_to listings_path, class: "btn btn-outline-secondary btn-sm", data: { transition: "backward" } do
     %i.bi.bi-arrow-left.me-1
     Back to listings
   .d-flex.gap-2
@@ -20,9 +20,11 @@
         %i.bi.bi-gear.me-1
         Admin View
     - if @next_listing
-      = link_to listing_path(@next_listing), class: "btn btn-outline-secondary btn-sm" do
+      = link_to listing_path(@next_listing), class: "btn btn-outline-secondary btn-sm", data: { transition: "forward" } do
         Next listing
         %i.bi.bi-arrow-right.ms-1
+    - if Current.user
+      = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
     %button.btn.btn-outline-secondary.btn-sm{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#share-modal" } }
       %i.bi.bi-share.me-1
       Share

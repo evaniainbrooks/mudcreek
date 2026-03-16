@@ -1,0 +1,12 @@
+%span{ id: "watchlist_button_listing_#{listing.id}" }
+  - if watchlist_item
+    = button_to watchlist_item_path(watchlist_item), method: :delete,
+        class: "btn btn-warning btn-sm" do
+      %i.bi.bi-bookmark-fill.me-1
+      Watching
+  - else
+    = button_to watchlist_items_path, method: :post,
+        params: { listing_id: listing.id },
+        class: "btn btn-outline-secondary btn-sm" do
+      %i.bi.bi-bookmark.me-1
+      Watch

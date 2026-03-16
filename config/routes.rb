@@ -20,6 +20,7 @@ resource :session
   resource  :cart_discount,       only: [ :create, :destroy ]
   resource  :cart_delivery_method, only: [ :create, :destroy ]
   resources :cart_items,          only: [ :create, :update, :destroy ]
+  resources :watchlist_items,     only: [ :create, :destroy ]
 
   resources :orders, only: [ :create, :show ], param: :number do
     resource :payment, only: [ :create ], module: :orders
@@ -33,6 +34,7 @@ resource :session
     get "auctions/:hashid", action: :auction_bids, as: :auction_bids
     get "auctions", action: :profile_auctions, as: :profile_auctions
     get "listings", action: :profile_listings, as: :profile_listings
+    get "watchlist", action: :watchlist, as: :profile_watchlist
     resources :payment_methods, only: [ :create, :destroy ] do
       member { patch :set_default }
     end

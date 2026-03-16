@@ -1,3 +1,5 @@
+= turbo_stream.replace "#{dom_id(@lot)}_state" do
+  = lot_state_cell(@lot)
 = turbo_stream.replace "#{dom_id(@lot)}_commission_rate" do
   = lot_commission_rate_cell(@lot)
 = turbo_stream.replace "#{dom_id(@lot)}_seller_fee" do

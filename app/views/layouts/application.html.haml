@@ -8,6 +8,7 @@
     %meta{name: "mobile-web-app-capable", content: "yes"}
     = csrf_meta_tags
     = csp_meta_tag
+    %meta{name: "view-transition", content: "same-origin"}
     = yield :head
     %link{rel: "icon", href: "/icon.png", type: "image/png"}
     %link{rel: "icon", href: "/icon.svg", type: "image/svg+xml"}
@@ -49,6 +50,10 @@
                         = link_to admin_root_path, class: "dropdown-item" do
                           %i.bi.bi-gear-fill.me-1
                           Admin
+                    %li
+                      = link_to profile_watchlist_profile_path, class: "dropdown-item" do
+                        %i.bi.bi-bookmark-fill.me-1
+                        Watchlist
                     %li
                       = link_to edit_profile_path, class: "dropdown-item" do
                         %i.bi.bi-person-fill.me-1

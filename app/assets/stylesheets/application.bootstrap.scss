@@ -67,6 +67,45 @@ label.required::after {
   text-underline-offset: 3px;
 }
 
+// Page transitions (View Transitions API — supported in Chrome 111+, Edge 111+, Safari 18+)
+@supports (view-transition-name: none) {
+  // Default: cross-fade for all navigations
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 220ms;
+    animation-timing-function: ease-in-out;
+  }
+
+  // Forward (e.g. "Next listing"): old slides left, new slides in from right
+  html[data-transition="forward"] ::view-transition-old(root) {
+    animation: vt-slide-out-left 280ms ease-in-out;
+  }
+  html[data-transition="forward"] ::view-transition-new(root) {
+    animation: vt-slide-in-right 280ms ease-in-out;
+  }
+
+  // Backward (e.g. "Back to listings"): old slides right, new slides in from left
+  html[data-transition="backward"] ::view-transition-old(root) {
+    animation: vt-slide-out-right 280ms ease-in-out;
+  }
+  html[data-transition="backward"] ::view-transition-new(root) {
+    animation: vt-slide-in-left 280ms ease-in-out;
+  }
+
+  @keyframes vt-slide-out-left {
+    to { transform: translateX(-40px); opacity: 0; }
+  }
+  @keyframes vt-slide-in-right {
+    from { transform: translateX(40px); opacity: 0; }
+  }
+  @keyframes vt-slide-out-right {
+    to { transform: translateX(40px); opacity: 0; }
+  }
+  @keyframes vt-slide-in-left {
+    from { transform: translateX(-40px); opacity: 0; }
+  }
+}
+
 // Table header using secondary (brown) as background
 thead.thead-secondary {
   --bs-table-color: #fff;

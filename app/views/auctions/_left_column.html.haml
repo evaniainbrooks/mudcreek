@@ -100,6 +100,11 @@
           .d-flex.flex-column.align-items-center.gap-1
             %i.bi.bi-hammer{ style: "font-size: 1.5rem" }
             %span.small.fw-semibold My Bids
+        = link_to auction_path(auction, filter: "watchlist"),
+            class: "btn btn-outline-secondary flex-fill py-3 #{'active' if filter == 'watchlist'}" do
+          .d-flex.flex-column.align-items-center.gap-1
+            %i.bi.bi-bookmark{ style: "font-size: 1.5rem" }
+            %span.small.fw-semibold Watchlist
     = render "auctions/bid_increment_schedule", schedule: auction.effective_bid_increment_schedule
     - if auction.terms_and_conditions.attached?
       %hr.my-4

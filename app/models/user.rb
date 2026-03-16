@@ -16,6 +16,8 @@ class User < ApplicationRecord
   has_many :auction_registrations, dependent: :destroy
   has_many :invoices, dependent: :destroy
   has_many :cart_listings, through: :cart_items, source: :listing
+  has_many :watchlist_items, dependent: :destroy
+  has_many :watched_listings, through: :watchlist_items, source: :listing
   has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", as: :addressable
   has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", as: :addressable
 
