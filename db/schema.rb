@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_15_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_15_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -305,7 +305,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_15_000001) do
     t.datetime "updated_at", null: false
     t.string "value", null: false
     t.index ["listing_id", "position"], name: "index_listings_properties_on_listing_id_and_position"
-    t.index ["listing_id"], name: "index_listings_properties_on_listing_id"
     t.index ["property_set_id"], name: "index_listings_properties_on_property_set_id"
     t.index ["tenant_id"], name: "index_listings_properties_on_tenant_id"
   end
@@ -490,7 +489,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_15_000001) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id", "platform"], name: "index_social_media_accounts_on_tenant_id_and_platform", unique: true
-    t.index ["tenant_id"], name: "index_social_media_accounts_on_tenant_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -717,13 +715,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_15_000001) do
   add_foreign_key "listings_categories", "tenants"
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
-  add_foreign_key "listings_deliveries", "delivery_methods"
+  add_foreign_key "listings_deliveries", "delivery_methods", on_delete: :cascade
   add_foreign_key "listings_deliveries", "listings_delivery_method_sets", column: "delivery_method_set_id"
-  add_foreign_key "listings_deliveries", "tenants"
+  add_foreign_key "listings_deliveries", "tenants", on_delete: :cascade
   add_foreign_key "listings_delivery_method_sets", "tenants"
   add_foreign_key "listings_properties", "listings"
   add_foreign_key "listings_properties", "listings_property_sets", column: "property_set_id"
-  add_foreign_key "listings_properties", "tenants"
+  add_foreign_key "listings_properties", "tenants", on_delete: :cascade
   add_foreign_key "listings_property_sets", "tenants"
   add_foreign_key "listings_rental_rate_plans", "listings"
   add_foreign_key "listings_rental_rate_plans", "tenants"
@@ -747,9 +745,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_15_000001) do
   add_foreign_key "sessions", "users"
   add_foreign_key "settlement_line_items", "listings", on_delete: :nullify
   add_foreign_key "settlement_line_items", "settlements", on_delete: :cascade
-  add_foreign_key "settlement_line_items", "tenants"
+  add_foreign_key "settlement_line_items", "tenants", on_delete: :cascade
   add_foreign_key "settlements", "lots", on_delete: :cascade
-  add_foreign_key "settlements", "tenants"
+  add_foreign_key "settlements", "tenants", on_delete: :cascade
   add_foreign_key "social_media_accounts", "tenants"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

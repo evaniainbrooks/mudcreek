@@ -6,7 +6,7 @@ class CartItem < ApplicationRecord
   belongs_to :invoice_item, optional: true
   has_one :rental_booking, dependent: :nullify, autosave: true
 
-  validates :listing_id, uniqueness: { scope: :user_id }, unless: -> { rental? || from_invoice? }
+  validates :listing_id, uniqueness: { scope: :user_id, conditions: -> { where("rental_start_at IS NULL").where("invoice_item_id IS NULL") } }
   validates :invoice_item_id, uniqueness: true, allow_nil: true
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
 
