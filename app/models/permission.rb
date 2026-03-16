@@ -13,6 +13,7 @@ class Permission < ApplicationRecord
     Listings::DeliveryMethodSet
     Listings::Delivery
     Settlement
+    Page
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze

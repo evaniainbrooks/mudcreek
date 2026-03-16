@@ -11,6 +11,10 @@ class FooterComponent < ViewComponent::Base
     @address ||= tenant.address
   end
 
+  def footer_pages
+    @footer_pages ||= Page.in_footer
+  end
+
   def social_media_accounts
     @social_media_accounts ||= tenant.social_media_accounts.order(:position)
   end

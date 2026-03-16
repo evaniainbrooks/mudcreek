@@ -43,6 +43,7 @@ resource :session
     member { post :pay }
   end
   resources :subdivisions, only: [ :index ]
+  resources :pages, only: [ :show ], param: :slug
 
   namespace :admin do
     root to: "dashboard#index"
@@ -86,6 +87,7 @@ resource :session
     resources :auction_registrations, only: [ :index, :update ]
     resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
+    resources :pages
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

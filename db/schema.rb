@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_16_000002) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_16_181332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -413,6 +413,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_16_000002) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "pages", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "position", default: 0, null: false
+    t.boolean "published", default: false, null: false
+    t.boolean "show_in_footer", default: false, null: false
+    t.boolean "show_in_nav", default: false, null: false
+    t.string "slug", null: false
+    t.bigint "tenant_id", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "slug"], name: "index_pages_on_tenant_id_and_slug", unique: true
+    t.index ["tenant_id"], name: "index_pages_on_tenant_id"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string "action", null: false
     t.datetime "created_at", null: false
@@ -748,6 +762,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_16_000002) do
   add_foreign_key "orders", "discount_codes", on_delete: :nullify
   add_foreign_key "orders", "tenants"
   add_foreign_key "orders", "users"
+  add_foreign_key "pages", "tenants"
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false

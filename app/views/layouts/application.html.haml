@@ -31,7 +31,11 @@
           "aria-label": "Toggle navigation"}
           %span.navbar-toggler-icon
         #main-nav.collapse.navbar-collapse
+          - nav_pages = Page.in_nav
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+            - nav_pages.each do |page|
+              %li.nav-item
+                = link_to page.title, page_path(page), class: "nav-link"
             - if Current.user
               - unless @admin
                 %li.nav-item.dropdown

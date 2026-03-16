@@ -21,9 +21,10 @@ class Admin::Dashboard::NavSectionComponent < ViewComponent::Base
     sales_links << { label: "Delivery",  icon: "bi-truck",                  path: view.admin_listings_delivery_method_sets_path } if view.policy(DeliveryMethod).index?
 
     settings_links = []
-    settings_links << { label: "Users",  icon: "bi-people-fill", path: view.admin_users_path  } if view.policy(User).index?
-    settings_links << { label: "Roles",  icon: "bi-shield-fill", path: view.admin_roles_path  } if view.policy(Role).index?
-    settings_links << { label: "Tenant", icon: "bi-globe",       path: view.admin_tenant_path } if view.policy(Tenant).index?
+    settings_links << { label: "Users",  icon: "bi-people-fill",         path: view.admin_users_path  } if view.policy(User).index?
+    settings_links << { label: "Roles",  icon: "bi-shield-fill",         path: view.admin_roles_path  } if view.policy(Role).index?
+    settings_links << { label: "Tenant", icon: "bi-globe",               path: view.admin_tenant_path } if view.policy(Tenant).index?
+    settings_links << { label: "Pages",  icon: "bi-file-earmark-text",   path: view.admin_pages_path  } if view.policy(Page).index?
 
     sections = []
     sections << { title: "Catalog",  links: catalog_links  } if catalog_links.any?

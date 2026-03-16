@@ -12,6 +12,8 @@
           = link_to listings_path, class: "text-decoration-none text-muted small" do
             %i.bi.bi-tag.me-1
             Listings
+          - footer_pages.each do |page|
+            = link_to page.title, page_path(page), class: "text-decoration-none text-muted small"
         %small.text-muted.mt-auto.pt-3
           &copy;
           = Date.current.year

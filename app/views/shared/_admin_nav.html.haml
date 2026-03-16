@@ -86,3 +86,8 @@
           = link_to admin_tenant_path, class: "dropdown-item" do
             %i.bi.bi-globe.me-1
             Tenant
+      - if policy(Page).index?
+        %li
+          = link_to admin_pages_path, class: "dropdown-item" do
+            %i.bi.bi-file-earmark-text.me-1
+            Pages

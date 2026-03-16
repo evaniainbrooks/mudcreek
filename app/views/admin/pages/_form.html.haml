@@ -1,0 +1,59 @@
+= form_with model: [:admin, page], class: "needs-validation" do |f|
+  - if page.errors.any?
+    .alert.alert-danger.mb-4
+      %h5.alert-heading
+        %i.bi.bi-exclamation-triangle-fill.me-2
+        = pluralize(page.errors.count, "error")
+        prohibited this page from being saved:
+      %ul.mb-0
+        - page.errors.full_messages.each do |message|
+          %li= message
+
+  .row.g-4
+    .col-lg-8
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-info-circle.me-1
+          Content
+        .card-body.p-4
+          .mb-3
+            = f.label :title, class: "form-label required"
+            = f.text_field :title, class: "form-control #{'is-invalid' if page.errors[:title].any?}", required: true
+            - if page.errors[:title].any?
+              .invalid-feedback= page.errors[:title].to_sentence
+          .mb-3
+            = f.label :slug, class: "form-label required"
+            = f.text_field :slug, class: "form-control #{'is-invalid' if page.errors[:slug].any?}", placeholder: "auto-derived from title on create"
+            - if page.errors[:slug].any?
+              .invalid-feedback= page.errors[:slug].to_sentence
+            %small.text-muted Lowercase letters, numbers, and hyphens only (e.g. about-us)
+          .mb-0
+            = f.label :body, class: "form-label"
+            = f.rich_text_area :body, class: "form-control #{'is-invalid' if page.errors[:body].any?}"
+            - if page.errors[:body].any?
+              .invalid-feedback.d-block= page.errors[:body].to_sentence
+
+    .col-lg-4
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
+          %i.bi.bi-toggles.me-1
+          Settings
+        .card-body.p-4
+          .mb-3.form-check
+            = f.check_box :published, class: "form-check-input"
+            = f.label :published, class: "form-check-label"
+          .mb-3.form-check
+            = f.check_box :show_in_nav, class: "form-check-input"
+            = f.label :show_in_nav, "Show in navbar", class: "form-check-label"
+          .mb-3.form-check
+            = f.check_box :show_in_footer, class: "form-check-input"
+            = f.label :show_in_footer, "Show in footer", class: "form-check-label"
+          .mb-0
+            = f.label :position, class: "form-label"
+            = f.number_field :position, class: "form-control #{'is-invalid' if page.errors[:position].any?}", min: 0
+            - if page.errors[:position].any?
+              .invalid-feedback= page.errors[:position].to_sentence
+
+  .d-flex.gap-2.mt-4
+    = f.submit class: "btn btn-primary"
+    = link_to "Cancel", admin_pages_path, class: "btn btn-outline-secondary"
