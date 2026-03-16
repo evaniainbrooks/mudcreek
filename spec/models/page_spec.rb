@@ -5,7 +5,10 @@ RSpec.describe Page, type: :model do
   after  { Current.tenant = nil }
 
   describe "associations" do
-    it { is_expected.to belong_to(:tenant) }
+    it "belongs to a tenant" do
+      page = create(:page, title: "About", slug: "about")
+      expect(page.tenant).to eq(Current.tenant)
+    end
   end
 
   describe "validations" do
@@ -36,8 +39,8 @@ RSpec.describe Page, type: :model do
     end
 
     it "rejects a duplicate slug within the same tenant" do
-      create(:page, slug: "terms")
-      duplicate = build(:page, slug: "terms")
+      create(:page, title: "Terms", slug: "terms")
+      duplicate = build(:page, title: "Terms Again", slug: "terms")
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:slug]).to be_present
     end
@@ -62,35 +65,44 @@ RSpec.describe Page, type: :model do
   end
 
   describe "scopes" do
-    let!(:draft)     { create(:page, published: false, show_in_nav: false, show_in_footer: false) }
-    let!(:nav_page)  { create(:page, :in_nav) }
-    let!(:foot_page) { create(:page, :in_footer) }
-    let!(:both)      { create(:page, published: true, show_in_nav: true, show_in_footer: true) }
-
     describe ".published" do
-      it "returns only published pages" do
-        expect(Page.published).to include(nav_page, foot_page, both)
+      it "returns published pages and excludes drafts" do
+        pub  = create(:page, title: "Published", slug: "published", published: true)
+        draft = create(:page, title: "Draft", slug: "draft", published: false)
+
+        expect(Page.published).to include(pub)
         expect(Page.published).not_to include(draft)
       end
     end
 
     describe ".in_nav" do
       it "returns published pages with show_in_nav true" do
-        expect(Page.in_nav).to include(nav_page, both)
-        expect(Page.in_nav).not_to include(draft, foot_page)
+        shown  = create(:page, title: "Nav Shown", slug: "nav-shown",   published: true,  show_in_nav: true)
+        hidden = create(:page, title: "Nav Hidden", slug: "nav-hidden", published: false, show_in_nav: true)
+        no_nav = create(:page, title: "No Nav",     slug: "no-nav",     published: true,  show_in_nav: false)
+
+        result = Page.in_nav
+        expect(result).to include(shown)
+        expect(result).not_to include(hidden, no_nav)
       end
 
       it "orders by position then id" do
-        p1 = create(:page, :in_nav, position: 2)
-        p2 = create(:page, :in_nav, position: 1)
-        expect(Page.in_nav.to_a.index(p2)).to be < Page.in_nav.to_a.index(p1)
+        p1 = create(:page, title: "First",  slug: "first",  published: true, show_in_nav: true, position: 2)
+        p2 = create(:page, title: "Second", slug: "second", published: true, show_in_nav: true, position: 1)
+
+        expect(Page.in_nav.to_a).to eq([p2, p1])
       end
     end
 
     describe ".in_footer" do
       it "returns published pages with show_in_footer true" do
-        expect(Page.in_footer).to include(foot_page, both)
-        expect(Page.in_footer).not_to include(draft, nav_page)
+        shown  = create(:page, title: "Footer Shown",  slug: "footer-shown",  published: true,  show_in_footer: true)
+        hidden = create(:page, title: "Footer Hidden", slug: "footer-hidden", published: false, show_in_footer: true)
+        no_footer = create(:page, title: "No Footer",  slug: "no-footer",     published: true,  show_in_footer: false)
+
+        result = Page.in_footer
+        expect(result).to include(shown)
+        expect(result).not_to include(hidden, no_footer)
       end
     end
   end

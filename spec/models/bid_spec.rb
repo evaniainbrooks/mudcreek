@@ -21,16 +21,34 @@ RSpec.describe Bid, type: :model do
     auction_listing
   end
 
+  def valid_bid(attrs = {})
+    Bid.new({ auction_registration: registration, auction_listing: auction_listing, amount_cents: 1000 }.merge(attrs))
+  end
+
   describe "associations" do
-    it { is_expected.to belong_to(:auction_registration) }
-    it { is_expected.to belong_to(:auction_listing) }
+    it "belongs to an auction_registration" do
+      bid = valid_bid
+      bid.save!
+      expect(bid.auction_registration).to eq(registration)
+    end
+
+    it "belongs to an auction_listing" do
+      bid = valid_bid
+      bid.save!
+      expect(bid.auction_listing).to eq(auction_listing)
+    end
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:amount_cents) }
+    it "requires amount_cents" do
+      bid = valid_bid(amount_cents: nil)
+      allow(bid).to receive(:amount_must_equal_next_bid_amount) # skip competing validation
+      expect(bid).not_to be_valid
+      expect(bid.errors[:amount_cents]).to be_present
+    end
 
     it "rejects a zero amount" do
-      bid = build(:bid, auction_registration: registration, auction_listing: auction_listing, amount_cents: 0)
+      bid = valid_bid(amount_cents: 0)
       expect(bid).not_to be_valid
       expect(bid.errors[:amount_cents]).to be_present
     end
@@ -46,15 +64,14 @@ RSpec.describe Bid, type: :model do
       end
 
       it "accepts a bid from an approved registration" do
-        bid = Bid.new(auction_registration: registration, auction_listing: auction_listing, amount_cents: 1000)
-        expect(bid).to be_valid
+        expect(valid_bid).to be_valid
       end
     end
 
     describe "listing_must_be_biddable" do
       it "rejects a bid when the auction listing is not active" do
         listing.update_column(:state, "sold")
-        bid = Bid.new(auction_registration: registration, auction_listing: auction_listing, amount_cents: 1000)
+        bid = valid_bid
         expect(bid).not_to be_valid
         expect(bid.errors[:base]).to include("bidding is not currently open for this listing")
       end
@@ -63,9 +80,12 @@ RSpec.describe Bid, type: :model do
     describe "listing_must_have_bid_configuration" do
       it "rejects a bid when there is no bid increment schedule" do
         schedule.destroy!
-        Current.tenant.update_column(:default_bid_increment_schedule_id, nil) if Current.tenant.respond_to?(:default_bid_increment_schedule_id)
+        # ensure no tenant-level default
+        Current.tenant.update_column(
+          :default_bid_increment_schedule_id, nil
+        ) if Current.tenant.respond_to?(:default_bid_increment_schedule_id)
         auction.reload
-        bid = Bid.new(auction_registration: registration, auction_listing: auction_listing, amount_cents: 1000)
+        bid = valid_bid
         expect(bid).not_to be_valid
         expect(bid.errors[:base]).to include("this listing does not have a bid increment configured")
       end
@@ -84,14 +104,13 @@ RSpec.describe Bid, type: :model do
 
     describe "amount_must_equal_next_bid_amount" do
       it "rejects an amount that does not match the expected next bid" do
-        bid = Bid.new(auction_registration: registration, auction_listing: auction_listing, amount_cents: 999)
+        bid = valid_bid(amount_cents: 999)
         expect(bid).not_to be_valid
         expect(bid.errors[:amount]).to be_present
       end
 
       it "accepts the exact next bid amount" do
-        bid = Bid.new(auction_registration: registration, auction_listing: auction_listing, amount_cents: 1000)
-        expect(bid).to be_valid
+        expect(valid_bid).to be_valid
       end
     end
   end

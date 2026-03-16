@@ -9,22 +9,34 @@ RSpec.describe AuctionListing, type: :model do
   let(:auction_listing) { create(:auction_listing, auction: auction, listing: listing, starting_bid_cents: 5000) }
 
   describe "associations" do
-    it { is_expected.to belong_to(:auction) }
-    it { is_expected.to belong_to(:listing) }
-    it { is_expected.to have_many(:bids).dependent(:destroy) }
+    it "belongs to an auction" do
+      expect(auction_listing.auction).to eq(auction)
+    end
+
+    it "belongs to a listing" do
+      expect(auction_listing.listing).to eq(listing)
+    end
+
+    it "has many bids" do
+      expect(described_class.reflect_on_association(:bids).options[:dependent]).to eq(:destroy)
+    end
   end
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:starting_bid_cents) }
+    it "requires starting_bid_cents" do
+      al = AuctionListing.new(auction: auction, listing: create(:listing), starting_bid_cents: nil)
+      expect(al).not_to be_valid
+      expect(al.errors[:starting_bid_cents]).to be_present
+    end
 
     it "rejects a negative starting bid" do
-      al = build(:auction_listing, starting_bid_cents: -1)
+      al = build(:auction_listing, auction: auction, starting_bid_cents: -1)
       expect(al).not_to be_valid
       expect(al.errors[:starting_bid_cents]).to be_present
     end
 
     it "accepts a zero starting bid" do
-      al = build(:auction_listing, starting_bid_cents: 0)
+      al = build(:auction_listing, auction: auction, starting_bid_cents: 0)
       expect(al).to be_valid
     end
 

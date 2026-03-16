@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Listing, type: :model do
   describe "associations" do
-    it { is_expected.to belong_to(:owner).class_name("User") }
+    it "belongs to owner (User)" do
+      expect(described_class.reflect_on_association(:owner).options[:class_name]).to eq("User")
+    end
   end
 
   describe "validations" do

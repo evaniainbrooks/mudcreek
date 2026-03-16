@@ -2,26 +2,28 @@ require "rails_helper"
 
 RSpec.describe Address, type: :model do
   let(:tenant) { create(:tenant) }
-  subject(:address) { Address.new(addressable: tenant) }
 
   describe "associations" do
-    it { is_expected.to belong_to(:addressable) }
+    it "is polymorphically associated with an addressable" do
+      address = Address.create!(addressable: tenant)
+      expect(address.addressable).to eq(tenant)
+    end
   end
 
   describe "validations" do
     it "rejects an unrecognised country code" do
-      address.country = "ZZ"
+      address = Address.new(addressable: tenant, country: "ZZ")
       expect(address).not_to be_valid
       expect(address.errors[:country]).to be_present
     end
 
     it "accepts a valid ISO 3166-1 alpha-2 country code" do
-      address.country = "CA"
+      address = Address.new(addressable: tenant, country: "CA")
       expect(address).to be_valid
     end
 
     it "accepts a blank country" do
-      address.country = ""
+      address = Address.new(addressable: tenant, country: "")
       expect(address).to be_valid
     end
 
@@ -41,23 +43,31 @@ RSpec.describe Address, type: :model do
   end
 
   describe "#any?" do
-    it "returns false when all fields are blank" do
+    it "returns false when all address fields are blank" do
+      address = Address.new(street_address: nil, city: nil, province: nil, postal_code: nil, country: nil)
       expect(address.any?).to be false
     end
 
     it "returns true when at least one field is present" do
-      address.city = "Calgary"
+      address = Address.new(city: "Calgary")
       expect(address.any?).to be true
+    end
+
+    it "treats blank strings as empty" do
+      address = Address.new(street_address: "", city: "", province: "", postal_code: "", country: "")
+      expect(address.any?).to be false
     end
   end
 
   describe "#to_fs" do
-    before do
-      address.street_address = "123 Main St"
-      address.city           = "Calgary"
-      address.province       = "AB"
-      address.postal_code    = "T2P 1J9"
-      address.country        = "CA"
+    let(:address) do
+      Address.new(
+        street_address: "123 Main St",
+        city:           "Calgary",
+        province:       "AB",
+        postal_code:    "T2P 1J9",
+        country:        "CA"
+      )
     end
 
     it "joins the first 3 components for the short format" do
