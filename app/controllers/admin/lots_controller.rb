@@ -20,6 +20,8 @@ class Admin::LotsController < Admin::BaseController
       @users = User.order(:email_address)
       @q = Lot.ransack(nil)
       @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
+      @filter_total = Lot.count
+      @filter_count = @lots.size
       render :index, status: :unprocessable_content
     end
   end

@@ -11,16 +11,16 @@ RSpec.describe "Invoices", type: :request do
 
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
 
-  describe "GET /profile/edit — invoices tab" do
+  describe "GET /profile/invoices" do
     context "when the user has no invoices" do
       it "returns 200" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response).to have_http_status(:ok)
       end
 
       it "shows the empty state message" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("You have no invoices yet.")
       end
@@ -30,31 +30,31 @@ RSpec.describe "Invoices", type: :request do
       let!(:invoice) { create(:invoice, user: user, auction: auction, total_cents: 20_050) }
 
       it "displays the invoice number" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include(invoice.number)
       end
 
       it "displays the auction name" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include(auction.name)
       end
 
       it "displays the invoice total" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("200.50")
       end
 
       it "displays the unpaid status badge" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("Unpaid")
       end
 
       it "shows a Pay button for unpaid invoices" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include(pay_invoice_path(invoice))
       end
@@ -64,13 +64,13 @@ RSpec.describe "Invoices", type: :request do
       let!(:invoice) { create(:invoice, :paid, user: user, auction: auction) }
 
       it "displays the paid status badge" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("Paid")
       end
 
       it "does not show a Pay button" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).not_to include(pay_invoice_path(invoice))
       end
@@ -81,7 +81,7 @@ RSpec.describe "Invoices", type: :request do
       let!(:newer_invoice) { create(:invoice, user: user, auction: auction, created_at: 1.day.ago) }
 
       it "shows newer invoices before older ones" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body.index(newer_invoice.number)).to be < response.body.index(older_invoice.number)
       end
@@ -92,7 +92,7 @@ RSpec.describe "Invoices", type: :request do
       let!(:other_invoice) { create(:invoice, user: other_user, auction: auction) }
 
       it "does not display the other user's invoice" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).not_to include(other_invoice.number)
       end
@@ -102,7 +102,7 @@ RSpec.describe "Invoices", type: :request do
       before { delete session_path }
 
       it "redirects to the sign-in page" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response).to redirect_to(new_session_path)
       end

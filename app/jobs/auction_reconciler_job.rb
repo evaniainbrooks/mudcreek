@@ -25,7 +25,7 @@ class AuctionReconcilerJob < ApplicationJob
       .joins(:listing)
       .where("auction_listings.ends_at <= ?", Time.current)
       .where(listings: { state: "on_sale" })
-      .includes(:current_bid, listing: [ :tenant, :rich_text_description, { documents_attachments: :blob } ])
+      .includes(:current_bid, listing: [ :tenant, :rich_text_description, { documents_attachments: :blob }, { watchlist_items: :user } ])
 
     ended_listings.each do |al|
       new_state = reserve_met?(al) ? :sold : :cancelled

@@ -127,16 +127,16 @@ RSpec.describe "Profiles", type: :request do
     end
   end
 
-  describe "GET /profile/edit — invoices tab" do
+  describe "GET /profile/invoices" do
     context "when the user has no invoices" do
       it "returns 200" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response).to have_http_status(:ok)
       end
 
       it "shows the empty state message" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("You have no invoices yet.")
       end
@@ -146,13 +146,13 @@ RSpec.describe "Profiles", type: :request do
       let!(:invoice) { create(:invoice, user: user) }
 
       it "displays the invoice number" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include(invoice.number)
       end
 
       it "shows an Unpaid badge for unpaid invoices" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("Unpaid")
       end
@@ -162,7 +162,7 @@ RSpec.describe "Profiles", type: :request do
       let!(:invoice) { create(:invoice, :paid, user: user) }
 
       it "shows a Paid badge" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).to include("Paid")
       end
@@ -173,23 +173,23 @@ RSpec.describe "Profiles", type: :request do
       let!(:other_invoice) { create(:invoice, user: other_user) }
 
       it "does not display the other user's invoice" do
-        get edit_profile_path
+        get profile_invoices_path
 
         expect(response.body).not_to include(other_invoice.number)
       end
     end
   end
 
-  describe "GET /profile/edit — orders tab" do
+  describe "GET /profile/orders" do
     context "when the user has no orders" do
       it "returns 200" do
-        get edit_profile_path
+        get profile_orders_path
 
         expect(response).to have_http_status(:ok)
       end
 
       it "shows the empty state message" do
-        get edit_profile_path
+        get profile_orders_path
 
         expect(response.body).to include("You haven&#39;t placed any orders yet.")
       end
@@ -199,19 +199,19 @@ RSpec.describe "Profiles", type: :request do
       let!(:order) { create(:order, user: user) }
 
       it "returns 200" do
-        get edit_profile_path
+        get profile_orders_path
 
         expect(response).to have_http_status(:ok)
       end
 
       it "displays the order number" do
-        get edit_profile_path
+        get profile_orders_path
 
         expect(response.body).to include(order.number)
       end
 
       it "displays the order total" do
-        get edit_profile_path
+        get profile_orders_path
 
         expect(response.body).to include("11.50")
       end
@@ -222,7 +222,7 @@ RSpec.describe "Profiles", type: :request do
       let!(:newer_order) { create(:order, user: user, created_at: 1.day.ago) }
 
       it "shows the newer order before the older one" do
-        get edit_profile_path
+        get profile_orders_path
 
         expect(response.body.index(newer_order.number)).to be < response.body.index(older_order.number)
       end
@@ -262,7 +262,7 @@ RSpec.describe "Profiles", type: :request do
     end
 
     it "returns Turbo Stream with bid registrations" do
-      get profile_auctions_profile_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      get profile_auctions_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
@@ -273,7 +273,7 @@ RSpec.describe "Profiles", type: :request do
       before { delete session_path }
 
       it "redirects to the sign-in page" do
-        get profile_auctions_profile_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        get profile_auctions_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(response).to redirect_to(new_session_path)
       end
@@ -289,7 +289,7 @@ RSpec.describe "Profiles", type: :request do
     end
 
     it "returns Turbo Stream with purchased listings" do
-      get profile_listings_profile_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      get profile_listings_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
@@ -301,7 +301,7 @@ RSpec.describe "Profiles", type: :request do
       pending_order = create(:order, user: user, status: :pending)
       pending_order.order_items.create!(listing: other_listing, name: other_listing.name, price_cents: other_listing.price_cents)
 
-      get profile_listings_profile_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      get profile_listings_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response.body).not_to include(other_listing.name)
     end
@@ -310,7 +310,7 @@ RSpec.describe "Profiles", type: :request do
       before { delete session_path }
 
       it "redirects to the sign-in page" do
-        get profile_listings_profile_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        get profile_listings_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
         expect(response).to redirect_to(new_session_path)
       end

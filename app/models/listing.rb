@@ -83,9 +83,8 @@ class Listing < ApplicationRecord
   private
 
   def notify_watchlist_users
-    watchlist_items.includes(:user).each do |item|
-      WatchlistMailer.listing_state_changed(item).deliver_later
-    end
+    items = watchlist_items.loaded? ? watchlist_items.to_a : watchlist_items.includes(:user).to_a
+    items.each { |item| WatchlistMailer.listing_state_changed(item).deliver_later }
   end
 
   def set_default_position

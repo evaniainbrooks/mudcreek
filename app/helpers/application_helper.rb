@@ -163,7 +163,7 @@ module ApplicationHelper
     end
 
     if tenant.footer_color.present?
-      rules << "footer { --bs-tertiary-bg: #{tenant.footer_color}; }"
+      rules << "footer.bg-body-tertiary { background-color: #{tenant.footer_color} !important; }"
     end
 
     if tenant.container_color.present?
