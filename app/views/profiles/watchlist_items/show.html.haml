@@ -1,0 +1,52 @@
+- set_meta_tags title: "My Watchlist"
+
+%h1.fw-bold.mb-4 My Profile
+
+= render "profiles/tabs"
+
+= form_with url: profile_watchlist_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+  .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
+    = f.search_field :search, value: @search, placeholder: "Search…", class: "form-control form-control-sm"
+    - if @search
+      = link_to profile_watchlist_path(category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+        %i.bi.bi-x-lg
+  = f.select :category_id, @categories.map { [it.name, it.hashid] },
+    { include_blank: "All Categories", selected: @category_hashid },
+    class: "form-select form-select-sm w-auto flex-shrink-0",
+    onchange: "this.form.requestSubmit()"
+
+- if @watchlist_items.any?
+  .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.g-4
+    - @watchlist_items.each do |item|
+      - listing = item.listing
+      .col
+        .card.h-100.shadow-sm.border-0
+          = link_to listing_path(listing) do
+            - if listing.images.attached?
+              = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+            - elsif listing.lot&.listing_placeholder&.attached?
+              = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+            - elsif Current.tenant.listing_placeholder.attached?
+              = optimized_image_tag Current.tenant.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+            - else
+              .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
+                %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
+          .card-body.d-flex.flex-column
+            %h5.card-title.fw-semibold.mb-1
+              = link_to listing.name, listing_path(listing), class: "text-decoration-none text-body"
+            .d-flex.align-items-center.gap-2.mb-0
+              %p.text-primary.fw-bold.mb-0= humanized_money_with_symbol(listing.price)
+            %p.card-text.text-muted.small
+              = listing.description.to_plain_text.truncate(120)
+              - if listing.categories.any?
+                %br
+                = listing_categories_badges(listing, css: "text-bg-dark")
+            .mt-auto
+              = render "shared/watchlist_button", listing: listing, watchlist_item: item
+- else
+  .py-5.text-center.text-muted
+    %i.bi.bi-bookmark.mb-3.d-block{ style: "font-size: 3rem" }
+    - if @search || @category_hashid
+      %p.mb-0 No watchlist items match your filters.
+    - else
+      %p.mb-0 Your watchlist is empty.

@@ -1,6 +1,6 @@
 - set_meta_tags title: "My Bids — #{@auction.name}"
 
-= link_to edit_profile_path(anchor: "auctions"), class: "btn btn-outline-secondary btn-sm mb-4" do
+= link_to profile_auctions_path, class: "btn btn-outline-secondary btn-sm mb-4" do
   %i.bi.bi-arrow-left.me-1
   Back to Profile
 
@@ -11,7 +11,7 @@
   = render EmptyStateComponent.new(icon: "hammer",
       message: "No bids found for this auction.",
       link_text: "Back to Profile",
-      link_url: edit_profile_path)
+      link_url: profile_auctions_path)
 - else
   - @listing_bids.each do |auction_listing, bids|
     .card.shadow-sm.border-0.mb-4

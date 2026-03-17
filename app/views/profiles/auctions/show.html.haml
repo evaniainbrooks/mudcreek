@@ -1,0 +1,25 @@
+- set_meta_tags title: "My Auctions"
+
+%h1.fw-bold.mb-4 My Profile
+
+= render "profiles/tabs"
+
+- if @bid_registrations.empty?
+  = render EmptyStateComponent.new(icon: "hammer",
+      message: "You haven't placed any bids yet.",
+      link_text: "Browse Auctions",
+      link_url: auctions_path)
+- else
+  %div{ data: { controller: "infinite-scroll" } }
+    .card.shadow-sm.border-0
+      .card-body.p-0
+        .table-responsive
+          %table.table.align-middle.mb-0
+            %thead
+              %tr
+                %th.ps-3 Auction
+                %th Ends
+                %th
+            %tbody#bid-registrations
+              = render partial: "profiles/bid_registration", collection: @bid_registrations, as: :registration
+    = render "profiles/bid_registrations_sentinel", pagy: @pagy

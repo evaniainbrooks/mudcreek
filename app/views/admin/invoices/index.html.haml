@@ -17,7 +17,9 @@
         = f.label :status_eq, "Status", class: "form-label form-label-sm"
         = f.select :status_eq, Invoice.statuses.keys.map { |s| [s.capitalize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-auto
-        = f.submit "Search", class: "btn btn-primary btn-sm"
+        %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+          %i.bi.bi-search.me-1
+          Search
       .col-auto
         = link_to "Clear", admin_invoices_path, class: "btn btn-outline-secondary btn-sm"
 

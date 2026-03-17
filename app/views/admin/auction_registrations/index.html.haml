@@ -17,7 +17,9 @@
         = f.label :state_eq, "State", class: "form-label form-label-sm"
         = f.select :state_eq, AuctionRegistration.states.keys.map { |s| [s.humanize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-auto
-        = f.submit "Search", class: "btn btn-primary btn-sm"
+        %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+          %i.bi.bi-search.me-1
+          Search
       .col-auto
         = link_to "Clear", admin_auction_registrations_path, class: "btn btn-outline-secondary btn-sm"
 

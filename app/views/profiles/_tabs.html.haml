@@ -1,39 +1,29 @@
 %ul.nav.nav-tabs.mb-4
   %li.nav-item
-    %a.nav-link.active{ href: "#profile", data: { "bs-toggle": "tab" } }
+    = link_to edit_profile_path, class: "nav-link #{'active' if request.path == edit_profile_path}" do
       %i.bi.bi-person-fill.me-2
       Profile
   %li.nav-item
-    %a.nav-link{ href: "#orders", data: { "bs-toggle": "tab" } }
+    = link_to profile_orders_path, class: "nav-link #{'active' if request.path == profile_orders_path}" do
       %i.bi.bi-bag.me-2
       Orders
-      - if orders.present?
-        %span.badge.text-bg-secondary.ms-1= orders.size
   %li.nav-item
-    %a.nav-link{ href: "#invoices", data: { "bs-toggle": "tab" } }
+    = link_to profile_invoices_path, class: "nav-link #{'active' if request.path == profile_invoices_path}" do
       %i.bi.bi-receipt.me-2
       Invoices
-      - if invoices.present?
-        %span.badge.text-bg-secondary.ms-1= invoices.size
   %li.nav-item
-    %a.nav-link{ href: "#auctions", data: { "bs-toggle": "tab" } }
+    = link_to profile_auctions_path, class: "nav-link #{'active' if request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')}" do
       %i.bi.bi-hammer.me-2
       Auctions
-      - if pagy_registrations.count > 0
-        %span.badge.text-bg-secondary.ms-1= pagy_registrations.count
   %li.nav-item
-    %a.nav-link{ href: "#listings", data: { "bs-toggle": "tab" } }
+    = link_to profile_listings_path, class: "nav-link #{'active' if request.path == profile_listings_path}" do
       %i.bi.bi-tag.me-2
       Listings
-      - if pagy_listings.count > 0
-        %span.badge.text-bg-secondary.ms-1= pagy_listings.count
   %li.nav-item
-    %a.nav-link{ href: "#watchlist", data: { "bs-toggle": "tab" } }
+    = link_to profile_watchlist_path, class: "nav-link #{'active' if request.path == profile_watchlist_path}" do
       %i.bi.bi-bookmark.me-2
       Watchlist
-      - if watchlist_count > 0
-        %span.badge.text-bg-secondary.ms-1= watchlist_count
   %li.nav-item
-    %a.nav-link{ href: "#payment-methods", data: { "bs-toggle": "tab" } }
+    = link_to profile_payment_methods_page_path, class: "nav-link #{'active' if request.path == profile_payment_methods_page_path}" do
       %i.bi.bi-credit-card.me-2
       Payment Methods

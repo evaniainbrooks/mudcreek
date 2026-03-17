@@ -31,13 +31,19 @@ resource :session
   end
 
   resource :profile, only: [ :edit, :update ] do
-    get "auctions/:hashid", action: :auction_bids, as: :auction_bids
-    get "auctions", action: :profile_auctions, as: :profile_auctions
-    get "listings", action: :profile_listings, as: :profile_listings
-    get "watchlist", action: :watchlist, as: :profile_watchlist
     resources :payment_methods, only: [ :create, :destroy ] do
       member { patch :set_default }
     end
+  end
+
+  scope path: "/profile", module: "profiles" do
+    get "orders",           to: "orders#show",          as: :profile_orders
+    get "invoices",         to: "invoices#show",         as: :profile_invoices
+    get "auctions",         to: "auctions#show",         as: :profile_auctions
+    get "auctions/:hashid", to: "auctions#bid_detail",   as: :auction_bids_profile
+    get "listings",         to: "listings#show",         as: :profile_listings
+    get "watchlist",        to: "watchlist_items#show",  as: :profile_watchlist
+    get "payment-methods",  to: "payment_methods#show",  as: :profile_payment_methods_page
   end
   resources :invoices,     only: [:show], param: :number do
     member { post :pay }

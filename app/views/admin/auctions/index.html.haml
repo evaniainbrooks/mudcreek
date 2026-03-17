@@ -20,7 +20,9 @@
         = f.label :reconciled_eq, "Reconciled", class: "form-label form-label-sm"
         = f.select :reconciled_eq, [["Reconciled", true], ["Not Reconciled", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
       .col-auto
-        = f.submit "Search", class: "btn btn-primary btn-sm"
+        %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+          %i.bi.bi-search.me-1
+          Search
       .col-auto
         = link_to "Clear", admin_auctions_path, class: "btn btn-outline-secondary btn-sm"
 

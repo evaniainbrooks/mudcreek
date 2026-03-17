@@ -2,35 +2,6 @@
 
 %h1.fw-bold.mb-4 My Profile
 
-= render "profiles/tabs",
-    orders: @orders,
-    invoices: @invoices,
-    pagy_registrations: @pagy_registrations,
-    pagy_listings: @pagy_listings,
-    watchlist_count: @watchlist_count
+= render "profiles/tabs"
 
-.tab-content
-  .tab-pane.fade.show.active#profile
-    = render "profiles/profile_tab", user: @user
-
-  .tab-pane.fade#orders
-    = render "profiles/orders_tab", orders: @orders
-
-  .tab-pane.fade#invoices
-    = render "profiles/invoices_tab", invoices: @invoices
-
-  .tab-pane.fade#auctions
-    = render "profiles/auctions_tab",
-        bid_registrations: @bid_registrations,
-        pagy_registrations: @pagy_registrations
-
-  .tab-pane.fade#listings
-    = render "profiles/listings_tab",
-        purchased_listings: @purchased_listings,
-        pagy_listings: @pagy_listings
-
-  .tab-pane.fade#watchlist
-    = turbo_frame_tag "profile-watchlist", src: profile_watchlist_profile_path, loading: "lazy"
-
-  .tab-pane.fade#payment-methods
-    = render "profiles/payment_methods", cards: @cards, default_card_id: @default_card_id
+= render "profiles/profile_tab", user: @user
