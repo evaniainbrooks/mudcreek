@@ -46,4 +46,7 @@
               %td= page.position
               %td.text-end
                 = link_to "Edit", edit_admin_page_path(page), class: "btn btn-sm btn-outline-secondary"
-                = link_to "Delete", admin_page_path(page), data: { turbo_method: :delete, turbo_confirm: "Delete \"#{page.title}\"?" }, class: "btn btn-sm btn-outline-danger ms-1"
+                = link_to "Delete",
+                  admin_page_path(page),
+                  data: { turbo_method: :delete, turbo_confirm: "Delete \"#{page.title}\"?" },
+                  class: "btn btn-sm btn-outline-danger ms-1"

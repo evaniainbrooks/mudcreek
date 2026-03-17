@@ -7,9 +7,10 @@
       %i{ class: "bi #{@page.icon} me-2" }
     = @page.title
 
-  - left  = @page.left_column_image.attached?
-  - right = @page.right_column_image.attached?
-  - body_cols = (left && right) ? "col-4" : "col-8"
+  :ruby
+    left  = @page.left_column_image.attached?
+    right = @page.right_column_image.attached?
+    body_cols = (left && right) ? "col-4" : "col-8"
 
   - if left || right
     .row.g-4

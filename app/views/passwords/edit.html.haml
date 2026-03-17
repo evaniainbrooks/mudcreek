@@ -7,7 +7,12 @@
           = form_with url: password_path(params[:token]), method: :put do |f|
             .mb-3
               = f.label :password, "New password", class: "form-label required"
-              = f.password_field :password, required: true, autocomplete: "new-password", placeholder: "Enter new password", maxlength: 72, class: "form-control"
+              = f.password_field :password,
+                required: true,
+                autocomplete: "new-password",
+                placeholder: "Enter new password",
+                maxlength: 72,
+                class: "form-control"
             .mb-3
               = f.label :password_confirmation, "Confirm password", class: "form-label required"
               = f.password_field :password_confirmation,

@@ -12,7 +12,8 @@
       %i.bi.bi-receipt.me-2
       Invoices
   %li.nav-item
-    = link_to profile_auctions_path, class: "nav-link #{'active' if request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')}" do
+    = link_to profile_auctions_path,
+      class: "nav-link #{'active' if request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')}" do
       %i.bi.bi-hammer.me-2
       Auctions
   %li.nav-item
