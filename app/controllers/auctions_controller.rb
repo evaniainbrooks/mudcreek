@@ -120,7 +120,7 @@ class AuctionsController < ApplicationController
       .with_attached_images
       .with_attached_videos
       .with_rich_text_description
-      .includes(:rental_rate_plans, :categories, lot: :listing_placeholder_attachment)
+      .includes(:rental_rate_plans, :categories, lot: [ :owner, :address, :listing_placeholder_attachment ])
       .index_by(&:id)
     @auction_listings.each { |al| al.listing = listings_by_id[al.listing_id] }
     @auction_listings.select!(&:listing)

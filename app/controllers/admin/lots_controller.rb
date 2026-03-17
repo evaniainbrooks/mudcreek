@@ -58,7 +58,9 @@ class Admin::LotsController < Admin::BaseController
   end
 
   def lot_params
-    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee, :state, :show_attribution,
+    p = params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee, :state, :show_attribution,
       address_attributes: %i[id street_address city province postal_code country _destroy])
+    p.delete(:listing_placeholder) if p[:listing_placeholder].blank?
+    p
   end
 end

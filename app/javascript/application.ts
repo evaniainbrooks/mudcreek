@@ -3,6 +3,7 @@ import "./controllers"
 import * as ActiveStorage from "@rails/activestorage"
 ActiveStorage.start()
 import "bootstrap"
+import { Popover } from "bootstrap"
 import "trix"
 import "@rails/actiontext"
 
@@ -22,4 +23,5 @@ document.addEventListener("click", (event) => {
 })
 document.addEventListener("turbo:load", () => {
   delete document.documentElement.dataset.transition
+  document.querySelectorAll<HTMLElement>("[data-bs-toggle='popover']").forEach(el => new Popover(el))
 })

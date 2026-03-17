@@ -129,19 +129,21 @@ user_ids = User.where(tenant: mudcreek).pluck(:id)
 admin_user = User.find_by!(email_address: "admin@mudcreek")
 
 lot_data = [
-  { name: "Henderson Estate",    number: "001" },
-  { name: "Blackwood Collection", number: "002" },
-  { name: "Greenfield Manor",    number: "003" },
-  { name: "Chapman Farm",        number: "004" },
-  { name: "Personal Items",      number: "005" }
+  { name: "Henderson Estate",     number: "001", show_attribution: true  },
+  { name: "Blackwood Collection", number: "002", show_attribution: true  },
+  { name: "Greenfield Manor",     number: "003", show_attribution: false },
+  { name: "Chapman Farm",         number: "004", show_attribution: true  },
+  { name: "Personal Items",       number: "005", show_attribution: false }
 ]
 
 lots = lot_data.each_with_object({}) do |attrs, hash|
-  hash[attrs[:name]] = Lot.find_or_create_by!(name: attrs[:name]) do |l|
+  lot = Lot.find_or_create_by!(name: attrs[:name]) do |l|
     l.tenant = mudcreek
     l.number = attrs[:number]
     l.owner  = admin_user
   end
+  lot.update!(show_attribution: attrs[:show_attribution])
+  hash[attrs[:name]] = lot
 end
 
 puts "Seeded #{Lot.count} lots."
@@ -1381,7 +1383,7 @@ puts "Seeded #{Invoice.count} invoices with #{InvoiceItem.count} invoice items."
 # Pages
 Current.tenant = mudcreek
 
-Page.find_or_create_by!(slug: "about") do |p|
+about_page = Page.find_or_create_by!(slug: "about") do |p|
   p.title          = "About Us"
   p.published      = true
   p.show_in_nav    = true
@@ -1397,6 +1399,14 @@ Page.find_or_create_by!(slug: "about") do |p|
     <h3>Contact</h3>
     <p>101 River Road, Kamloops, BC V2C 2A1<br>Phone: (250) 555-0198<br>Email: info@mudcreekauctions.com</p>
   HTML
+end
+
+unless about_page.left_column_image.attached?
+  about_page.left_column_image.attach(
+    io:           Rails.root.join("spec/fixtures/images/river.jpg").open("rb"),
+    filename:     "river.jpg",
+    content_type: "image/jpeg"
+  )
 end
 
 Current.tenant = nil

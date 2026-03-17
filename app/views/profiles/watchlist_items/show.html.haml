@@ -24,16 +24,20 @@
           - listing = item.listing
           .col
             .card.h-100.shadow-sm.border-0
-              = link_to listing_path(listing) do
-                - if listing.images.attached?
-                  = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
-                - elsif listing.lot&.listing_placeholder&.attached?
-                  = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
-                - elsif Current.tenant.listing_placeholder.attached?
-                  = optimized_image_tag Current.tenant.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
-                - else
-                  .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
-                    %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
+              .position-relative
+                = link_to listing_path(listing) do
+                  - if listing.images.attached?
+                    = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+                  - elsif listing.lot&.listing_placeholder&.attached?
+                    = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+                  - elsif Current.tenant.listing_placeholder.attached?
+                    = optimized_image_tag Current.tenant.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+                  - else
+                    .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
+                      %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
+                - if listing.lot&.show_attribution?
+                  .position-absolute.bottom-0.start-0.p-2
+                    = lot_number_badge(listing.lot)
               .card-body.d-flex.flex-column
                 %h5.card-title.fw-semibold.mb-1
                   = link_to listing.name, listing_path(listing), class: "text-decoration-none text-body"

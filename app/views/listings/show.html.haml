@@ -42,6 +42,8 @@
     .col-lg-5
       .position-sticky{ style: "top: 1.5rem" }
         %h1.fw-bold.mb-1= @listing.name
+        - if @listing.lot&.show_attribution?
+          .mb-2= lot_number_badge(@listing.lot)
         - if @listing.rental?
           %span.badge.text-bg-info.mb-2 Rental
         - else

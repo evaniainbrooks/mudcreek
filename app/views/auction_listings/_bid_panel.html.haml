@@ -1,5 +1,5 @@
 .text-center{ id: dom_id(auction_listing, :bid_panel) }
-  - if auction_listing.ends_at&.future?
+  - if auction_listing.ends_at&.future? && auction_listing.listing.on_sale?
     .mb-3{ data: { controller: "countdown", "countdown-ends-at-value": auction_listing.ends_at.iso8601 } }
       %p.text-muted.small.mb-0 Auction ends in
       %strong{ data: { "countdown-target": "display" } }

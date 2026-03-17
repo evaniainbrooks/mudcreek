@@ -8,7 +8,16 @@ module ListingsHelper
   def lot_number_badge(lot, link: false)
     label = lot.number.presence || lot.name
     color = badge_color_for(lot.number.presence || lot.name)
-    badge = content_tag(:span, label, class: "badge #{color}")
+    popover_content = lot_popover_content(lot)
+    badge = content_tag(:span, label,
+      class: "badge #{color}",
+      style: "cursor: pointer",
+      data: {
+        bs_toggle: "popover",
+        bs_trigger: "hover focus",
+        bs_html: "true",
+        bs_content: popover_content
+      })
     link ? link_to(badge, admin_lot_path(lot)) : badge
   end
 
@@ -51,6 +60,19 @@ module ListingsHelper
   end
 
   private
+
+  def lot_popover_content(lot)
+    lines = []
+    lines << content_tag(:div, lot.name, class: "fw-semibold")
+    if lot.owner
+      lines << content_tag(:div, lot.owner.name)
+    end
+    if (addr = lot.address)
+      parts = [ addr.street_address, [ addr.city, addr.province ].compact_blank.join(", "), addr.postal_code, addr.country ].compact_blank
+      lines << content_tag(:div, parts.join(" · "), class: "text-muted small mt-1") if parts.any?
+    end
+    safe_join(lines)
+  end
 
   def add_listing_columns(table)
     table.with_column("", html_class: "text-center pe-0") { |l| l.auction_listing || l.rental? ? "".html_safe : tag.input(type: "checkbox", class: "form-check-input", value: l.id, data: { "bulk-select-target": "checkbox", action: "change->bulk-select#toggle" }) }
