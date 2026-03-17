@@ -1,0 +1,19 @@
+= form_with model: [:admin, batch], data: { controller: "direct-upload" } do |f|
+  .mb-3
+    = f.label :lot_id, "Lot", class: "form-label fw-semibold"
+    = f.collection_select :lot_id, lots, :id, :name,
+        { include_blank: "— Select a lot (required) —" },
+        { class: "form-select", required: true }
+
+  .mb-3
+    = f.label :source_files, "Images or ZIP", class: "form-label fw-semibold"
+    = f.file_field :source_files, multiple: true, direct_upload: true,
+        accept: "image/*,application/zip,.zip", class: "form-control"
+    %small.form-text.text-muted
+      Upload individual images (JPG, PNG, WebP) or a single ZIP containing images.
+
+  .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
+
+  .d-flex.gap-2.mt-4
+    = f.submit "Start AI Import", class: "btn btn-primary"
+    = link_to "Cancel", admin_listings_path, class: "btn btn-outline-secondary"

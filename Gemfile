@@ -143,3 +143,6 @@ end
 
 gem "imgproxy", "~> 3.0"
 gem "aws-sdk-s3", require: false
+
+# ZIP file handling for bulk AI listing import
+gem "rubyzip"

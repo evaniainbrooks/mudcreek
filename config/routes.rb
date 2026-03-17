@@ -94,6 +94,7 @@ resource :session
     resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
     resources :pages
+    resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

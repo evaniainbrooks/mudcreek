@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_134000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_17_135000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -227,6 +227,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_134000) do
     t.index ["offer_id"], name: "index_invoices_on_offer_id_unique", unique: true
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
+  end
+
+  create_table "listing_inference_batches", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.integer "failed_count", default: 0, null: false
+    t.string "hashid", null: false
+    t.bigint "lot_id"
+    t.integer "processed_count", default: 0, null: false
+    t.string "status", default: "pending", null: false
+    t.bigint "tenant_id", null: false
+    t.integer "total_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["hashid"], name: "index_listing_inference_batches_on_hashid", unique: true
+    t.index ["lot_id"], name: "index_listing_inference_batches_on_lot_id"
+    t.index ["tenant_id"], name: "index_listing_inference_batches_on_tenant_id"
   end
 
   create_table "listings", force: :cascade do |t|
@@ -754,6 +770,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_134000) do
   add_foreign_key "invoices", "offers", on_delete: :nullify
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
+  add_foreign_key "listing_inference_batches", "lots"
+  add_foreign_key "listing_inference_batches", "tenants"
   add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify
   add_foreign_key "listings", "lots", on_delete: :cascade
   add_foreign_key "listings", "tenants"

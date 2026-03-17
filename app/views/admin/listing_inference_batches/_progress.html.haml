@@ -1,0 +1,38 @@
+#batch-progress
+  .card.shadow-sm.border-0
+    .card-body
+      .d-flex.align-items-center.gap-2.mb-3
+        %span.fw-semibold Status:
+        - badge_class = { "pending" => "secondary", "processing" => "primary", "done" => "success", "failed" => "danger" }.fetch(batch.status, "secondary")
+        %span{ class: "badge bg-#{badge_class}" }= batch.status.capitalize
+
+      - if batch.processing? || batch.done?
+        .mb-3
+          .progress
+            - animated = batch.processing? ? "progress-bar-animated progress-bar-striped" : ""
+            .progress-bar{ class: "#{animated}", role: "progressbar",
+                style: "width: #{batch.progress_percent.round}%",
+                "aria-valuenow": batch.progress_percent.round,
+                "aria-valuemin": "0", "aria-valuemax": "100" }
+              = "#{batch.progress_percent.round}%"
+
+      .row.text-center.g-2
+        .col
+          .fw-semibold= batch.processed_count
+          %small.text-muted Created
+        .col
+          .fw-semibold= batch.failed_count
+          %small.text-muted Failed
+        .col
+          .fw-semibold= batch.total_count
+          %small.text-muted Total
+
+      - if batch.failed?
+        .alert.alert-danger.mt-3.mb-0
+          %strong Error:
+          = batch.error_message
+
+      - if batch.pending?
+        .text-muted.mt-3
+          %i.bi.bi-hourglass-split.me-1
+          Queued, waiting to start…

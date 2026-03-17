@@ -14,6 +14,7 @@ class Permission < ApplicationRecord
     Listings::Delivery
     Settlement
     Page
+    ListingInferenceBatch
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze
