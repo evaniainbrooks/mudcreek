@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_16_181332) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_17_003147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -680,6 +680,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_16_181332) do
     t.index ["uuid"], name: "index_transactions_on_uuid", unique: true
   end
 
+  create_table "user_category_interests", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "listings_category_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["listings_category_id"], name: "index_user_category_interests_on_listings_category_id"
+    t.index ["tenant_id"], name: "index_user_category_interests_on_tenant_id"
+    t.index ["user_id", "listings_category_id"], name: "idx_on_user_id_listings_category_id_ec5a7d89e4", unique: true
+    t.index ["user_id"], name: "index_user_category_interests_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "activated_at"
     t.datetime "created_at", null: false
@@ -784,6 +796,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_16_181332) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
   add_foreign_key "transactions", "orders"
+  add_foreign_key "user_category_interests", "listings_categories"
+  add_foreign_key "user_category_interests", "tenants"
+  add_foreign_key "user_category_interests", "users"
   add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"
   add_foreign_key "watchlist_items", "listings"

@@ -18,6 +18,8 @@ class User < ApplicationRecord
   has_many :cart_listings, through: :cart_items, source: :listing
   has_many :watchlist_items, dependent: :destroy
   has_many :watched_listings, through: :watchlist_items, source: :listing
+  has_many :category_interests, class_name: "UserCategoryInterest", dependent: :destroy
+  has_many :interested_categories, through: :category_interests, source: :category, class_name: "Listings::Category"
   has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", as: :addressable
   has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", as: :addressable
 

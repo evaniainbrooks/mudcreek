@@ -63,6 +63,8 @@ class Auction < ApplicationRecord
     end
   end
 
+  after_update_commit :record_bidder_category_interests, if: -> { saved_change_to_reconciled?(to: true) }
+
   scope :unreconciled, -> { where(reconciled: false) }
 
   def self.ransackable_attributes(_auth_object = nil)
@@ -70,6 +72,16 @@ class Auction < ApplicationRecord
   end
 
   private
+
+  def record_bidder_category_interests
+    auction_listings
+      .includes(listing: :categories, bids: { auction_registration: :user })
+      .each do |al|
+        al.bids.select(&:placed?).each do |bid|
+          UserCategoryInterest.record_for(user: bid.auction_registration.user, listing: al.listing)
+        end
+      end
+  end
 
   def ends_at_after_starts_at
     return unless starts_at.present? && ends_at.present?

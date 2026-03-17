@@ -1,0 +1,14 @@
+<p>Hi <%= @user.name %>,</p>
+
+<p>
+  A listing on your watchlist has been updated.
+</p>
+
+<p>
+  <strong><%= @listing.name %></strong> is now
+  <strong><%= @listing.state.humanize %></strong>.
+</p>
+
+<p>
+  <%= link_to "View listing", listing_url(@listing) %>
+</p>

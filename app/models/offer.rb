@@ -13,12 +13,17 @@ class Offer < ApplicationRecord
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :listing_id, uniqueness: { conditions: -> { where(state: :accepted) }, message: "already has an accepted offer" }, if: :accepted?
 
+  after_create_commit :record_category_interest
   after_update :mark_listing_sold, if: -> { saved_change_to_state?(to: "accepted") }
   after_update :generate_offer_invoice, if: -> { saved_change_to_state?(to: "accepted") }
 
   def currency = tenant&.currency
 
   private
+
+  def record_category_interest
+    UserCategoryInterest.record_for(user: user, listing: listing)
+  end
 
   def mark_listing_sold
     listing.sold!

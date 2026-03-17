@@ -28,6 +28,8 @@ class Listing < ApplicationRecord
   has_many :auction_listings, dependent: :destroy
   has_one :auction_listing
 
+  has_many :watchlist_items, dependent: :destroy
+
   has_rich_text :description
   has_many_attached :images
   has_many_attached :videos
@@ -45,6 +47,8 @@ class Listing < ApplicationRecord
 
   before_validation :set_default_position, on: :create
   before_validation :set_rental_price_default
+
+  after_update_commit :notify_watchlist_users, if: :saved_change_to_state?
 
   validates :position, presence: true, uniqueness: { scope: :tenant_id }, on: :update, if: :will_save_change_to_position?
   validates :position, presence: true
@@ -77,6 +81,12 @@ class Listing < ApplicationRecord
   end
 
   private
+
+  def notify_watchlist_users
+    watchlist_items.includes(:user).each do |item|
+      WatchlistMailer.listing_state_changed(item).deliver_later
+    end
+  end
 
   def set_default_position
     self.position ||= acts_as_list_list.maximum(:position).to_i + 1

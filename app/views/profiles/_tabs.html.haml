@@ -28,6 +28,12 @@
       - if pagy_listings.count > 0
         %span.badge.text-bg-secondary.ms-1= pagy_listings.count
   %li.nav-item
+    %a.nav-link{ href: "#watchlist", data: { "bs-toggle": "tab" } }
+      %i.bi.bi-bookmark.me-2
+      Watchlist
+      - if watchlist_count > 0
+        %span.badge.text-bg-secondary.ms-1= watchlist_count
+  %li.nav-item
     %a.nav-link{ href: "#payment-methods", data: { "bs-toggle": "tab" } }
       %i.bi.bi-credit-card.me-2
       Payment Methods

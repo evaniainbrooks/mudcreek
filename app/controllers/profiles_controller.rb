@@ -9,6 +9,7 @@ class ProfilesController < ApplicationController
     @invoices = @user.invoices.includes(:auction, offer: :listing).order(created_at: :desc)
     @pagy_registrations, @bid_registrations = pagy(bid_registrations_scope, limit: BID_REGISTRATIONS_PER_PAGE)
     @pagy_listings, @purchased_listings = pagy(purchased_listings_scope, limit: PURCHASED_LISTINGS_PER_PAGE)
+    @watchlist_count = Current.user.watchlist_items.count
     @cards = SquareCustomerService.new(@user).list_cards rescue []
     @default_card_id = @user.default_square_card_id
   end
@@ -38,9 +39,18 @@ class ProfilesController < ApplicationController
   end
 
   def watchlist
-    @watchlist_items = Current.user.watchlist_items
+    @categories = Listings::Category.order(:name)
+    @search = params[:search].presence
+    @category_hashid = params[:category_id].presence
+    category = @category_hashid && Listings::Category.find_by(hashid: @category_hashid)
+
+    scope = Current.user.watchlist_items
       .includes(listing: [ :images_attachments, :categories, lot: :listing_placeholder_attachment ])
       .order(created_at: :desc)
+    scope = scope.joins(listing: :category_assignments).where(listings_category_assignments: { listings_category_id: category.id }) if category
+    scope = scope.joins(:listing).where(Listing.arel_table[:name].matches("%#{Listing.sanitize_sql_like(@search)}%")) if @search
+
+    @watchlist_items = scope
   end
 
   def auction_bids
@@ -78,6 +88,7 @@ class ProfilesController < ApplicationController
       @invoices = @user.invoices.includes(:auction, offer: :listing).order(created_at: :desc)
       @pagy_registrations, @bid_registrations = pagy(bid_registrations_scope, limit: BID_REGISTRATIONS_PER_PAGE)
       @pagy_listings, @purchased_listings = pagy(purchased_listings_scope, limit: PURCHASED_LISTINGS_PER_PAGE)
+      @watchlist_count = Current.user.watchlist_items.count
       @cards = SquareCustomerService.new(@user).list_cards rescue []
       @default_card_id = @user.default_square_card_id
       render :edit, status: :unprocessable_content

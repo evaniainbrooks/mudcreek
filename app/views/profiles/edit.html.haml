@@ -6,7 +6,8 @@
     orders: @orders,
     invoices: @invoices,
     pagy_registrations: @pagy_registrations,
-    pagy_listings: @pagy_listings
+    pagy_listings: @pagy_listings,
+    watchlist_count: @watchlist_count
 
 .tab-content
   .tab-pane.fade.show.active#profile
@@ -27,6 +28,9 @@
     = render "profiles/listings_tab",
         purchased_listings: @purchased_listings,
         pagy_listings: @pagy_listings
+
+  .tab-pane.fade#watchlist
+    = turbo_frame_tag "profile-watchlist", src: profile_watchlist_profile_path, loading: "lazy"
 
   .tab-pane.fade#payment-methods
     = render "profiles/payment_methods", cards: @cards, default_card_id: @default_card_id

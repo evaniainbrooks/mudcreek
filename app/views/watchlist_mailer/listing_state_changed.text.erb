@@ -1,0 +1,7 @@
+Hi <%= @user.name %>,
+
+A listing on your watchlist has been updated.
+
+<%= @listing.name %> is now <%= @listing.state.humanize %>.
+
+View listing: <%= listing_url(@listing) %>
