@@ -1,20 +1,20 @@
 - listing = auction_listing.listing
 .col{ id: dom_id(auction_listing) }
-  .card.h-100.shadow-sm.border-0
+  .card.h-100.shadow-sm.border.border-secondary-subtle
     .position-relative
       = link_to auction_auction_listing_path(auction, auction_listing) do
-        - if listing.images.attached?
-          = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+        - if listing.show_video_as_poster && listing.videos.attached?
+          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain", muted: true, playsinline: true, preload: "metadata" }
+            %source{ src: url_for(listing.videos.first) }
+        - elsif listing.images.attached?
+          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(listing.images.first, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
         - elsif listing.videos.attached?
-          %video.card-img-top.w-100{style: "height: 200px; object-fit: cover",
-            muted: true,
-            playsinline: true,
-            preload: "metadata"}
+          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain", muted: true, playsinline: true, preload: "metadata" }
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.lot&.listing_placeholder&.attached?
-          = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(listing.lot.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
         - elsif Current.tenant.listing_placeholder.attached?
-          = optimized_image_tag Current.tenant.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(Current.tenant.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
         - else
           .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
             %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }

@@ -1,12 +1,12 @@
 - registration = local_assigns[:registrations_by_auction_id]&.fetch(auction.id, nil)
 .col
-  .card.h-100.shadow-sm.border-0
+  .card.h-100.shadow-sm.border.border-secondary-subtle
     .position-relative
       = link_to auction_path(auction) do
         - if auction.poster.attached?
-          = optimized_image_tag auction.poster, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(auction.poster, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
         - elsif Current.tenant.auction_placeholder.attached?
-          = optimized_image_tag Current.tenant.auction_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(Current.tenant.auction_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
         - else
           .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
             %i.bi.bi-hammer.text-secondary{ style: "font-size: 3rem" }

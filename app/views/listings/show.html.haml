@@ -35,7 +35,7 @@
       - if has_images || has_videos
         = render "listings/carousel", listing: @listing, media_count:
       - elsif @listing.lot&.listing_placeholder&.attached?
-        = image_tag @listing.lot.listing_placeholder, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
+        .rounded-3.bg-secondary-subtle{ style: "height: 480px; background-image: url('#{optimized_image_url(@listing.lot.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
       - else
         .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
           %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }

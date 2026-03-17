@@ -128,6 +128,9 @@
           %i.bi.bi-image.me-1
           Media
         .card-body.p-4
+          .mb-3.form-check
+            = f.check_box :show_video_as_poster, class: "form-check-input"
+            = f.label :show_video_as_poster, "Show video as poster (prefer video over image on cards)", class: "form-check-label"
           .mb-3
             = f.label :images, class: "form-label"
             = f.file_field :images,
