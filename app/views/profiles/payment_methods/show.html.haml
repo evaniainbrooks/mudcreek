@@ -2,6 +2,7 @@
 
 %h1.fw-bold.mb-4 My Profile
 
-= render "profiles/tabs"
-
-= render "profiles/payment_methods", cards: @cards, default_card_id: @default_card_id
+.page-container
+  = render "profiles/tabs"
+  .p-4
+    = render "profiles/payment_methods", cards: @cards, default_card_id: @default_card_id

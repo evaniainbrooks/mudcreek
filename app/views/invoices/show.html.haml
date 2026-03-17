@@ -1,46 +1,47 @@
 - set_meta_tags title: @invoice.number
 
-.d-flex.justify-content-between.align-items-center.mb-4
-  %h1.h3.mb-0
-    %i.bi.bi-receipt.me-2
-    = @invoice.number
-  - if @invoice.paid?
-    %span.badge.text-bg-success.fs-6 Paid
-  - else
-    %span.badge.text-bg-warning.text-dark.fs-6 Unpaid
+.page-container.p-4
+  .d-flex.justify-content-between.align-items-center.mb-4
+    %h1.h3.mb-0
+      %i.bi.bi-receipt.me-2
+      = @invoice.number
+    - if @invoice.paid?
+      %span.badge.text-bg-success.fs-6 Paid
+    - else
+      %span.badge.text-bg-warning.text-dark.fs-6 Unpaid
 
-.card.shadow-sm.border-0.mb-4
-  .card-body
-    %dl.row.mb-0
-      %dt.col-sm-3 Auction
-      %dd.col-sm-9= @invoice.auction.name
-      %dt.col-sm-3 Issued
-      %dd.col-sm-9= @invoice.created_at.to_fs(:long)
+  .card.shadow-sm.border-0.mb-4
+    .card-body
+      %dl.row.mb-0
+        %dt.col-sm-3 Auction
+        %dd.col-sm-9= @invoice.auction.name
+        %dt.col-sm-3 Issued
+        %dd.col-sm-9= @invoice.created_at.to_fs(:long)
 
-.card.shadow-sm.border-0.mb-4
-  .card-body.p-0
-    .table-responsive
-      %table.table.align-middle.mb-0
-        %thead
-          %tr
-            %th.ps-3 Item
-            %th.text-end.pe-3 Amount
-        %tbody
-          - @invoice.invoice_items.each do |item|
+  .card.shadow-sm.border-0.mb-4
+    .card-body.p-0
+      .table-responsive
+        %table.table.align-middle.mb-0
+          %thead
             %tr
-              %td.ps-3= item.name
-              %td.text-end.pe-3= humanized_money_with_symbol(item.amount)
-        %tfoot
-          %tr.table-light
-            %td.ps-3.fw-semibold Total
-            %td.text-end.pe-3.fw-semibold= humanized_money_with_symbol(@invoice.total)
+              %th.ps-3 Item
+              %th.text-end.pe-3 Amount
+          %tbody
+            - @invoice.invoice_items.each do |item|
+              %tr
+                %td.ps-3= item.name
+                %td.text-end.pe-3= humanized_money_with_symbol(item.amount)
+          %tfoot
+            %tr.table-light
+              %td.ps-3.fw-semibold Total
+              %td.text-end.pe-3.fw-semibold= humanized_money_with_symbol(@invoice.total)
 
-.d-flex.gap-2.mt-2
-  = link_to "Back to Profile", edit_profile_path, class: "btn btn-outline-secondary"
-  - unless @invoice.paid?
-    = button_to pay_invoice_path(@invoice),
-        method: :post,
-        class: "btn btn-primary",
-        form: { data: { turbo_confirm: "Paying this invoice will clear your current cart. Continue?" } } do
-      %i.bi.bi-credit-card.me-1
-      Pay Invoice
+  .d-flex.gap-2.mt-2
+    = link_to "Back to Profile", edit_profile_path, class: "btn btn-outline-secondary"
+    - unless @invoice.paid?
+      = button_to pay_invoice_path(@invoice),
+          method: :post,
+          class: "btn btn-primary",
+          form: { data: { turbo_confirm: "Paying this invoice will clear your current cart. Continue?" } } do
+        %i.bi.bi-credit-card.me-1
+        Pay Invoice

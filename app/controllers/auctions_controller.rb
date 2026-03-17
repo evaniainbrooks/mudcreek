@@ -7,7 +7,9 @@ class AuctionsController < ApplicationController
     @category_hashid = params[:category_id].presence
     @categories      = Listings::Category.order(:name)
 
-    scope = Auction.where(published: true).with_attached_poster.includes(:address)
+    base = Auction.where(published: true)
+    @filter_total = base.count
+    scope = base.with_attached_poster.includes(:address)
 
     scope = scope.where("auctions.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
 
@@ -37,6 +39,7 @@ class AuctionsController < ApplicationController
       END,
       starts_at ASC
     SQL
+    @filter_count = @auctions.size
   end
 
   def show
@@ -121,6 +124,7 @@ class AuctionsController < ApplicationController
       .index_by(&:id)
     @auction_listings.each { |al| al.listing = listings_by_id[al.listing_id] }
     @auction_listings.select!(&:listing)
+    @filter_count = @auction_listings.size
 
     @registration = AuctionRegistration.find_by(auction: @auction, user: Current.user) if Current.user
   end

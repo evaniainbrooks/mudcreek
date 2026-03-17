@@ -6,8 +6,34 @@ $tertiary:  #C8A84B;  // golden yellow
 // Keep text readable on colored buttons
 $min-contrast-ratio: 3;
 
+// Always keep form inputs white regardless of body background color
+$input-bg: #fff;
+$form-select-bg: #fff;
+
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+// Unified card/table style — more distinct border and shadow across the whole app
+$app-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06);
+$app-border-color: rgba(0, 0, 0, 0.12);
+
+// Page-level container — white rounded box wrapping each page's content
+.page-container {
+  background: var(--app-card-bg, #fff);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: $app-shadow;
+}
+
+.card {
+  --bs-card-border-color: #{$app-border-color};
+  box-shadow: $app-shadow;
+}
+
+// TableComponent wrapper (.table-responsive.rounded-3.overflow-hidden.border)
+.table-responsive.rounded-3 {
+  box-shadow: $app-shadow;
+  border-color: $app-border-color !important;
+}
 
 // Listing view mode styles
 #listings {

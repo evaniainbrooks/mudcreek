@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_17_133000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -415,6 +415,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_120001) do
 
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "icon"
     t.integer "position", default: 0, null: false
     t.boolean "published", default: false, null: false
     t.boolean "show_in_footer", default: false, null: false
@@ -647,16 +648,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_120001) do
   end
 
   create_table "tenants", force: :cascade do |t|
+    t.string "background_color"
+    t.string "card_color"
+    t.string "container_color"
     t.datetime "created_at", null: false
     t.string "currency", default: "CAD", null: false
     t.string "custom_domain"
     t.boolean "default", default: false, null: false
     t.bigint "default_delivery_method_set_id"
     t.string "email_address"
+    t.string "footer_color"
     t.string "key", null: false
+    t.string "link_color"
     t.string "name", null: false
     t.string "phone_number"
+    t.string "primary_color"
+    t.string "secondary_color"
     t.string "tagline"
+    t.string "tertiary_color"
+    t.string "text_color"
     t.string "timezone"
     t.datetime "updated_at", null: false
     t.index ["default"], name: "index_tenants_on_default_true", unique: true, where: "(\"default\" = true)"

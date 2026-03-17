@@ -27,6 +27,17 @@
             - if page.errors[:slug].any?
               .invalid-feedback= page.errors[:slug].to_sentence
             %small.text-muted Lowercase letters, numbers, and hyphens only (e.g. about-us)
+          .mb-3
+            = f.label :icon, class: "form-label"
+            = f.text_field :icon, class: "form-control #{'is-invalid' if page.errors[:icon].any?}", placeholder: "e.g. bi-info-circle"
+            - if page.icon.present?
+              %small.text-muted
+                Preview:
+                %i{ class: "bi #{page.icon} ms-1" }
+            - else
+              %small.text-muted Bootstrap Icons class name (optional, e.g. bi-info-circle)
+            - if page.errors[:icon].any?
+              .invalid-feedback= page.errors[:icon].to_sentence
           .mb-0
             = f.label :body, class: "form-label"
             = f.rich_text_area :body, class: "form-control #{'is-invalid' if page.errors[:body].any?}"
@@ -53,6 +64,45 @@
             = f.number_field :position, class: "form-control #{'is-invalid' if page.errors[:position].any?}", min: 0
             - if page.errors[:position].any?
               .invalid-feedback= page.errors[:position].to_sentence
+
+    %fieldset.card.shadow-sm.border-0.mt-4
+      %legend.card-header.fw-semibold
+        %i.bi.bi-images.me-1
+        Images
+      .card-body.p-4
+        .mb-3
+          = f.label :hero_image, "Hero image", class: "form-label"
+          = f.file_field :hero_image, direct_upload: true, class: "form-control", accept: "image/*"
+          - if page.hero_image.attached?
+            .mt-2.d-flex.align-items-center.gap-2
+              = image_tag page.hero_image.variant(resize_to_fill: [240, 80]), class: "rounded", style: "object-fit: cover"
+              = link_to admin_page_path(page, remove_hero_image: "1"),
+                  class: "btn btn-sm btn-outline-danger",
+                  data: { turbo_method: :patch, turbo_confirm: "Remove hero image?" } do
+                %i.bi.bi-x-lg.me-1
+                Remove
+        .mb-3
+          = f.label :left_column_image, "Left column image", class: "form-label"
+          = f.file_field :left_column_image, direct_upload: true, class: "form-control", accept: "image/*"
+          - if page.left_column_image.attached?
+            .mt-2.d-flex.align-items-center.gap-2
+              = image_tag page.left_column_image.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+              = link_to admin_page_path(page, remove_left_column_image: "1"),
+                  class: "btn btn-sm btn-outline-danger",
+                  data: { turbo_method: :patch, turbo_confirm: "Remove left column image?" } do
+                %i.bi.bi-x-lg.me-1
+                Remove
+        .mb-0
+          = f.label :right_column_image, "Right column image", class: "form-label"
+          = f.file_field :right_column_image, direct_upload: true, class: "form-control", accept: "image/*"
+          - if page.right_column_image.attached?
+            .mt-2.d-flex.align-items-center.gap-2
+              = image_tag page.right_column_image.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+              = link_to admin_page_path(page, remove_right_column_image: "1"),
+                  class: "btn btn-sm btn-outline-danger",
+                  data: { turbo_method: :patch, turbo_confirm: "Remove right column image?" } do
+                %i.bi.bi-x-lg.me-1
+                Remove
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

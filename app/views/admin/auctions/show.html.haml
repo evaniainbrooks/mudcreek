@@ -11,113 +11,115 @@
       %i.bi.bi-trash.me-1
       Delete
 
-%ul.nav.nav-tabs.mb-4{ role: "tablist" }
-  %li.nav-item{ role: "presentation" }
-    %button.nav-link.active{id: "details-tab",
-      data: { bs_toggle: "tab", bs_target: "#details-pane" },
-      type: "button", role: "tab",
-      aria: { controls: "details-pane", selected: "true" }}
-      %i.bi.bi-info-circle.me-1
-      Details
-  %li.nav-item{ role: "presentation" }
-    %button.nav-link{id: "edit-tab",
-      data: { bs_toggle: "tab", bs_target: "#edit-pane" },
-      type: "button", role: "tab",
-      aria: { controls: "edit-pane", selected: "false" }}
-      %i.bi.bi-pencil.me-1
-      Edit
-  %li.nav-item{ role: "presentation" }
-    %button.nav-link{id: "listings-tab",
-      data: { bs_toggle: "tab", bs_target: "#listings-pane" },
-      type: "button", role: "tab",
-      aria: { controls: "listings-pane", selected: "false" }}
-      %i.bi.bi-tags.me-1
-      Listings
-      %span.badge.text-bg-secondary.ms-1= @auction_listings_count
-  %li.nav-item{ role: "presentation" }
-    %button.nav-link{id: "registrations-tab",
-      data: { bs_toggle: "tab", bs_target: "#registrations-pane" },
-      type: "button", role: "tab",
-      aria: { controls: "registrations-pane", selected: "false" }}
-      %i.bi.bi-person-check.me-1
-      Registrations
-      %span.badge.text-bg-secondary.ms-1= @auction_registrations_count
-  - if @auction.reconciled?
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{id: "report-tab",
-        data: { bs_toggle: "tab", bs_target: "#report-pane" },
+      %button.nav-link.active{id: "details-tab",
+        data: { bs_toggle: "tab", bs_target: "#details-pane" },
         type: "button", role: "tab",
-        aria: { controls: "report-pane", selected: "false" }}
-        %i.bi.bi-bar-chart-line.me-1
-        Report
+        aria: { controls: "details-pane", selected: "true" }}
+        %i.bi.bi-info-circle.me-1
+        Details
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{id: "edit-tab",
+        data: { bs_toggle: "tab", bs_target: "#edit-pane" },
+        type: "button", role: "tab",
+        aria: { controls: "edit-pane", selected: "false" }}
+        %i.bi.bi-pencil.me-1
+        Edit
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{id: "listings-tab",
+        data: { bs_toggle: "tab", bs_target: "#listings-pane" },
+        type: "button", role: "tab",
+        aria: { controls: "listings-pane", selected: "false" }}
+        %i.bi.bi-tags.me-1
+        Listings
+        %span.badge.text-bg-secondary.ms-1= @auction_listings_count
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{id: "registrations-tab",
+        data: { bs_toggle: "tab", bs_target: "#registrations-pane" },
+        type: "button", role: "tab",
+        aria: { controls: "registrations-pane", selected: "false" }}
+        %i.bi.bi-person-check.me-1
+        Registrations
+        %span.badge.text-bg-secondary.ms-1= @auction_registrations_count
+    - if @auction.reconciled?
+      %li.nav-item{ role: "presentation" }
+        %button.nav-link{id: "report-tab",
+          data: { bs_toggle: "tab", bs_target: "#report-pane" },
+          type: "button", role: "tab",
+          aria: { controls: "report-pane", selected: "false" }}
+          %i.bi.bi-bar-chart-line.me-1
+          Report
 
-.tab-content
-  #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
-    .card.shadow-sm.border-0
-      .card-body
-        %dl.row.mb-0
-          %dt.col-sm-3 Name
-          %dd.col-sm-9= @auction.name
+  .p-4
+    .tab-content
+      #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+        .card.shadow-sm.border-0
+          .card-body
+            %dl.row.mb-0
+              %dt.col-sm-3 Name
+              %dd.col-sm-9= @auction.name
 
-          %dt.col-sm-3 Starts At
-          %dd.col-sm-9= @auction.starts_at_in_time_zone&.to_fs(:long) || "—"
+              %dt.col-sm-3 Starts At
+              %dd.col-sm-9= @auction.starts_at_in_time_zone&.to_fs(:long) || "—"
 
-          %dt.col-sm-3 Ends At
-          %dd.col-sm-9= @auction.ends_at_in_time_zone&.to_fs(:long) || "—"
+              %dt.col-sm-3 Ends At
+              %dd.col-sm-9= @auction.ends_at_in_time_zone&.to_fs(:long) || "—"
 
-          %dt.col-sm-3 Published
-          %dd.col-sm-9
-            - if @auction.published?
-              %span.badge.text-bg-success Published
-            - else
-              %span.badge.text-bg-secondary Unpublished
+              %dt.col-sm-3 Published
+              %dd.col-sm-9
+                - if @auction.published?
+                  %span.badge.text-bg-success Published
+                - else
+                  %span.badge.text-bg-secondary Unpublished
 
-          %dt.col-sm-3 Reconciled
-          %dd.col-sm-9
-            - if @auction.reconciled?
-              %span.badge.text-bg-info Reconciled
-            - else
-              %span.badge.text-bg-secondary Not Reconciled
+              %dt.col-sm-3 Reconciled
+              %dd.col-sm-9
+                - if @auction.reconciled?
+                  %span.badge.text-bg-info Reconciled
+                - else
+                  %span.badge.text-bg-secondary Not Reconciled
 
-          - if @auction.description.present?
-            %dt.col-sm-3 Description
-            %dd.col-sm-9= @auction.description
+              - if @auction.description.present?
+                %dt.col-sm-3 Description
+                %dd.col-sm-9= @auction.description
 
-          - if @auction.poster.attached?
-            %dt.col-sm-3 Poster
-            %dd.col-sm-9
-              = image_tag @auction.poster.variant(resize_to_fill: [200, 140]), class: "rounded", style: "object-fit: cover"
+              - if @auction.poster.attached?
+                %dt.col-sm-3 Poster
+                %dd.col-sm-9
+                  = image_tag @auction.poster.variant(resize_to_fill: [200, 140]), class: "rounded", style: "object-fit: cover"
 
-          - if @auction.address&.any?
-            %dt.col-sm-3 Location
-            %dd.col-sm-9= @auction.address.to_fs(:long)
+              - if @auction.address&.any?
+                %dt.col-sm-3 Location
+                %dd.col-sm-9= @auction.address.to_fs(:long)
 
-  #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
-    .pt-3
-      = render "admin/auctions/form", auction: @auction
-  #listings-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "listings-tab" } }
-    - if @auction_listings_count.zero?
-      .text-muted.py-3 No listings assigned to this auction yet.
-    - else
-      %div{data: { controller: "infinite-scroll" }}
-        = render_auction_listings_table(auction_listings: @auction_listings, auction: @auction)
-        = render "sentinel", pagy: @pagy, auction: @auction
+      #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
+        .pt-3
+          = render "admin/auctions/form", auction: @auction
+      #listings-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "listings-tab" } }
+        - if @auction_listings_count.zero?
+          .text-muted.py-3 No listings assigned to this auction yet.
+        - else
+          %div{data: { controller: "infinite-scroll" }}
+            = render_auction_listings_table(auction_listings: @auction_listings, auction: @auction)
+            = render "sentinel", pagy: @pagy, auction: @auction
 
-  #registrations-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "registrations-tab" } }
-    - registrations = @auction.auction_registrations.includes(:user).order(:created_at)
-    - if registrations.empty?
-      .text-muted.py-3 No registrations for this auction yet.
-    - else
-      = render_auction_registrations_table(registrations: registrations)
+      #registrations-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "registrations-tab" } }
+        - registrations = @auction.auction_registrations.includes(:user).order(:created_at)
+        - if registrations.empty?
+          .text-muted.py-3 No registrations for this auction yet.
+        - else
+          = render_auction_registrations_table(registrations: registrations)
 
-  - if @auction.reconciled?
-    #report-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "report-tab" } }
-      = render "admin/auctions/report", report_listings: @report_listings
+      - if @auction.reconciled?
+        #report-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "report-tab" } }
+          = render "admin/auctions/report", report_listings: @report_listings
 
-.mt-3.d-flex.justify-content-between
-  = link_to admin_auctions_path, class: "btn btn-outline-secondary" do
-    %i.bi.bi-arrow-left.me-1
-    Back to Auctions
-  = link_to admin_listings_path, class: "btn btn-primary" do
-    %i.bi.bi-plus-lg.me-1
-    Add Listings
+    .mt-3.d-flex.justify-content-between
+      = link_to admin_auctions_path, class: "btn btn-outline-secondary" do
+        %i.bi.bi-arrow-left.me-1
+        Back to Auctions
+      = link_to admin_listings_path, class: "btn btn-primary" do
+        %i.bi.bi-plus-lg.me-1
+        Add Listings

@@ -6,8 +6,10 @@ class Admin::ListingsController < Admin::BaseController
     @categories = Listings::Category.order(:name)
     @lots = Lot.order(:number)
     @auctions = Auction.unreconciled.order(:name)
+    @filter_total = Listing.count
     @q = Listing.ransack(params[:q])
     scope = @q.result.includes(:owner, :categories, :lot, :auction_listing).order(position: :asc, id: :asc)
+    @filter_count = scope.count
     @pagy, @listings = pagy(:keyset, scope)
 
     respond_to do |format|

@@ -1,0 +1,9 @@
+.d-flex.justify-content-end.align-items-center.gap-2.mt-n2.mb-2
+  - if filtered? && @clear_url
+    = link_to @clear_url, class: "badge rounded-pill fw-normal text-bg-secondary text-decoration-underline" do
+      Clear all filters
+  %span.badge.rounded-pill.fw-normal{ class: filtered? ? "text-bg-primary" : "text-bg-secondary" }
+    - if filtered?
+      Showing #{@count} of #{@total} #{@label}
+    - else
+      #{@total} #{@label}

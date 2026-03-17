@@ -26,6 +26,10 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def update
+    @page.hero_image.purge_later        if params[:remove_hero_image].present?
+    @page.left_column_image.purge_later  if params[:remove_left_column_image].present?
+    @page.right_column_image.purge_later if params[:remove_right_column_image].present?
+
     if @page.update(page_params)
       redirect_to admin_pages_path, notice: "Page was successfully updated."
     else
@@ -41,11 +45,12 @@ class Admin::PagesController < Admin::BaseController
   private
 
   def set_page
-    @page = Page.find(params[:id])
+    @page = Page.find_by!(slug: params[:id])
     authorize(@page)
   end
 
   def page_params
-    params.require(:page).permit(:title, :slug, :body, :published, :show_in_nav, :show_in_footer, :position)
+    params.require(:page).permit(:title, :slug, :icon, :body, :published, :show_in_nav, :show_in_footer, :position,
+                                 :hero_image, :left_column_image, :right_column_image)
   end
 end

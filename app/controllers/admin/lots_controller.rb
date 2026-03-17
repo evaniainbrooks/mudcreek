@@ -5,8 +5,10 @@ class Admin::LotsController < Admin::BaseController
     authorize(Lot)
     @lot = Lot.new
     @users = User.order(:email_address)
+    @filter_total = Lot.count
     @q = Lot.ransack(params[:q])
     @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
+    @filter_count = @lots.size
   end
 
   def create

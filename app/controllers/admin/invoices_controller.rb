@@ -3,8 +3,10 @@ class Admin::InvoicesController < Admin::BaseController
 
   def index
     authorize(Invoice)
+    @filter_total = Invoice.count
     @q = Invoice.ransack(params[:q])
     scope = @q.result.includes(:user, :auction).order(created_at: :desc, id: :desc)
+    @filter_count = scope.count
     @pagy, @invoices = pagy(:keyset, scope)
 
     respond_to do |format|

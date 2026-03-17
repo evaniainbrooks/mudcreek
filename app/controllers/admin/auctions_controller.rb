@@ -3,8 +3,10 @@ class Admin::AuctionsController < Admin::BaseController
 
   def index
     authorize(Auction)
+    @filter_total = Auction.count
     @q = Auction.ransack(params[:q])
     @auctions = @q.result.includes({ listings: :lot }, :address).order(:starts_at)
+    @filter_count = @auctions.size
     @auction = Auction.new
   end
 

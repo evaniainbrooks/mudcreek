@@ -26,46 +26,48 @@
       %i.bi.bi-share.me-1
       Share
 
-.row.g-4.g-lg-5.align-items-start
-  .col-lg-7
-    .position-relative
-      - if has_images || has_videos
-        = render "listings/carousel", listing: @listing, media_count:
-      - elsif @listing.lot&.listing_placeholder&.attached?
-        = image_tag @listing.lot.listing_placeholder, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
-      - else
-        .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
-          %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
-      - unless @auction_listing.reserve_price_cents.present? || @listing.sold?
-        .position-absolute.top-0.end-0.p-2
-          %span.badge.text-bg-success No Reserve
-  .col-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
-    .position-sticky{ style: "top: 1.5rem" }
-      %h1.fw-bold.mb-1= @listing.name
+.page-container.p-4
+  .row.g-4.g-lg-5.align-items-start
+    .col-lg-7
+      .position-relative
+        - if has_images || has_videos
+          = render "listings/carousel", listing: @listing, media_count:
+        - elsif @listing.lot&.listing_placeholder&.attached?
+          = image_tag @listing.lot.listing_placeholder, class: "d-block w-100 rounded-3 object-fit-cover", style: "height: 480px"
+        - else
+          .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
+            %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
+        - unless @auction_listing.reserve_price_cents.present? || @listing.sold?
+          .position-absolute.top-0.end-0.p-2
+            %span.badge.text-bg-success No Reserve
+    .col-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
+      .position-sticky{ style: "top: 1.5rem" }
+        %h1.fw-bold.mb-1= @listing.name
 
-      .mb-3
-        %p.text-muted.small.mb-0 Auction
-        = link_to @auction.name, auction_path(@auction), class: "fw-semibold text-decoration-none"
+        .mb-3
+          %p.text-muted.small.mb-0 Auction
+          = link_to @auction.name, auction_path(@auction), class: "fw-semibold text-decoration-none"
 
-      - if @auction.starts_at&.future?
-        .mb-3{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601, "countdown-reload-value": true } }
-          %p.text-muted.small.mb-0 Auction starts in
-          %strong{ data: { "countdown-target": "display" } }
+        - if @auction.starts_at&.future?
+          .mb-3{ data: { controller: "countdown", "countdown-ends-at-value": @auction.starts_at.iso8601, "countdown-reload-value": true } }
+            %p.text-muted.small.mb-0 Auction starts in
+            %strong{ data: { "countdown-target": "display" } }
 
-      %hr.mb-4
-      = render "auction_listings/bid_panel",
-        auction_listing: @auction_listing,
-        auction: @auction,
-        registration: @registration,
-        bidder_token: @highest_bidder_token
-      %hr.mb-4
-      %p.text-muted.small.mb-0 Description
-      .listing-description.mb-3
-        = @listing.description
-      - if @listing.categories.any?
-        %p.text-muted.small.mb-0 Categories
-        = listing_categories_badges(@listing, css: "text-bg-dark")
+        %hr.mb-4
+        = render "auction_listings/bid_panel",
+          auction_listing: @auction_listing,
+          auction: @auction,
+          registration: @registration,
+          bidder_token: @highest_bidder_token
+        %hr.mb-4
+        %p.text-muted.small.mb-0 Description
+        .listing-description.mb-3
+          = @listing.description
+        - if @listing.categories.any?
+          %p.text-muted.small.mb-0 Categories
+          = listing_categories_badges(@listing, css: "text-bg-dark")
 
-= render("listings/properties", listing: @listing)
-= render("listings/documents", listing: @listing)
+  = render("listings/properties", listing: @listing)
+  = render("listings/documents", listing: @listing)
+
 = render "shared/share_modal", url: auction_auction_listing_url(@auction, @auction_listing), title: @listing.name

@@ -3,8 +3,10 @@ class Admin::AuctionRegistrationsController < Admin::BaseController
 
   def index
     authorize(AuctionRegistration)
+    @filter_total = AuctionRegistration.count
     @q = AuctionRegistration.ransack(params[:q])
     scope = @q.result.includes(:user, :auction).order(created_at: :desc, id: :desc)
+    @filter_count = scope.count
     @pagy, @registrations = pagy(:keyset, scope)
 
     respond_to do |format|

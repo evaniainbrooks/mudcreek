@@ -19,35 +19,36 @@
           class: "btn btn-outline-danger",
           form: { data: { turbo_confirm: "Decline this offer?" } }
 
-.card.shadow-sm.border-0
-  .card-body
-    %dl.row.mb-0
-      %dt.col-sm-3 Listing
-      %dd.col-sm-9= link_to @offer.listing.name, admin_listing_path(@offer.listing)
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body
+      %dl.row.mb-0
+        %dt.col-sm-3 Listing
+        %dd.col-sm-9= link_to @offer.listing.name, admin_listing_path(@offer.listing)
 
-      %dt.col-sm-3 Buyer
-      %dd.col-sm-9= mail_to @offer.user.email_address
+        %dt.col-sm-3 Buyer
+        %dd.col-sm-9= mail_to @offer.user.email_address
 
-      %dt.col-sm-3 Amount
-      %dd.col-sm-9= humanized_money_with_symbol(@offer.amount)
+        %dt.col-sm-3 Amount
+        %dd.col-sm-9= humanized_money_with_symbol(@offer.amount)
 
-      %dt.col-sm-3 State
-      %dd.col-sm-9= offer_state_badge(@offer)
+        %dt.col-sm-3 State
+        %dd.col-sm-9= offer_state_badge(@offer)
 
-      %dt.col-sm-3 Message
-      %dd.col-sm-9
-        - if @offer.message.present?
-          = @offer.message
-        - else
-          %span.text-muted —
+        %dt.col-sm-3 Message
+        %dd.col-sm-9
+          - if @offer.message.present?
+            = @offer.message
+          - else
+            %span.text-muted —
 
-      %dt.col-sm-3 Submitted
-      %dd.col-sm-9= @offer.created_at.to_fs(:long)
+        %dt.col-sm-3 Submitted
+        %dd.col-sm-9= @offer.created_at.to_fs(:long)
 
-      %dt.col-sm-3 Updated
-      %dd.col-sm-9= @offer.updated_at.to_fs(:long)
+        %dt.col-sm-3 Updated
+        %dd.col-sm-9= @offer.updated_at.to_fs(:long)
 
-.mt-3
-  = link_to admin_offers_path, class: "btn btn-outline-secondary" do
-    %i.bi.bi-arrow-left.me-1
-    Back to Offers
+  .mt-3
+    = link_to admin_offers_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Offers

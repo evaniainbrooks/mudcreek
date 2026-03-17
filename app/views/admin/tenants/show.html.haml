@@ -5,19 +5,21 @@
     %i.bi.bi-globe.me-2
     Tenant Settings
 
-= form_with model: @tenant, url: admin_tenant_path, method: :patch do |form|
-  - if @tenant.errors.any?
-    .alert.alert-danger.mb-4
-      %ul.mb-0
-        - @tenant.errors.full_messages.each do |msg|
-          %li= msg
+.page-container.p-4
+  = form_with model: @tenant, url: admin_tenant_path, method: :patch do |form|
+    - if @tenant.errors.any?
+      .alert.alert-danger.mb-4
+        %ul.mb-0
+          - @tenant.errors.full_messages.each do |msg|
+            %li= msg
 
-  .row.g-4
-    .col-lg-6= render("admin/tenants/identity", form:, tenant: @tenant)
-    .col-lg-6= render("admin/tenants/branding", form:, tenant: @tenant)
-    .col-12= render("admin/tenants/social_media", form:, tenant: @tenant)
-    .col-lg-6= render("admin/tenants/defaults", form:, delivery_method_sets: @delivery_method_sets)
+    .row.g-4
+      .col-lg-6= render("admin/tenants/identity", form:, tenant: @tenant)
+      .col-lg-6= render("admin/tenants/branding", form:, tenant: @tenant)
+      .col-12= render("admin/tenants/theme", form:, tenant: @tenant)
+      .col-12= render("admin/tenants/social_media", form:, tenant: @tenant)
+      .col-lg-6= render("admin/tenants/defaults", form:, delivery_method_sets: @delivery_method_sets)
 
-    .col-12.d-flex.justify-content-end.gap-2
-      = link_to "Cancel", admin_auctions_path, class: "btn btn-outline-secondary"
-      = form.submit "Save changes", class: "btn btn-primary px-4"
+      .col-12.d-flex.justify-content-end.gap-2
+        = link_to "Cancel", admin_auctions_path, class: "btn btn-outline-secondary"
+        = form.submit "Save changes", class: "btn btn-primary px-4"

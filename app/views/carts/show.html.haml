@@ -2,196 +2,197 @@
 
 %h1.fw-bold.mb-4 My Cart
 
-- if @cart_items.empty?
-  = render EmptyStateComponent.new(icon: "cart-x",
-      message: "Your cart is empty.",
-      link_text: "Browse Listings",
-      link_url: listings_path)
-- else
-  .row.g-4.align-items-start
-    .col-12.col-lg-5
-      .card.shadow-sm.border-0.mb-3
-        .card-body
-          %p.fw-semibold.mb-2
-            %i.bi.bi-ticket-perforated.me-1
-            Discount Code
-          - if @discount_code
-            .d-flex.align-items-center.justify-content-between
-              %span.badge.text-bg-success.py-2.px-3
-                = @discount_code.key
-                - if @discount_code.percentage?
-                  = "(#{@discount_code.amount_cents / 100}% off)"
-              = button_to cart_discount_path, method: :delete, class: "btn btn-sm btn-outline-danger",
-                  form: { data: { turbo_confirm: "Remove discount code?" } } do
-                %i.bi.bi-x-lg
-          - else
-            = form_with url: cart_discount_path, method: :post, class: "d-flex gap-2" do |f|
-              = f.text_field :discount_code,
-                  class: "form-control form-control-sm",
-                  placeholder: "Enter code",
-                  autocomplete: "off"
-              = f.submit "Apply", class: "btn btn-sm btn-outline-primary"
-
-      - available_methods = DeliveryMethod.where(active: true).order(:name)
-      - if @has_physical_items && available_methods.any?
+.page-container.p-4
+  - if @cart_items.empty?
+    = render EmptyStateComponent.new(icon: "cart-x",
+        message: "Your cart is empty.",
+        link_text: "Browse Listings",
+        link_url: listings_path)
+  - else
+    .row.g-4.align-items-start
+      .col-12.col-lg-5
         .card.shadow-sm.border-0.mb-3
           .card-body
             %p.fw-semibold.mb-2
-              %i.bi.bi-truck.me-1
-              Delivery Method
-            - if @delivery_method
+              %i.bi.bi-ticket-perforated.me-1
+              Discount Code
+            - if @discount_code
               .d-flex.align-items-center.justify-content-between
-                %span.text-muted.small
-                  = @delivery_method.name
-                  &mdash;
-                  = @delivery_method.price_cents.zero? ? "Free" : humanized_money_with_symbol(@delivery_method.price)
-                = button_to cart_delivery_method_path, method: :delete, class: "btn btn-sm btn-outline-danger",
-                    form: { data: { turbo_confirm: "Remove delivery method?" } } do
+                %span.badge.text-bg-success.py-2.px-3
+                  = @discount_code.key
+                  - if @discount_code.percentage?
+                    = "(#{@discount_code.amount_cents / 100}% off)"
+                = button_to cart_discount_path, method: :delete, class: "btn btn-sm btn-outline-danger",
+                    form: { data: { turbo_confirm: "Remove discount code?" } } do
                   %i.bi.bi-x-lg
             - else
-              = form_with url: cart_delivery_method_path, method: :post, class: "d-flex gap-2" do |f|
-                = f.select :delivery_method_id,
-                    available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{humanized_money_with_symbol(m.price)})", m.id] },
-                    { include_blank: "Select a method…" },
-                    class: "form-select form-select-sm"
-                = f.submit "Select", class: "btn btn-sm btn-primary"
+              = form_with url: cart_discount_path, method: :post, class: "d-flex gap-2" do |f|
+                = f.text_field :discount_code,
+                    class: "form-control form-control-sm",
+                    placeholder: "Enter code",
+                    autocomplete: "off"
+                = f.submit "Apply", class: "btn btn-sm btn-outline-primary"
 
-      - if @delivery_method&.address_required?
-        :ruby
-          current_country = ISO3166::Country[@cart_address[:country]]
-          initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
-          all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
-        .card.shadow-sm.border-0
-          .card-body
-            .d-flex.align-items-center.justify-content-between.mb-0
-              %p.fw-semibold.mb-0
-                %i.bi.bi-house-fill.me-1
-                Delivery Address
+        - available_methods = DeliveryMethod.where(active: true).order(:name)
+        - if @has_physical_items && available_methods.any?
+          .card.shadow-sm.border-0.mb-3
+            .card-body
+              %p.fw-semibold.mb-2
+                %i.bi.bi-truck.me-1
+                Delivery Method
+              - if @delivery_method
+                .d-flex.align-items-center.justify-content-between
+                  %span.text-muted.small
+                    = @delivery_method.name
+                    &mdash;
+                    = @delivery_method.price_cents.zero? ? "Free" : humanized_money_with_symbol(@delivery_method.price)
+                  = button_to cart_delivery_method_path, method: :delete, class: "btn btn-sm btn-outline-danger",
+                      form: { data: { turbo_confirm: "Remove delivery method?" } } do
+                    %i.bi.bi-x-lg
+              - else
+                = form_with url: cart_delivery_method_path, method: :post, class: "d-flex gap-2" do |f|
+                  = f.select :delivery_method_id,
+                      available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{humanized_money_with_symbol(m.price)})", m.id] },
+                      { include_blank: "Select a method…" },
+                      class: "form-select form-select-sm"
+                  = f.submit "Select", class: "btn btn-sm btn-primary"
+
+        - if @delivery_method&.address_required?
+          :ruby
+            current_country = ISO3166::Country[@cart_address[:country]]
+            initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
+            all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
+          .card.shadow-sm.border-0
+            .card-body
+              .d-flex.align-items-center.justify-content-between.mb-0
+                %p.fw-semibold.mb-0
+                  %i.bi.bi-house-fill.me-1
+                  Delivery Address
+                - if @cart_address_saved
+                  %button.btn.btn-sm.btn-link.p-0.text-decoration-none{type: "button",
+                      data: { bs_toggle: "collapse", bs_target: "#address-form-collapse" },
+                      aria: { expanded: "false", controls: "address-form-collapse" }}
+                    %i.bi.bi-pencil.me-1
+                    Change
               - if @cart_address_saved
-                %button.btn.btn-sm.btn-link.p-0.text-decoration-none{type: "button",
-                    data: { bs_toggle: "collapse", bs_target: "#address-form-collapse" },
-                    aria: { expanded: "false", controls: "address-form-collapse" }}
-                  %i.bi.bi-pencil.me-1
-                  Change
-            - if @cart_address_saved
-              %p.text-muted.small.mt-2.mb-0
-                = @cart_address[:street_address]
-                %br
-                = [@cart_address[:city], @cart_address[:province], @cart_address[:postal_code]].compact.join(", ")
-            .collapse{ id: "address-form-collapse", class: @cart_address_saved ? nil : "show" }
-              %hr.mt-3.mb-3
-              = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
-                %div{data: { controller: "address" }}
-                  .mb-2
-                    = f.label :street_address, "Street address", class: "form-label form-label-sm required"
-                    = f.text_field :street_address,
-                        value: @cart_address[:street_address],
-                        required: true,
-                        autocomplete: "street-address",
-                        placeholder: "123 Main St",
-                        class: "form-control form-control-sm"
-                  .row.g-2.mb-2
-                    .col
-                      = f.label :city, "City", class: "form-label form-label-sm required"
-                      = f.text_field :city,
-                          value: @cart_address[:city],
+                %p.text-muted.small.mt-2.mb-0
+                  = @cart_address[:street_address]
+                  %br
+                  = [@cart_address[:city], @cart_address[:province], @cart_address[:postal_code]].compact.join(", ")
+              .collapse{ id: "address-form-collapse", class: @cart_address_saved ? nil : "show" }
+                %hr.mt-3.mb-3
+                = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
+                  %div{data: { controller: "address" }}
+                    .mb-2
+                      = f.label :street_address, "Street address", class: "form-label form-label-sm required"
+                      = f.text_field :street_address,
+                          value: @cart_address[:street_address],
                           required: true,
-                          autocomplete: "address-level2",
+                          autocomplete: "street-address",
+                          placeholder: "123 Main St",
                           class: "form-control form-control-sm"
-                    .col
-                      = f.label :postal_code, "Postal code", class: "form-label form-label-sm required"
-                      = f.text_field :postal_code,
-                          value: @cart_address[:postal_code],
+                    .row.g-2.mb-2
+                      .col
+                        = f.label :city, "City", class: "form-label form-label-sm required"
+                        = f.text_field :city,
+                            value: @cart_address[:city],
+                            required: true,
+                            autocomplete: "address-level2",
+                            class: "form-control form-control-sm"
+                      .col
+                        = f.label :postal_code, "Postal code", class: "form-label form-label-sm required"
+                        = f.text_field :postal_code,
+                            value: @cart_address[:postal_code],
+                            required: true,
+                            autocomplete: "postal-code",
+                            placeholder: "A1A 1A1",
+                            class: "form-control form-control-sm"
+                    .mb-2
+                      = f.label :country, "Country", class: "form-label form-label-sm required"
+                      = f.select :country, all_countries,
+                          { selected: @cart_address[:country] },
                           required: true,
-                          autocomplete: "postal-code",
-                          placeholder: "A1A 1A1",
-                          class: "form-control form-control-sm"
-                  .mb-2
-                    = f.label :country, "Country", class: "form-label form-label-sm required"
-                    = f.select :country, all_countries,
-                        { selected: @cart_address[:country] },
-                        required: true,
-                        class: "form-select form-select-sm",
-                        data: { address_target: "country", action: "change->address#countryChanged" }
-                  .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
-                    = f.label :province, "Province / State", class: "form-label form-label-sm required"
-                    = f.select :province, initial_subdivisions,
-                        { include_blank: "Select…", selected: @cart_address[:province] },
-                        required: !initial_subdivisions.empty?,
-                        class: "form-select form-select-sm",
-                        data: { address_target: "subdivision" }
-                  .form-check.mb-3
-                    = f.check_box :also_save_as_default, { checked: false }, "1", "0"
-                    = f.label :also_save_as_default, "Save as my default address", class: "form-check-label"
-                  = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
+                          class: "form-select form-select-sm",
+                          data: { address_target: "country", action: "change->address#countryChanged" }
+                    .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
+                      = f.label :province, "Province / State", class: "form-label form-label-sm required"
+                      = f.select :province, initial_subdivisions,
+                          { include_blank: "Select…", selected: @cart_address[:province] },
+                          required: !initial_subdivisions.empty?,
+                          class: "form-select form-select-sm",
+                          data: { address_target: "subdivision" }
+                    .form-check.mb-3
+                      = f.check_box :also_save_as_default, { checked: false }, "1", "0"
+                      = f.label :also_save_as_default, "Save as my default address", class: "form-check-label"
+                    = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
 
-    .col-12.col-lg-7
-      .card.shadow-sm.border-0
-        .card-body.p-0
-          .table-responsive
-            %table.table.align-middle.mb-0
-              %thead
-                %tr
-                  %th.ps-3 Listing
-                  %th.text-end Price
-                  %th.text-end Qty
-                  %th.text-end Total
-                  %th
-              %tbody
-                - @cart_items.each do |item|
+      .col-12.col-lg-7
+        .card.shadow-sm.border-0
+          .card-body.p-0
+            .table-responsive
+              %table.table.align-middle.mb-0
+                %thead
                   %tr
-                    %td.ps-3
-                      .d-flex.align-items-center.gap-3
-                        - if item.listing.images.attached?
-                          = image_tag item.listing.images.first,
-                              class: "rounded-2 object-fit-cover flex-shrink-0",
-                              style: "width: 52px; height: 52px"
+                    %th.ps-3 Listing
+                    %th.text-end Price
+                    %th.text-end Qty
+                    %th.text-end Total
+                    %th
+                %tbody
+                  - @cart_items.each do |item|
+                    %tr
+                      %td.ps-3
+                        .d-flex.align-items-center.gap-3
+                          - if item.listing.images.attached?
+                            = image_tag item.listing.images.first,
+                                class: "rounded-2 object-fit-cover flex-shrink-0",
+                                style: "width: 52px; height: 52px"
+                          - else
+                            .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
+                              %i.bi.bi-image.text-secondary
+                          .lh-sm
+                            = link_to((item.from_invoice? ? item.invoice_item.name : item.listing.name),
+                              listing_path(item.listing),
+                              class: "text-decoration-none fw-semibold")
+                            - if item.listing.requires_delivery?
+                              %span.badge.text-bg-light.border.ms-1.fw-normal
+                                %i.bi.bi-truck.me-1
+                                Delivery
+                            - if item.listing.tax_exempt?
+                              %span.badge.bg-secondary.ms-1.fw-normal Tax Exempt
+                            - if item.rental?
+                              %br
+                              %small.text-muted
+                                = item.rental_start_at.to_fs(:short)
+                                →
+                                = item.rental_end_at.to_fs(:short)
+                      %td.text-end
+                        = humanized_money_with_symbol(item.effective_item_price)
+                      %td.text-end
+                        - if item.rental?
+                          &mdash;
+                        - elsif item.listing.quantity > 1
+                          %div{ data: { controller: "inline-edit" } }
+                            %span.inline-editable{ data: { inline_edit_target: "display", value: item.quantity, action: "click->inline-edit#edit" } }
+                              = item.quantity
+                            %div{ data: { inline_edit_target: "form" }, hidden: true }
+                              = form_with(url: cart_item_path(item),
+                                method: :patch,
+                                html: { class: "d-flex align-items-center gap-1 justify-content-end" }) do |f|
+                                = f.number_field :quantity, value: item.quantity, min: 1, max: item.listing.quantity,
+                                    class: "form-control form-control-sm text-end",
+                                    style: "width: 60px",
+                                    data: { inline_edit_target: "input", action: "keydown->inline-edit#keydown" }
+                                %button.btn.btn-sm.btn-outline-success{ type: "submit" }
+                                  %i.bi.bi-check
                         - else
-                          .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
-                            %i.bi.bi-image.text-secondary
-                        .lh-sm
-                          = link_to((item.from_invoice? ? item.invoice_item.name : item.listing.name),
-                            listing_path(item.listing),
-                            class: "text-decoration-none fw-semibold")
-                          - if item.listing.requires_delivery?
-                            %span.badge.text-bg-light.border.ms-1.fw-normal
-                              %i.bi.bi-truck.me-1
-                              Delivery
-                          - if item.listing.tax_exempt?
-                            %span.badge.bg-secondary.ms-1.fw-normal Tax Exempt
-                          - if item.rental?
-                            %br
-                            %small.text-muted
-                              = item.rental_start_at.to_fs(:short)
-                              →
-                              = item.rental_end_at.to_fs(:short)
-                    %td.text-end
-                      = humanized_money_with_symbol(item.effective_item_price)
-                    %td.text-end
-                      - if item.rental?
-                        &mdash;
-                      - elsif item.listing.quantity > 1
-                        %div{ data: { controller: "inline-edit" } }
-                          %span.inline-editable{ data: { inline_edit_target: "display", value: item.quantity, action: "click->inline-edit#edit" } }
-                            = item.quantity
-                          %div{ data: { inline_edit_target: "form" }, hidden: true }
-                            = form_with(url: cart_item_path(item),
-                              method: :patch,
-                              html: { class: "d-flex align-items-center gap-1 justify-content-end" }) do |f|
-                              = f.number_field :quantity, value: item.quantity, min: 1, max: item.listing.quantity,
-                                  class: "form-control form-control-sm text-end",
-                                  style: "width: 60px",
-                                  data: { inline_edit_target: "input", action: "keydown->inline-edit#keydown" }
-                              %button.btn.btn-sm.btn-outline-success{ type: "submit" }
-                                %i.bi.bi-check
-                      - else
-                        = item.quantity
-                    %td.text-end= humanized_money_with_symbol(item.effective_price)
-                    %td.text-end.pe-3
-                      = button_to cart_item_path(item),
-                          method: :delete, class: "btn btn-sm btn-outline-danger",
-                          form: { data: { turbo_confirm: "Remove from cart?" } } do
-                        %i.bi.bi-trash
+                          = item.quantity
+                      %td.text-end= humanized_money_with_symbol(item.effective_price)
+                      %td.text-end.pe-3
+                        = button_to cart_item_path(item),
+                            method: :delete, class: "btn btn-sm btn-outline-danger",
+                            form: { data: { turbo_confirm: "Remove from cart?" } } do
+                          %i.bi.bi-trash
               = render CartTotalsComponent.new(summary: @cart_summary,
                   discount_code: @discount_code,
                   delivery_method: @delivery_method,

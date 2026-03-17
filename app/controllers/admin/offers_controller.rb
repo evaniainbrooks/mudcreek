@@ -4,8 +4,10 @@ class Admin::OffersController < Admin::BaseController
 
   def index
     authorize(Offer)
+    @filter_total = Offer.count
     @q = Offer.ransack(params[:q])
     scope = @q.result.includes(:listing, :user).order(created_at: :desc)
+    @filter_count = scope.count
     @pagy, @offers = pagy(:keyset, scope)
 
     respond_to do |format|

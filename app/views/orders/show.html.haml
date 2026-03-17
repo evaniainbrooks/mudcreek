@@ -1,131 +1,132 @@
 - set_meta_tags title: "Order #{@order.number}"
 
-- if params[:paid] == "1"
-  .alert.alert-success.d-flex.align-items-center.gap-2.mb-4
-    %i.bi.bi-check-circle-fill.fs-5
-    %span Thank you for your payment! Your order has been confirmed.
-
 - if @order.pending?
   = turbo_stream_from "order_payment_#{@order.id}"
   - content_for :head do
     %meta{ name: "turbo-visit-control", content: "reload" }
     %script{src: SquareClient::ENVIRONMENT == "production" ? "https://web.squarecdn.com/v1/square.js" : "https://sandbox.web.squarecdn.com/v1/square.js"}
 
-.d-flex.align-items-center.gap-3.mb-4.flex-wrap
-  %h1.fw-bold.mb-0= @order.pending? ? "Complete Your Payment" : "Order Confirmed"
-  %span.badge.text-bg-secondary.fs-6= @order.number
-  = order_status_badge(@order)
-  %span.text-muted.small= @order.created_at.to_fs(:long)
+.page-container.p-4
+  - if params[:paid] == "1"
+    .alert.alert-success.d-flex.align-items-center.gap-2.mb-4
+      %i.bi.bi-check-circle-fill.fs-5
+      %span Thank you for your payment! Your order has been confirmed.
 
-.row.g-4
-  .col-12.col-lg-8
-    .card.shadow-sm.border-0
-      .card-body.p-0
-        .table-responsive
-          %table.table.align-middle.mb-0
-            %thead
-              %tr
-                %th.ps-3 Item
-                %th Type
-                %th.text-end Price
-            %tbody
-              - @order.order_items.each do |item|
-                %tr
-                  %td.ps-3
-                    .lh-sm
-                      %span.fw-semibold= item.name
-                      - if item.rental_start_at.present?
-                        %br
-                        %small.text-muted
-                          = item.rental_start_at.to_fs(:short)
-                          →
-                          = item.rental_end_at.to_fs(:short)
-                  %td
-                    - if item.listing_type == "rental"
-                      %span.badge.text-bg-info Rental
-                    - else
-                      %span.badge.text-bg-secondary Sale
-                  %td.text-end.pe-3= humanized_money_with_symbol(item.price)
+  .d-flex.align-items-center.gap-3.mb-4.flex-wrap
+    %h1.fw-bold.mb-0= @order.pending? ? "Complete Your Payment" : "Order Confirmed"
+    %span.badge.text-bg-secondary.fs-6= @order.number
+    = order_status_badge(@order)
+    %span.text-muted.small= @order.created_at.to_fs(:long)
 
-  .col-12.col-lg-4
-    .card.shadow-sm.border-0.mb-3
-      .card-body
-        %h6.fw-semibold.mb-3 Order Summary
-        %table.table.table-sm.mb-0
-          %tbody
-            %tr
-              %td.text-muted Subtotal
-              %td.text-end= humanized_money_with_symbol(@order.subtotal)
-            %tr
-              %td.text-muted Tax
-              %td.text-end= humanized_money_with_symbol(@order.tax)
-            - if @order.delivery_price_cents > 0
-              %tr
-                %td.text-muted= @order.delivery_method_name
-                %td.text-end= humanized_money_with_symbol(@order.delivery_price)
-            - elsif @order.delivery_method_name.present?
-              %tr
-                %td.text-muted= @order.delivery_method_name
-                %td.text-end Free
-            - if @order.discount_cents > 0
-              %tr.text-success
-                %td
-                  %i.bi.bi-ticket-perforated.me-1
-                  = @order.discount_code_key
-                %td.text-end= humanized_money_with_symbol(-@order.discount)
-            %tr.border-top.border-2.fw-bold
-              %td Total
-              %td.text-end= humanized_money_with_symbol(@order.total)
-
-    - if @order.pending?
-      #payment-card.card.shadow-sm.border-0.mb-3{data: { controller: "square-payment",
-          "square-payment-application-id-value": SquareClient.application_id,
-          "square-payment-location-id-value":    SquareClient.location_id,
-          "square-payment-payment-url-value":    order_payment_path(@order),
-          "square-payment-csrf-token-value":     form_authenticity_token }}
-        .card-body
-          %h6.fw-semibold.mb-3
-            %i.bi.bi-credit-card.me-2
-            Pay Now
-          - if @saved_cards.any?
-            - card = @saved_cards.first
-            .border.rounded.p-3.mb-3.bg-light
-              .d-flex.align-items-center.justify-content-between
-                .d-flex.align-items-center.gap-2
-                  %i.bi.bi-credit-card-2-front.fs-5
-                  %span.fw-semibold= card.card_brand&.titleize
-                  %span •••• #{card.last_4}
-                  %span.badge.text-bg-success Default
-                %small.text-muted Expires #{card.exp_month}/#{card.exp_year}
-              %button.btn.btn-primary.w-100.mt-3{type: "button",
-                  data: { action: "click->square-payment#submitSavedCard",
-                          "square-payment-card-id-param": card.id }}
-                Pay #{humanized_money_with_symbol(@order.total)} with saved card
-            %details.mt-2
-              %summary.text-muted.small.cursor-pointer Use a different card ↓
-              .mt-3
-                %div{ data: { "square-payment-target": "container" } }
-                %p.text-danger.small.mt-2{ hidden: true, data: { "square-payment-target": "errorMessage" } }
-                %button.btn.btn-outline-primary.w-100.mt-3{type: "button",
-                    data: { action: "click->square-payment#submit" }}
-                  Pay #{humanized_money_with_symbol(@order.total)}
-          - else
-            %div{ data: { "square-payment-target": "container" } }
-            %p.text-danger.small.mt-2{ hidden: true, data: { "square-payment-target": "errorMessage" } }
-            %button.btn.btn-primary.w-100.mt-3{type: "button",
-                data: { action: "click->square-payment#submit" }}
-              Pay
-              = humanized_money_with_symbol(@order.total)
-
-    - if @order.street_address.present?
+  .row.g-4
+    .col-12.col-lg-8
       .card.shadow-sm.border-0
+        .card-body.p-0
+          .table-responsive
+            %table.table.align-middle.mb-0
+              %thead
+                %tr
+                  %th.ps-3 Item
+                  %th Type
+                  %th.text-end Price
+              %tbody
+                - @order.order_items.each do |item|
+                  %tr
+                    %td.ps-3
+                      .lh-sm
+                        %span.fw-semibold= item.name
+                        - if item.rental_start_at.present?
+                          %br
+                          %small.text-muted
+                            = item.rental_start_at.to_fs(:short)
+                            →
+                            = item.rental_end_at.to_fs(:short)
+                    %td
+                      - if item.listing_type == "rental"
+                        %span.badge.text-bg-info Rental
+                      - else
+                        %span.badge.text-bg-secondary Sale
+                    %td.text-end.pe-3= humanized_money_with_symbol(item.price)
+
+    .col-12.col-lg-4
+      .card.shadow-sm.border-0.mb-3
         .card-body
-          %h6.fw-semibold.mb-2
-            %i.bi.bi-house-fill.me-1
-            Delivery Address
-          %address.mb-0
-            = @order.street_address
-            %br
-            = [@order.city, @order.province, @order.postal_code].compact.join(", ")
-            %br
-            = @order.country
+          %h6.fw-semibold.mb-3 Order Summary
+          %table.table.table-sm.mb-0
+            %tbody
+              %tr
+                %td.text-muted Subtotal
+                %td.text-end= humanized_money_with_symbol(@order.subtotal)
+              %tr
+                %td.text-muted Tax
+                %td.text-end= humanized_money_with_symbol(@order.tax)
+              - if @order.delivery_price_cents > 0
+                %tr
+                  %td.text-muted= @order.delivery_method_name
+                  %td.text-end= humanized_money_with_symbol(@order.delivery_price)
+              - elsif @order.delivery_method_name.present?
+                %tr
+                  %td.text-muted= @order.delivery_method_name
+                  %td.text-end Free
+              - if @order.discount_cents > 0
+                %tr.text-success
+                  %td
+                    %i.bi.bi-ticket-perforated.me-1
+                    = @order.discount_code_key
+                  %td.text-end= humanized_money_with_symbol(-@order.discount)
+              %tr.border-top.border-2.fw-bold
+                %td Total
+                %td.text-end= humanized_money_with_symbol(@order.total)
+
+      - if @order.pending?
+        #payment-card.card.shadow-sm.border-0.mb-3{data: { controller: "square-payment",
+            "square-payment-application-id-value": SquareClient.application_id,
+            "square-payment-location-id-value":    SquareClient.location_id,
+            "square-payment-payment-url-value":    order_payment_path(@order),
+            "square-payment-csrf-token-value":     form_authenticity_token }}
+          .card-body
+            %h6.fw-semibold.mb-3
+              %i.bi.bi-credit-card.me-2
+              Pay Now
+            - if @saved_cards.any?
+              - card = @saved_cards.first
+              .border.rounded.p-3.mb-3.bg-light
+                .d-flex.align-items-center.justify-content-between
+                  .d-flex.align-items-center.gap-2
+                    %i.bi.bi-credit-card-2-front.fs-5
+                    %span.fw-semibold= card.card_brand&.titleize
+                    %span •••• #{card.last_4}
+                    %span.badge.text-bg-success Default
+                  %small.text-muted Expires #{card.exp_month}/#{card.exp_year}
+                %button.btn.btn-primary.w-100.mt-3{type: "button",
+                    data: { action: "click->square-payment#submitSavedCard",
+                            "square-payment-card-id-param": card.id }}
+                  Pay #{humanized_money_with_symbol(@order.total)} with saved card
+              %details.mt-2
+                %summary.text-muted.small.cursor-pointer Use a different card ↓
+                .mt-3
+                  %div{ data: { "square-payment-target": "container" } }
+                  %p.text-danger.small.mt-2{ hidden: true, data: { "square-payment-target": "errorMessage" } }
+                  %button.btn.btn-outline-primary.w-100.mt-3{type: "button",
+                      data: { action: "click->square-payment#submit" }}
+                    Pay #{humanized_money_with_symbol(@order.total)}
+            - else
+              %div{ data: { "square-payment-target": "container" } }
+              %p.text-danger.small.mt-2{ hidden: true, data: { "square-payment-target": "errorMessage" } }
+              %button.btn.btn-primary.w-100.mt-3{type: "button",
+                  data: { action: "click->square-payment#submit" }}
+                Pay
+                = humanized_money_with_symbol(@order.total)
+
+      - if @order.street_address.present?
+        .card.shadow-sm.border-0
+          .card-body
+            %h6.fw-semibold.mb-2
+              %i.bi.bi-house-fill.me-1
+              Delivery Address
+            %address.mb-0
+              = @order.street_address
+              %br
+              = [@order.city, @order.province, @order.postal_code].compact.join(", ")
+              %br
+              = @order.country

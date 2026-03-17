@@ -1,5 +1,6 @@
-%h1.h3.fw-bold.mb-1 Admin
-%p.text-muted.mb-5 Welcome back, #{Current.user.first_name}.
+.page-container.p-4
+  %h1.h3.fw-bold.mb-1 Admin
+  %p.text-muted.mb-5 Welcome back, #{Current.user.first_name}.
 
-- Admin::Dashboard::NavSectionComponent.sections(self).each do |section|
-  = render Admin::Dashboard::NavSectionComponent.new(title: section[:title], links: section[:links])
+  - Admin::Dashboard::NavSectionComponent.sections(self).each do |section|
+    = render Admin::Dashboard::NavSectionComponent.new(title: section[:title], links: section[:links])

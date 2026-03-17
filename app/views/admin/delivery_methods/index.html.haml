@@ -1,39 +1,41 @@
-%h1.h3.mb-0
+%h1.h3.mb-4
   %i.bi.bi-truck.me-2
   Delivery
 
-%ul.nav.nav-tabs.mb-4.mt-3
-  %li.nav-item
-    = link_to admin_listings_delivery_method_sets_path, class: "nav-link" do
-      Sets
-  %li.nav-item
-    = link_to admin_delivery_methods_path, class: "nav-link active" do
-      Methods
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3
+    %li.nav-item
+      = link_to admin_listings_delivery_method_sets_path, class: "nav-link" do
+        Sets
+    %li.nav-item
+      = link_to admin_delivery_methods_path, class: "nav-link active" do
+        Methods
 
-.card.shadow-sm.border-0.mb-4
-  .card-header.fw-semibold New Delivery Method
-  .card-body
-    = form_with model: @delivery_method, url: admin_delivery_methods_path do |f|
-      - if @delivery_method.errors.any?
-        .alert.alert-danger.mb-3
-          = @delivery_method.errors.full_messages.to_sentence
-      .row.g-3
-        .col-sm-5
-          = f.label :name, class: "form-label form-label-sm required"
-          = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @delivery_method.errors[:name].any?}",
-              required: true, placeholder: "e.g. Local Pickup"
-        .col-sm-3
-          = f.label :price, "Price", class: "form-label form-label-sm required"
-          .input-group.input-group-sm
-            %span.input-group-text $
-            = f.number_field :price, value: @delivery_method.price&.to_f,
-                class: "form-control form-control-sm #{'is-invalid' if @delivery_method.errors[:price_cents].any?}",
-                required: true, min: "0", step: "0.01", placeholder: "0.00"
-        .col-sm-auto.d-flex.align-items-end.pb-1
-          .form-check
-            = f.check_box :address_required, class: "form-check-input"
-            = f.label :address_required, "Address required", class: "form-check-label"
-        .col-sm-2.d-flex.align-items-end
-          = f.submit "Add", class: "btn btn-primary btn-sm w-100"
+  .p-4
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold New Delivery Method
+      .card-body
+        = form_with model: @delivery_method, url: admin_delivery_methods_path do |f|
+          - if @delivery_method.errors.any?
+            .alert.alert-danger.mb-3
+              = @delivery_method.errors.full_messages.to_sentence
+          .row.g-3
+            .col-sm-5
+              = f.label :name, class: "form-label form-label-sm required"
+              = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @delivery_method.errors[:name].any?}",
+                  required: true, placeholder: "e.g. Local Pickup"
+            .col-sm-3
+              = f.label :price, "Price", class: "form-label form-label-sm required"
+              .input-group.input-group-sm
+                %span.input-group-text $
+                = f.number_field :price, value: @delivery_method.price&.to_f,
+                    class: "form-control form-control-sm #{'is-invalid' if @delivery_method.errors[:price_cents].any?}",
+                    required: true, min: "0", step: "0.01", placeholder: "0.00"
+            .col-sm-auto.d-flex.align-items-end.pb-1
+              .form-check
+                = f.check_box :address_required, class: "form-check-input"
+                = f.label :address_required, "Address required", class: "form-check-label"
+            .col-sm-2.d-flex.align-items-end
+              = f.submit "Add", class: "btn btn-primary btn-sm w-100"
 
-= render_delivery_methods_table(delivery_methods: @delivery_methods)
+    = render_delivery_methods_table(delivery_methods: @delivery_methods)

@@ -3,6 +3,7 @@
     %i.bi.bi-pencil.me-2
     Edit Listing
 
-.card.shadow-sm.border-0
-  .card-body
-    = render "form", listing: @listing, categories: @categories, lots: @lots, property_sets: @property_sets, delivery_method_sets: @delivery_method_sets
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body
+      = render "form", listing: @listing, categories: @categories, lots: @lots, property_sets: @property_sets, delivery_method_sets: @delivery_method_sets

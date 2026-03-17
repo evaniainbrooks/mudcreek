@@ -1,3 +1,25 @@
-%h1.fw-bold.mb-4= @page.title
-.page-body
-  = @page.body
+- if @page.hero_image.attached?
+  = image_tag @page.hero_image.variant(resize_to_limit: [1200, 400]), class: "img-fluid w-100 rounded-3 mb-4", style: "object-fit: cover; max-height: 400px"
+
+.page-container.p-4
+  %h1.fw-bold.mb-4
+    - if @page.icon.present?
+      %i{ class: "bi #{@page.icon} me-2" }
+    = @page.title
+
+  - left  = @page.left_column_image.attached?
+  - right = @page.right_column_image.attached?
+  - body_cols = (left && right) ? "col-4" : "col-8"
+
+  - if left || right
+    .row.g-4
+      - if left
+        .col-4
+          = image_tag @page.left_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+      %div{ class: body_cols }
+        .page-body= @page.body
+      - if right
+        .col-4
+          = image_tag @page.right_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+  - else
+    .page-body= @page.body

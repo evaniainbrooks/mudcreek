@@ -2,6 +2,7 @@
 
 %h1.fw-bold.mb-4 My Profile
 
-= render "profiles/tabs"
-
-= render "profiles/orders_tab", orders: @orders
+.page-container
+  = render "profiles/tabs"
+  .p-4
+    = render "profiles/orders_tab", orders: @orders

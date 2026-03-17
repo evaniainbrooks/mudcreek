@@ -1,59 +1,60 @@
-.row.justify-content-center.mt-3.g-4
-  .col-12.col-md-6.col-lg-5
-    .card.shadow-sm.border-0.signin-card
-      .card-body.p-4.p-md-5
-        %h1.card-title.h4.mb-1 Sign in
-        %p.text-muted.small.mb-4 Welcome back
-        = form_with url: session_path, data: { turbo: false } do |f|
-          .mb-3
-            = f.label :email_address, "Email address", class: "form-label required"
-            = f.email_field :email_address,
-              required: true,
-              autofocus: true,
-              autocomplete: "username",
-              placeholder: "you@example.com",
-              value: params[:email_address],
-              class: "form-control"
-          .mb-3
-            = f.label :password, "Password", class: "form-label required"
-            = f.password_field :password, required: true, autocomplete: "current-password", placeholder: "Password", maxlength: 72, class: "form-control"
-          .d-grid.mt-4
-            = f.submit "Sign in", class: "btn btn-primary"
-        .text-center.mt-3
-          = link_to "Forgot your password?", new_password_path, class: "text-decoration-none small"
+.page-container.p-4
+  .row.justify-content-center.mt-3.g-4
+    .col-12.col-md-6.col-lg-5
+      .card.shadow-sm.border-0.signin-card
+        .card-body.p-4.p-md-5
+          %h1.card-title.h4.mb-1 Sign in
+          %p.text-muted.small.mb-4 Welcome back
+          = form_with url: session_path, data: { turbo: false } do |f|
+            .mb-3
+              = f.label :email_address, "Email address", class: "form-label required"
+              = f.email_field :email_address,
+                required: true,
+                autofocus: true,
+                autocomplete: "username",
+                placeholder: "you@example.com",
+                value: params[:email_address],
+                class: "form-control"
+            .mb-3
+              = f.label :password, "Password", class: "form-label required"
+              = f.password_field :password, required: true, autocomplete: "current-password", placeholder: "Password", maxlength: 72, class: "form-control"
+            .d-grid.mt-4
+              = f.submit "Sign in", class: "btn btn-primary"
+          .text-center.mt-3
+            = link_to "Forgot your password?", new_password_path, class: "text-decoration-none small"
 
-  .col-12.col-md-6.col-lg-5
-    .card.shadow-sm.border-0.createaccount-card
-      .card-body.p-4.p-md-5
-        %h2.card-title.h4.mb-1 Create account
-        %p.text-muted.small.mb-4 New here? Sign up for free
-        = form_with url: registration_path, scope: :user, data: { turbo: false } do |f|
-          .row.g-3.mb-3
-            .col
-              = f.label :first_name, "First name", class: "form-label required"
-              = f.text_field :first_name, required: true, autocomplete: "given-name", placeholder: "First", class: "form-control"
-            .col
-              = f.label :last_name, "Last name", class: "form-label required"
-              = f.text_field :last_name, required: true, autocomplete: "family-name", placeholder: "Last", class: "form-control"
-          .mb-3
-            = f.label :email_address, "Email address", class: "form-label required"
-            = f.email_field :email_address, required: true, autocomplete: "username", placeholder: "you@example.com", class: "form-control"
-          .mb-3
-            = f.label :password, "Password", class: "form-label required"
-            = f.password_field :password,
-              required: true,
-              autocomplete: "new-password",
-              placeholder: "Password",
-              minlength: 12,
-              maxlength: 72,
-              class: "form-control"
-          .mb-3
-            = f.label :password_confirmation, "Confirm password", class: "form-label required"
-            = f.password_field :password_confirmation,
-              required: true,
-              autocomplete: "new-password",
-              placeholder: "Confirm password",
-              maxlength: 72,
-              class: "form-control"
-          .d-grid.mt-4
-            = f.submit "Create account", class: "btn btn-outline-primary"
+    .col-12.col-md-6.col-lg-5
+      .card.shadow-sm.border-0.createaccount-card
+        .card-body.p-4.p-md-5
+          %h2.card-title.h4.mb-1 Create account
+          %p.text-muted.small.mb-4 New here? Sign up for free
+          = form_with url: registration_path, scope: :user, data: { turbo: false } do |f|
+            .row.g-3.mb-3
+              .col
+                = f.label :first_name, "First name", class: "form-label required"
+                = f.text_field :first_name, required: true, autocomplete: "given-name", placeholder: "First", class: "form-control"
+              .col
+                = f.label :last_name, "Last name", class: "form-label required"
+                = f.text_field :last_name, required: true, autocomplete: "family-name", placeholder: "Last", class: "form-control"
+            .mb-3
+              = f.label :email_address, "Email address", class: "form-label required"
+              = f.email_field :email_address, required: true, autocomplete: "username", placeholder: "you@example.com", class: "form-control"
+            .mb-3
+              = f.label :password, "Password", class: "form-label required"
+              = f.password_field :password,
+                required: true,
+                autocomplete: "new-password",
+                placeholder: "Password",
+                minlength: 12,
+                maxlength: 72,
+                class: "form-control"
+            .mb-3
+              = f.label :password_confirmation, "Confirm password", class: "form-label required"
+              = f.password_field :password_confirmation,
+                required: true,
+                autocomplete: "new-password",
+                placeholder: "Confirm password",
+                maxlength: 72,
+                class: "form-control"
+            .d-grid.mt-4
+              = f.submit "Create account", class: "btn btn-outline-primary"

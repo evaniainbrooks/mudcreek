@@ -3,46 +3,49 @@
     %i.bi.bi-map-fill.me-2
     Lots
 
-.card.shadow-sm.border-0.mb-4
-  .card-header.fw-semibold Filter
-  .card-body
-    = search_form_for @q, url: admin_lots_path, html: { class: "row g-2 align-items-end" } do |f|
-      .col-md-3
-        = f.label :name_cont, "Name", class: "form-label form-label-sm"
-        = f.search_field :name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
-      .col-md-3
-        = f.label :owner_id_eq, "Owner", class: "form-label form-label-sm"
-        = f.select :owner_id_eq, @users.map { [it.email_address, it.id] }, { include_blank: "Any" }, class: "form-select form-select-sm"
-      .col-md-2
-        = f.label :commission_present, "Commission?", class: "form-label form-label-sm"
-        = f.select :commission_present, [["Yes", true], ["No", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
-      .col-auto
-        %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
-          %i.bi.bi-search.me-1
-          Search
-      .col-auto
-        = link_to "Clear", admin_lots_path, class: "btn btn-outline-secondary btn-sm"
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold Filter
+    .card-body
+      = search_form_for @q, url: admin_lots_path, html: { class: "row g-2 align-items-end" } do |f|
+        .col-md-3
+          = f.label :name_cont, "Name", class: "form-label form-label-sm"
+          = f.search_field :name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
+        .col-md-3
+          = f.label :owner_id_eq, "Owner", class: "form-label form-label-sm"
+          = f.select :owner_id_eq, @users.map { [it.email_address, it.id] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+        .col-md-2
+          = f.label :commission_present, "Commission?", class: "form-label form-label-sm"
+          = f.select :commission_present, [["Yes", true], ["No", false]], { include_blank: "Any" }, class: "form-select form-select-sm"
+        .col-auto
+          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+            %i.bi.bi-search.me-1
+            Search
+        .col-auto
+          = link_to "Clear", admin_lots_path, class: "btn btn-outline-secondary btn-sm"
 
-.card.shadow-sm.border-0.mb-4
-  .card-header.fw-semibold New Lot
-  .card-body
-    = form_with model: @lot, url: admin_lots_path do |f|
-      - if @lot.errors.any?
-        .alert.alert-danger.mb-3
-          = @lot.errors.full_messages.to_sentence
-      .row.g-3
-        .col-sm-4
-          = f.label :name, class: "form-label form-label-sm required"
-          = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @lot.errors[:name].any?}", required: true, placeholder: "e.g. Lot A"
-        .col-sm-3
-          = f.label :number, class: "form-label form-label-sm"
-          = f.text_field :number, class: "form-control form-control-sm #{'is-invalid' if @lot.errors[:number].any?}", placeholder: "e.g. 001"
-        .col-sm-4
-          = f.label :owner_id, "Owner", class: "form-label form-label-sm"
-          = f.select :owner_id, @users.map { [it.email_address, it.id] },
-            { prompt: "Select owner" },
-            class: "form-select form-select-sm #{'is-invalid' if @lot.errors[:owner_id].any?}"
-        .col-sm-1.d-flex.align-items-end
-          = f.submit "Add", class: "btn btn-primary btn-sm w-100"
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold New Lot
+    .card-body
+      = form_with model: @lot, url: admin_lots_path do |f|
+        - if @lot.errors.any?
+          .alert.alert-danger.mb-3
+            = @lot.errors.full_messages.to_sentence
+        .row.g-3
+          .col-sm-4
+            = f.label :name, class: "form-label form-label-sm required"
+            = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @lot.errors[:name].any?}", required: true, placeholder: "e.g. Lot A"
+          .col-sm-3
+            = f.label :number, class: "form-label form-label-sm"
+            = f.text_field :number, class: "form-control form-control-sm #{'is-invalid' if @lot.errors[:number].any?}", placeholder: "e.g. 001"
+          .col-sm-4
+            = f.label :owner_id, "Owner", class: "form-label form-label-sm"
+            = f.select :owner_id, @users.map { [it.email_address, it.id] },
+              { prompt: "Select owner" },
+              class: "form-select form-select-sm #{'is-invalid' if @lot.errors[:owner_id].any?}"
+          .col-sm-1.d-flex.align-items-end
+            = f.submit "Add", class: "btn btn-primary btn-sm w-100"
 
-= render_lots_table(lots: @lots, users: @users)
+  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total, label: "lots", clear_url: admin_lots_path)
+
+  = render_lots_table(lots: @lots, users: @users)

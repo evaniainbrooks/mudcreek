@@ -1,28 +1,30 @@
-%h1.h3.mb-0
+%h1.h3.mb-4
   %i.bi.bi-truck.me-2
   Delivery
 
-%ul.nav.nav-tabs.mb-4.mt-3
-  %li.nav-item
-    = link_to admin_listings_delivery_method_sets_path, class: "nav-link active" do
-      Sets
-  %li.nav-item
-    = link_to admin_delivery_methods_path, class: "nav-link" do
-      Methods
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3
+    %li.nav-item
+      = link_to admin_listings_delivery_method_sets_path, class: "nav-link active" do
+        Sets
+    %li.nav-item
+      = link_to admin_delivery_methods_path, class: "nav-link" do
+        Methods
 
-.card.shadow-sm.border-0.mb-4
-  .card-header.fw-semibold New Delivery Method Set
-  .card-body
-    = form_with model: @delivery_method_set, url: admin_listings_delivery_method_sets_path do |f|
-      - if @delivery_method_set.errors.any?
-        .alert.alert-danger.mb-3
-          = @delivery_method_set.errors.full_messages.to_sentence
-      .row.g-3
-        .col-sm-6
-          = f.label :name, class: "form-label form-label-sm required"
-          = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @delivery_method_set.errors[:name].any?}",
-              required: true, placeholder: "e.g. Pickup only"
-        .col-sm-auto.d-flex.align-items-end
-          = f.submit "Add", class: "btn btn-primary btn-sm"
+  .p-4
+    .card.shadow-sm.border-0.mb-4
+      .card-header.fw-semibold New Delivery Method Set
+      .card-body
+        = form_with model: @delivery_method_set, url: admin_listings_delivery_method_sets_path do |f|
+          - if @delivery_method_set.errors.any?
+            .alert.alert-danger.mb-3
+              = @delivery_method_set.errors.full_messages.to_sentence
+          .row.g-3
+            .col-sm-6
+              = f.label :name, class: "form-label form-label-sm required"
+              = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @delivery_method_set.errors[:name].any?}",
+                  required: true, placeholder: "e.g. Pickup only"
+            .col-sm-auto.d-flex.align-items-end
+              = f.submit "Add", class: "btn btn-primary btn-sm"
 
-= render_delivery_method_sets_table(delivery_method_sets: @delivery_method_sets)
+    = render_delivery_method_sets_table(delivery_method_sets: @delivery_method_sets)

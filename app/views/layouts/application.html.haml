@@ -14,6 +14,7 @@
     %link{rel: "icon", href: "/icon.svg", type: "image/svg+xml"}
     %link{rel: "apple-touch-icon", href: "/icon.png"}
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
   %body.d-flex.flex-column.min-vh-100
     %nav.navbar.navbar-expand-lg.bg-secondary{"data-bs-theme": "dark"}
@@ -35,7 +36,10 @@
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
             - nav_pages.each do |page|
               %li.nav-item
-                = link_to page.title, page_path(page), class: "nav-link"
+                = link_to page_path(page), class: "nav-link" do
+                  - if page.icon.present?
+                    %i{ class: "bi #{page.icon} me-1" }
+                  = page.title
             - if Current.user
               - unless @admin
                 %li.nav-item.dropdown

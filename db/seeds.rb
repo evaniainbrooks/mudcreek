@@ -1377,3 +1377,28 @@ invoice_paid = Invoice.create!(
 end
 
 puts "Seeded #{Invoice.count} invoices with #{InvoiceItem.count} invoice items."
+
+# Pages
+Current.tenant = mudcreek
+
+Page.find_or_create_by!(slug: "about") do |p|
+  p.title          = "About Us"
+  p.published      = true
+  p.show_in_nav    = true
+  p.show_in_footer = true
+  p.position       = 1
+  p.body           = <<~HTML
+    <h2>Welcome to Mudcreek Auctions &amp; Consignment</h2>
+    <p>Mudcreek is a family-owned auction house serving the Kamloops region since 1998. We specialize in estate sales, farm equipment, tools, antiques, and general consignment.</p>
+    <h3>How It Works</h3>
+    <p>Browse our upcoming auctions and listings online. Register for free to bid, make offers, or add items to your watchlist. Winners are notified by email and can arrange pickup or delivery.</p>
+    <h3>Consign With Us</h3>
+    <p>Have items to sell? We accept consignments year-round. Contact us to schedule a free appraisal and get your items in front of thousands of registered bidders.</p>
+    <h3>Contact</h3>
+    <p>101 River Road, Kamloops, BC V2C 2A1<br>Phone: (250) 555-0198<br>Email: info@mudcreekauctions.com</p>
+  HTML
+end
+
+Current.tenant = nil
+
+puts "Seeded #{Page.count} pages."

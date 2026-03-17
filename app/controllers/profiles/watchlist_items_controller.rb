@@ -5,6 +5,7 @@ class Profiles::WatchlistItemsController < Profiles::BaseController
     @category_hashid = params[:category_id].presence
     category = @category_hashid && Listings::Category.find_by(hashid: @category_hashid)
 
+    @filter_total = Current.user.watchlist_items.count
     scope = Current.user.watchlist_items
       .includes(listing: [ :images_attachments, :categories, lot: :listing_placeholder_attachment ])
       .order(created_at: :desc)
@@ -12,5 +13,6 @@ class Profiles::WatchlistItemsController < Profiles::BaseController
     scope = scope.joins(:listing).where(Listing.arel_table[:name].matches("%#{Listing.sanitize_sql_like(@search)}%")) if @search
 
     @watchlist_items = scope
+    @filter_count = (@search || @category_hashid) ? scope.count : @filter_total
   end
 end

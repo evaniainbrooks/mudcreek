@@ -6,43 +6,44 @@
     %i.bi.bi-plus-lg.me-1
     New Page
 
-.card.shadow-sm.border-0
-  .card-body.p-0
-    %table.table.table-hover.mb-0
-      %thead.table-light
-        %tr
-          %th Title
-          %th Slug
-          %th.text-center Published
-          %th.text-center Nav
-          %th.text-center Footer
-          %th Position
-          %th
-      %tbody
-        - if @pages.empty?
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body.p-0
+      %table.table.table-hover.mb-0
+        %thead.table-light
           %tr
-            %td.text-muted.text-center{colspan: 7} No pages yet.
-        - @pages.each do |page|
-          %tr
-            %td= page.title
-            %td
-              %code= page.slug
-            %td.text-center
-              - if page.published?
-                %i.bi.bi-check-circle-fill.text-success
-              - else
-                %i.bi.bi-x-circle.text-muted
-            %td.text-center
-              - if page.show_in_nav?
-                %i.bi.bi-check-circle-fill.text-success
-              - else
-                %i.bi.bi-x-circle.text-muted
-            %td.text-center
-              - if page.show_in_footer?
-                %i.bi.bi-check-circle-fill.text-success
-              - else
-                %i.bi.bi-x-circle.text-muted
-            %td= page.position
-            %td.text-end
-              = link_to "Edit", edit_admin_page_path(page), class: "btn btn-sm btn-outline-secondary"
-              = link_to "Delete", admin_page_path(page), data: { turbo_method: :delete, turbo_confirm: "Delete \"#{page.title}\"?" }, class: "btn btn-sm btn-outline-danger ms-1"
+            %th Title
+            %th Slug
+            %th.text-center Published
+            %th.text-center Nav
+            %th.text-center Footer
+            %th Position
+            %th
+        %tbody
+          - if @pages.empty?
+            %tr
+              %td.text-muted.text-center{colspan: 7} No pages yet.
+          - @pages.each do |page|
+            %tr
+              %td= page.title
+              %td
+                %code= page.slug
+              %td.text-center
+                - if page.published?
+                  %i.bi.bi-check-circle-fill.text-success
+                - else
+                  %i.bi.bi-x-circle.text-muted
+              %td.text-center
+                - if page.show_in_nav?
+                  %i.bi.bi-check-circle-fill.text-success
+                - else
+                  %i.bi.bi-x-circle.text-muted
+              %td.text-center
+                - if page.show_in_footer?
+                  %i.bi.bi-check-circle-fill.text-success
+                - else
+                  %i.bi.bi-x-circle.text-muted
+              %td= page.position
+              %td.text-end
+                = link_to "Edit", edit_admin_page_path(page), class: "btn btn-sm btn-outline-secondary"
+                = link_to "Delete", admin_page_path(page), data: { turbo_method: :delete, turbo_confirm: "Delete \"#{page.title}\"?" }, class: "btn btn-sm btn-outline-danger ms-1"

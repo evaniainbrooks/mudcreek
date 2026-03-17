@@ -51,6 +51,11 @@ class Tenant < ApplicationRecord
   validates :default, uniqueness: { if: :default? }
   validates :custom_domain, format: { with: /\A[a-z0-9\-\.]+\z/, message: "can only contain lowercase letters, numbers, hyphens, and dots" }, allow_blank: true
 
+  HEX_COLOR_RE = /\A#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/
+  %i[primary_color secondary_color tertiary_color background_color text_color link_color footer_color card_color container_color].each do |attr|
+    validates attr, format: { with: HEX_COLOR_RE, message: "must be a valid hex color (e.g. #3a7d44)" }, allow_blank: true
+  end
+
   def self.default = find_by!(default: true)
 
   def grant_super_admin_all_permissions! = roles.super_admin.grant_all_permissions!

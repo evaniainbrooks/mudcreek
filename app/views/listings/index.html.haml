@@ -3,55 +3,59 @@
     og: { title: "Listings", description: "Browse all listings for sale." },
     twitter: { card: "summary", title: "Listings", description: "Browse all listings for sale." }
 
-%ul.nav.nav-tabs.mb-4
-  %li.nav-item
-    = link_to auctions_path, class: "nav-link" do
-      %i.bi.bi-hammer.me-2
-      Auctions
-  %li.nav-item
-    = link_to listings_path, class: "nav-link active" do
-      %i.bi.bi-tag.me-2
-      Listings
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3
+    %li.nav-item
+      = link_to auctions_path, class: "nav-link" do
+        %i.bi.bi-hammer.me-2
+        Auctions
+    %li.nav-item
+      = link_to listings_path, class: "nav-link active" do
+        %i.bi.bi-tag.me-2
+        Listings
 
-%div{ data: { controller: "view-toggle" } }
-  = form_with url: listings_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
-    .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
-      = f.search_field :search, value: @search, placeholder: "Search…", class: "form-control form-control-sm"
-      - if @search
-        = link_to listings_path(tab: @tab, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
-          %i.bi.bi-x-lg
-    = f.select :category_id, @categories.map { [it.name, it.hashid] },
-      { include_blank: "All Categories", selected: @category_hashid },
-      class: "form-select form-select-sm w-auto flex-shrink-0",
-      onchange: "this.form.requestSubmit()"
-    = f.select :tab, [["On Sale", "on_sale"], ["Sold", "sold"]],
-      { selected: @tab },
-      class: "form-select form-select-sm w-auto flex-shrink-0",
-      onchange: "this.form.requestSubmit()"
-    %select.form-select.form-select-sm.w-auto.flex-shrink-0.ms-auto{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
-      %option{ value: "list" } List View
-      %option{ value: "small" } Small Cards
-      %option{ value: "large" } Large Cards
+  .p-4
+    %div{ data: { controller: "view-toggle" } }
+      = form_with url: listings_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+        .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
+          = f.search_field :search, value: @search, placeholder: "Search…", class: "form-control form-control-sm"
+          - if @search
+            = link_to listings_path(tab: @tab, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+              %i.bi.bi-x-lg
+        = f.select :category_id, @categories.map { [it.name, it.hashid] },
+          { include_blank: "All Categories", selected: @category_hashid },
+          class: "form-select form-select-sm w-auto flex-shrink-0",
+          onchange: "this.form.requestSubmit()"
+        = f.select :tab, [["On Sale", "on_sale"], ["Sold", "sold"]],
+          { selected: @tab },
+          class: "form-select form-select-sm w-auto flex-shrink-0",
+          onchange: "this.form.requestSubmit()"
+        %select.form-select.form-select-sm.w-auto.flex-shrink-0.ms-auto{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
+          %option{ value: "list" } List View
+          %option{ value: "small" } Small Cards
+          %option{ value: "large" } Large Cards
 
-  - if @listings.empty? && @search
-    = render EmptyStateComponent.new(icon: "search",
-        message: "No listings found matching \"#{@search}\".",
-        link_text: "Clear search",
-        link_url: listings_path(tab: @tab, category_id: @category_hashid))
+      = render FilterInfoComponent.new(count: @filter_count, total: @filter_total, label: "listings", clear_url: listings_path(tab: @tab))
 
-  - elsif @listings.empty? && @category_hashid
-    = render EmptyStateComponent.new(icon: "funnel",
-        message: "No listings found in that category.",
-        link_text: "Clear filter and see all listings",
-        link_url: listings_path(tab: @tab))
+      - if @listings.empty? && @search
+        = render EmptyStateComponent.new(icon: "search",
+            message: "No listings found matching \"#{@search}\".",
+            link_text: "Clear search",
+            link_url: listings_path(tab: @tab, category_id: @category_hashid))
 
-  - elsif @listings.empty? && @tab == "sold"
-    = render EmptyStateComponent.new(icon: "tag",
-        message: "No sold listings yet.",
-        link_text: "Browse listings for sale",
-        link_url: listings_path)
-  - else
-    %div{ data: { controller: "infinite-scroll" } }
-      .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings{ data: { "view-toggle-target": "grid" } }
-        = render partial: "listings/listing", collection: @listings, as: :listing
-      = render "listings/sentinel", pagy: @pagy, category_id: @category_hashid, tab: @tab, search: @search
+      - elsif @listings.empty? && @category_hashid
+        = render EmptyStateComponent.new(icon: "funnel",
+            message: "No listings found in that category.",
+            link_text: "Clear filter and see all listings",
+            link_url: listings_path(tab: @tab))
+
+      - elsif @listings.empty? && @tab == "sold"
+        = render EmptyStateComponent.new(icon: "tag",
+            message: "No sold listings yet.",
+            link_text: "Browse listings for sale",
+            link_url: listings_path)
+      - else
+        %div{ data: { controller: "infinite-scroll" } }
+          .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4#listings{ data: { "view-toggle-target": "grid" } }
+            = render partial: "listings/listing", collection: @listings, as: :listing
+          = render "listings/sentinel", pagy: @pagy, category_id: @category_hashid, tab: @tab, search: @search

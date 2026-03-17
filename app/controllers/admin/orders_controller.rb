@@ -3,8 +3,10 @@ class Admin::OrdersController < Admin::BaseController
 
   def index
     authorize(Order)
+    @filter_total = Order.count
     @q = Order.ransack(params[:q])
     scope = @q.result.includes(:user, :order_items).order(created_at: :desc, id: :desc)
+    @filter_count = scope.count
     @pagy, @orders = pagy(:keyset, scope)
 
     respond_to do |format|

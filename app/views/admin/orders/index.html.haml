@@ -3,29 +3,32 @@
     %i.bi.bi-bag-fill.me-2
     Orders
 
-.card.shadow-sm.border-0.mb-4
-  .card-header.fw-semibold Filter Records
-  .card-body
-    = search_form_for @q, url: admin_orders_path, html: { class: "row g-2 align-items-end" } do |f|
-      .col-md-4
-        = f.label :user_email_address_cont, "Buyer Email", class: "form-label form-label-sm"
-        = f.search_field :user_email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
-      .col-md-2
-        = f.label :status_eq, "Status", class: "form-label form-label-sm"
-        = f.select :status_eq, Order.statuses.keys.map { |s| [s.capitalize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
-      .col-md-2
-        = f.label :created_at_gteq, "From", class: "form-label form-label-sm"
-        = f.date_field :created_at_gteq, class: "form-control form-control-sm"
-      .col-md-2
-        = f.label :created_at_lteq, "To", class: "form-label form-label-sm"
-        = f.date_field :created_at_lteq, class: "form-control form-control-sm"
-      .col-auto
-        %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
-          %i.bi.bi-search.me-1
-          Search
-      .col-auto
-        = link_to "Clear", admin_orders_path, class: "btn btn-outline-secondary btn-sm"
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold Filter Records
+    .card-body
+      = search_form_for @q, url: admin_orders_path, html: { class: "row g-2 align-items-end" } do |f|
+        .col-md-4
+          = f.label :user_email_address_cont, "Buyer Email", class: "form-label form-label-sm"
+          = f.search_field :user_email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+        .col-md-2
+          = f.label :status_eq, "Status", class: "form-label form-label-sm"
+          = f.select :status_eq, Order.statuses.keys.map { |s| [s.capitalize, s] }, { include_blank: "Any" }, class: "form-select form-select-sm"
+        .col-md-2
+          = f.label :created_at_gteq, "From", class: "form-label form-label-sm"
+          = f.date_field :created_at_gteq, class: "form-control form-control-sm"
+        .col-md-2
+          = f.label :created_at_lteq, "To", class: "form-label form-label-sm"
+          = f.date_field :created_at_lteq, class: "form-control form-control-sm"
+        .col-auto
+          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+            %i.bi.bi-search.me-1
+            Search
+        .col-auto
+          = link_to "Clear", admin_orders_path, class: "btn btn-outline-secondary btn-sm"
 
-%div{data: { controller: "infinite-scroll" }}
-  = render_orders_table(orders: @orders, q: @q)
-  = render "admin/orders/sentinel", pagy: @pagy, q: params[:q]
+  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total, label: "orders", clear_url: admin_orders_path)
+
+  %div{data: { controller: "infinite-scroll" }}
+    = render_orders_table(orders: @orders, q: @q)
+    = render "admin/orders/sentinel", pagy: @pagy, q: params[:q]

@@ -19,37 +19,39 @@
       %i.bi.bi-share.me-1
       Share
 
-.row.g-0.align-items-stretch{ style: "min-height: 70vh" }
-  = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count, filter: @filter
-  .col-lg-8.bg-body-secondary.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
-    - unless @filter
-      = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
-        .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
-          = f.search_field :search, value: @search, placeholder: "Search listings…", class: "form-control form-control-sm"
-          - if @search
-            = link_to(auction_path(@auction, state: @listing_state, category_id: @category_hashid),
-              class: "btn btn-outline-secondary btn-sm",
-              aria: { label: "Clear search" }) do
-              %i.bi.bi-x-lg
-        = f.select :category_id, @categories.map { [it.name, it.hashid] },
-          { include_blank: "All Categories", selected: @category_hashid },
-          class: "form-select form-select-sm w-auto flex-shrink-0",
-          onchange: "this.form.requestSubmit()"
-        = f.select :state, [["On Sale", "on_sale"], ["Sold", "sold"], ["Cancelled", "cancelled"]],
-          { include_blank: "All", selected: @listing_state },
-          class: "form-select form-select-sm w-auto flex-shrink-0",
-          onchange: "this.form.requestSubmit()"
-    = turbo_stream_from @auction
-    - if @auction_listings.any?
-      .row.row-cols-1.row-cols-sm-2.row-cols-xl-3.g-4
-        = render(partial: "auctions/listing_card",
-          collection: @auction_listings,
-          as: :auction_listing,
-          locals: { auction: @auction, registration: @registration })
-    - else
-      .py-5.text-center.text-muted
-        %i.bi.bi-tag.mb-3.d-block{ style: "font-size: 3rem" }
-        %p.mb-0 No listings found.
+.page-container.overflow-hidden
+  .row.g-0.align-items-stretch{ style: "min-height: 70vh" }
+    = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count, filter: @filter
+    .col-lg-8.bg-body-secondary.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
+      - unless @filter
+        = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+          .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
+            = f.search_field :search, value: @search, placeholder: "Search listings…", class: "form-control form-control-sm"
+            - if @search
+              = link_to(auction_path(@auction, state: @listing_state, category_id: @category_hashid),
+                class: "btn btn-outline-secondary btn-sm",
+                aria: { label: "Clear search" }) do
+                %i.bi.bi-x-lg
+          = f.select :category_id, @categories.map { [it.name, it.hashid] },
+            { include_blank: "All Categories", selected: @category_hashid },
+            class: "form-select form-select-sm w-auto flex-shrink-0",
+            onchange: "this.form.requestSubmit()"
+          = f.select :state, [["On Sale", "on_sale"], ["Sold", "sold"], ["Cancelled", "cancelled"]],
+            { include_blank: "All", selected: @listing_state },
+            class: "form-select form-select-sm w-auto flex-shrink-0",
+            onchange: "this.form.requestSubmit()"
+      = turbo_stream_from @auction
+      = render FilterInfoComponent.new(count: @filter_count, total: @auction_listing_count, label: "listings", clear_url: auction_path(@auction))
+      - if @auction_listings.any?
+        .row.row-cols-1.row-cols-sm-2.row-cols-xl-3.g-4
+          = render(partial: "auctions/listing_card",
+            collection: @auction_listings,
+            as: :auction_listing,
+            locals: { auction: @auction, registration: @registration })
+      - else
+        .py-5.text-center.text-muted
+          %i.bi.bi-tag.mb-3.d-block{ style: "font-size: 3rem" }
+          %p.mb-0 No listings found.
 
 - if Current.user && !@registration
   = render "register_modal", auction: @auction
