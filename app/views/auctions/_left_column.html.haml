@@ -18,7 +18,7 @@
           %span.badge.text-bg-success.py-2.px-3 Registered
         - elsif registration.rejected?
           %span.badge.text-bg-danger.py-2.px-3 Registration Declined
-    - elsif !auction.reconciled? && (auction.ends_at.nil? || auction.ends_at > Time.current)
+    - elsif !auction.reconciled? && !auction.ended?
       - if Current.user
         %button.btn.btn-primary.w-100.mb-4{data: { bs_toggle: "modal", bs_target: "#auction-register-modal" }}
           %i.bi.bi-person-plus.me-2
@@ -28,12 +28,12 @@
           %i.bi.bi-person-plus.me-2
           Sign In to Register
 
-    - if auction.ends_at && auction.ends_at <= Time.current && auction.reconciled?
+    - if auction.ended? && auction.reconciled?
       .d-flex.align-items-center.gap-2.mb-2.text-secondary
         %i.bi.bi-calendar-x-fill.flex-shrink-0
         %strong Auction has ended!
     - elsif auction.starts_at
-      - if auction.starts_at > Time.current
+      - if !auction.started?
         .d-flex.align-items-center.gap-2.mb-2{data: { controller: "countdown",
           "countdown-ends-at-value": auction.starts_at.iso8601,
           "countdown-reload-value": true }}
@@ -50,7 +50,7 @@
           %i.bi.bi-calendar-event.flex-shrink-0
           %span= auction.starts_at_in_time_zone.to_fs(:long)
           %small.text-muted= auction.starts_at_in_time_zone.strftime("%Z")
-        - if auction.starts_at > Time.current
+        - if !auction.started?
           .text-muted.small{data: { controller: "countdown",
             "countdown-ends-at-value": auction.starts_at.iso8601 }}
             %span{ data: { "countdown-target": "display" } }
@@ -62,7 +62,7 @@
           %i.bi.bi-calendar-check.flex-shrink-0
           %span= auction.ends_at_in_time_zone.to_fs(:long)
           %small.text-muted= auction.ends_at_in_time_zone.strftime("%Z")
-        - if auction.ends_at > Time.current
+        - if !auction.ended?
           .text-muted.small{data: { controller: "countdown",
             "countdown-ends-at-value": auction.ends_at.iso8601 }}
             %span{ data: { "countdown-target": "display" } }

@@ -40,6 +40,14 @@ class Auction < ApplicationRecord
     errors.add(:end_time_stagger_interval, "cannot change after auction has started")
   end
 
+  def started?
+    starts_at.present? && starts_at <= Time.current
+  end
+
+  def ended?
+    ends_at.present? && ends_at <= Time.current
+  end
+
   def starts_at_in_time_zone
     starts_at&.in_time_zone(timezone)
   end
