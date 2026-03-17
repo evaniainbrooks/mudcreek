@@ -17,6 +17,11 @@ $form-select-bg: #fff;
 $app-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06);
 $app-border-color: rgba(0, 0, 0, 0.12);
 
+// Outline-secondary buttons always show the container background (not the body background)
+.btn-outline-secondary {
+  --bs-btn-bg: var(--app-card-bg, #fff);
+}
+
 // Page-level container — white rounded box wrapping each page's content
 .page-container {
   background: var(--app-card-bg, #fff);
