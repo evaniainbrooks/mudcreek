@@ -1,5 +1,5 @@
 class Admin::LotsController < Admin::BaseController
-  before_action :set_lot, only: [ :update, :destroy ]
+  before_action :set_lot, only: [ :show, :update, :destroy ]
 
   def index
     authorize(Lot)
@@ -11,11 +11,18 @@ class Admin::LotsController < Admin::BaseController
     @filter_count = @lots.size
   end
 
+  def show
+    @lot.build_address unless @lot.address
+    @users = User.order(:email_address)
+    @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
+    @settlement = @lot.settlement
+  end
+
   def create
     @lot = Lot.new(lot_params)
     authorize(@lot)
     if @lot.save
-      redirect_to admin_lots_path, notice: "Lot \"#{@lot.name}\" was successfully created."
+      redirect_to admin_lot_path(@lot), notice: "Lot \"#{@lot.name}\" was successfully created."
     else
       @users = User.order(:email_address)
       @q = Lot.ransack(nil)
@@ -27,11 +34,14 @@ class Admin::LotsController < Admin::BaseController
   end
 
   def update
-    @lot.update(lot_params)
-    @users = User.order(:email_address)
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to admin_lots_path }
+    if @lot.update(lot_params)
+      redirect_to admin_lot_path(@lot), notice: "Lot updated."
+    else
+      @lot.build_address unless @lot.address
+      @users = User.order(:email_address)
+      @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
+      @settlement = @lot.settlement
+      render :show, status: :unprocessable_content
     end
   end
 
@@ -48,6 +58,7 @@ class Admin::LotsController < Admin::BaseController
   end
 
   def lot_params
-    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee, :state)
+    params.require(:lot).permit(:name, :number, :owner_id, :listing_placeholder, :admin_notes, :commission_rate, :seller_fee, :state, :show_attribution,
+      address_attributes: %i[id street_address city province postal_code country _destroy])
   end
 end

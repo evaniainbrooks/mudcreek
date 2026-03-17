@@ -30,6 +30,9 @@
       - unless auction_listing.reserve_price_cents.present? || listing.sold? || listing.cancelled?
         .position-absolute.top-0.end-0.p-2
           %span.badge.text-bg-success No Reserve
+      - if listing.lot&.show_attribution?
+        .position-absolute.bottom-0.start-0.p-2
+          = lot_number_badge(listing.lot)
     .card-body
       %h5.card-title.fw-semibold.mb-1
         = link_to listing.name,

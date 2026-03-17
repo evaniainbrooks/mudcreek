@@ -25,6 +25,9 @@
       - if listing.rental?
         .position-absolute.top-0.end-0.p-2
           = listing_type_badge(listing)
+      - if listing.lot&.show_attribution?
+        .position-absolute.bottom-0.start-0.p-2
+          = lot_number_badge(listing.lot)
     .card-body
       %h5.card-title.fw-semibold.mb-1
         = link_to listing.name, listing_path(listing), class: "stretched-link text-decoration-none text-body"

@@ -63,10 +63,10 @@ RSpec.describe "Admin::Lots", type: :request do
         }.to change(Lot, :count).by(1)
       end
 
-      it "redirects to the index with a notice including the lot name" do
+      it "redirects to the show page with a notice including the lot name" do
         post admin_lots_path, params: valid_params
 
-        expect(response).to redirect_to(admin_lots_path)
+        expect(response).to redirect_to(admin_lot_path(Lot.last))
         expect(flash[:notice]).to include("Lot A")
       end
     end
@@ -118,19 +118,10 @@ RSpec.describe "Admin::Lots", type: :request do
         expect(lot.reload.name).to eq("Renamed Lot")
       end
 
-      it "redirects to the index for HTML requests" do
+      it "redirects to the show page for HTML requests" do
         patch admin_lot_path(lot), params: { lot: { name: "Renamed Lot" } }
 
-        expect(response).to redirect_to(admin_lots_path)
-      end
-
-      it "responds with a turbo stream for turbo requests" do
-        patch admin_lot_path(lot),
-          params: { lot: { name: "Renamed Lot" } },
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response).to have_http_status(:ok)
-        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response).to redirect_to(admin_lot_path(lot))
       end
     end
 

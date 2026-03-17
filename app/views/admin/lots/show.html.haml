@@ -1,0 +1,229 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-box-seam.me-2
+    = @lot.name
+  = button_to admin_lot_path(@lot), method: :delete, class: "btn btn-outline-danger btn-sm",
+      form: { data: { turbo_confirm: "Delete lot \"#{@lot.name}\"? Listings will be unassigned." } } do
+    %i.bi.bi-trash.me-1
+    Delete
+
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link.active{ id: "details-tab", type: "button", role: "tab",
+        data: { bs_toggle: "tab", bs_target: "#details-pane" },
+        aria: { controls: "details-pane", selected: "true" } }
+        %i.bi.bi-info-circle.me-1
+        Details
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+        data: { bs_toggle: "tab", bs_target: "#edit-pane" },
+        aria: { controls: "edit-pane", selected: "false" } }
+        %i.bi.bi-pencil.me-1
+        Edit
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "listings-tab", type: "button", role: "tab",
+        data: { bs_toggle: "tab", bs_target: "#listings-pane" },
+        aria: { controls: "listings-pane", selected: "false" } }
+        %i.bi.bi-tag.me-1
+        Listings
+        %span.badge.text-bg-secondary.ms-1= @listings.size
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "settlement-tab", type: "button", role: "tab",
+        data: { bs_toggle: "tab", bs_target: "#settlement-pane" },
+        aria: { controls: "settlement-pane", selected: "false" } }
+        %i.bi.bi-receipt.me-1
+        Settlement
+
+  .p-4
+    .tab-content
+      #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+        .card.shadow-sm.border-0.mb-4
+          .card-header.fw-semibold Basic Info
+          .card-body
+            %dl.row.mb-0
+              %dt.col-sm-3 Name
+              %dd.col-sm-9= @lot.name
+
+              %dt.col-sm-3 Number
+              %dd.col-sm-9= lot_number_badge(@lot)
+
+              %dt.col-sm-3 Owner
+              %dd.col-sm-9= mail_to @lot.owner.email_address
+
+              %dt.col-sm-3 State
+              %dd.col-sm-9
+                %span.badge{ class: lot_state_badge_class(@lot) }= @lot.state.to_s.humanize
+
+              %dt.col-sm-3 Admin Notes
+              %dd.col-sm-9= @lot.admin_notes.presence || "—"
+
+        .card.shadow-sm.border-0.mb-4
+          .card-header.fw-semibold Financial
+          .card-body
+            %dl.row.mb-0
+              %dt.col-sm-3 Commission Rate
+              %dd.col-sm-9= @lot.commission_rate ? "#{@lot.commission_rate}%" : "—"
+
+              %dt.col-sm-3 Seller Fee
+              %dd.col-sm-9= @lot.seller_fee ? humanized_money_with_symbol(@lot.seller_fee) : "—"
+
+              %dt.col-sm-3 Payout Amount
+              %dd.col-sm-9= @lot.payout_amount_cents ? humanized_money_with_symbol(@lot.payout_amount) : "—"
+
+        - if @lot.address&.any?
+          .card.shadow-sm.border-0
+            .card-header.fw-semibold Location
+            .card-body
+              %address.mb-0
+                - if @lot.address.street_address.present?
+                  = @lot.address.street_address
+                  %br/
+                - city_line = [ @lot.address.city, @lot.address.province ].compact_blank.join(", ")
+                - city_line += "  #{@lot.address.postal_code}" if @lot.address.postal_code.present?
+                - if city_line.present?
+                  = city_line
+                  %br/
+                - if @lot.address.country.present?
+                  = @lot.address.country
+
+      #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
+        = form_with model: [:admin, @lot], url: admin_lot_path(@lot), method: :patch do |f|
+          - if @lot.errors.any?
+            .alert.alert-danger.mb-4
+              = @lot.errors.full_messages.to_sentence
+
+          %fieldset.card.shadow-sm.border-0.mb-4
+            %legend.card-header.fw-semibold Basic Info
+            .card-body.p-4
+              .row.g-3
+                .col-sm-6
+                  = f.label :name, class: "form-label required"
+                  = f.text_field :name, class: "form-control #{'is-invalid' if @lot.errors[:name].any?}", required: true
+                  - if @lot.errors[:name].any?
+                    .invalid-feedback= @lot.errors[:name].to_sentence
+                .col-sm-3
+                  = f.label :number, class: "form-label"
+                  = f.text_field :number, class: "form-control #{'is-invalid' if @lot.errors[:number].any?}", placeholder: "e.g. 001"
+                .col-sm-3
+                  = f.label :state, class: "form-label"
+                  = f.select :state, Lot.states.keys.map { |s| [s.humanize, s] }, {}, class: "form-select"
+                .col-sm-6
+                  = f.label :owner_id, "Owner", class: "form-label"
+                  = f.select :owner_id, @users.map { [it.email_address, it.id] }, { prompt: "Select owner" }, class: "form-select #{'is-invalid' if @lot.errors[:owner_id].any?}"
+                  - if @lot.errors[:owner_id].any?
+                    .invalid-feedback= @lot.errors[:owner_id].to_sentence
+                .col-12
+                  = f.label :admin_notes, class: "form-label"
+                  = f.text_area :admin_notes, class: "form-control", rows: 3
+                .col-12
+                  .form-check
+                    = f.check_box :show_attribution, class: "form-check-input"
+                    = f.label :show_attribution, "Show attribution badge on listings", class: "form-check-label"
+
+          %fieldset.card.shadow-sm.border-0.mb-4
+            %legend.card-header.fw-semibold Financial
+            .card-body.p-4
+              .row.g-3
+                .col-sm-4
+                  = f.label :commission_rate, "Commission Rate (%)", class: "form-label"
+                  .input-group
+                    = f.number_field :commission_rate, class: "form-control #{'is-invalid' if @lot.errors[:commission_rate].any?}", min: 0, max: 100, step: 1, placeholder: "e.g. 15"
+                    %span.input-group-text %
+                  - if @lot.errors[:commission_rate].any?
+                    .invalid-feedback= @lot.errors[:commission_rate].to_sentence
+                .col-sm-4
+                  = f.label :seller_fee, class: "form-label"
+                  .input-group
+                    %span.input-group-text $
+                    = f.number_field :seller_fee, value: @lot.seller_fee&.to_f, class: "form-control #{'is-invalid' if @lot.errors[:seller_fee].any?}", min: 0, step: "0.01", placeholder: "0.00"
+                  - if @lot.errors[:seller_fee].any?
+                    .invalid-feedback= @lot.errors[:seller_fee].to_sentence
+
+          %fieldset.card.shadow-sm.border-0.mb-4
+            %legend.card-header.fw-semibold Location
+            .card-body.p-4
+              = f.fields_for :address do |addr|
+                .mb-3
+                  = addr.label :street_address, "Street Address", class: "form-label"
+                  = addr.text_field :street_address, class: "form-control"
+                .row.g-3.mb-3
+                  .col-sm-6
+                    = addr.label :city, "City", class: "form-label"
+                    = addr.text_field :city, class: "form-control"
+                  .col-sm-6
+                    = addr.label :province, "Province / State", class: "form-label"
+                    = addr.text_field :province, class: "form-control"
+                .row.g-3
+                  .col-sm-6
+                    = addr.label :postal_code, "Postal Code", class: "form-label"
+                    = addr.text_field :postal_code, class: "form-control"
+                  .col-sm-6
+                    = addr.label :country, "Country", class: "form-label"
+                    = addr.select :country, all_countries, { include_blank: "— Select country —" }, class: "form-select"
+
+          %fieldset.card.shadow-sm.border-0.mb-4
+            %legend.card-header.fw-semibold Placeholder Image
+            .card-body.p-4
+              - if @lot.listing_placeholder.attached?
+                .d-flex.align-items-center.gap-3.mb-3
+                  = image_tag @lot.listing_placeholder.variant(resize_to_fill: [160, 100]), class: "rounded", style: "object-fit: cover"
+                  = button_to admin_lot_listing_placeholder_path(@lot), method: :delete, class: "btn btn-outline-danger btn-sm",
+                      form: { data: { turbo_confirm: "Remove placeholder image?" } } do
+                    %i.bi.bi-x-lg.me-1
+                    Remove
+              - else
+                = f.label :listing_placeholder, class: "form-label"
+                = f.file_field :listing_placeholder, accept: "image/*", class: "form-control"
+
+          .d-flex.gap-2
+            = f.submit "Save Changes", class: "btn btn-primary"
+            = link_to "Cancel", admin_lot_path(@lot), class: "btn btn-outline-secondary"
+
+      #listings-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "listings-tab" } }
+        - if @listings.empty?
+          .py-3.text-muted No listings assigned to this lot.
+        - else
+          = render_listings_table(listings: @listings, q: nil)
+
+      #settlement-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "settlement-tab" } }
+        - if @settlement.nil?
+          .py-3.text-muted.alert.alert-info No settlement has been created for this lot yet.
+        - else
+          .card.shadow-sm.border-0.mb-4
+            .card-header.fw-semibold Line Items
+            .card-body.p-0
+              %table.table.table-sm.mb-0
+                %thead.thead-secondary
+                  %tr
+                    %th Description
+                    %th Type
+                    %th.text-end Amount
+                %tbody
+                  - @settlement.settlement_line_items.order(:created_at).each do |item|
+                    - deduction = %w[seller_commission seller_fee].include?(item.line_item_type)
+                    %tr
+                      %td= item.description
+                      %td
+                        %span.badge{ class: deduction ? "text-bg-danger" : "text-bg-success" }= item.line_item_type.humanize
+                      %td.text-end{ class: deduction ? "text-danger" : "" }
+                        = deduction ? "−" : ""
+                        = humanized_money_with_symbol(item.amount)
+                %tfoot
+                  %tr.fw-bold
+                    %td{ colspan: 2 } Net Payout
+                    %td.text-end= humanized_money_with_symbol(@settlement.net_payout)
+          - if @lot.paid?
+            .alert.alert-success
+              %strong Paid
+              — #{humanized_money_with_symbol(@lot.payout_amount)} sent on #{@lot.paid_at.to_fs(:long)}
+          - elsif @settlement.net_payout_cents > 0
+            = button_to "Mark as Paid", pay_admin_lot_settlement_path(@lot),
+                method: :post,
+                class: "btn btn-success",
+                form: { data: { turbo_confirm: "Record a payout of #{humanized_money_with_symbol(@settlement.net_payout)} to #{@lot.owner.email_address}?" } }
+
+    .mt-3
+      = link_to admin_lots_path, class: "btn btn-outline-secondary" do
+        %i.bi.bi-arrow-left.me-1
+        Back to Lots

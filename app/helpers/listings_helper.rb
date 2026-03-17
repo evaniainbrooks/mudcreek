@@ -5,8 +5,11 @@ module ListingsHelper
     BADGE_COLORS[str.bytes.sum % BADGE_COLORS.size]
   end
 
-  def lot_number_badge(lot)
-    content_tag(:span, lot.number, class: "badge #{badge_color_for(lot.name)}")
+  def lot_number_badge(lot, link: false)
+    label = lot.number.presence || lot.name
+    color = badge_color_for(lot.number.presence || lot.name)
+    badge = content_tag(:span, label, class: "badge #{color}")
+    link ? link_to(badge, admin_lot_path(lot)) : badge
   end
 
   def listing_pricing_type_badge(listing, extra_css: nil)

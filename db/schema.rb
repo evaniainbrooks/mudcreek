@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_133000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_17_134000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -344,6 +344,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_133000) do
     t.integer "payout_amount_cents"
     t.integer "seller_fee_cents"
     t.datetime "settled_at"
+    t.boolean "show_attribution", default: false, null: false
     t.enum "state", default: "submitted", null: false, enum_type: "lot_state"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
