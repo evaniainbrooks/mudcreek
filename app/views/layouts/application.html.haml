@@ -32,14 +32,15 @@
           "aria-label": "Toggle navigation"}
           %span.navbar-toggler-icon
         #main-nav.collapse.navbar-collapse
-          - nav_pages = Page.in_nav
-          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+          - nav_pages = @admin ? [] : Page.in_nav
+          %ul.navbar-nav.mx-auto.mb-2.mb-lg-0
             - nav_pages.each do |page|
               %li.nav-item
                 = link_to page_path(page), class: "nav-link" do
                   - if page.icon.present?
                     %i{ class: "bi #{page.icon} me-1" }
                   = page.title
+          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
             - if Current.user
               - unless @admin
                 %li.nav-item.dropdown

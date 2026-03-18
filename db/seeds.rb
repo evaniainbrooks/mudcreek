@@ -96,7 +96,7 @@ User.destroy_all
 
 User.create!(
   tenant: mudcreek,
-  email_address: "admin@mudcreek",
+  email_address: "admin@mudcreek.com",
   first_name: "Default",
   last_name: "Admin",
   password: default_password,
@@ -126,7 +126,7 @@ puts "Seeded #{User.count} users."
 user_ids = User.where(tenant: mudcreek).pluck(:id)
 
 # Lots
-admin_user = User.find_by!(email_address: "admin@mudcreek")
+admin_user = User.find_by!(email_address: "admin@mudcreek.com")
 
 lot_data = [
   { name: "Henderson Estate",     number: "001", show_attribution: true  },

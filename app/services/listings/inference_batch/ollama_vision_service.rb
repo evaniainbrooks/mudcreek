@@ -4,7 +4,7 @@ module Listings
       Result = Data.define(:success, :data, :error)
 
       ENDPOINT = URI("http://localhost:11434/api/generate")
-      MODEL = "qwen2.5vl:7b"
+      MODEL = "llava"
       SYSTEM_PROMPT = <<~PROMPT.freeze
         You are a product listing assistant for an auction house. Analyze the provided image and
         return a JSON object describing the item for a product listing. Use the available categories
@@ -38,6 +38,7 @@ module Listings
         body = {
           model: MODEL,
           stream: false,
+          format: "json",
           system: system_prompt,
           prompt: "Analyze this image. Return only the JSON object.",
           images: [ base64_image ]
@@ -52,13 +53,8 @@ module Listings
 
         raise "Ollama returned #{response.code}" unless response.is_a?(Net::HTTPSuccess)
 
-        Rails.logger.debug("[OllamaVisionService] raw response body: #{response.body}")
-
         outer = JSON.parse(response.body)
-        raw_text = outer["response"].to_s
-        Rails.logger.debug("[OllamaVisionService] outer[\"response\"]: #{raw_text.inspect}")
-        json_str = raw_text[/\{.*\}/m] or raise "No JSON object found in response"
-        data = JSON.parse(json_str)
+        data = JSON.parse(outer["response"])
 
         Result.new(success: true, data: data, error: nil)
       rescue => e

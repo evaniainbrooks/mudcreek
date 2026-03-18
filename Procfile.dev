@@ -1,8 +1,9 @@
-web: env RUBY_DEBUG_OPEN=true IMGPROXY_URL=http://localhost:8080 bin/rails server
+web: env RUBY_DEBUG_OPEN=true IMGPROXY_URL=http://localhost:4000/imgproxy NGROK_HOST=nittiest-unreluctantly-nettie.ngrok-free.dev bin/rails server
 js: yarn watch:js
 css: yarn watch:css
 mail: mailhog
 listener: bin/bid_listener
 imgproxy: env IMGPROXY_BIND=:8080 IMGPROXY_ALLOW_LOOPBACK_SOURCE_ADDRESSES=true imgproxy
+nginx: { [ -f /tmp/nginx_dev.pid ] && kill $(cat /tmp/nginx_dev.pid) 2>/dev/null; true; }; nginx -c $(pwd)/config/nginx.dev.conf -p $(pwd) -g 'daemon off; error_log /tmp/nginx_dev_error.log warn;'
 ngrok: bin/ngrok
-localstack: docker run --rm -p 4566:4566 -e SERVICES=s3 -e DEFAULT_REGION=us-east-1 -e PERSISTENCE=1 -v localstack-data:/var/lib/localstack localstack/localstack
+localstack: docker ps -q --filter "publish=4566" | xargs -r docker stop; docker run --rm -p 4566:4566 -e SERVICES=s3 -e DEFAULT_REGION=us-east-1 -e PERSISTENCE=1 -v localstack-data:/var/lib/localstack localstack/localstack
