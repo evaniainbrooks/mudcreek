@@ -1,0 +1,9 @@
+#cart-offcanvas.offcanvas.offcanvas-end{ tabindex: -1, aria: { labelledby: "cart-offcanvas-label" }, style: "width: 380px" }
+  .offcanvas-header.border-bottom
+    %h5#cart-offcanvas-label.offcanvas-title.fw-semibold
+      %i.bi.bi-cart3.me-2
+      Cart
+    %button.btn-close{ type: "button", data: { bs_dismiss: "offcanvas" }, aria: { label: "Close" } }
+  .offcanvas-body.p-0
+    #cart-offcanvas-body
+      = render "carts/offcanvas_body", cart_items: offcanvas_cart_items

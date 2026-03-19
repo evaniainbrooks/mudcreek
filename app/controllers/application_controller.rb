@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  helper_method :cart_item_count
+  helper_method :cart_item_count, :offcanvas_cart_items
 
   private
 
@@ -21,8 +21,24 @@ class ApplicationController < ActionController::Base
     Prosopite.finish
   end
 
+  def offcanvas_cart_items
+    @offcanvas_cart_items ||= if Current.user
+      Current.user.cart_items.includes(listing: { images_attachments: :blob }).order(:created_at)
+    elsif session[:guest_cart_token]
+      CartItem.where(guest_cart_token: session[:guest_cart_token]).includes(listing: { images_attachments: :blob }).order(:created_at)
+    else
+      CartItem.none
+    end
+  end
+
   def cart_item_count
-    @cart_item_count ||= Current.user&.cart_items&.count || 0
+    @cart_item_count ||= if Current.user
+      Current.user.cart_items.count
+    elsif session[:guest_cart_token]
+      CartItem.where(guest_cart_token: session[:guest_cart_token]).count
+    else
+      0
+    end
   end
 
   def set_default_meta_tags

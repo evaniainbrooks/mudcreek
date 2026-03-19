@@ -40,7 +40,14 @@
                   - if page.icon.present?
                     %i{ class: "bi #{page.icon} me-1" }
                   = page.title
-          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0.align-items-center
+            %li.nav-item.me-1
+              .position-relative.d-inline-block
+                %button.btn.btn-sm.btn-outline-light{ type: "button",
+                    data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
+                    aria: { label: "Open cart" } }
+                  %i.bi.bi-cart3.fs-5
+                = render "layouts/cart_badge", count: cart_item_count
             - if Current.user
               - unless @admin
                 %li.nav-item.dropdown
@@ -48,12 +55,6 @@
                     %i.bi.bi-person-circle.me-1
                     = Current.user.name
                   %ul.dropdown-menu.dropdown-menu-end
-                    %li
-                      = link_to cart_path, class: "dropdown-item" do
-                        %i.bi.bi-cart3.me-1
-                        Cart
-                        - if cart_item_count > 0
-                          %span.badge.rounded-pill.bg-primary.ms-1= cart_item_count
                     - if Current.user.role&.permissions&.any?
                       %li
                         = link_to admin_root_path, class: "dropdown-item" do
@@ -83,3 +84,4 @@
               %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
         = yield
     = render FooterComponent.new(tenant: Current.tenant)
+    = render "carts/offcanvas"

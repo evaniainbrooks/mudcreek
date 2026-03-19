@@ -1,0 +1,13 @@
+= turbo_stream.replace "cart-offcanvas-body" do
+  = render "carts/offcanvas_body", cart_items: @offcanvas_cart_items
+= turbo_stream.replace "cart-badge" do
+  = render "layouts/cart_badge", count: @offcanvas_cart_items.size
+= turbo_stream.replace dom_id(@listing, :cart_action) do
+  - if @new_cart_item
+    = button_to cart_item_path(@new_cart_item),
+        method: :delete,
+        class: "btn btn-outline-secondary w-100 mb-3",
+        form: { data: { turbo_confirm: "Remove from cart?" } } do
+      %i.bi.bi-cart-check.me-2
+      In Cart
+= turbo_stream.action :show_offcanvas, "cart-offcanvas"

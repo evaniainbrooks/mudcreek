@@ -13,8 +13,17 @@ class CartItemsController < ApplicationController
     else
       quantity = params[:quantity].to_i.clamp(1, @listing.quantity)
       cart_items_scope.create(listing_id: @listing.id, quantity:)
-      redirect_back fallback_location: root_path,
-        notice: helpers.safe_join([ "Added to cart. ", helpers.link_to("View cart", cart_path) ])
+
+      respond_to do |format|
+        format.turbo_stream do
+          @offcanvas_cart_items = load_offcanvas_cart_items
+          @new_cart_item = cart_items_scope.find_by(listing_id: @listing.id)
+        end
+        format.html do
+          redirect_back fallback_location: root_path,
+            notice: helpers.safe_join([ "Added to cart. ", helpers.link_to("View cart", cart_path) ])
+        end
+      end
     end
   end
 
@@ -32,6 +41,16 @@ class CartItemsController < ApplicationController
   end
 
   private
+
+  def load_offcanvas_cart_items
+    scope = if Current.user
+      Current.user.cart_items
+    else
+      token = session[:guest_cart_token]
+      token ? CartItem.where(guest_cart_token: token) : CartItem.none
+    end
+    scope.includes(listing: { images_attachments: :blob }).order(:created_at)
+  end
 
   def cart_items_scope
     if Current.user

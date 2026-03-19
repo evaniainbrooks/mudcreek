@@ -39,7 +39,7 @@ module Authentication
     end
 
     def default_after_authentication_url
-      Current.user&.role&.permissions&.any? ? admin_root_url : root_url
+      root_url
     end
 
     def start_new_session_for(user)

@@ -1,0 +1,35 @@
+- if cart_items.empty?
+  .text-center.text-muted.py-5
+    %i.bi.bi-cart-x.d-block.mb-2{ style: "font-size: 2.5rem" }
+    Your cart is empty.
+- else
+  .px-3.pt-3
+    - cart_items.each do |item|
+      .d-flex.align-items-center.gap-3.mb-3
+        - if item.listing.images.attached?
+          = image_tag item.listing.images.first,
+              class: "rounded-2 object-fit-cover flex-shrink-0",
+              style: "width: 52px; height: 52px"
+        - else
+          .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
+            %i.bi.bi-image.text-secondary
+        .flex-grow-1.lh-sm.overflow-hidden
+          %div.fw-semibold.small.text-truncate= item.listing.name
+          %div.text-muted.small
+            = humanized_money_with_symbol(item.effective_item_price)
+            - unless item.rental?
+              - if item.quantity > 1
+                × #{item.quantity}
+            - if item.rental?
+              %br
+              %span.text-muted= "#{item.rental_start_at.to_fs(:short)} → #{item.rental_end_at.to_fs(:short)}"
+        = button_to cart_item_path(item), method: :delete,
+            class: "btn btn-sm btn-outline-danger flex-shrink-0",
+            form: { data: { turbo_confirm: "Remove from cart?" } } do
+          %i.bi.bi-trash
+  - subtotal_cents = cart_items.sum { |i| i.effective_price.cents }
+  .border-top.px-3.py-3
+    .d-flex.justify-content-between.fw-semibold.mb-3
+      %span Subtotal
+      %span= humanized_money_with_symbol(Money.new(subtotal_cents))
+    = link_to "View Full Cart", cart_path, class: "btn btn-primary w-100"
