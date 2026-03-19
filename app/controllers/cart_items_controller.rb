@@ -1,31 +1,55 @@
 class CartItemsController < ApplicationController
+  allow_unauthenticated_access
+
   def create
     @listing = Listing.find(params[:listing_id])
 
     if @listing.rental?
-      create_rental_cart_item
+      if Current.user
+        create_rental_cart_item
+      else
+        redirect_to new_session_path, alert: "Please sign in to book rentals."
+      end
     else
       quantity = params[:quantity].to_i.clamp(1, @listing.quantity)
-      Current.user.cart_items.create(listing_id: @listing.id, quantity:)
+      cart_items_scope.create(listing_id: @listing.id, quantity:)
       redirect_back fallback_location: root_path,
         notice: helpers.safe_join([ "Added to cart. ", helpers.link_to("View cart", cart_path) ])
     end
   end
 
   def update
-    cart_item = Current.user.cart_items.find(params[:id])
+    cart_item = find_cart_item(params[:id])
     quantity = params[:quantity].to_i.clamp(1, cart_item.listing.quantity)
     cart_item.update(quantity:)
     redirect_back fallback_location: cart_path, notice: "Quantity updated."
   end
 
   def destroy
-    cart_item = Current.user.cart_items.find(params[:id])
+    cart_item = find_cart_item(params[:id])
     cart_item.destroy
     redirect_back fallback_location: cart_path, notice: "Removed from cart."
   end
 
   private
+
+  def cart_items_scope
+    if Current.user
+      Current.user.cart_items
+    else
+      token = session[:guest_cart_token] ||= SecureRandom.uuid
+      CartItem.where(guest_cart_token: token)
+    end
+  end
+
+  def find_cart_item(id)
+    if Current.user
+      Current.user.cart_items.find(id)
+    else
+      token = session[:guest_cart_token]
+      CartItem.find_by!(id:, guest_cart_token: token)
+    end
+  end
 
   def create_rental_cart_item
     start_at = (Time.zone.parse(params[:rental_start_at]) rescue nil)

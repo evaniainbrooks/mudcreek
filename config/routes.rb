@@ -17,6 +17,7 @@ resource :session
 
   resource  :cart,                only: [ :show ]
   resource  :cart_address,        only: [ :create ]
+  resource  :cart_guest_info,     only: [ :create ], controller: "cart_guest_info"
   resource  :cart_discount,       only: [ :create, :destroy ]
   resource  :cart_delivery_method, only: [ :create, :destroy ]
   resources :cart_items,          only: [ :create, :update, :destroy ]

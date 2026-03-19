@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_136000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_100001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -158,6 +158,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_136000) do
 
   create_table "cart_items", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "guest_cart_token"
     t.bigint "invoice_item_id"
     t.bigint "listing_id", null: false
     t.integer "quantity", default: 1, null: false
@@ -166,11 +167,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_136000) do
     t.datetime "rental_start_at"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
+    t.index ["guest_cart_token", "listing_id"], name: "index_cart_items_unique_guest_listing", unique: true, where: "((guest_cart_token IS NOT NULL) AND (rental_start_at IS NULL))"
+    t.index ["guest_cart_token"], name: "index_cart_items_on_guest_cart_token"
     t.index ["invoice_item_id"], name: "index_cart_items_on_invoice_item_id_unique", unique: true, where: "(invoice_item_id IS NOT NULL)"
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_non_invoice", unique: true, where: "((rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
+    t.index ["user_id", "listing_id"], name: "index_cart_items_unique_user_listing", unique: true, where: "((user_id IS NOT NULL) AND (rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
   end
 
   create_table "delivery_methods", force: :cascade do |t|
@@ -411,6 +415,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_136000) do
     t.integer "discount_cents", default: 0, null: false
     t.bigint "discount_code_id"
     t.string "discount_code_key"
+    t.string "guest_email"
+    t.string "guest_name"
+    t.string "guest_token"
     t.string "number", null: false
     t.string "postal_code"
     t.string "province"
@@ -422,9 +429,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_136000) do
     t.bigint "tenant_id", null: false
     t.integer "total_cents", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["delivery_method_id"], name: "index_orders_on_delivery_method_id"
     t.index ["discount_code_id"], name: "index_orders_on_discount_code_id"
+    t.index ["guest_token"], name: "index_orders_on_guest_token", unique: true
     t.index ["number"], name: "index_orders_on_number", unique: true
     t.index ["square_payment_id"], name: "index_orders_on_square_payment_id", unique: true
     t.index ["tenant_id"], name: "index_orders_on_tenant_id"

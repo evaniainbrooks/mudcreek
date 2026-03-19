@@ -2,7 +2,7 @@ class Order < ApplicationRecord
   include MultiTenant
   include NativeEnum
 
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :delivery_method, optional: true
   belongs_to :discount_code,   optional: true
   has_many   :order_items, dependent: :destroy
@@ -19,8 +19,10 @@ class Order < ApplicationRecord
 
   validates :number, presence: true, uniqueness: true
   validates :square_payment_id, uniqueness: true, allow_nil: true
+  validate :user_or_guest_info_present
 
   before_validation :assign_number, on: :create
+  before_validation :assign_guest_token, on: :create
 
   after_update_commit :record_category_interests, if: -> { saved_change_to_status?(to: "paid") }
 
@@ -44,7 +46,12 @@ class Order < ApplicationRecord
 
   private
 
+  def user_or_guest_info_present
+    errors.add(:base, "must belong to a user or have guest email") if user_id.nil? && guest_email.blank?
+  end
+
   def record_category_interests
+    return unless user
     order_items.includes(listing: :categories).each do |item|
       next unless item.listing_id?
       UserCategoryInterest.record_for(user: user, listing: item.listing)
@@ -56,5 +63,9 @@ class Order < ApplicationRecord
       candidate = "MC-#{SecureRandom.alphanumeric(8).upcase}"
       break candidate unless Order.exists?(number: candidate)
     end
+  end
+
+  def assign_guest_token
+    self.guest_token ||= SecureRandom.uuid if user_id.nil?
   end
 end

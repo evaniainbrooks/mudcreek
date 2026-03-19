@@ -1,6 +1,13 @@
 class OrdersController < ApplicationController
+  allow_unauthenticated_access only: %i[create show]
+
   def create
-    @cart_items = Current.user.cart_items.includes(:listing).order(:created_at)
+    if Current.user
+      @cart_items = Current.user.cart_items.includes(:listing).order(:created_at)
+    else
+      token = session[:guest_cart_token]
+      @cart_items = token ? CartItem.where(guest_cart_token: token).includes(:listing).order(:created_at) : CartItem.none
+    end
 
     if @cart_items.empty?
       redirect_to cart_path, alert: "Your cart is empty."
@@ -14,15 +21,8 @@ class OrdersController < ApplicationController
       return
     end
 
+    addr = resolve_address
     if @delivery_method&.address_required?
-      cart_addr = Current.user.cart_address
-      profile_addr = Current.user.address
-      addr = {
-        street_address: cart_addr&.street_address || profile_addr&.street_address,
-        city:           cart_addr&.city           || profile_addr&.city,
-        postal_code:    cart_addr&.postal_code    || profile_addr&.postal_code,
-        country:        cart_addr&.country        || profile_addr&.country
-      }
       if addr[:street_address].blank? || addr[:city].blank? || addr[:postal_code].blank? || addr[:country].blank?
         redirect_to cart_path, alert: "Please provide a delivery address."
         return
@@ -39,17 +39,25 @@ class OrdersController < ApplicationController
       end
     end
 
+    unless Current.user
+      guest_email = session[:guest_email]
+      guest_name  = session[:guest_name]
+      if guest_email.blank? || guest_name.blank?
+        redirect_to cart_path, alert: "Please provide your contact information."
+        return
+      end
+    end
+
     reconcile_discount_code
 
     summary = CartCalculator.new(
       @cart_items, discount_code: @discount_code, delivery_method: @delivery_method
     ).calculate
 
-    # Build address snapshot
-    cart_addr    = Current.user.cart_address
-    profile_addr = Current.user.address
-
-    order = Current.user.orders.build(
+    order = Order.new(
+      user:                 Current.user,
+      guest_email:          Current.user ? nil : session[:guest_email],
+      guest_name:           Current.user ? nil : session[:guest_name],
       delivery_method:      @delivery_method,
       delivery_method_name: @delivery_method&.name,
       delivery_price_cents: summary.delivery_cents,
@@ -59,11 +67,11 @@ class OrdersController < ApplicationController
       subtotal_cents:       summary.subtotal_cents,
       tax_cents:            summary.tax_cents,
       total_cents:          summary.total_cents,
-      street_address:       cart_addr&.street_address || profile_addr&.street_address,
-      city:                 cart_addr&.city           || profile_addr&.city,
-      province:             cart_addr&.province       || profile_addr&.province,
-      postal_code:          cart_addr&.postal_code    || profile_addr&.postal_code,
-      country:              cart_addr&.country        || profile_addr&.country
+      street_address:       addr[:street_address],
+      city:                 addr[:city],
+      province:             addr[:province],
+      postal_code:          addr[:postal_code],
+      country:              addr[:country]
     )
 
     @cart_items.each do |item|
@@ -86,7 +94,15 @@ class OrdersController < ApplicationController
       item.rental_booking&.update_columns(expires_at: item.rental_end_at + 1.day)
     end
 
-    Current.user.cart_items.destroy_all
+    if Current.user
+      Current.user.cart_items.destroy_all
+    else
+      CartItem.where(guest_cart_token: session.delete(:guest_cart_token)).destroy_all
+      session.delete(:guest_email)
+      session.delete(:guest_name)
+      session.delete(:guest_address)
+      session[:guest_order_token] = order.guest_token
+    end
     session.delete(:delivery_method_id)
     session.delete(:discount_code_id)
 
@@ -96,8 +112,14 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Current.user.orders.includes(:order_items).find_by!(number: params[:number])
-    if @order.pending? && Current.user.default_square_card_id.present?
+    if Current.user
+      @order = Current.user.orders.includes(:order_items).find_by!(number: params[:number])
+    else
+      token = params[:token] || session[:guest_order_token]
+      @order = Order.includes(:order_items).find_by!(number: params[:number], guest_token: token)
+    end
+
+    if @order.pending? && Current.user&.default_square_card_id.present?
       @saved_cards = SquareCustomerService.new(Current.user).list_cards
                        .select { |c| c.id == Current.user.default_square_card_id }
     end
@@ -107,6 +129,29 @@ class OrdersController < ApplicationController
   end
 
   private
+
+  def resolve_address
+    if Current.user
+      cart_addr    = Current.user.cart_address
+      profile_addr = Current.user.address
+      {
+        street_address: cart_addr&.street_address || profile_addr&.street_address,
+        city:           cart_addr&.city           || profile_addr&.city,
+        province:       cart_addr&.province       || profile_addr&.province,
+        postal_code:    cart_addr&.postal_code    || profile_addr&.postal_code,
+        country:        cart_addr&.country        || profile_addr&.country
+      }
+    else
+      guest_addr = session[:guest_address] || {}
+      {
+        street_address: guest_addr[:street_address],
+        city:           guest_addr[:city],
+        province:       guest_addr[:province],
+        postal_code:    guest_addr[:postal_code],
+        country:        guest_addr[:country]
+      }
+    end
+  end
 
   def reconcile_delivery_method
     return unless session[:delivery_method_id]

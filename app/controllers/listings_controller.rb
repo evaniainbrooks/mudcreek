@@ -13,7 +13,11 @@ class ListingsController < ApplicationController
                            .where("position > ?", @listing.position)
                            .order(position: :asc, id: :asc)
                            .first
-    @cart_item = Current.user&.cart_items&.find_by(listing_id: @listing.id)
+    @cart_item = if Current.user
+      Current.user.cart_items.find_by(listing_id: @listing.id)
+    elsif session[:guest_cart_token]
+      CartItem.find_by(guest_cart_token: session[:guest_cart_token], listing_id: @listing.id)
+    end
     @watchlist_item = Current.user&.watchlist_items&.find_by(listing: @listing)
     if @listing.rental?
       @booking_events = @listing.rental_bookings

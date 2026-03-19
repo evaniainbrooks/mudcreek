@@ -53,4 +53,21 @@ module Authentication
       Current.session.destroy
       cookies.delete(:session_id)
     end
+
+    def merge_guest_cart(user)
+      token = session.delete(:guest_cart_token)
+      return unless token.present?
+
+      guest_items = CartItem.where(guest_cart_token: token)
+      return if guest_items.empty?
+
+      guest_items.each do |item|
+        existing = user.cart_items.find_by(listing_id: item.listing_id)
+        if existing
+          item.destroy
+        else
+          item.update_columns(user_id: user.id, guest_cart_token: nil)
+        end
+      end
+    end
 end

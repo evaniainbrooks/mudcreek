@@ -8,7 +8,7 @@ RSpec.describe CartItem, type: :model do
   let(:listing) { create(:listing) }
 
   describe "associations" do
-    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:user).optional }
     it { is_expected.to belong_to(:listing) }
     it { is_expected.to have_one(:rental_booking) }
   end

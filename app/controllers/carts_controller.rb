@@ -1,6 +1,13 @@
 class CartsController < ApplicationController
+  allow_unauthenticated_access
+
   def show
-    @cart_items = Current.user.cart_items.includes(listing: { images_attachments: :blob }).order(:created_at)
+    if Current.user
+      @cart_items = Current.user.cart_items.includes(listing: { images_attachments: :blob }).order(:created_at)
+    else
+      token = session[:guest_cart_token]
+      @cart_items = token ? CartItem.where(guest_cart_token: token).includes(listing: { images_attachments: :blob }).order(:created_at) : CartItem.none
+    end
 
     remove_sold_items
     reconcile_discount_code
@@ -8,6 +15,12 @@ class CartsController < ApplicationController
     build_cart_address
 
     @has_physical_items = @cart_items.any? { |item| item.listing.requires_delivery? }
+
+    unless Current.user
+      @guest_email = session[:guest_email]
+      @guest_name  = session[:guest_name]
+      @guest_info_saved = @guest_email.present? && @guest_name.present?
+    end
 
     @cart_summary = CartCalculator.new(
       @cart_items, discount_code: @discount_code, delivery_method: @delivery_method
@@ -47,16 +60,28 @@ class CartsController < ApplicationController
   end
 
   def build_cart_address
-    cart_addr = Current.user.cart_address
-    profile_addr = Current.user.address
-    @cart_address_saved = cart_addr&.street_address.present?
-    @cart_address = {
-      street_address: cart_addr&.street_address || profile_addr&.street_address,
-      city:           cart_addr&.city           || profile_addr&.city,
-      province:       cart_addr&.province       || profile_addr&.province,
-      postal_code:    cart_addr&.postal_code    || profile_addr&.postal_code,
-      country:        cart_addr&.country        || profile_addr&.country || "CA"
-    }
+    if Current.user
+      cart_addr = Current.user.cart_address
+      profile_addr = Current.user.address
+      @cart_address_saved = cart_addr&.street_address.present?
+      @cart_address = {
+        street_address: cart_addr&.street_address || profile_addr&.street_address,
+        city:           cart_addr&.city           || profile_addr&.city,
+        province:       cart_addr&.province       || profile_addr&.province,
+        postal_code:    cart_addr&.postal_code    || profile_addr&.postal_code,
+        country:        cart_addr&.country        || profile_addr&.country || "CA"
+      }
+    else
+      guest_addr = session[:guest_address] || {}
+      @cart_address_saved = guest_addr[:street_address].present?
+      @cart_address = {
+        street_address: guest_addr[:street_address],
+        city:           guest_addr[:city],
+        province:       guest_addr[:province],
+        postal_code:    guest_addr[:postal_code],
+        country:        guest_addr[:country] || "CA"
+      }
+    end
   end
 
   def reconcile_delivery_method
