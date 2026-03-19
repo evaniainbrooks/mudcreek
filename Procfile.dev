@@ -1,4 +1,4 @@
-web: env RUBY_DEBUG_OPEN=true IMGPROXY_URL=http://localhost:4000/imgproxy NGROK_HOST=nittiest-unreluctantly-nettie.ngrok-free.dev bin/rails server
+web: env RUBY_DEBUG_OPEN=true IMGPROXY_URL=https://nittiest-unreluctantly-nettie.ngrok-free.dev/imgproxy NGROK_HOST=nittiest-unreluctantly-nettie.ngrok-free.dev AWS_ENDPOINT_URL=https://nittiest-unreluctantly-nettie.ngrok-free.dev/s3 bin/rails server
 js: yarn watch:js
 css: yarn watch:css
 mail: mailhog

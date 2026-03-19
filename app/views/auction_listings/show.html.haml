@@ -43,6 +43,8 @@
     .col-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
       .position-sticky{ style: "top: 1.5rem" }
         %h1.fw-bold.mb-1= @listing.name
+        - if @listing.lot&.show_attribution?
+          .mb-2= lot_number_badge(@listing.lot)
 
         .mb-3
           %p.text-muted.small.mb-0 Auction

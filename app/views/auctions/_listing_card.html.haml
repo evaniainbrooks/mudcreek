@@ -42,16 +42,15 @@
         .d-flex.align-items-center.gap-2.mb-0.text-muted.small
           %i.bi.bi-calendar-check.flex-shrink-0
           %span= auction_listing.ends_at_in_time_zone.to_fs(:long)
-      .d-flex.flex-row.align-items-center.gap-2.mt-3.justify-content-center
-        = render("auction_listings/current_bid", auction_listing:)
-        = render("auction_listings/bid_count", auction_listing:)
-
-      .d-flex.justify-content-center.mt-3
+      .mt-3
+        .d-flex.align-items-center.justify-content-between.mb-2
+          = render("auction_listings/current_bid", auction_listing:)
+          = render("auction_listings/bid_count", auction_listing:)
         = render BidButtonComponent.new(auction_listing: auction_listing,
           auction: auction,
           registration: registration,
           bidder_token: user_bid_token(auction_listing.highest_bidder_id),
-          button_class: "btn btn-primary btn-sm")
+          button_class: "btn btn-primary btn-sm w-100")
       %p.card-text.text-muted.small.mt-3
         = listing.description.to_plain_text.truncate(120)
         - if listing.categories.any?

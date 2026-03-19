@@ -1,6 +1,3 @@
 - bid_count = auction_listing.bids_count || 0
-- if bid_count == 0
-  %p.text-muted.fw-bold.mb-0 No bids
-- else
-  %p.text-muted.fw-bold.mb-0
-    = pluralize(bid_count, "bid")
+%span.text-muted.small.fw-semibold
+  = bid_count == 0 ? "No bids" : pluralize(bid_count, "bid")

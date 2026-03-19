@@ -11,7 +11,7 @@ module ListingsHelper
     popover_content = lot_popover_content(lot)
     badge = content_tag(:span, label,
       class: "badge #{color}",
-      style: "cursor: pointer",
+      style: "cursor: pointer; font-family: monospace; font-size: 0.75em; border: 2px solid rgba(0,0,0,0.25); letter-spacing: 0.05em;",
       data: {
         bs_toggle: "popover",
         bs_trigger: "hover focus",

@@ -39,6 +39,14 @@ unless mudcreek.logo.attached?
   )
 end
 
+unless mudcreek.auction_placeholder.attached?
+  mudcreek.auction_placeholder.attach(
+    io: Rails.root.join("spec/fixtures/images/barn.jpg").open("rb"),
+    filename: "barn.jpg",
+    content_type: "image/jpeg"
+  )
+end
+
 puts "Seeded #{Tenant.count} tenants."
 
 # Backfill any existing records that predate the tenant column
@@ -222,7 +230,52 @@ listing_data = [
   # Garden & Outdoor
   { name: "Cast Iron Garden Urns",        price: 165,  description: "Pair of matching cast iron garden urns on pedestal bases. Classical acanthus leaf design. Light surface rust — structurally sound. 18\" tall each.", published: true },
   { name: "Antique Wheelbarrow",          price: 85,   pricing_type: :negotiable, description: "Vintage wooden wheelbarrow with iron wheel and banded hardwood tray. Painted red, well-worn. Functional and charming as a garden planter.", published: true },
-  { name: "Copper Garden Lanterns",       price: 95,   description: "Set of three wall-mount copper lanterns in graduated sizes. Aged verdigris patina. Glass panels intact. Wired for standard bulbs.", published: true }
+  { name: "Copper Garden Lanterns",       price: 95,   description: "Set of three wall-mount copper lanterns in graduated sizes. Aged verdigris patina. Glass panels intact. Wired for standard bulbs.", published: true },
+
+  # Furniture (non-auction)
+  { name: "Oak Roll-top Desk",            price: 545,  pricing_type: :negotiable, description: "Large S-roll oak cylinder desk with fitted interior — twelve pigeon holes, four small drawers, and a centre prospect door. Four full drawers below. Original lock and key. Circa 1905. Finish is original and even.", published: true },
+  { name: "Mahogany Sideboard",           price: 395,  pricing_type: :negotiable, description: "Edwardian mahogany sideboard with two centre drawers flanked by a pair of carved panel doors. Satinwood inlay on the frieze. Original brass ring pulls throughout. Excellent original finish.", published: true },
+  { name: "Victorian Hall Tree",          price: 225,  description: "Cast iron and oak hall tree with six double coat hooks, an umbrella stand, and a lower storage bench with lift lid. Original japanned finish with gilt highlights. Some paint chips.", published: true },
+  { name: "Walnut Bookcase with Glass Doors", price: 310, pricing_type: :negotiable, description: "Three-section stacking barrister bookcase in walnut with lift-front glass doors. Four shelves total. Original casters intact. Ideal for a library or study.", published: true },
+
+  # Antiques & Collectibles (non-auction)
+  { name: "Swiss Cylinder Music Box",     price: 285,  pricing_type: :negotiable, description: "Late Victorian Swiss cylinder music box in a rosewood case with inlaid lid. Plays six airs on a 15 cm cylinder. Runs smoothly and plays cleanly. Original crank and tune card.", published: true },
+  { name: "Dome-top Steamer Trunk",       price: 115,  description: "Canvas and wood dome-top steamer trunk with original tray insert, brass hardware, and interior paper lining. Lock intact, key included. Sits flat. Great storage piece.", published: true },
+  { name: "Brass Aneroid Barometer",      price: 145,  pricing_type: :negotiable, description: "Eight-inch brass aneroid barometer in an oak case with bevelled glass. Reads accurately — recently calibrated. Maker's name on the dial. Wall-mount bracket included.", published: true },
+  { name: "Pressed Glass Compote Set",    price: 60,   description: "Four-piece pressed glass compote and nappy set in the Hobstar pattern. Deep relief, excellent clarity, no chips. Likely American, circa 1900–1910.", published: true },
+
+  # Jewelry & Watches (non-auction)
+  { name: "Garnet Cluster Brooch",        price: 110,  description: "Victorian yellow gold garnet and seed pearl cluster brooch in a floral spray design. Ten round garnets, deep red. Pin catch intact. Tests 10K. 4.8 g.", published: true },
+  { name: "Gold Watch Chain",             price: 155,  pricing_type: :negotiable, description: "Heavy 14K yellow gold Albert watch chain with T-bar and swivel clip. 36 cm overall length. Hallmarked throughout. 18.2 g. No repairs.", published: true },
+
+  # Tools & Workshop (non-auction)
+  { name: "Brace and Bit Set",            price: 65,   description: "North Brothers Yankee brace with a set of twelve graduated auger bits in a canvas roll. Ratchet mechanism smooth in both directions. Bits range from ¼\" to 1\". All sharp.", published: true },
+  { name: "Drawknife",                    price: 35,   description: "Witherby 10\" drawknife with turned hardwood handles. Blade holds a fine edge with no pitting. Light surface rust only. A pleasure to use.", published: true },
+
+  # Books & Media (non-auction)
+  { name: "National Geographic Collection", price: 75, pricing_type: :negotiable, description: "Complete run of National Geographic from January 1960 through December 1979 — 240 issues — in original yellow-spine binders. All present and in excellent condition.", published: true },
+  { name: "Vintage Road Atlas Collection", price: 40,  description: "Twelve Esso and Gulf road atlases of Canada and the United States, 1948 to 1971. Clean maps, no writing. A wonderful record of mid-century roads and place names.", published: true },
+
+  # Kitchenware & Dining (non-auction)
+  { name: "Stoneware Butter Churn",       price: 85,   description: "Four-gallon salt-glazed stoneware butter churn with cobalt floral decoration. Wooden lid and original dash intact. No cracks. Signed by the potter on the base.", published: true },
+  { name: "Griswold Skillet Collection",  price: 135,  pricing_type: :negotiable, description: "Set of five Griswold cast iron skillets: No. 3, 5, 7, 8, and 10. All large block logos, Erie PA. Seasoned and ready to use. No cracks or pits.", published: true },
+
+  # Art & Decor (non-auction)
+  { name: "Carved Wooden Duck Decoy",     price: 145,  pricing_type: :negotiable, description: "Hand-carved and painted mallard drake decoy, circa 1940. Glass eyes, original paint in very good condition with honest gunning wear. Signed on the base. A fine decorative piece.", published: true },
+  { name: "Needlework Sampler",           price: 95,   description: "Framed 19th-century wool-on-linen sampler worked by 'Mary E. Alcott, aged 12, 1864.' Alphabet, numerals, and a verse above a house and garden scene. Original gilt frame.", published: true },
+  { name: "Reverse Painting on Glass",    price: 175,  pricing_type: :negotiable, description: "Framed Chinese export reverse painting on glass depicting a harbour scene with sampans and pagodas. 14\" × 20\" image in a lacquered frame. Colours are vivid, no flaking.", published: true },
+
+  # Vintage Clothing & Accessories (non-auction)
+  { name: "Lady's Victorian Brooch Set",  price: 85,   description: "Three Victorian gold-fill brooches — a crescent set with seed pearls, a bar pin with a turquoise cabochon, and a target brooch with red and white paste stones. All catches functional.", published: true },
+  { name: "Edwardian Lace Collar",        price: 45,   description: "Handmade Brussels needle lace collar, circa 1900–1910. Intricate floral and scroll pattern. Pristine condition — never worn. Mounted on archival card.", published: true },
+
+  # Electronics (non-auction)
+  { name: "Underwood Typewriter",         price: 125,  pricing_type: :negotiable, description: "Underwood No. 5 standard typewriter in original case. All keys strike cleanly, carriage returns and advances smoothly. Ribbon is dry but the machine is complete and functional.", published: true },
+  { name: "Kodak Carousel Projector",     price: 55,   description: "Kodak Carousel 750H slide projector with a 102 mm f/2.8 lens and remote control. Lamp is bright, tray advance quiet and reliable. Includes two 80-slide trays.", published: true },
+
+  # Garden & Outdoor (non-auction)
+  { name: "Stone Garden Birdbath",        price: 110,  description: "Cast stone pedestal birdbath with a fluted column and scalloped basin. Weathered grey with lichen. Basin holds water. 26\" overall height. No chips or cracks.", published: true },
+  { name: "Wrought Iron Plant Stand",     price: 75,   pricing_type: :negotiable, description: "Five-tier wrought iron plant stand with scrollwork legs and graduated shelves. Holds up to fifteen pots. Original black paint with light rust. Indoor or covered porch use.", published: true }
 ]
 
 listing_data.each do |attrs|
@@ -490,7 +543,10 @@ lot_assignments = {
     "Brass Bed Frame", "Antique Writing Desk", "Chesterfield Sofa", "Clockwork Mantle Clock",
     "Wedgwood Tea Service", "Sterling Silver Cutlery Set", "Silverplate Serving Tray",
     "Crystal Decanter Set", "Watercolour Landscape Painting", "Oil Portrait",
-    "Framed Botanical Prints Set", "Gold Locket Necklace", "Pearl Bracelet"
+    "Framed Botanical Prints Set", "Gold Locket Necklace", "Pearl Bracelet",
+    "Oak Roll-top Desk", "Mahogany Sideboard", "Walnut Bookcase with Glass Doors",
+    "Swiss Cylinder Music Box", "Brass Aneroid Barometer", "Reverse Painting on Glass",
+    "Needlework Sampler"
   ],
   "Blackwood Collection" => [
     "Brass Ship's Compass", "Pewter Tankard Set", "Bakelite Table Radio", "Gentleman's Pocket Watch",
@@ -502,16 +558,22 @@ lot_assignments = {
     "Tiffany-style Table Lamp", "Bronze Horse Figurine", "Hand-hooked Wool Rug",
     "Teak Garden Bench", "Cast Iron Garden Urns", "Copper Garden Lanterns",
     "Windsor Chairs Set of Four", "Cedar Chest", "Rocking Chair",
-    "Copper Cookware Set", "Cast Iron Dutch Oven", "Mink Stole", "Men's Tweed Hunting Jacket"
+    "Copper Cookware Set", "Cast Iron Dutch Oven", "Mink Stole", "Men's Tweed Hunting Jacket",
+    "Victorian Hall Tree", "Stone Garden Birdbath", "Wrought Iron Plant Stand",
+    "Carved Wooden Duck Decoy"
   ],
   "Chapman Farm" => [
     "Stanley Hand Plane Set", "Woodworking Chisel Set", "Cast Iron Bench Vise",
     "Crosscut Hand Saw", "Vintage Level Set", "Antique Wheelbarrow",
-    "Encyclopedia Britannica Set", "Vinyl Record Collection", "First Edition Poetry Collection"
+    "Encyclopedia Britannica Set", "Vinyl Record Collection", "First Edition Poetry Collection",
+    "Brace and Bit Set", "Drawknife", "National Geographic Collection", "Vintage Road Atlas Collection",
+    "Stoneware Butter Churn", "Griswold Skillet Collection"
   ],
   "Personal Items" => [
     "Vintage Pyrex Mixing Bowl Set", "Beaded Evening Bag", "Vintage Hat Collection",
-    "Vintage Tin Advertising Signs"
+    "Vintage Tin Advertising Signs",
+    "Lady's Victorian Brooch Set", "Edwardian Lace Collar", "Garnet Cluster Brooch",
+    "Gold Watch Chain", "National Geographic Collection", "Vintage Road Atlas Collection"
   ]
 }
 
@@ -610,7 +672,42 @@ category_assignments = {
   # Garden & Outdoor
   "Cast Iron Garden Urns"           => [ "Garden & Outdoor", "Antiques & Collectibles" ],
   "Antique Wheelbarrow"             => [ "Garden & Outdoor", "Antiques & Collectibles" ],
-  "Copper Garden Lanterns"          => [ "Garden & Outdoor" ]
+  "Copper Garden Lanterns"          => [ "Garden & Outdoor" ],
+  # Furniture (non-auction)
+  "Oak Roll-top Desk"               => [ "Furniture", "Antiques & Collectibles" ],
+  "Mahogany Sideboard"              => [ "Furniture", "Antiques & Collectibles" ],
+  "Victorian Hall Tree"             => [ "Furniture", "Antiques & Collectibles" ],
+  "Walnut Bookcase with Glass Doors" => [ "Furniture" ],
+  # Antiques & Collectibles (non-auction)
+  "Swiss Cylinder Music Box"        => [ "Antiques & Collectibles" ],
+  "Dome-top Steamer Trunk"          => [ "Antiques & Collectibles" ],
+  "Brass Aneroid Barometer"         => [ "Antiques & Collectibles" ],
+  "Pressed Glass Compote Set"       => [ "Antiques & Collectibles", "Kitchenware & Dining" ],
+  # Jewelry & Watches (non-auction)
+  "Garnet Cluster Brooch"           => [ "Jewelry & Watches", "Antiques & Collectibles" ],
+  "Gold Watch Chain"                => [ "Jewelry & Watches", "Antiques & Collectibles" ],
+  # Tools & Workshop (non-auction)
+  "Brace and Bit Set"               => [ "Tools & Workshop" ],
+  "Drawknife"                       => [ "Tools & Workshop" ],
+  # Books & Media (non-auction)
+  "National Geographic Collection"  => [ "Books & Media" ],
+  "Vintage Road Atlas Collection"   => [ "Books & Media", "Antiques & Collectibles" ],
+  # Kitchenware & Dining (non-auction)
+  "Stoneware Butter Churn"          => [ "Kitchenware & Dining", "Antiques & Collectibles" ],
+  "Griswold Skillet Collection"     => [ "Kitchenware & Dining", "Antiques & Collectibles" ],
+  # Art & Decor (non-auction)
+  "Carved Wooden Duck Decoy"        => [ "Art & Decor", "Antiques & Collectibles" ],
+  "Needlework Sampler"              => [ "Art & Decor", "Antiques & Collectibles" ],
+  "Reverse Painting on Glass"       => [ "Art & Decor", "Antiques & Collectibles" ],
+  # Vintage Clothing (non-auction)
+  "Lady's Victorian Brooch Set"     => [ "Jewelry & Watches", "Vintage Clothing", "Antiques & Collectibles" ],
+  "Edwardian Lace Collar"           => [ "Vintage Clothing", "Antiques & Collectibles" ],
+  # Electronics (non-auction)
+  "Underwood Typewriter"            => [ "Electronics", "Antiques & Collectibles" ],
+  "Kodak Carousel Projector"        => [ "Electronics" ],
+  # Garden & Outdoor (non-auction)
+  "Stone Garden Birdbath"           => [ "Garden & Outdoor" ],
+  "Wrought Iron Plant Stand"        => [ "Garden & Outdoor" ]
 }
 
 category_assignments.each do |listing_name, cat_names|
@@ -966,26 +1063,196 @@ end
 
 puts "Seeded #{Listings::PropertySet.count} property sets with #{Listings::Property.where(listing_id: nil).count} template properties."
 
-# Load a pool of stock images from fixtures, then assign one per listing.
 FIXTURES_IMAGE_DIR = Rails.root.join("spec/fixtures/images")
 
-stock_images = FIXTURES_IMAGE_DIR.glob("*.jpg").map do |path|
-  { io: path.open("rb"), filename: path.basename.to_s, content_type: "image/jpeg" }
-end
+# Keywords (loremflickr.com tags) per listing — 2–3 variants give multiple images.
+LISTING_IMAGE_KEYWORDS = {
+  # Furniture
+  "Victorian Parlour Chair"            => %w[antique-chair victorian-furniture parlour],
+  "Oak Dining Table with Six Chairs"   => %w[antique-dining-table oak-furniture wooden-table],
+  "Mahogany Dresser with Mirror"       => %w[antique-dresser vintage-mirror mahogany],
+  "Brass Bed Frame"                    => %w[antique-brass-bed vintage-bedroom brass-bed],
+  "Antique Writing Desk"               => %w[antique-desk writing-desk secretary-desk],
+  "Windsor Chairs Set of Four"         => %w[windsor-chair antique-chair wooden-chair],
+  "Cedar Chest"                        => %w[antique-chest cedar-chest vintage-trunk],
+  "Chesterfield Sofa"                  => %w[chesterfield-sofa leather-sofa tufted-sofa],
+  "Teak Garden Bench"                  => %w[garden-bench teak-bench outdoor-bench],
+  "Rocking Chair"                      => %w[rocking-chair antique-rocker wooden-chair],
 
-puts "Loaded #{stock_images.size} stock images from fixtures."
+  # Antiques & Collectibles
+  "Wedgwood Tea Service"               => %w[wedgwood-tea antique-tea-set porcelain-china],
+  "Bakelite Table Radio"               => %w[vintage-radio bakelite-radio antique-radio],
+  "Clockwork Mantle Clock"             => %w[mantle-clock antique-clock mantel-clock],
+  "Depression Glass Bowl Set"          => %w[depression-glass vintage-glassware pink-glass],
+  "Sterling Silver Cutlery Set"        => %w[silver-cutlery antique-silverware sterling-silver],
+  "Vintage Tin Advertising Signs"      => %w[vintage-tin-sign antique-advertising tin-sign],
+  "Pewter Tankard Set"                 => %w[pewter-tankard antique-tankard pewter-mug],
+  "Brass Ship's Compass"               => %w[brass-compass nautical-compass ship-compass],
+  "Hand-painted China Plates"          => %w[china-plates antique-china hand-painted-plate],
+  "Cast Iron Doorstop Collection"      => %w[cast-iron antique-doorstop vintage-ironware],
 
-if stock_images.any?
-  attached = 0
-  Listing.find_each do |listing|
-    next if listing.images.attached?
-    img = stock_images.sample
-    img[:io].rewind
-    listing.images.attach(img)
-    attached += 1
+  # Jewelry & Watches
+  "Gold Locket Necklace"               => %w[gold-locket antique-jewelry vintage-necklace],
+  "Gentleman's Pocket Watch"           => %w[pocket-watch antique-watch vintage-watch],
+  "Pearl Bracelet"                     => %w[pearl-bracelet antique-jewelry vintage-bracelet],
+  "Cameo Brooch"                       => %w[cameo-brooch antique-brooch vintage-jewelry],
+  "Silver Cufflinks"                   => %w[silver-cufflinks antique-cufflinks menswear],
+  "Amethyst Ring"                      => %w[amethyst-ring antique-ring vintage-gemstone],
+
+  # Tools & Workshop
+  "Stanley Hand Plane Set"             => %w[hand-plane woodworking-tools antique-tools],
+  "Woodworking Chisel Set"             => %w[woodworking-chisel hand-tools wood-chisel],
+  "Cast Iron Bench Vise"               => %w[bench-vise workshop-tools cast-iron-vise],
+  "Crosscut Hand Saw"                  => %w[hand-saw vintage-saw woodworking-saw],
+  "Vintage Level Set"                  => %w[spirit-level vintage-tools carpenter-tools],
+
+  # Books & Media
+  "Encyclopedia Britannica Set"        => %w[encyclopedia-books vintage-books library-shelf],
+  "Vinyl Record Collection"            => %w[vinyl-records record-collection vintage-records],
+  "First Edition Poetry Collection"    => %w[antique-books vintage-books old-books],
+
+  # Kitchenware & Dining
+  "Copper Cookware Set"                => %w[copper-cookware vintage-copper-pots kitchen-copper],
+  "Vintage Pyrex Mixing Bowl Set"      => %w[pyrex-bowls vintage-kitchen mixing-bowls],
+  "Crystal Decanter Set"               => %w[crystal-decanter glass-decanter crystal-glassware],
+  "Silverplate Serving Tray"           => %w[silver-tray antique-tray silverplate-serving],
+  "Cast Iron Dutch Oven"               => %w[cast-iron-dutch-oven griswold-cast-iron dutch-oven],
+
+  # Art & Decor
+  "Watercolour Landscape Painting"     => %w[watercolour-landscape antique-painting vintage-watercolor],
+  "Hand-hooked Wool Rug"               => %w[vintage-rug hooked-rug antique-wool-rug],
+  "Framed Botanical Prints Set"        => %w[botanical-prints antique-botanical vintage-prints],
+  "Bronze Horse Figurine"              => %w[bronze-horse horse-figurine bronze-sculpture],
+  "Tiffany-style Table Lamp"           => %w[tiffany-lamp stained-glass-lamp art-nouveau-lamp],
+  "Oil Portrait"                       => %w[oil-portrait antique-portrait vintage-painting],
+
+  # Vintage Clothing & Accessories
+  "Mink Stole"                         => %w[mink-fur vintage-fur mink-stole],
+  "Men's Tweed Hunting Jacket"         => %w[tweed-jacket harris-tweed vintage-jacket],
+  "Beaded Evening Bag"                 => %w[beaded-bag antique-purse vintage-handbag],
+  "Vintage Hat Collection"             => %w[vintage-hat antique-hats 1940s-hats],
+
+  # Electronics
+  "Grundig Shortwave Radio"            => %w[shortwave-radio vintage-radio grundig],
+  "Vintage Rotary Telephone"           => %w[rotary-phone vintage-telephone dial-phone],
+  "8mm Film Projector"                 => %w[8mm-projector vintage-projector film-projector],
+
+  # Garden & Outdoor
+  "Cast Iron Garden Urns"              => %w[garden-urn cast-iron-urn garden-planter],
+  "Antique Wheelbarrow"                => %w[antique-wheelbarrow vintage-wheelbarrow garden],
+  "Copper Garden Lanterns"             => %w[copper-lantern garden-lantern vintage-lantern],
+
+  # Furniture (non-auction)
+  "Oak Roll-top Desk"                  => %w[roll-top-desk antique-desk cylinder-desk],
+  "Mahogany Sideboard"                 => %w[antique-sideboard mahogany-buffet vintage-sideboard],
+  "Victorian Hall Tree"                => %w[hall-tree coat-stand antique-hallway],
+  "Walnut Bookcase with Glass Doors"   => %w[antique-bookcase barrister-bookcase glass-bookcase],
+
+  # Antiques & Collectibles (non-auction)
+  "Swiss Cylinder Music Box"           => %w[antique-music-box cylinder-music-box vintage-music],
+  "Dome-top Steamer Trunk"             => %w[steamer-trunk antique-trunk vintage-chest],
+  "Brass Aneroid Barometer"            => %w[antique-barometer brass-barometer weather-instrument],
+  "Pressed Glass Compote Set"          => %w[pressed-glass antique-glassware hobstar-glass],
+
+  # Jewelry & Watches (non-auction)
+  "Garnet Cluster Brooch"              => %w[garnet-brooch antique-brooch victorian-jewelry],
+  "Gold Watch Chain"                   => %w[gold-watch-chain albert-chain antique-chain],
+
+  # Tools & Workshop (non-auction)
+  "Brace and Bit Set"                  => %w[brace-and-bit antique-brace woodworking-brace],
+  "Drawknife"                          => %w[drawknife antique-drawknife woodworking-tools],
+
+  # Books & Media (non-auction)
+  "National Geographic Collection"     => %w[national-geographic vintage-magazines magazine-collection],
+  "Vintage Road Atlas Collection"      => %w[vintage-road-map antique-atlas old-maps],
+
+  # Kitchenware & Dining (non-auction)
+  "Stoneware Butter Churn"             => %w[butter-churn stoneware-churn antique-crock],
+  "Griswold Skillet Collection"        => %w[griswold-cast-iron cast-iron-skillet vintage-skillet],
+
+  # Art & Decor (non-auction)
+  "Carved Wooden Duck Decoy"           => %w[duck-decoy carved-decoy antique-decoy],
+  "Needlework Sampler"                 => %w[needlework-sampler antique-sampler embroidery-sampler],
+  "Reverse Painting on Glass"          => %w[reverse-painting antique-glass-painting chinese-export-art],
+
+  # Vintage Clothing (non-auction)
+  "Lady's Victorian Brooch Set"        => %w[victorian-brooch antique-brooch vintage-pin],
+  "Edwardian Lace Collar"              => %w[antique-lace edwardian-collar lace-collar],
+
+  # Electronics (non-auction)
+  "Underwood Typewriter"               => %w[underwood-typewriter antique-typewriter vintage-typewriter],
+  "Kodak Carousel Projector"           => %w[kodak-projector carousel-projector slide-projector],
+
+  # Garden & Outdoor (non-auction)
+  "Stone Garden Birdbath"              => %w[garden-birdbath stone-birdbath garden-ornament],
+  "Wrought Iron Plant Stand"           => %w[plant-stand wrought-iron-stand garden-stand]
+}.freeze
+
+# Download a loremflickr image and cache it under spec/fixtures/images/listings/.
+# Returns the Pathname, or nil on failure.
+def fetch_listing_image(keyword, filename)
+  require "net/http"
+  cache_dir = FIXTURES_IMAGE_DIR.join("listings")
+  cache_dir.mkpath
+  cached = cache_dir.join(filename)
+  return cached if cached.exist?
+
+  uri = URI("https://loremflickr.com/800/600/#{keyword}")
+  10.times do
+    path = uri.path.then { |p| uri.query ? "#{p}?#{uri.query}" : p }
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
+      http.get(path, "User-Agent" => "MudCreek Seeds/1.0")
+    end
+    case response
+    when Net::HTTPSuccess
+      cached.binwrite(response.body)
+      return cached
+    when Net::HTTPRedirection
+      uri = URI.join(uri, response["location"])
+    else
+      raise "HTTP #{response.code}"
+    end
   end
-  puts "Attached images to #{attached} listings."
+  raise "Too many redirects"
+rescue => e
+  puts "  Image download failed (#{keyword}): #{e.message}"
+  nil
 end
+
+listing_images_attached = 0
+listing_images_skipped  = 0
+
+LISTING_IMAGE_KEYWORDS.each do |listing_name, keywords|
+  listing = Listing.find_by(name: listing_name)
+  next unless listing
+
+  existing_count = listing.images.count
+  keywords.each_with_index do |keyword, idx|
+    next if idx < existing_count  # skip already-attached slots
+
+    safe_name = listing_name.gsub(/[^a-zA-Z0-9]/, "_").downcase
+    filename  = "#{safe_name}_#{idx + 1}.jpg"
+    cache_hit = FIXTURES_IMAGE_DIR.join("listings", filename).exist?
+    print "  [#{listing_images_attached + listing_images_skipped + 1}/#{LISTING_IMAGE_KEYWORDS.sum { |_, kw| kw.size }}] #{listing_name} (#{keyword})#{cache_hit ? " [cached]" : ""}... "
+    $stdout.flush
+    path = fetch_listing_image(keyword, filename)
+
+    if path
+      listing.images.attach(
+        io:           path.open("rb"),
+        filename:     filename,
+        content_type: "image/jpeg"
+      )
+      listing_images_attached += 1
+      puts "ok"
+    else
+      listing_images_skipped += 1
+      puts "failed"
+    end
+  end
+end
+
+puts "Attached #{listing_images_attached} listing images (#{listing_images_skipped} skipped due to download errors)."
 
 # Offers
 Current.tenant = mudcreek
@@ -1123,12 +1390,13 @@ auction_data = [
     published: true,
     reconciled: true,
     auto_approve: false,
+    poster: "homestead.jpg",
     address: { street_address: "412 Elmwood Avenue", city: "Kamloops", province: "BC", postal_code: "V2C 1A1", country: "CA" },
     listings: [
-      { name: "Victorian Parlour Chair",      starting_bid: 100, bid_increment: 10, reserve_price: 150 },
-      { name: "Mahogany Dresser with Mirror", starting_bid: 200, bid_increment: 20, reserve_price: 280 },
-      { name: "Clockwork Mantle Clock",       starting_bid: 100, bid_increment: 10, reserve_price: 175 },
-      { name: "Crystal Decanter Set",         starting_bid:  50, bid_increment: 10, reserve_price: nil },
+      { name: "Victorian Parlour Chair",        starting_bid: 100, bid_increment: 10, reserve_price: 150 },
+      { name: "Mahogany Dresser with Mirror",   starting_bid: 200, bid_increment: 20, reserve_price: 280 },
+      { name: "Clockwork Mantle Clock",         starting_bid: 100, bid_increment: 10, reserve_price: 175 },
+      { name: "Crystal Decanter Set",           starting_bid:  50, bid_increment: 10, reserve_price: nil },
       { name: "Watercolour Landscape Painting", starting_bid: 125, bid_increment: 25, reserve_price: nil }
     ]
   },
@@ -1140,13 +1408,14 @@ auction_data = [
     published: true,
     reconciled: false,
     auto_approve: true,
+    poster: "lodge.jpg",
     address: { street_address: "88 Birchwood Court", city: "Revelstoke", province: "BC", postal_code: "V0E 2S0", country: "CA" },
     listings: [
-      { name: "Gentleman's Pocket Watch",  starting_bid: 150, bid_increment: 25, reserve_price: 250 },
-      { name: "Sterling Silver Cutlery Set", starting_bid: 150, bid_increment: 25, reserve_price: nil },
-      { name: "Tiffany-style Table Lamp", starting_bid: 150, bid_increment: 25, reserve_price: 250 },
-      { name: "Bronze Horse Figurine",     starting_bid:  75, bid_increment: 15, reserve_price: nil },
-      { name: "Hand-hooked Wool Rug",      starting_bid: 100, bid_increment: 15, reserve_price: 165 }
+      { name: "Gentleman's Pocket Watch",     starting_bid: 150, bid_increment: 25, reserve_price: 250 },
+      { name: "Sterling Silver Cutlery Set",  starting_bid: 150, bid_increment: 25, reserve_price: nil },
+      { name: "Tiffany-style Table Lamp",     starting_bid: 150, bid_increment: 25, reserve_price: 250 },
+      { name: "Bronze Horse Figurine",        starting_bid:  75, bid_increment: 15, reserve_price: nil },
+      { name: "Hand-hooked Wool Rug",         starting_bid: 100, bid_increment: 15, reserve_price: 165 }
     ]
   },
   {
@@ -1156,12 +1425,90 @@ auction_data = [
     published: false,
     reconciled: false,
     auto_approve: true,
+    poster: "meadow.jpg",
     address: { street_address: "55 Manor Gate Road", city: "Penticton", province: "BC", postal_code: "V2A 1B3", country: "CA" },
     listings: [
-      { name: "Vinyl Record Collection",        starting_bid: 40,  bid_increment: 5,  reserve_price: nil },
-      { name: "Grundig Shortwave Radio",        starting_bid: 50,  bid_increment: 10, reserve_price: nil },
-      { name: "Bakelite Table Radio",           starting_bid: 35,  bid_increment: 5,  reserve_price: nil },
-      { name: "Oil Portrait",                   starting_bid: 100, bid_increment: 15, reserve_price: 175 }
+      { name: "Vinyl Record Collection", starting_bid: 40,  bid_increment: 5,  reserve_price: nil },
+      { name: "Grundig Shortwave Radio", starting_bid: 50,  bid_increment: 10, reserve_price: nil },
+      { name: "Bakelite Table Radio",    starting_bid: 35,  bid_increment: 5,  reserve_price: nil },
+      { name: "Oil Portrait",            starting_bid: 100, bid_increment: 15, reserve_price: 175 }
+    ]
+  },
+  {
+    name: "Lakeview Cottage Dispersal",
+    starts_at: 5.days.ago,
+    ends_at: 9.days.from_now,
+    end_time_stagger_interval: 45,
+    published: true,
+    reconciled: false,
+    auto_approve: true,
+    poster: "lake.jpg",
+    address: { street_address: "14 Lakeshore Drive", city: "Salmon Arm", province: "BC", postal_code: "V1E 2V1", country: "CA" },
+    listings: [
+      { name: "Teak Garden Bench",          starting_bid:  75, bid_increment: 10, reserve_price: nil },
+      { name: "Cast Iron Garden Urns",      starting_bid:  75, bid_increment: 15, reserve_price: 140 },
+      { name: "Copper Garden Lanterns",     starting_bid:  50, bid_increment: 10, reserve_price: nil },
+      { name: "Copper Cookware Set",        starting_bid: 100, bid_increment: 15, reserve_price: 160 },
+      { name: "Vintage Pyrex Mixing Bowl Set", starting_bid: 35, bid_increment: 5, reserve_price: nil }
+    ]
+  },
+  {
+    name: "Ranch & Farm Consignment",
+    starts_at: 8.days.ago,
+    ends_at: 6.days.from_now,
+    end_time_stagger_interval: 30,
+    published: true,
+    reconciled: false,
+    auto_approve: true,
+    poster: "ranch.jpg",
+    address: { street_address: "9900 Douglas Lake Road", city: "Merritt", province: "BC", postal_code: "V1K 1P0", country: "CA" },
+    listings: [
+      { name: "Antique Wheelbarrow",    starting_bid: 45,  bid_increment: 5,  reserve_price: nil },
+      { name: "Vintage Level Set",      starting_bid: 20,  bid_increment: 5,  reserve_price: nil },
+      { name: "Crosscut Hand Saw",      starting_bid: 20,  bid_increment: 5,  reserve_price: nil },
+      { name: "Woodworking Chisel Set", starting_bid: 30,  bid_increment: 5,  reserve_price: nil },
+      { name: "Cast Iron Dutch Oven",   starting_bid: 35,  bid_increment: 5,  reserve_price: nil }
+    ]
+  },
+  {
+    name: "Prairie Homestead Collection",
+    starts_at: 10.weeks.ago,
+    ends_at: 8.weeks.ago,
+    end_time_stagger_interval: 0,
+    published: true,
+    reconciled: true,
+    auto_approve: false,
+    poster: "prairie.jpg",
+    address: { street_address: "Rural Route 3", city: "Ashcroft", province: "BC", postal_code: "V0K 1A0", country: "CA" },
+    listings: [
+      { name: "Cedar Chest",                starting_bid:  75, bid_increment: 10, reserve_price: nil },
+      { name: "Windsor Chairs Set of Four", starting_bid: 100, bid_increment: 15, reserve_price: nil },
+      { name: "Rocking Chair",              starting_bid:  50, bid_increment: 10, reserve_price: nil },
+      { name: "Mink Stole",                 starting_bid:  75, bid_increment: 15, reserve_price: 120 },
+      { name: "Men's Tweed Hunting Jacket", starting_bid:  40, bid_increment: 10, reserve_price: nil },
+      { name: "Beaded Evening Bag",         starting_bid:  25, bid_increment: 5,  reserve_price: nil },
+      { name: "Vintage Hat Collection",     starting_bid:  30, bid_increment: 5,  reserve_price: nil }
+    ]
+  },
+  {
+    name: "Orchard Valley Estate",
+    starts_at: 2.weeks.from_now,
+    ends_at: 4.weeks.from_now,
+    end_time_stagger_interval: 60,
+    published: true,
+    reconciled: false,
+    auto_approve: true,
+    poster: "orchard.jpg",
+    address: { street_address: "1250 Orchard Road", city: "Kelowna", province: "BC", postal_code: "V1Y 5A1", country: "CA" },
+    listings: [
+      { name: "Chesterfield Sofa",          starting_bid: 250, bid_increment: 25, reserve_price: 400 },
+      { name: "Antique Writing Desk",       starting_bid: 175, bid_increment: 25, reserve_price: nil },
+      { name: "Brass Bed Frame",            starting_bid: 125, bid_increment: 25, reserve_price: nil },
+      { name: "Gold Locket Necklace",       starting_bid:  75, bid_increment: 15, reserve_price: nil },
+      { name: "Pearl Bracelet",             starting_bid:  50, bid_increment: 10, reserve_price: nil },
+      { name: "Cameo Brooch",               starting_bid:  35, bid_increment: 5,  reserve_price: nil },
+      { name: "Silver Cufflinks",           starting_bid:  30, bid_increment: 5,  reserve_price: nil },
+      { name: "Framed Botanical Prints Set", starting_bid: 40, bid_increment: 10, reserve_price: nil }
     ]
   }
 ]
@@ -1199,6 +1546,15 @@ auctions = auction_data.map do |attrs|
       position: idx + 1,
       starting_bid_cents:  listing_attrs[:starting_bid] * 100,
       reserve_price_cents: listing_attrs[:reserve_price] ? listing_attrs[:reserve_price] * 100 : nil
+    )
+  end
+
+  if attrs[:poster] && !auction.poster.attached?
+    poster_path = FIXTURES_IMAGE_DIR.join(attrs[:poster])
+    auction.poster.attach(
+      io: poster_path.open("rb"),
+      filename: attrs[:poster],
+      content_type: "image/jpeg"
     )
   end
 
@@ -1334,6 +1690,14 @@ chapman_tools_auction = Auction.find_or_create_by!(name: "Chapman Farm Tools Sal
   a.published               = true
   a.reconciled              = true
   a.auto_approve            = false
+end
+
+unless chapman_tools_auction.poster.attached?
+  chapman_tools_auction.poster.attach(
+    io: FIXTURES_IMAGE_DIR.join("farm.jpg").open("rb"),
+    filename: "farm.jpg",
+    content_type: "image/jpeg"
+  )
 end
 
 henderson_auction = Auction.find_by!(name: "Henderson Estate Auction")
