@@ -88,7 +88,7 @@ RSpec.describe BidBroadcastService do
         expect(mock_renderer).to receive(:render).with(
           partial: "auction_listings/bid_panel",
           locals: hash_including(auction: auction, auction_listing: auction_listing,
-                                 registration: nil, bidder_token: nil)
+                                 registration: nil, bidder_token: an_instance_of(String))
         ).and_return("<div>panel</div>")
 
         call

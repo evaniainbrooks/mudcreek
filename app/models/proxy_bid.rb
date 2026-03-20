@@ -5,6 +5,7 @@ class ProxyBid < ApplicationRecord
   monetize :max_bid_cents, with_model_currency: :currency
 
   validates :max_bid_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :auction_registration_id, uniqueness: { scope: :auction_listing_id }
   validate :registration_must_be_approved
   validate :max_must_meet_minimum
 

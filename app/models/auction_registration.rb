@@ -9,6 +9,7 @@ class AuctionRegistration < ApplicationRecord
   validates :user_id, uniqueness: { scope: :auction_id }
 
   has_many :bids, dependent: :destroy
+  has_many :proxy_bids, dependent: :destroy
 
   before_create :apply_auto_approve
   after_create_commit  :send_approval_email, if: -> { approved? }

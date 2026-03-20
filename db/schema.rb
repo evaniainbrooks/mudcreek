@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_210000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_19_210001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -470,7 +470,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_210000) do
     t.integer "max_bid_cents", null: false
     t.datetime "updated_at", null: false
     t.index ["auction_listing_id", "auction_registration_id"], name: "index_proxy_bids_on_listing_and_registration", unique: true
-    t.index ["auction_listing_id"], name: "index_proxy_bids_on_auction_listing_id"
     t.index ["auction_registration_id"], name: "index_proxy_bids_on_auction_registration_id"
   end
 
