@@ -116,6 +116,7 @@ class OrdersController < ApplicationController
       @order = Current.user.orders.includes(:order_items).find_by!(number: params[:number])
     else
       token = params[:token] || session[:guest_order_token]
+      raise ActiveRecord::RecordNotFound unless token.present?
       @order = Order.includes(:order_items).find_by!(number: params[:number], guest_token: token)
     end
 

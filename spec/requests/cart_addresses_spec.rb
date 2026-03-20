@@ -63,9 +63,9 @@ RSpec.describe "CartAddresses", type: :request do
 
     context "when unauthenticated" do
       before { delete session_path }
-      it "redirects to sign-in" do
+      it "saves the address to the session and redirects to the cart" do
         post cart_address_path, params: { cart_address: address_params }
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to redirect_to(cart_path)
       end
     end
   end

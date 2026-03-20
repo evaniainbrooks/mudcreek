@@ -257,10 +257,10 @@ RSpec.describe "Carts", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "returns 200" do
         get cart_path
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to have_http_status(:ok)
       end
     end
   end

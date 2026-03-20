@@ -250,10 +250,10 @@ RSpec.describe "Orders", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "redirects to the cart" do
         post orders_path
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to redirect_to(cart_path)
       end
     end
   end
@@ -348,10 +348,10 @@ RSpec.describe "Orders", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "returns not found" do
         get order_path(order)
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
