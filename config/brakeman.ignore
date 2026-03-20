@@ -3,31 +3,31 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
-      "fingerprint": "3e8521fa3608a85270b74a4acfd7227ca1406eecdc4ed90559a7663c55eeb92e",
+      "fingerprint": "2b5441fa55fa9405336b323662001e1c88fb3c63e3cfec65a3540c931adc0143",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
-      "file": "app/views/listings/show.html.haml",
-      "line": 100,
+      "file": "app/views/admin/lots/show.html.haml",
+      "line": 56,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "::Haml::AttributeBuilder.build_class(true, \"bi fs-1\", [document_icon_class((Unresolved Model).new.content_type), \"text-secondary\"].compact_blank.join(\" \"))",
+      "code": "::Haml::AttributeBuilder.build_class(true, \"badge\", lot_state_badge_class(Lot.find_by!(:hashid => params[:hashid])))",
       "render_path": [
         {
           "type": "controller",
-          "class": "ListingsController",
+          "class": "Admin::LotsController",
           "method": "show",
-          "line": 13,
-          "file": "app/controllers/listings_controller.rb",
+          "line": 19,
+          "file": "app/controllers/admin/lots_controller.rb",
           "rendered": {
-            "name": "listings/show",
-            "file": "app/views/listings/show.html.haml"
+            "name": "admin/lots/show",
+            "file": "app/views/admin/lots/show.html.haml"
           }
         }
       ],
       "location": {
         "type": "template",
-        "template": "listings/show"
+        "template": "admin/lots/show"
       },
-      "user_input": "(Unresolved Model).new.content_type",
+      "user_input": "Lot.find_by!(:hashid => params[:hashid])",
       "confidence": "Weak",
       "cwe_id": [
         79
@@ -37,31 +37,31 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
-      "fingerprint": "8d1f016b5309779c6f4088cadf83d109ffe057b1d158490af629c579525dcc74",
+      "fingerprint": "54aec348a61292018be402a825906a69bf44b254fbba6cd9e68cf9d39d9ae981",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
-      "file": "app/views/auction_listings/show.html.haml",
-      "line": 58,
+      "file": "app/views/pages/show.html.haml",
+      "line": 9,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "::Haml::AttributeBuilder.build_class(true, \"bi fs-1\", [document_icon_class((Unresolved Model).new.content_type), \"text-secondary\"].compact_blank.join(\" \"))",
+      "code": "::Haml::AttributeBuilder.build_class(true, \"bi #{Page.published.find_by!(:slug => params[:slug]).icon} me-2\")",
       "render_path": [
         {
           "type": "controller",
-          "class": "AuctionListingsController",
+          "class": "PagesController",
           "method": "show",
-          "line": 29,
-          "file": "app/controllers/auction_listings_controller.rb",
+          "line": 6,
+          "file": "app/controllers/pages_controller.rb",
           "rendered": {
-            "name": "auction_listings/show",
-            "file": "app/views/auction_listings/show.html.haml"
+            "name": "pages/show",
+            "file": "app/views/pages/show.html.haml"
           }
         }
       ],
       "location": {
         "type": "template",
-        "template": "auction_listings/show"
+        "template": "pages/show"
       },
-      "user_input": "(Unresolved Model).new.content_type",
+      "user_input": "Page.published.find_by!(:slug => params[:slug])",
       "confidence": "Weak",
       "cwe_id": [
         79
