@@ -1,0 +1,38 @@
+.card.shadow-sm.border-0.mb-3
+  .card-body
+    .d-flex.align-items-center.justify-content-between.mb-2
+      %p.fw-semibold.mb-0
+        %i.bi.bi-person.me-1
+        Contact Information
+      - if guest_info_saved
+        %button.btn.btn-sm.btn-link.p-0.text-decoration-none{type: "button",
+            data: { bs_toggle: "collapse", bs_target: "#guest-info-form-collapse" },
+            aria: { expanded: "false", controls: "guest-info-form-collapse" }}
+          %i.bi.bi-pencil.me-1
+          Change
+    - if guest_info_saved
+      %p.text-muted.small.mb-0
+        = guest_name
+        %br
+        = guest_email
+    .collapse{ id: "guest-info-form-collapse", class: guest_info_saved ? nil : "show" }
+      - unless guest_info_saved
+        %hr.mt-0.mb-3
+      = form_with url: cart_guest_info_path, method: :post, scope: :guest_info do |f|
+        .mb-2
+          = f.label :name, "Full name", class: "form-label form-label-sm required"
+          = f.text_field :name,
+              value: guest_name,
+              required: true,
+              autocomplete: "name",
+              placeholder: "Jane Smith",
+              class: "form-control form-control-sm"
+        .mb-3
+          = f.label :email, "Email address", class: "form-label form-label-sm required"
+          = f.email_field :email,
+              value: guest_email,
+              required: true,
+              autocomplete: "email",
+              placeholder: "you@example.com",
+              class: "form-control form-control-sm"
+        = f.submit "Save", class: "btn btn-primary btn-sm w-100"

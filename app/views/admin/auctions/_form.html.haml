@@ -54,8 +54,8 @@
               = s.fields_for :tiers do |t|
                 = render "admin/shared/bid_increment_tier_fields", tier_form: t
             .mt-2
-              %button.btn.btn-sm.btn-outline-secondary{ type: "button",
-                  data: { action: "bid-increment-schedule#addTier" } }
+              %button.btn.btn-sm.btn-outline-secondary{type: "button",
+                  data: { action: "bid-increment-schedule#addTier" }}
                 %i.bi.bi-plus-lg.me-1
                 Add Tier
             %template{ data: { bid_increment_schedule_target: "tierTemplate" } }

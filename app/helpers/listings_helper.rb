@@ -1,6 +1,26 @@
 module ListingsHelper
   BADGE_COLORS = %w[text-bg-primary text-bg-success text-bg-danger text-bg-warning text-bg-info text-bg-secondary text-bg-dark].freeze
 
+  def public_listing_back_button(listing)
+    if (auction = listing.auction_listing&.auction)
+      link_to(admin_auction_path(auction), class: "btn btn-outline-secondary") do
+        tag(:i, class: "bi bi-arrow-left me-1") + "Back to Auction"
+      end
+    else
+      link_to(admin_listings_path, class: "btn btn-outline-secondary") do
+        tag(:i, class: "bi bi-arrow-left me-1") + "Back to Listings"
+      end
+    end
+  end
+
+  def public_listing_path(listing)
+    if listing.auction_listing
+      auction_auction_listing_path(listing.auction_listing.auction, listing.auction_listing)
+    else
+      listing_path(listing)
+    end
+  end
+
   def badge_color_for(str)
     BADGE_COLORS[str.bytes.sum % BADGE_COLORS.size]
   end

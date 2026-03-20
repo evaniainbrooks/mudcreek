@@ -1,0 +1,27 @@
+- available_methods = DeliveryMethod.where(active: true).order(:name)
+- if has_physical_items && available_methods.any?
+  .card.shadow-sm.border-0.mb-3
+    .card-body
+      %p.fw-semibold.mb-2
+        %i.bi.bi-truck.me-1
+        Delivery Method
+      - if delivery_method
+        .d-flex.align-items-center.justify-content-between
+          %span.text-muted.small
+            = delivery_method.name
+            &mdash;
+            = delivery_method.price_cents.zero? ? "Free" : humanized_money_with_symbol(delivery_method.price)
+          = button_to cart_delivery_method_path, method: :delete, class: "btn btn-sm btn-outline-danger",
+              form: { data: { turbo_confirm: "Remove delivery method?" } } do
+            %i.bi.bi-x-lg
+      - else
+        - delivery_opts = []
+        - available_methods.each do |m|
+          - label = m.price_cents.zero? ? "Free" : humanized_money_with_symbol(m.price)
+          - delivery_opts << ["#{m.name} (#{label})", m.id]
+        = form_with url: cart_delivery_method_path, method: :post, class: "d-flex gap-2" do |f|
+          = f.select :delivery_method_id,
+              delivery_opts,
+              { include_blank: "Select a method…" },
+              class: "form-select form-select-sm"
+          = f.submit "Select", class: "btn btn-sm btn-primary"

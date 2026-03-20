@@ -1,0 +1,21 @@
+.card.shadow-sm.border-0.mb-3
+  .card-body
+    %p.fw-semibold.mb-2
+      %i.bi.bi-ticket-perforated.me-1
+      Discount Code
+    - if discount_code
+      .d-flex.align-items-center.justify-content-between
+        %span.badge.text-bg-success.py-2.px-3
+          = discount_code.key
+          - if discount_code.percentage?
+            = "(#{discount_code.amount_cents / 100}% off)"
+        = button_to cart_discount_path, method: :delete, class: "btn btn-sm btn-outline-danger",
+            form: { data: { turbo_confirm: "Remove discount code?" } } do
+          %i.bi.bi-x-lg
+    - else
+      = form_with url: cart_discount_path, method: :post, class: "d-flex gap-2" do |f|
+        = f.text_field :discount_code,
+            class: "form-control form-control-sm",
+            placeholder: "Enter code",
+            autocomplete: "off"
+        = f.submit "Apply", class: "btn btn-sm btn-outline-primary"

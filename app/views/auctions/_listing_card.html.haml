@@ -4,14 +4,14 @@
     .position-relative
       = link_to auction_auction_listing_path(auction, auction_listing) do
         - if listing.show_video_as_poster && listing.videos.attached?
-          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain",
-              muted: true, playsinline: true, preload: "metadata" }
+          %video.card-img-top.w-100.bg-secondary-subtle{style: "height: 200px; object-fit: contain",
+              muted: true, playsinline: true, preload: "metadata"}
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.images.attached?
           .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.images.first) }
         - elsif listing.videos.attached?
-          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain",
-              muted: true, playsinline: true, preload: "metadata" }
+          %video.card-img-top.w-100.bg-secondary-subtle{style: "height: 200px; object-fit: contain",
+              muted: true, playsinline: true, preload: "metadata"}
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.lot&.listing_placeholder&.attached?
           .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.lot.listing_placeholder) }

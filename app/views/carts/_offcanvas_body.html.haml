@@ -14,15 +14,15 @@
           .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
             %i.bi.bi-image.text-secondary
         .flex-grow-1.lh-sm.overflow-hidden
-          %div.fw-semibold.small.text-truncate= item.listing.name
-          %div.text-muted.small
+          .fw-semibold.small.text-truncate= item.listing.name
+          .text-muted.small
             = humanized_money_with_symbol(item.effective_item_price)
             - unless item.rental?
               - if item.quantity > 1
                 × #{item.quantity}
             - if item.rental?
               %br
-              %span.text-muted= "#{item.rental_start_at.to_fs(:short)} → #{item.rental_end_at.to_fs(:short)}"
+              %span.text-muted #{item.rental_start_at.to_fs(:short)} → #{item.rental_end_at.to_fs(:short)}
         = button_to cart_item_path(item), method: :delete,
             class: "btn btn-sm btn-outline-danger flex-shrink-0",
             form: { data: { turbo_confirm: "Remove from cart?" } } do

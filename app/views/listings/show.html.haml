@@ -29,8 +29,8 @@
         %i.bi.bi-arrow-right.ms-1
     - if Current.user
       = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
-    %button.btn.btn-outline-secondary.btn-sm{ type: "button",
-        data: { "bs-toggle": "modal", "bs-target": "#share-modal" } }
+    %button.btn.btn-outline-secondary.btn-sm{type: "button",
+        data: { "bs-toggle": "modal", "bs-target": "#share-modal" }}
       %i.bi.bi-share.me-1
       Share
 
@@ -72,8 +72,8 @@
                     %td.text-end= humanized_money_with_symbol(plan.price)
           - unless @listing.sold?
             - if Current.user
-              %button.btn.btn-primary.w-100{ type: "button",
-                  data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }
+              %button.btn.btn-primary.w-100{type: "button",
+                  data: { "bs-toggle": "modal", "bs-target": "#rental-modal" }}
                 %i.bi.bi-calendar-check.me-2
                 Check Availability &amp; Rent
             - else
@@ -100,8 +100,8 @@
                       %i.bi.bi-cart-plus.me-2
                       Add to Cart
             - if Current.user && @listing.sale? && @listing.negotiable?
-              %button.btn.btn-outline-primary.w-100.mb-4{ type: "button",
-                  data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
+              %button.btn.btn-outline-primary.w-100.mb-4{type: "button",
+                  data: { "bs-toggle": "modal", "bs-target": "#offer-modal" }}
                 %i.bi.bi-tag.me-2
                 Make an Offer
             - elsif !Current.user && @listing.sale? && @listing.negotiable?

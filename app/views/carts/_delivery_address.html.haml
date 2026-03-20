@@ -1,0 +1,67 @@
+:ruby
+  current_country = ISO3166::Country[cart_address[:country]]
+  initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
+  all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
+.card.shadow-sm.border-0
+  .card-body
+    .d-flex.align-items-center.justify-content-between.mb-0
+      %p.fw-semibold.mb-0
+        %i.bi.bi-house-fill.me-1
+        Delivery Address
+      - if cart_address_saved
+        %button.btn.btn-sm.btn-link.p-0.text-decoration-none{type: "button",
+            data: { bs_toggle: "collapse", bs_target: "#address-form-collapse" },
+            aria: { expanded: "false", controls: "address-form-collapse" }}
+          %i.bi.bi-pencil.me-1
+          Change
+    - if cart_address_saved
+      %p.text-muted.small.mt-2.mb-0
+        = cart_address[:street_address]
+        %br
+        = [cart_address[:city], cart_address[:province], cart_address[:postal_code]].compact.join(", ")
+    .collapse{ id: "address-form-collapse", class: cart_address_saved ? nil : "show" }
+      %hr.mt-3.mb-3
+      = form_with url: cart_address_path, method: :post, scope: :cart_address do |f|
+        %div{data: { controller: "address" }}
+          .mb-2
+            = f.label :street_address, "Street address", class: "form-label form-label-sm required"
+            = f.text_field :street_address,
+                value: cart_address[:street_address],
+                required: true,
+                autocomplete: "street-address",
+                placeholder: "123 Main St",
+                class: "form-control form-control-sm"
+          .row.g-2.mb-2
+            .col
+              = f.label :city, "City", class: "form-label form-label-sm required"
+              = f.text_field :city,
+                  value: cart_address[:city],
+                  required: true,
+                  autocomplete: "address-level2",
+                  class: "form-control form-control-sm"
+            .col
+              = f.label :postal_code, "Postal code", class: "form-label form-label-sm required"
+              = f.text_field :postal_code,
+                  value: cart_address[:postal_code],
+                  required: true,
+                  autocomplete: "postal-code",
+                  placeholder: "A1A 1A1",
+                  class: "form-control form-control-sm"
+          .mb-2
+            = f.label :country, "Country", class: "form-label form-label-sm required"
+            = f.select :country, all_countries,
+                { selected: cart_address[:country] },
+                required: true,
+                class: "form-select form-select-sm",
+                data: { address_target: "country", action: "change->address#countryChanged" }
+          .mb-3{hidden: initial_subdivisions.empty?, data: { address_target: "subdivisionWrapper" }}
+            = f.label :province, "Province / State", class: "form-label form-label-sm required"
+            = f.select :province, initial_subdivisions,
+                { include_blank: "Select…", selected: cart_address[:province] },
+                required: !initial_subdivisions.empty?,
+                class: "form-select form-select-sm",
+                data: { address_target: "subdivision" }
+          .form-check.mb-3
+            = f.check_box :also_save_as_default, { checked: false }, "1", "0"
+            = f.label :also_save_as_default, "Save as my default address", class: "form-check-label"
+          = f.submit "Save address", class: "btn btn-primary btn-sm w-100"
