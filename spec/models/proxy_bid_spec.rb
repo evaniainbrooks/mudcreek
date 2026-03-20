@@ -58,7 +58,7 @@ RSpec.describe ProxyBid, type: :model do
     it "enforces uniqueness per listing and registration" do
       valid_proxy_bid.save!
       duplicate = valid_proxy_bid
-      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordNotUnique)
+      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
