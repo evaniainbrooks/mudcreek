@@ -50,6 +50,11 @@ module ApplicationHelper
     end
   end
 
+  def registration_status(registration)
+    return "unauthenticated" unless Current.user
+    registration&.state || "none"
+  end
+
   def user_bid_token(user_or_id)
     id = user_or_id.respond_to?(:id) ? user_or_id.id : user_or_id
     return nil unless id

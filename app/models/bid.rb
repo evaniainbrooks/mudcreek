@@ -1,6 +1,8 @@
 class Bid < ApplicationRecord
   include NativeEnum
 
+  attr_accessor :proxy_placed
+
   belongs_to :auction_registration
   belongs_to :auction_listing
 
@@ -12,8 +14,8 @@ class Bid < ApplicationRecord
   validate :registration_must_be_approved, on: :create
   validate :listing_must_be_biddable, on: :create
   validate :listing_must_have_bid_configuration, on: :create
-  validate :cannot_outbid_yourself, on: :create
-  validate :amount_must_equal_next_bid_amount, on: :create
+  validate :cannot_outbid_yourself, on: :create, unless: :proxy_placed
+  validate :amount_must_equal_next_bid_amount, on: :create, unless: :proxy_placed
 
   def currency = auction_listing.auction.tenant&.currency
 

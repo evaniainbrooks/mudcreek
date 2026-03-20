@@ -26,6 +26,7 @@ class BidsController < ApplicationController
     )
 
     if bid.save
+      ProxyBiddingService.resolve(@auction_listing)
       flash.now[:notice] = "Bid of #{helpers.humanized_money_with_symbol(bid.amount)} placed successfully."
       respond_with_flash_or_redirect(fallback)
     else

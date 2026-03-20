@@ -6,8 +6,19 @@
   .d-flex.flex-row.align-items-center.gap-2.mt-3.justify-content-center.mb-1
     = render("auction_listings/current_bid", auction_listing:)
     = render("auction_listings/bid_count", auction_listing:)
-  .mt-3= render BidButtonComponent.new(auction_listing: auction_listing,
-    auction: auction,
-    registration: registration,
-    bidder_token: bidder_token,
-    button_class: "btn btn-primary w-100 mb-4")
+  .mt-3= render BidButtonComponent.new(auction_listing: auction_listing, auction: auction, registration: registration, bidder_token: bidder_token, button_class: "btn btn-primary w-100 mb-4")
+- if auction_listing.active? && registration&.approved?
+  - next_amount = auction_listing.next_bid_amount
+  .mt-2.text-center
+    %a.small.text-muted.text-decoration-none{ href: "#proxy-bid-#{auction_listing.id}", data: { bs_toggle: "collapse" }, aria: { expanded: proxy_bid ? "true" : "false" } }
+      %i.bi.bi-robot.me-1
+      Automatic bidding
+      - if proxy_bid
+        · max #{humanized_money_with_symbol(proxy_bid.max_bid)}
+      %i.bi.bi-chevron-down.ms-1{ style: "font-size: 0.7em" }
+    %div{ id: "proxy-bid-#{auction_listing.id}", class: "collapse #{"show" if proxy_bid}" }
+      = form_with url: auction_auction_listing_proxy_bids_path(auction, auction_listing), method: :post, style: "width: 100%" do |f|
+        .input-group.input-group-sm.mt-2
+          %span.input-group-text $
+          = f.number_field :max_bid, value: proxy_bid&.max_bid&.to_f, min: next_amount.to_f, step: 0.01, placeholder: next_amount.to_f, class: "form-control"
+          = f.submit "Set max", class: "btn btn-outline-secondary btn-sm"

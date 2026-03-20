@@ -22,7 +22,7 @@
 .page-container.overflow-hidden
   .row.g-0.align-items-stretch{ style: "min-height: 70vh" }
     = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count, filter: @filter
-    .col-lg-8.bg-body.p-4.p-lg-5{ data: { registration_status: @registration&.state || "none", current_user_token: user_bid_token(Current.user) } }
+    .col-lg-8.bg-body.p-4.p-lg-5{ data: { registration_status: registration_status(@registration), current_user_token: user_bid_token(Current.user) } }
       - unless @filter
         = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
           .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
@@ -47,7 +47,7 @@
           = render(partial: "auctions/listing_card",
             collection: @auction_listings,
             as: :auction_listing,
-            locals: { auction: @auction, registration: @registration })
+            locals: { auction: @auction, registration: @registration, proxy_bids_by_listing_id: @proxy_bids_by_listing_id })
       - else
         .py-5.text-center.text-muted
           %i.bi.bi-tag.mb-3.d-block{ style: "font-size: 3rem" }

@@ -127,5 +127,14 @@ class AuctionsController < ApplicationController
     @filter_count = @auction_listings.size
 
     @registration = AuctionRegistration.find_by(auction: @auction, user: Current.user) if Current.user
+
+    @proxy_bids_by_listing_id = if Current.user && @registration
+      ProxyBid.where(
+        auction_listing_id: @auction_listings.map(&:id),
+        auction_registration: @registration
+      ).index_by(&:auction_listing_id)
+    else
+      {}
+    end
   end
 end

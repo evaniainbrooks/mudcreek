@@ -79,7 +79,7 @@ class BidBroadcastService
   def broadcast_listing_card(auction_listing, auction)
     html = renderer(auction.tenant).render(
       partial: "auctions/listing_card",
-      locals: { auction_listing:, auction:, registration: nil }
+      locals: { auction_listing:, auction:, registration: nil, proxy_bids_by_listing_id: nil }
     )
     Turbo::StreamsChannel.broadcast_replace_to(
       auction,
@@ -91,13 +91,18 @@ class BidBroadcastService
   def broadcast_bid_panel(auction_listing, auction)
     html = renderer(auction.tenant).render(
       partial: "auction_listings/bid_panel",
-      locals: { auction_listing:, auction:, registration: nil, bidder_token: nil }
+      locals: { auction_listing:, auction:, registration: nil, bidder_token: bidder_token_for(auction_listing.highest_bidder_id), proxy_bid: nil }
     )
     Turbo::StreamsChannel.broadcast_replace_to(
       auction_listing,
       target: ActionView::RecordIdentifier.dom_id(auction_listing, :bid_panel),
       html:
     )
+  end
+
+  def bidder_token_for(user_id)
+    return nil unless user_id
+    OpenSSL::HMAC.hexdigest("SHA256", Rails.application.secret_key_base[0, 32], "bid:#{user_id}")
   end
 
   def renderer(tenant)

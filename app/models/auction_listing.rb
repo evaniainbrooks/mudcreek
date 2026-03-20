@@ -11,6 +11,7 @@ class AuctionListing < ApplicationRecord
   monetize :reserve_price_cents, with_model_currency: :currency, allow_nil: true
 
   has_many :bids, dependent: :destroy
+  has_many :proxy_bids, dependent: :destroy
   has_one :current_bid, -> {
     where(state: "placed")
     .order(amount_cents: :desc, created_at: :desc)

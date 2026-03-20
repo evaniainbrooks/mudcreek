@@ -11,7 +11,8 @@ resource :session
   resources :auctions, only: [ :index, :show ], param: :hashid do
     resources :auction_registrations, only: [ :create ]
     resources :auction_listings, only: [ :show ], param: :hashid, path: :listings do
-      resources :bids, only: [ :create ]
+      resources :bids,       only: [ :create ]
+      resources :proxy_bids, only: [ :create ]
     end
   end
 

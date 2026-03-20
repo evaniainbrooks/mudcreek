@@ -6,6 +6,7 @@ class Admin::BidsController < Admin::BaseController
     return redirect_to admin_listing_path(@bid.auction_listing.listing), alert: "Invalid state." unless state
 
     @bid.update!(state: state)
+    ProxyBiddingService.resolve(@bid.auction_listing)
     redirect_to admin_listing_path(@bid.auction_listing.listing), notice: "Bid marked as #{state}."
   rescue ActiveRecord::RecordInvalid => e
     redirect_to admin_listing_path(@bid.auction_listing.listing), alert: e.message

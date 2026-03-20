@@ -1,5 +1,9 @@
 - if @auction_listing.active?
-  %div{ data: { controller: "bid-button", "bid-button-bidder-token-value": @bidder_token } }
+  %div{ data: { controller: "bid-button", "bid-button-bidder-token-value": @bidder_token, "bid-button-listing-id-value": @auction_listing.id } }
+    %div{ data: { "bid-button-target": "signIn" }, hidden: true }
+      = link_to new_session_path, class: @button_class do
+        %i.bi.bi-box-arrow-in-right.me-2
+        Sign in / Create account
     %div{ data: { "bid-button-target": "register" }, hidden: true }
       %button{ class: @button_class, type: "button", data: { bs_toggle: "modal", bs_target: "#auction-register-modal" } }
         %i.bi.bi-person-plus.me-2
@@ -20,6 +24,9 @@
       - else
         %button{ class: @button_class, disabled: true }
           Place Bid
-      %p.text-success.fw-semibold.text-center.mt-2.mb-0{ data: { "bid-button-target": "highestBidder" }, hidden: true }
+      %p.text-success.fw-semibold.text-center.mt-1.mb-0{ data: { "bid-button-target": "highestBidder" }, hidden: true }
         %i.bi.bi-trophy-fill.me-1
         You are the highest bidder!
+      %p.text-danger.fw-semibold.text-center.mt-1.mb-0{ data: { "bid-button-target": "outbid" }, hidden: true }
+        %i.bi.bi-exclamation-triangle-fill.me-1
+        You were outbid!

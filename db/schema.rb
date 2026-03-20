@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_204228) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_19_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -463,6 +463,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_204228) do
     t.index ["tenant_id"], name: "index_permissions_on_tenant_id"
   end
 
+  create_table "proxy_bids", force: :cascade do |t|
+    t.bigint "auction_listing_id", null: false
+    t.bigint "auction_registration_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "max_bid_cents", null: false
+    t.datetime "updated_at", null: false
+    t.index ["auction_listing_id", "auction_registration_id"], name: "index_proxy_bids_on_listing_and_registration", unique: true
+    t.index ["auction_listing_id"], name: "index_proxy_bids_on_auction_listing_id"
+    t.index ["auction_registration_id"], name: "index_proxy_bids_on_auction_registration_id"
+  end
+
   create_table "rental_bookings", force: :cascade do |t|
     t.bigint "cart_item_id"
     t.datetime "created_at", null: false
@@ -811,6 +822,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_204228) do
   add_foreign_key "pages", "tenants", on_delete: :cascade
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
+  add_foreign_key "proxy_bids", "auction_listings"
+  add_foreign_key "proxy_bids", "auction_registrations"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"

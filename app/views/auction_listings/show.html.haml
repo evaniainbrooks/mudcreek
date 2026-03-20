@@ -47,7 +47,7 @@
         - unless @auction_listing.reserve_price_cents.present? || @listing.sold?
           .position-absolute.top-0.end-0.p-2
             %span.badge.text-bg-success No Reserve
-    .col-lg-5{data: { registration_status: @registration&.state || "none",
+    .col-lg-5{data: { registration_status: registration_status(@registration),
         current_user_token: user_bid_token(Current.user) }}
       .position-sticky{ style: "top: 1.5rem" }
         %h1.fw-bold.mb-1= @listing.name
@@ -70,7 +70,8 @@
           auction_listing: @auction_listing,
           auction: @auction,
           registration: @registration,
-          bidder_token: @highest_bidder_token
+          bidder_token: @highest_bidder_token,
+          proxy_bid: @proxy_bid
         %hr.mb-4
         %p.text-muted.small.mb-0 Description
         .listing-description.mb-3
