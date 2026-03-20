@@ -90,9 +90,13 @@
                       form: { data: { turbo_confirm: "Remove delivery method?" } } do
                     %i.bi.bi-x-lg
               - else
+                - delivery_opts = []
+                - available_methods.each do |m|
+                  - label = m.price_cents.zero? ? "Free" : humanized_money_with_symbol(m.price)
+                  - delivery_opts << ["#{m.name} (#{label})", m.id]
                 = form_with url: cart_delivery_method_path, method: :post, class: "d-flex gap-2" do |f|
                   = f.select :delivery_method_id,
-                      available_methods.map { |m| [m.price_cents.zero? ? "#{m.name} (Free)" : "#{m.name} (#{humanized_money_with_symbol(m.price)})", m.id] },
+                      delivery_opts,
                       { include_blank: "Select a method…" },
                       class: "form-select form-select-sm"
                   = f.submit "Select", class: "btn btn-sm btn-primary"
@@ -188,7 +192,9 @@
                                 class: "rounded-2 object-fit-cover flex-shrink-0",
                                 style: "width: 52px; height: 52px"
                           - else
-                            .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
+                            .rounded-2.bg-secondary-subtle.d-flex.flex-shrink-0{
+                                class: "align-items-center justify-content-center",
+                                style: "width: 52px; height: 52px" }
                               %i.bi.bi-image.text-secondary
                           .lh-sm
                             = link_to((item.from_invoice? ? item.invoice_item.name : item.listing.name),
@@ -213,7 +219,8 @@
                           &mdash;
                         - elsif item.listing.quantity > 1
                           %div{ data: { controller: "inline-edit" } }
-                            %span.inline-editable{ data: { inline_edit_target: "display", value: item.quantity, action: "click->inline-edit#edit" } }
+                            %span.inline-editable{ data: { inline_edit_target: "display",
+                                value: item.quantity, action: "click->inline-edit#edit" } }
                               = item.quantity
                             %div{ data: { inline_edit_target: "form" }, hidden: true }
                               = form_with(url: cart_item_path(item),

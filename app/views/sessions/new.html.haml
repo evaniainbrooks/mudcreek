@@ -17,7 +17,9 @@
                 class: "form-control"
             .mb-3
               = f.label :password, "Password", class: "form-label required"
-              = f.password_field :password, required: true, autocomplete: "current-password", placeholder: "Password", maxlength: 72, class: "form-control"
+              = f.password_field :password,
+                  required: true, autocomplete: "current-password",
+                  placeholder: "Password", maxlength: 72, class: "form-control"
             .d-grid.mt-4
               = f.submit "Sign in", class: "btn btn-primary"
           .text-center.mt-3
@@ -32,13 +34,19 @@
             .row.g-3.mb-3
               .col
                 = f.label :first_name, "First name", class: "form-label required"
-                = f.text_field :first_name, required: true, autocomplete: "given-name", placeholder: "First", class: "form-control"
+                = f.text_field :first_name,
+                    required: true, autocomplete: "given-name",
+                    placeholder: "First", class: "form-control"
               .col
                 = f.label :last_name, "Last name", class: "form-label required"
-                = f.text_field :last_name, required: true, autocomplete: "family-name", placeholder: "Last", class: "form-control"
+                = f.text_field :last_name,
+                    required: true, autocomplete: "family-name",
+                    placeholder: "Last", class: "form-control"
             .mb-3
               = f.label :email_address, "Email address", class: "form-label required"
-              = f.email_field :email_address, required: true, autocomplete: "username", placeholder: "you@example.com", class: "form-control"
+              = f.email_field :email_address,
+                  required: true, autocomplete: "username",
+                  placeholder: "you@example.com", class: "form-control"
             .mb-3
               = f.label :password, "Password", class: "form-label required"
               = f.password_field :password,

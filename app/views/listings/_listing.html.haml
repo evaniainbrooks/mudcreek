@@ -2,17 +2,19 @@
   .card.h-100.shadow-sm.border.border-secondary-subtle
     .position-relative
       - if listing.show_video_as_poster && listing.videos.attached?
-        %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain", muted: true, playsinline: true, preload: "metadata" }
+        %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain",
+            muted: true, playsinline: true, preload: "metadata" }
           %source{ src: url_for(listing.videos.first) }
       - elsif listing.images.attached?
-        .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(listing.images.first, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+        .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.images.first) }
       - elsif listing.videos.attached?
-        %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain", muted: true, playsinline: true, preload: "metadata" }
+        %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain",
+            muted: true, playsinline: true, preload: "metadata" }
           %source{ src: url_for(listing.videos.first) }
       - elsif listing.lot&.listing_placeholder&.attached?
-        .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(listing.lot.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+        .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.lot.listing_placeholder) }
       - elsif Current.tenant.listing_placeholder.attached?
-        .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(Current.tenant.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+        .card-img-top.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder) }
       - else
         .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
           %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }

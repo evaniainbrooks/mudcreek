@@ -66,6 +66,7 @@ class CartItemsController < ApplicationController
       Current.user.cart_items.find(id)
     else
       token = session[:guest_cart_token]
+      raise ActiveRecord::RecordNotFound unless token
       CartItem.find_by!(id:, guest_cart_token: token)
     end
   end

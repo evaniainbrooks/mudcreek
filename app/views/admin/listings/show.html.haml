@@ -3,7 +3,10 @@
     %i.bi.bi-tag-fill.me-2
     = @listing.name
   .d-flex.align-items-center.gap-2
-    - public_path = @listing.auction_listing ? auction_auction_listing_path(@listing.auction_listing.auction, @listing.auction_listing) : listing_path(@listing)
+    - if @listing.auction_listing
+      - public_path = auction_auction_listing_path(@listing.auction_listing.auction, @listing.auction_listing)
+    - else
+      - public_path = listing_path(@listing)
     = link_to public_path, class: "btn btn-outline-secondary me-2", target: "_blank" do
       %i.bi.bi-box-arrow-up-right.me-1
       Public View
@@ -117,8 +120,11 @@
                 %dd.col-sm-9= listing_pricing_type_badge(@listing)
 
                 %dt.col-sm-3 Acquisition Price
-                %dd.col-sm-9= @listing.acquisition_price_cents ? humanized_money_with_symbol(@listing.acquisition_price) : tag.span("—", class: "text-muted")
-
+                %dd.col-sm-9
+                  - if @listing.acquisition_price_cents
+                    = humanized_money_with_symbol(@listing.acquisition_price)
+                  - else
+                    = tag.span("—", class: "text-muted")
                 %dt.col-sm-3 Quantity
                 %dd.col-sm-9= @listing.quantity
 
@@ -177,8 +183,12 @@
           = render "admin/listings/rental_rate_plans/section", listing: @listing
 
         #schedule-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedule-tab" } }
-          - booking_events = @rental_bookings.map { |b| { title: b.cart_item.user.email_address, start: b.start_at.iso8601, end: b.end_at.iso8601 } }
-          #booking-calendar{ data: { controller: "booking-calendar", "booking-calendar-events-value": booking_events.to_json } }
+          :ruby
+            booking_events = @rental_bookings.map do |b|
+              { title: b.cart_item.user.email_address, start: b.start_at.iso8601, end: b.end_at.iso8601 }
+            end
+          #booking-calendar{ data: { controller: "booking-calendar",
+              "booking-calendar-events-value": booking_events.to_json } }
 
       - if @bids
         #bids-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "bids-tab" } }

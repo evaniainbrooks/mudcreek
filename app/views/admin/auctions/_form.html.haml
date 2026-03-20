@@ -54,7 +54,8 @@
               = s.fields_for :tiers do |t|
                 = render "admin/shared/bid_increment_tier_fields", tier_form: t
             .mt-2
-              %button.btn.btn-sm.btn-outline-secondary{ type: "button", data: { action: "bid-increment-schedule#addTier" } }
+              %button.btn.btn-sm.btn-outline-secondary{ type: "button",
+                  data: { action: "bid-increment-schedule#addTier" } }
                 %i.bi.bi-plus-lg.me-1
                 Add Tier
             %template{ data: { bid_increment_schedule_target: "tierTemplate" } }
@@ -69,7 +70,8 @@
           .row.g-3.mb-3
             .col-sm-6
               = f.label :starts_at, "Starts At", class: "form-label"
-              = f.datetime_local_field :starts_at, class: "form-control #{'is-invalid' if auction.errors[:starts_at].any?}",
+              = f.datetime_local_field :starts_at,
+                  class: "form-control #{'is-invalid' if auction.errors[:starts_at].any?}",
                   value: auction.starts_at_in_time_zone&.strftime("%Y-%m-%dT%H:%M")
               - if auction.errors[:starts_at].any?
                 .invalid-feedback= auction.errors[:starts_at].to_sentence
@@ -130,12 +132,16 @@
         .card-body.p-4
           .mb-3
             = f.label :poster, class: "form-label"
-            = f.file_field :poster, direct_upload: true, class: "form-control #{'is-invalid' if auction.errors[:poster].any?}", accept: "image/*"
+            = f.file_field :poster,
+                direct_upload: true,
+                class: "form-control #{'is-invalid' if auction.errors[:poster].any?}",
+                accept: "image/*"
             - if auction.errors[:poster].any?
               .invalid-feedback= auction.errors[:poster].to_sentence
             - if auction.poster.attached?
               .mt-2.d-flex.align-items-center.gap-2
-                = image_tag auction.poster.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+                = image_tag auction.poster.variant(resize_to_fill: [120, 80]),
+                    class: "rounded", style: "object-fit: cover"
                 = link_to admin_auction_path(auction, remove_poster: "1"),
                     class: "btn btn-sm btn-outline-danger",
                     data: { turbo_method: :patch, turbo_confirm: "Remove poster?" } do
@@ -189,4 +195,6 @@
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"
-    = link_to "Cancel", auction.persisted? ? admin_auction_path(auction) : admin_auctions_path, class: "btn btn-outline-secondary"
+    = link_to "Cancel",
+        auction.persisted? ? admin_auction_path(auction) : admin_auctions_path,
+        class: "btn btn-outline-secondary"

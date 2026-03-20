@@ -4,24 +4,26 @@
     .position-relative
       = link_to auction_auction_listing_path(auction, auction_listing) do
         - if listing.show_video_as_poster && listing.videos.attached?
-          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain", muted: true, playsinline: true, preload: "metadata" }
+          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain",
+              muted: true, playsinline: true, preload: "metadata" }
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.images.attached?
-          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(listing.images.first, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.images.first) }
         - elsif listing.videos.attached?
-          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain", muted: true, playsinline: true, preload: "metadata" }
+          %video.card-img-top.w-100.bg-secondary-subtle{ style: "height: 200px; object-fit: contain",
+              muted: true, playsinline: true, preload: "metadata" }
             %source{ src: url_for(listing.videos.first) }
         - elsif listing.lot&.listing_placeholder&.attached?
-          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(listing.lot.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.lot.listing_placeholder) }
         - elsif Current.tenant.listing_placeholder.attached?
-          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(Current.tenant.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder) }
         - else
           .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
             %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
       - if listing.sold? || listing.cancelled?
         .position-absolute.top-0.start-0.p-2
           = listing_state_badge(listing)
-      - elsif auction_listing.ends_at && auction_listing.ends_at > Time.current && auction_listing.ends_at < 10.minutes.from_now
+      - elsif auction_listing.ends_at&.between?(Time.current, 10.minutes.from_now)
         .position-absolute.top-0.start-0.p-2
           %span.badge.text-bg-warning{data: { controller: "countdown",
             "countdown-ends-at-value": auction_listing.ends_at.iso8601,

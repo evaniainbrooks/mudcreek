@@ -10,28 +10,28 @@
 .page-container
   %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
     %li.nav-item{ role: "presentation" }
-      %button.nav-link.active{ id: "details-tab", type: "button", role: "tab",
+      %button.nav-link.active{id: "details-tab", type: "button", role: "tab",
         data: { bs_toggle: "tab", bs_target: "#details-pane" },
-        aria: { controls: "details-pane", selected: "true" } }
+        aria: { controls: "details-pane", selected: "true" }}
         %i.bi.bi-info-circle.me-1
         Details
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+      %button.nav-link{id: "edit-tab", type: "button", role: "tab",
         data: { bs_toggle: "tab", bs_target: "#edit-pane" },
-        aria: { controls: "edit-pane", selected: "false" } }
+        aria: { controls: "edit-pane", selected: "false" }}
         %i.bi.bi-pencil.me-1
         Edit
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "listings-tab", type: "button", role: "tab",
+      %button.nav-link{id: "listings-tab", type: "button", role: "tab",
         data: { bs_toggle: "tab", bs_target: "#listings-pane" },
-        aria: { controls: "listings-pane", selected: "false" } }
+        aria: { controls: "listings-pane", selected: "false" }}
         %i.bi.bi-tag.me-1
         Listings
         %span.badge.text-bg-secondary.ms-1= @listings.size
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "settlement-tab", type: "button", role: "tab",
+      %button.nav-link{id: "settlement-tab", type: "button", role: "tab",
         data: { bs_toggle: "tab", bs_target: "#settlement-pane" },
-        aria: { controls: "settlement-pane", selected: "false" } }
+        aria: { controls: "settlement-pane", selected: "false" }}
         %i.bi.bi-receipt.me-1
         Settlement
 
@@ -104,13 +104,17 @@
                     .invalid-feedback= @lot.errors[:name].to_sentence
                 .col-sm-3
                   = f.label :number, class: "form-label"
-                  = f.text_field :number, class: "form-control #{'is-invalid' if @lot.errors[:number].any?}", placeholder: "e.g. 001"
+                  = f.text_field :number,
+                      class: "form-control #{'is-invalid' if @lot.errors[:number].any?}",
+                      placeholder: "e.g. 001"
                 .col-sm-3
                   = f.label :state, class: "form-label"
                   = f.select :state, Lot.states.keys.map { |s| [s.humanize, s] }, {}, class: "form-select"
                 .col-sm-6
                   = f.label :owner_id, "Owner", class: "form-label"
-                  = f.select :owner_id, @users.map { [it.email_address, it.id] }, { prompt: "Select owner" }, class: "form-select #{'is-invalid' if @lot.errors[:owner_id].any?}"
+                  = f.select :owner_id, @users.map { [it.email_address, it.id] },
+                      { prompt: "Select owner" },
+                      class: "form-select #{'is-invalid' if @lot.errors[:owner_id].any?}"
                   - if @lot.errors[:owner_id].any?
                     .invalid-feedback= @lot.errors[:owner_id].to_sentence
                 .col-12
@@ -128,7 +132,9 @@
                 .col-sm-4
                   = f.label :commission_rate, "Commission Rate (%)", class: "form-label"
                   .input-group
-                    = f.number_field :commission_rate, class: "form-control #{'is-invalid' if @lot.errors[:commission_rate].any?}", min: 0, max: 100, step: 1, placeholder: "e.g. 15"
+                    = f.number_field :commission_rate,
+                        class: "form-control #{'is-invalid' if @lot.errors[:commission_rate].any?}",
+                        min: 0, max: 100, step: 1, placeholder: "e.g. 15"
                     %span.input-group-text %
                   - if @lot.errors[:commission_rate].any?
                     .invalid-feedback= @lot.errors[:commission_rate].to_sentence
@@ -136,7 +142,10 @@
                   = f.label :seller_fee, class: "form-label"
                   .input-group
                     %span.input-group-text $
-                    = f.number_field :seller_fee, value: @lot.seller_fee&.to_f, class: "form-control #{'is-invalid' if @lot.errors[:seller_fee].any?}", min: 0, step: "0.01", placeholder: "0.00"
+                    = f.number_field :seller_fee,
+                        value: @lot.seller_fee&.to_f,
+                        class: "form-control #{'is-invalid' if @lot.errors[:seller_fee].any?}",
+                        min: 0, step: "0.01", placeholder: "0.00"
                   - if @lot.errors[:seller_fee].any?
                     .invalid-feedback= @lot.errors[:seller_fee].to_sentence
 
@@ -167,8 +176,11 @@
             .card-body.p-4
               - if @lot.listing_placeholder.attached?
                 .d-flex.align-items-center.gap-3.mb-3
-                  = image_tag @lot.listing_placeholder.variant(resize_to_fill: [160, 100]), class: "rounded", style: "object-fit: cover"
-                  = button_to admin_lot_listing_placeholder_path(@lot), method: :delete, class: "btn btn-outline-danger btn-sm",
+                  = image_tag @lot.listing_placeholder.variant(resize_to_fill: [160, 100]),
+                      class: "rounded", style: "object-fit: cover"
+                  = button_to admin_lot_listing_placeholder_path(@lot),
+                      method: :delete,
+                      class: "btn btn-outline-danger btn-sm",
                       form: { data: { turbo_confirm: "Remove placeholder image?" } } do
                     %i.bi.bi-x-lg.me-1
                     Remove
@@ -205,7 +217,8 @@
                     %tr
                       %td= item.description
                       %td
-                        %span.badge{ class: deduction ? "text-bg-danger" : "text-bg-success" }= item.line_item_type.humanize
+                        - badge_class = deduction ? "text-bg-danger" : "text-bg-success"
+                        %span.badge{ class: badge_class }= item.line_item_type.humanize
                       %td.text-end{ class: deduction ? "text-danger" : "" }
                         = deduction ? "−" : ""
                         = humanized_money_with_symbol(item.amount)

@@ -7,6 +7,7 @@ class CartItem < ApplicationRecord
   has_one :rental_booking, dependent: :nullify, autosave: true
 
   validates :listing_id, uniqueness: { scope: :user_id, conditions: -> { where("user_id IS NOT NULL AND rental_start_at IS NULL").where("invoice_item_id IS NULL") } }
+  validates :listing_id, uniqueness: { scope: :guest_cart_token, conditions: -> { where.not(guest_cart_token: nil).where(rental_start_at: nil) } }
   validates :invoice_item_id, uniqueness: true, allow_nil: true
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validate :user_or_guest_token_present

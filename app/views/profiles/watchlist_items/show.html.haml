@@ -5,18 +5,21 @@
 .page-container
   = render "profiles/tabs"
   .p-4
-    = form_with url: profile_watchlist_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+    = form_with url: profile_watchlist_path, method: :get,
+        html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
       .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
         = f.search_field :search, value: @search, placeholder: "Search…", class: "form-control form-control-sm"
         - if @search
-          = link_to profile_watchlist_path(category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+          = link_to profile_watchlist_path(category_id: @category_hashid),
+              class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
             %i.bi.bi-x-lg
       = f.select :category_id, @categories.map { [it.name, it.hashid] },
         { include_blank: "All Categories", selected: @category_hashid },
         class: "form-select form-select-sm w-auto flex-shrink-0",
         onchange: "this.form.requestSubmit()"
 
-    = render FilterInfoComponent.new(count: @filter_count, total: @filter_total, label: "watchlist items", clear_url: profile_watchlist_path)
+    = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+        label: "watchlist items", clear_url: profile_watchlist_path)
 
     - if @watchlist_items.any?
       .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.g-4
@@ -27,13 +30,18 @@
               .position-relative
                 = link_to listing_path(listing) do
                   - if listing.images.attached?
-                    = optimized_image_tag listing.images.first, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+                    = optimized_image_tag listing.images.first,
+                        preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
                   - elsif listing.lot&.listing_placeholder&.attached?
-                    = optimized_image_tag listing.lot.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+                    = optimized_image_tag listing.lot.listing_placeholder,
+                        preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
                   - elsif Current.tenant.listing_placeholder.attached?
-                    = optimized_image_tag Current.tenant.listing_placeholder, preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
+                    = optimized_image_tag Current.tenant.listing_placeholder,
+                        preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
                   - else
-                    .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
+                    .card-img-top.bg-secondary-subtle.d-flex{
+                        class: "align-items-center justify-content-center",
+                        style: "height: 200px" }
                       %i.bi.bi-image.text-secondary{ style: "font-size: 3rem" }
                 - if listing.lot&.show_attribution?
                   .position-absolute.bottom-0.start-0.p-2

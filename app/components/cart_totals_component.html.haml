@@ -41,9 +41,10 @@
     %th
   %tr
     %td{colspan: 5}
-      - needs_delivery    = @requires_delivery && !@delivery_method
-      - needs_address     = @delivery_method&.address_required? && !@address_saved
-      - needs_guest_info  = !@guest_info_saved.nil? && !@guest_info_saved
+      :ruby
+        needs_delivery    = @requires_delivery && !@delivery_method
+        needs_address     = @delivery_method&.address_required? && !@address_saved
+        needs_guest_info  = !@guest_info_saved.nil? && !@guest_info_saved
       - if needs_delivery
         %p.text-muted.small.text-center.mb-1
           %i.bi.bi-truck.me-1

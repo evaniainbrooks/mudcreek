@@ -17,7 +17,8 @@ module Admin::LotsHelper
       link_to lot.name, admin_lot_path(lot), class: "fw-semibold text-decoration-none"
     end
     table.with_column("Number") { |lot| lot_number_badge(lot, link: true) }
-    table.with_value_column("Owner") { it.owner }
+    table.with_value_column("Owner") { |lot| lot.owner }
+    table.with_value_column("Placeholder") { |lot| lot.listing_placeholder.attached? }
     table.with_column("State") do |lot|
       tag.span(lot.state.to_s.humanize, class: "badge #{lot_state_badge_class(lot)}")
     end

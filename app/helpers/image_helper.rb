@@ -15,6 +15,13 @@ module ImageHelper
     end
   end
 
+  # Returns an inline style string for a CSS background-image container.
+  # height is in pixels. CSS properties (size/position/repeat) are always the same.
+  def background_image_style(attachment, preset: :card, height: 200)
+    url = optimized_image_url(attachment, preset:)
+    "height: #{height}px; background-image: url('#{url}'); background-size: contain; background-position: center; background-repeat: no-repeat"
+  end
+
   # Renders an image tag using imgproxy when configured, falling back to the
   # standard Active Storage URL when IMGPROXY_URL is not set (e.g. development).
   def optimized_image_tag(attachment, preset: :card, **html_options)

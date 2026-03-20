@@ -4,7 +4,10 @@
   set_meta_tags title: @listing.name,
     description: description,
     og: { title: @listing.name, description: description, image: og_image },
-    twitter: { card: (og_image ? "summary_large_image" : "summary"), title: @listing.name, description: description, image: og_image }
+    twitter: {
+      card: (og_image ? "summary_large_image" : "summary"),
+      title: @listing.name, description: description, image: og_image
+    }
 
   has_images = @listing.images.attached?
   has_videos = @listing.videos.attached?
@@ -20,12 +23,14 @@
         %i.bi.bi-gear.me-1
         Admin View
     - if @next_listing
-      = link_to listing_path(@next_listing), class: "btn btn-outline-secondary btn-sm", data: { transition: "forward" } do
+      = link_to listing_path(@next_listing),
+          class: "btn btn-outline-secondary btn-sm", data: { transition: "forward" } do
         Next listing
         %i.bi.bi-arrow-right.ms-1
     - if Current.user
       = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
-    %button.btn.btn-outline-secondary.btn-sm{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#share-modal" } }
+    %button.btn.btn-outline-secondary.btn-sm{ type: "button",
+        data: { "bs-toggle": "modal", "bs-target": "#share-modal" } }
       %i.bi.bi-share.me-1
       Share
 
@@ -35,7 +40,7 @@
       - if has_images || has_videos
         = render "listings/carousel", listing: @listing, media_count:
       - elsif @listing.lot&.listing_placeholder&.attached?
-        .rounded-3.bg-secondary-subtle{ style: "height: 480px; background-image: url('#{optimized_image_url(@listing.lot.listing_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+        .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
       - else
         .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
           %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
@@ -67,7 +72,8 @@
                     %td.text-end= humanized_money_with_symbol(plan.price)
           - unless @listing.sold?
             - if Current.user
-              %button.btn.btn-primary.w-100{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }
+              %button.btn.btn-primary.w-100{ type: "button",
+                  data: { "bs-toggle": "modal", "bs-target": "#rental-modal" } }
                 %i.bi.bi-calendar-check.me-2
                 Check Availability &amp; Rent
             - else
@@ -88,12 +94,14 @@
                   = f.hidden_field :listing_id, value: @listing.id
                   .d-flex.gap-2
                     - if @listing.quantity > 1
-                      = f.number_field :quantity, value: 1, min: 1, max: @listing.quantity, class: "form-control", style: "width: 80px"
+                      = f.number_field :quantity, value: 1, min: 1,
+                          max: @listing.quantity, class: "form-control", style: "width: 80px"
                     = f.button class: "btn btn-primary flex-grow-1" do
                       %i.bi.bi-cart-plus.me-2
                       Add to Cart
             - if Current.user && @listing.sale? && @listing.negotiable?
-              %button.btn.btn-outline-primary.w-100.mb-4{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
+              %button.btn.btn-outline-primary.w-100.mb-4{ type: "button",
+                  data: { "bs-toggle": "modal", "bs-target": "#offer-modal" } }
                 %i.bi.bi-tag.me-2
                 Make an Offer
             - elsif !Current.user && @listing.sale? && @listing.negotiable?
@@ -108,6 +116,7 @@
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)
 
-= render("listings/rental_modal", listing: @listing, booking_events: @booking_events) if @listing.rental? && Current.user
+= render("listings/rental_modal",
+    listing: @listing, booking_events: @booking_events) if @listing.rental? && Current.user
 = render("listings/offer_modal", listing: @listing) if @listing.sale? && @listing.negotiable? && Current.user
 = render "shared/share_modal", url: listing_url(@listing), title: @listing.name

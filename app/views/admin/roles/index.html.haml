@@ -14,7 +14,9 @@
               = @role.errors.full_messages.to_sentence
         .col-md-3
           = f.label :name, class: "form-label form-label-sm required"
-          = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @role.errors[:name].any?}", required: true, placeholder: "e.g. Buyer"
+          = f.text_field :name,
+              class: "form-control form-control-sm #{'is-invalid' if @role.errors[:name].any?}",
+              required: true, placeholder: "e.g. Buyer"
         .col-md-7
           = f.label :description, class: "form-label form-label-sm required"
           = f.text_field :description,

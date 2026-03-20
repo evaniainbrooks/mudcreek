@@ -1,5 +1,7 @@
 - if @page.hero_image.attached?
-  = image_tag @page.hero_image.variant(resize_to_limit: [1200, 400]), class: "img-fluid w-100 rounded-3 mb-4", style: "object-fit: cover; max-height: 400px"
+  = image_tag @page.hero_image.variant(resize_to_limit: [1200, 400]),
+      class: "img-fluid w-100 rounded-3 mb-4",
+      style: "object-fit: cover; max-height: 400px"
 
 .page-container.p-4
   %h1.fw-bold.mb-4

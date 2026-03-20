@@ -4,9 +4,9 @@
     .position-relative
       = link_to auction_path(auction) do
         - if auction.poster.attached?
-          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(auction.poster, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(auction.poster) }
         - elsif Current.tenant.auction_placeholder.attached?
-          .card-img-top.bg-secondary-subtle{ style: "height: 200px; background-image: url('#{optimized_image_url(Current.tenant.auction_placeholder, preset: :card)}'); background-size: contain; background-position: center; background-repeat: no-repeat" }
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(Current.tenant.auction_placeholder) }
         - else
           .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 200px" }
             %i.bi.bi-hammer.text-secondary{ style: "font-size: 3rem" }
@@ -50,7 +50,8 @@
             %span.badge.text-bg-danger.py-2.px-3 Registration Declined
         - elsif !auction.reconciled? && !auction.ended?
           - if Current.user
-            %button.btn.btn-primary.w-100{ type: "button", data: { bs_toggle: "modal", bs_target: "#auction-register-modal-#{auction.hashid}" } }
+            %button.btn.btn-primary.w-100{ type: "button",
+                data: { bs_toggle: "modal", bs_target: "#auction-register-modal-#{auction.hashid}" } }
               %i.bi.bi-person-plus.me-2
               Register Now
             = render "auctions/register_modal", auction: auction, modal_id: "auction-register-modal-#{auction.hashid}"

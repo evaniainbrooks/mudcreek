@@ -10,10 +10,10 @@
         .mb-3
           .progress
             - animated = batch.processing? ? "progress-bar-animated progress-bar-striped" : ""
-            .progress-bar{ class: "#{animated}", role: "progressbar",
+            .progress-bar{class: "#{animated}", role: "progressbar",
                 style: "width: #{batch.progress_percent.round}%",
                 "aria-valuenow": batch.progress_percent.round,
-                "aria-valuemin": "0", "aria-valuemax": "100" }
+                "aria-valuemin": "0", "aria-valuemax": "100"}
               = "#{batch.progress_percent.round}%"
 
       .row.text-center.g-2

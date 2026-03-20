@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_100001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_19_204228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -173,7 +173,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_100001) do
     t.index ["invoice_item_id"], name: "index_cart_items_on_invoice_item_id_unique", unique: true, where: "(invoice_item_id IS NOT NULL)"
     t.index ["listing_id"], name: "index_cart_items_on_listing_id"
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
-    t.index ["user_id", "listing_id"], name: "index_cart_items_on_user_id_and_listing_id_non_invoice", unique: true, where: "((rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
     t.index ["user_id", "listing_id"], name: "index_cart_items_unique_user_listing", unique: true, where: "((user_id IS NOT NULL) AND (rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
   end
 
@@ -238,7 +237,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_100001) do
     t.text "error_message"
     t.integer "failed_count", default: 0, null: false
     t.string "hashid", null: false
-    t.bigint "lot_id"
+    t.bigint "lot_id", null: false
     t.integer "processed_count", default: 0, null: false
     t.string "status", default: "pending", null: false
     t.bigint "tenant_id", null: false
@@ -780,7 +779,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_100001) do
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
   add_foreign_key "listing_inference_batches", "lots"
-  add_foreign_key "listing_inference_batches", "tenants"
+  add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade
   add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify
   add_foreign_key "listings", "lots", on_delete: :cascade
   add_foreign_key "listings", "tenants"

@@ -12,8 +12,9 @@
       %i.bi.bi-receipt.me-2
       Invoices
   %li.nav-item
+    - auctions_active = request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')
     = link_to profile_auctions_path,
-      class: "nav-link #{'active' if request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')}" do
+      class: "nav-link #{'active' if auctions_active}" do
       %i.bi.bi-hammer.me-2
       Auctions
   %li.nav-item
@@ -25,6 +26,7 @@
       %i.bi.bi-bookmark.me-2
       Watchlist
   %li.nav-item
-    = link_to profile_payment_methods_page_path, class: "nav-link #{'active' if request.path == profile_payment_methods_page_path}" do
+    = link_to profile_payment_methods_page_path,
+      class: "nav-link #{'active' if request.path == profile_payment_methods_page_path}" do
       %i.bi.bi-credit-card.me-2
       Payment Methods

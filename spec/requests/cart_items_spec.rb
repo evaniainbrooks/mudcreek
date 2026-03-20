@@ -43,10 +43,16 @@ RSpec.describe "CartItems", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "adds the listing to a guest cart" do
+        expect {
+          post cart_items_path, params: { listing_id: listing.id }
+        }.to change { CartItem.count }.by(1)
+      end
+
+      it "redirects back" do
         post cart_items_path, params: { listing_id: listing.id }
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to have_http_status(:redirect)
       end
     end
 
@@ -173,10 +179,10 @@ RSpec.describe "CartItems", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "returns 404" do
         patch cart_item_path(cart_item), params: { quantity: 2 }
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -223,10 +229,10 @@ RSpec.describe "CartItems", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "returns 404" do
         delete cart_item_path(cart_item)
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

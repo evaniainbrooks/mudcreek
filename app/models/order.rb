@@ -19,6 +19,7 @@ class Order < ApplicationRecord
 
   validates :number, presence: true, uniqueness: true
   validates :square_payment_id, uniqueness: true, allow_nil: true
+  validates :guest_token, uniqueness: true, allow_nil: true
   validate :user_or_guest_info_present
 
   before_validation :assign_number, on: :create

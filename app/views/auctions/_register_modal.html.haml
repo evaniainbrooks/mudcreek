@@ -18,7 +18,9 @@
             %label.form-check-label{for: "register-terms"}
               I agree to the
               - if auction.terms_and_conditions.attached?
-                = link_to "terms and conditions", rails_blob_path(auction.terms_and_conditions, disposition: "inline"), target: "_blank", rel: "noopener"
+                = link_to "terms and conditions",
+                    rails_blob_path(auction.terms_and_conditions, disposition: "inline"),
+                    target: "_blank", rel: "noopener"
               - else
                 terms and conditions
         .modal-footer

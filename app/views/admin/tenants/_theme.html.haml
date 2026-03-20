@@ -21,7 +21,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:primary_color].any?}",
             placeholder: "#355E3B",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('primary_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('primary_color_picker').value = this.value"
           - if tenant.errors[:primary_color].any?
             .invalid-feedback= tenant.errors[:primary_color].to_sentence
 
@@ -38,7 +38,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:secondary_color].any?}",
             placeholder: "#6B3A2A",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('secondary_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('secondary_color_picker').value = this.value"
           - if tenant.errors[:secondary_color].any?
             .invalid-feedback= tenant.errors[:secondary_color].to_sentence
 
@@ -55,7 +55,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:tertiary_color].any?}",
             placeholder: "#C8A84B",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('tertiary_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('tertiary_color_picker').value = this.value"
           - if tenant.errors[:tertiary_color].any?
             .invalid-feedback= tenant.errors[:tertiary_color].to_sentence
 
@@ -72,7 +72,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:background_color].any?}",
             placeholder: "#ffffff",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('background_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('background_color_picker').value = this.value"
           - if tenant.errors[:background_color].any?
             .invalid-feedback= tenant.errors[:background_color].to_sentence
 
@@ -89,7 +89,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:text_color].any?}",
             placeholder: "#212529",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('text_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('text_color_picker').value = this.value"
           - if tenant.errors[:text_color].any?
             .invalid-feedback= tenant.errors[:text_color].to_sentence
 
@@ -106,7 +106,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:link_color].any?}",
             placeholder: "#0d6efd",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('link_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('link_color_picker').value = this.value"
           - if tenant.errors[:link_color].any?
             .invalid-feedback= tenant.errors[:link_color].to_sentence
 
@@ -123,7 +123,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:footer_color].any?}",
             placeholder: "#f8f9fa",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('footer_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('footer_color_picker').value = this.value"
           - if tenant.errors[:footer_color].any?
             .invalid-feedback= tenant.errors[:footer_color].to_sentence
 
@@ -140,7 +140,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:container_color].any?}",
             placeholder: "#ffffff",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('container_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('container_color_picker').value = this.value"
           - if tenant.errors[:container_color].any?
             .invalid-feedback= tenant.errors[:container_color].to_sentence
 
@@ -157,7 +157,7 @@
             class: "form-control font-monospace #{'is-invalid' if tenant.errors[:card_color].any?}",
             placeholder: "#ffffff",
             pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('card_color_picker').value = this.value.length === 7 ? this.value : this.value"
+            oninput: "document.getElementById('card_color_picker').value = this.value"
           - if tenant.errors[:card_color].any?
             .invalid-feedback= tenant.errors[:card_color].to_sentence
 

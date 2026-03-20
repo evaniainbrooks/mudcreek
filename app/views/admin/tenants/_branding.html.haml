@@ -30,7 +30,8 @@
         .invalid-feedback= tenant.errors[:listing_placeholder].to_sentence
       - if tenant.listing_placeholder.attached?
         .mt-2.d-flex.align-items-center.gap-2
-          = image_tag tenant.listing_placeholder.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+          = image_tag tenant.listing_placeholder.variant(resize_to_fill: [120, 80]),
+              class: "rounded", style: "object-fit: cover"
           = link_to admin_tenant_path(remove_listing_placeholder: "1"),
               class: "btn btn-sm btn-outline-danger",
               data: { turbo_method: :patch, turbo_confirm: "Remove listing placeholder?" } do
@@ -47,7 +48,8 @@
         .invalid-feedback= tenant.errors[:auction_placeholder].to_sentence
       - if tenant.auction_placeholder.attached?
         .mt-2.d-flex.align-items-center.gap-2
-          = image_tag tenant.auction_placeholder.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+          = image_tag tenant.auction_placeholder.variant(resize_to_fill: [120, 80]),
+              class: "rounded", style: "object-fit: cover"
           = link_to admin_tenant_path(remove_auction_placeholder: "1"),
               class: "btn btn-sm btn-outline-danger",
               data: { turbo_method: :patch, turbo_confirm: "Remove auction placeholder?" } do

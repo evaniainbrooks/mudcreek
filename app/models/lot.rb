@@ -6,6 +6,7 @@ class Lot < ApplicationRecord
   belongs_to :owner, class_name: "User"
   has_one    :address, as: :addressable, dependent: :destroy
   has_many   :listings, dependent: :destroy
+  has_many   :listing_inference_batches, dependent: :destroy
   has_one    :settlement, dependent: :destroy
 
   accepts_nested_attributes_for :address, allow_destroy: true

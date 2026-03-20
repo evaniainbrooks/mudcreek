@@ -39,12 +39,18 @@ CartItem:
   index_cart_items_on_invoice_item_id_unique:
     UniqueIndexChecker:
       enabled: false
-  index_cart_items_on_user_id_and_listing_id_sale_only:
+  index_cart_items_unique_user_listing:
+    UniqueIndexChecker:
+      enabled: false
+  index_cart_items_unique_guest_listing:
     UniqueIndexChecker:
       enabled: false
   invoice_item_id:
     MissingUniqueIndexChecker:
       enabled: false
   listing_id+user_id:
+    MissingUniqueIndexChecker:
+      enabled: false
+  listing_id+guest_cart_token:
     MissingUniqueIndexChecker:
       enabled: false
