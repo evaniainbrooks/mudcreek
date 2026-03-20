@@ -13,7 +13,8 @@ class Tenant < ApplicationRecord
 
   has_many :lots, dependent: :restrict_with_error
   has_many :listings, dependent: :restrict_with_error
-  has_many :users, dependent: :restrict_with_error
+  has_many :users,            dependent: :restrict_with_error
+  has_many :oauth_identities, dependent: :restrict_with_error
   has_many :roles, dependent: :restrict_with_error
   has_many :permissions, dependent: :restrict_with_error
   has_many :listing_categories, class_name: "Listings::Category", dependent: :restrict_with_error

@@ -9,7 +9,7 @@ class CreateOauthIdentities < ActiveRecord::Migration[8.1]
       t.text    :access_token
       t.text    :refresh_token
       t.datetime :token_expires_at
-      t.string  :name_from_provider
+      t.string :name_from_provider
 
       t.timestamps
     end
