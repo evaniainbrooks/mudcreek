@@ -61,6 +61,15 @@ module ApplicationHelper
     OpenSSL::HMAC.hexdigest("SHA256", Rails.application.secret_key_base[0, 32], "bid:#{id}")
   end
 
+  def oauth_provider_configured?(provider)
+    key = case provider
+    when :google   then Rails.application.credentials.dig(:oauth, :google, :client_id)
+    when :facebook then Rails.application.credentials.dig(:oauth, :facebook, :app_id)
+    when :apple    then Rails.application.credentials.dig(:oauth, :apple, :client_id)
+    end
+    key.present?
+  end
+
   def bootstrap_flash_class(type)
     FLASH_CLASS_MAP.fetch(type.to_s, "secondary")
   end

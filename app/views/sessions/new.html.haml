@@ -24,6 +24,19 @@
               = f.submit "Sign in", class: "btn btn-primary"
           .text-center.mt-3
             = link_to "Forgot your password?", new_password_path, class: "text-decoration-none small"
+          - if oauth_provider_configured?(:google) || oauth_provider_configured?(:facebook) || oauth_provider_configured?(:apple)
+            %hr.my-3
+            %p.text-center.text-muted.small.mb-2 Or continue with
+            .d-grid.gap-2
+              - if oauth_provider_configured?(:google)
+                = button_to "Continue with Google", "/auth/google_oauth2",
+                    method: :post, data: { turbo: false }, class: "btn btn-outline-secondary"
+              - if oauth_provider_configured?(:facebook)
+                = button_to "Continue with Facebook", "/auth/facebook",
+                    method: :post, data: { turbo: false }, class: "btn btn-outline-secondary"
+              - if oauth_provider_configured?(:apple)
+                = button_to "Continue with Apple", "/auth/apple",
+                    method: :post, data: { turbo: false }, class: "btn btn-dark"
 
     .col-12.col-md-6.col-lg-5
       .card.shadow-sm.border-0.createaccount-card
@@ -66,3 +79,16 @@
                 class: "form-control"
             .d-grid.mt-4
               = f.submit "Create account", class: "btn btn-outline-primary"
+          - if oauth_provider_configured?(:google) || oauth_provider_configured?(:facebook) || oauth_provider_configured?(:apple)
+            %hr.my-3
+            %p.text-center.text-muted.small.mb-2 Or continue with
+            .d-grid.gap-2
+              - if oauth_provider_configured?(:google)
+                = button_to "Continue with Google", "/auth/google_oauth2",
+                    method: :post, data: { turbo: false }, class: "btn btn-outline-secondary"
+              - if oauth_provider_configured?(:facebook)
+                = button_to "Continue with Facebook", "/auth/facebook",
+                    method: :post, data: { turbo: false }, class: "btn btn-outline-secondary"
+              - if oauth_provider_configured?(:apple)
+                = button_to "Continue with Apple", "/auth/apple",
+                    method: :post, data: { turbo: false }, class: "btn btn-dark"

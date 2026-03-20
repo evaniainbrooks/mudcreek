@@ -6,7 +6,8 @@ class User < ApplicationRecord
   generates_token_for :activation, expires_in: 24.hours do
     activated_at
   end
-  has_many :sessions, dependent: :destroy, inverse_of: :user
+  has_many :sessions,         dependent: :destroy, inverse_of: :user
+  has_many :oauth_identities, dependent: :destroy
   belongs_to :role, optional: true
   has_many :listings, foreign_key: :owner_id, dependent: :destroy
   has_many :lots, foreign_key: :owner_id, dependent: :destroy

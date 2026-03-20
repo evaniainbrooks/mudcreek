@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_210001) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_124126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -371,6 +371,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_210001) do
     t.index ["hashid"], name: "index_lots_on_hashid", unique: true
     t.index ["owner_id"], name: "index_lots_on_owner_id"
     t.index ["tenant_id"], name: "index_lots_on_tenant_id"
+  end
+
+  create_table "oauth_identities", force: :cascade do |t|
+    t.text "access_token"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name_from_provider"
+    t.string "provider", null: false
+    t.text "refresh_token"
+    t.bigint "tenant_id", null: false
+    t.datetime "token_expires_at"
+    t.string "uid", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["provider", "uid"], name: "index_oauth_identities_on_provider_and_uid", unique: true
+    t.index ["tenant_id"], name: "index_oauth_identities_on_tenant_id"
+    t.index ["user_id"], name: "index_oauth_identities_on_user_id"
   end
 
   create_table "offers", force: :cascade do |t|
@@ -809,6 +826,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_210001) do
   add_foreign_key "listings_rental_rate_plans", "tenants"
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
+  add_foreign_key "oauth_identities", "tenants"
+  add_foreign_key "oauth_identities", "users"
   add_foreign_key "offers", "listings"
   add_foreign_key "offers", "tenants"
   add_foreign_key "offers", "users"
