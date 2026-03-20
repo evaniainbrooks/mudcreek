@@ -29,7 +29,7 @@ Rails.application.configure do
   config.cache_store = :memory_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :localstack
+  config.active_storage.service = (ENV["ACTIVE_STORAGE_SERVICE"] || "localstack").to_sym
 
   # Deliver mail to MailHog (web UI at http://localhost:8025).
   config.action_mailer.delivery_method = :smtp
