@@ -4,11 +4,11 @@ module ListingsHelper
   def public_listing_back_button(listing)
     if (auction = listing.auction_listing&.auction)
       link_to(admin_auction_path(auction), class: "btn btn-outline-secondary") do
-        tag(:i, class: "bi bi-arrow-left me-1") + "Back to Auction"
+        content_tag(:i, "", class: "bi bi-arrow-left me-1") + "Back to Auction"
       end
     else
       link_to(admin_listings_path, class: "btn btn-outline-secondary") do
-        tag(:i, class: "bi bi-arrow-left me-1") + "Back to Listings"
+        content_tag(:i, "", class: "bi bi-arrow-left me-1") + "Back to Listings"
       end
     end
   end

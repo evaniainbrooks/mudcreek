@@ -24,7 +24,7 @@
     = render "left_column", auction: @auction, registration: @registration, auction_listing_count: @auction_listing_count, filter: @filter
     .col-lg-8.bg-body.p-4.p-lg-5{ data: { registration_status: registration_status(@registration), current_user_token: user_bid_token(Current.user) } }
       - unless @filter
-        = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
+        = form_with url: auction_path(@auction), method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-1" } do |f|
           .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
             = f.search_field :search, value: @search, placeholder: "Search listings…", class: "form-control form-control-sm"
             - if @search
@@ -55,4 +55,6 @@
 
 - if Current.user && !@registration
   = render "register_modal", auction: @auction
+- if @auction.address&.any?
+  = render "shared/map_modal", address: @auction.address
 = render "shared/share_modal", url: auction_url(@auction), title: @auction.name

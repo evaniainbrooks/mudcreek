@@ -78,6 +78,24 @@ module ApplicationHelper
     end
   end
 
+  def google_maps_api_key
+    Rails.application.credentials.dig(:google_maps, :api_key)
+  end
+
+  def google_maps_configured?
+    google_maps_api_key.present?
+  end
+
+  def google_maps_embed_url(address)
+    query = address.geocoded? ? "#{address.latitude},#{address.longitude}" : ERB::Util.url_encode(address.to_geocode_string)
+    key = google_maps_api_key
+    if key.present?
+      "https://www.google.com/maps/embed/v1/place?key=#{key}&q=#{query}&zoom=15"
+    else
+      "https://maps.google.com/maps?q=#{query}&output=embed"
+    end
+  end
+
   def oauth_provider_configured?(provider)
     key = case provider
     when :google   then Rails.application.credentials.dig(:oauth, :google, :client_id)

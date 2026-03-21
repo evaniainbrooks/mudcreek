@@ -73,7 +73,8 @@
         %p.text-muted.small.mb-0 Location
         .d-flex.align-items-start.gap-2
           %i.bi.bi-geo-alt-fill.flex-shrink-0.mt-1
-          %span= [ addr.street_address, addr.city, addr.province, addr.country ].compact_blank.join(", ")
+          %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
+            = [ addr.street_address, addr.city, addr.province, addr.country ].compact_blank.join(", ")
 
 
 

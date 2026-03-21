@@ -49,6 +49,31 @@
             - if listing.errors[:description].any?
               .invalid-feedback.d-block= listing.errors[:description].to_sentence
 
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-geo-alt.me-1
+          Location
+        .card-body.p-4
+          = f.fields_for :address, (listing.address || listing.build_address(address_type: "primary")) do |af|
+            = af.hidden_field :address_type, value: "primary"
+            .mb-3
+              = af.label :street_address, class: "form-label"
+              = af.text_field :street_address, class: "form-control", placeholder: "Street address"
+            .row.g-3.mb-3
+              .col-sm-6
+                = af.label :city, class: "form-label"
+                = af.text_field :city, class: "form-control"
+              .col-sm-6
+                = af.label :province, "Province / State", class: "form-label"
+                = af.text_field :province, class: "form-control"
+            .row.g-3.mb-0
+              .col-sm-6
+                = af.label :postal_code, "Postal / ZIP Code", class: "form-label"
+                = af.text_field :postal_code, class: "form-control"
+              .col-sm-6
+                = af.label :country, "Country", class: "form-label"
+                = af.text_field :country, class: "form-control", placeholder: "e.g. CA, US"
+
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold
           %i.bi.bi-toggles.me-1

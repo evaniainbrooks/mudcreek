@@ -149,6 +149,7 @@ group :test do
 end
 
 gem "imgproxy", "~> 3.0"
+gem "geocoder", "~> 1.8"
 gem "aws-sdk-s3", require: false
 
 # ZIP file handling for bulk AI listing import

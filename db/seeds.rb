@@ -18,7 +18,9 @@ mudcreek.create_address!(
   city:           "Kamloops",
   province:       "BC",
   postal_code:    "V2C 2A1",
-  country:        "CA"
+  country:        "CA",
+  latitude:       50.6745,
+  longitude:      -120.3273
 ) unless mudcreek.address
 
 [
@@ -1422,7 +1424,7 @@ auction_data = [
     reconciled: true,
     auto_approve: false,
     poster: "homestead.jpg",
-    address: { street_address: "412 Elmwood Avenue", city: "Kamloops", province: "BC", postal_code: "V2C 1A1", country: "CA" },
+    address: { street_address: "412 Elmwood Avenue", city: "Kamloops", province: "BC", postal_code: "V2C 1A1", country: "CA", latitude: 50.6745, longitude: -120.3273 },
     listings: [
       { name: "Victorian Parlour Chair",        starting_bid: 100, bid_increment: 10, reserve_price: 150 },
       { name: "Mahogany Dresser with Mirror",   starting_bid: 200, bid_increment: 20, reserve_price: 280 },
@@ -1440,7 +1442,7 @@ auction_data = [
     reconciled: false,
     auto_approve: true,
     poster: "lodge.jpg",
-    address: { street_address: "88 Birchwood Court", city: "Revelstoke", province: "BC", postal_code: "V0E 2S0", country: "CA" },
+    address: { street_address: "88 Birchwood Court", city: "Revelstoke", province: "BC", postal_code: "V0E 2S0", country: "CA", latitude: 50.9981, longitude: -118.1955 },
     listings: [
       { name: "Gentleman's Pocket Watch",     starting_bid: 150, bid_increment: 25, reserve_price: 250 },
       { name: "Sterling Silver Cutlery Set",  starting_bid: 150, bid_increment: 25, reserve_price: nil },
@@ -1457,7 +1459,7 @@ auction_data = [
     reconciled: false,
     auto_approve: true,
     poster: "meadow.jpg",
-    address: { street_address: "55 Manor Gate Road", city: "Penticton", province: "BC", postal_code: "V2A 1B3", country: "CA" },
+    address: { street_address: "55 Manor Gate Road", city: "Penticton", province: "BC", postal_code: "V2A 1B3", country: "CA", latitude: 49.4897, longitude: -119.5853 },
     listings: [
       { name: "Vinyl Record Collection", starting_bid: 40,  bid_increment: 5,  reserve_price: nil },
       { name: "Grundig Shortwave Radio", starting_bid: 50,  bid_increment: 10, reserve_price: nil },
@@ -1474,7 +1476,7 @@ auction_data = [
     reconciled: false,
     auto_approve: true,
     poster: "lake.jpg",
-    address: { street_address: "14 Lakeshore Drive", city: "Salmon Arm", province: "BC", postal_code: "V1E 2V1", country: "CA" },
+    address: { street_address: "14 Lakeshore Drive", city: "Salmon Arm", province: "BC", postal_code: "V1E 2V1", country: "CA", latitude: 50.7021, longitude: -119.2778 },
     listings: [
       { name: "Teak Garden Bench",          starting_bid:  75, bid_increment: 10, reserve_price: nil },
       { name: "Cast Iron Garden Urns",      starting_bid:  75, bid_increment: 15, reserve_price: 140 },
@@ -1492,7 +1494,7 @@ auction_data = [
     reconciled: false,
     auto_approve: true,
     poster: "ranch.jpg",
-    address: { street_address: "9900 Douglas Lake Road", city: "Merritt", province: "BC", postal_code: "V1K 1P0", country: "CA" },
+    address: { street_address: "9900 Douglas Lake Road", city: "Merritt", province: "BC", postal_code: "V1K 1P0", country: "CA", latitude: 50.1138, longitude: -120.7882 },
     listings: [
       { name: "Antique Wheelbarrow",    starting_bid: 45,  bid_increment: 5,  reserve_price: nil },
       { name: "Vintage Level Set",      starting_bid: 20,  bid_increment: 5,  reserve_price: nil },
@@ -1510,7 +1512,7 @@ auction_data = [
     reconciled: true,
     auto_approve: false,
     poster: "prairie.jpg",
-    address: { street_address: "Rural Route 3", city: "Ashcroft", province: "BC", postal_code: "V0K 1A0", country: "CA" },
+    address: { street_address: "Rural Route 3", city: "Ashcroft", province: "BC", postal_code: "V0K 1A0", country: "CA", latitude: 50.7271, longitude: -121.2836 },
     listings: [
       { name: "Cedar Chest",                starting_bid:  75, bid_increment: 10, reserve_price: nil },
       { name: "Windsor Chairs Set of Four", starting_bid: 100, bid_increment: 15, reserve_price: nil },
@@ -1530,7 +1532,7 @@ auction_data = [
     reconciled: false,
     auto_approve: true,
     poster: "orchard.jpg",
-    address: { street_address: "1250 Orchard Road", city: "Kelowna", province: "BC", postal_code: "V1Y 5A1", country: "CA" },
+    address: { street_address: "1250 Orchard Road", city: "Kelowna", province: "BC", postal_code: "V1Y 5A1", country: "CA", latitude: 49.8880, longitude: -119.4960 },
     listings: [
       { name: "Chesterfield Sofa",          starting_bid: 250, bid_increment: 25, reserve_price: 400 },
       { name: "Antique Writing Desk",       starting_bid: 175, bid_increment: 25, reserve_price: nil },
@@ -1564,7 +1566,9 @@ auctions = auction_data.map do |attrs|
     city: addr[:city],
     province: addr[:province],
     postal_code: addr[:postal_code],
-    country: addr[:country]
+    country: addr[:country],
+    latitude: addr[:latitude],
+    longitude: addr[:longitude]
   )
 
   attrs[:listings].each_with_index do |listing_attrs, idx|

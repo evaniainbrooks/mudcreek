@@ -109,13 +109,16 @@
         - if @listing.categories.any?
           .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")
         - if (addr = @listing.effective_address)&.any?
-          .mt-3.text-muted.small
-            %i.bi.bi-geo-alt.me-1
-            = addr.to_fs(:short)
+          .mt-3
+            %button.btn.btn-link.p-0.text-muted.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
+              %i.bi.bi-geo-alt.me-1
+              = addr.to_fs(:short)
 
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)
 
+- if (addr = @listing.effective_address)&.any?
+  = render "shared/map_modal", address: addr
 = render("listings/rental_modal",
     listing: @listing, booking_events: @booking_events) if @listing.rental? && Current.user
 = render("listings/offer_modal", listing: @listing) if @listing.sale? && @listing.negotiable?
