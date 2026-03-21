@@ -6,24 +6,24 @@
 .page-container
   %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "details-tab", type: "button", role: "tab",
+      %button.nav-link{id: "details-tab", type: "button", role: "tab",
           class: @user.errors.any? ? "" : "active",
           data: { bs_toggle: "tab", bs_target: "#details-pane" },
-          aria: { controls: "details-pane", selected: !@user.errors.any? } }
+          aria: { controls: "details-pane", selected: !@user.errors.any? }}
         %i.bi.bi-info-circle.me-1
         Details
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+      %button.nav-link{id: "edit-tab", type: "button", role: "tab",
           class: @user.errors.any? ? "active" : "",
           data: { bs_toggle: "tab", bs_target: "#edit-pane" },
-          aria: { controls: "edit-pane", selected: @user.errors.any? } }
+          aria: { controls: "edit-pane", selected: @user.errors.any? }}
         %i.bi.bi-pencil.me-1
         Edit
 
   .p-4
     .tab-content
-      #details-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "details-tab" },
-          class: @user.errors.any? ? "" : "show active" }
+      #details-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "details-tab" },
+          class: @user.errors.any? ? "" : "show active"}
         .card.shadow-sm.border-0
           .card-body
             %dl.row.mb-0
@@ -63,8 +63,8 @@
                 - else
                   %span.text-muted —
 
-      #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" },
-          class: @user.errors.any? ? "show active" : "" }
+      #edit-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "edit-tab" },
+          class: @user.errors.any? ? "show active" : ""}
         = render "edit_pane", user: @user, roles: @roles
 
     .mt-3

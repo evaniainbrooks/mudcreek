@@ -75,5 +75,4 @@ namespace :tenant do
     abort "#{label} cannot be blank." if value.blank?
     value
   end
-
 end

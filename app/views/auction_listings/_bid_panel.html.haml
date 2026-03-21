@@ -15,9 +15,9 @@
 - if auction_listing.active? && registration&.approved?
   - next_amount = auction_listing.next_bid_amount
   .mt-2.text-center
-    %a.small.text-muted.text-decoration-none{ href: "#proxy-bid-#{auction_listing.id}",
+    %a.small.text-muted.text-decoration-none{href: "#proxy-bid-#{auction_listing.id}",
       data: { bs_toggle: "collapse" },
-      aria: { expanded: proxy_bid ? "true" : "false" } }
+      aria: { expanded: proxy_bid ? "true" : "false" }}
       %i.bi.bi-robot.me-1
       Automatic bidding
       - if proxy_bid

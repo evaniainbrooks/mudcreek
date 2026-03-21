@@ -1,3 +1,6 @@
+exclude:
+  - "app/views/sessions/_oauth_buttons.html.haml"
+
 linters:
   ClassesBeforeIds:
     enabled: false

@@ -83,7 +83,7 @@
           = f.text_area :meta_description, class: "form-control", rows: 3,
               placeholder: "Brief description for search engines and social sharing (recommended: 150–160 characters)"
           - if page.meta_description.present?
-            %small.text-muted= "#{page.meta_description.length} characters"
+            %small.text-muted #{page.meta_description.length} characters
 
     %fieldset.card.shadow-sm.border-0.mt-4
       %legend.card-header.fw-semibold
