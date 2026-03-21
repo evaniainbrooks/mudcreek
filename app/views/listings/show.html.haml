@@ -37,18 +37,20 @@
 .page-container.p-4
   .row.g-4.g-lg-5.align-items-start
     .col-lg-7
-      - if has_images || has_videos
-        = render "listings/carousel", listing: @listing, media_count:
-      - elsif @listing.lot&.listing_placeholder&.attached?
-        .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
-      - else
-        .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
-          %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
+      .position-relative
+        - if has_images || has_videos
+          = render "listings/carousel", listing: @listing, media_count:
+        - elsif @listing.lot&.listing_placeholder&.attached?
+          .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
+        - else
+          .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
+            %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
+        - if @listing.lot&.show_attribution?
+          .position-absolute.bottom-0.start-0.p-3
+            = lot_number_badge(@listing.lot)
     .col-lg-5
       .position-sticky{ style: "top: 1.5rem" }
         %h1.fw-bold.mb-1= @listing.name
-        - if @listing.lot&.show_attribution?
-          .mb-2= lot_number_badge(@listing.lot)
         - if @listing.rental?
           %span.badge.text-bg-info.mb-2 Rental
         - else
@@ -113,6 +115,19 @@
             %button.btn.btn-link.p-0.text-muted.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
               %i.bi.bi-geo-alt.me-1
               = addr.to_fs(:short)
+        - if (lot = @listing.lot)&.show_attribution?
+          - other_count = lot.listings.where(published: true).where.not(id: @listing.id).count
+          %hr.mt-4.mb-3
+          = link_to listings_path(lot_id: lot.hashid), class: "d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 lot-attribution-btn" do
+            .rounded-circle.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 48px; height: 48px" }
+              %i.bi.bi-person-fill.text-secondary{ style: "font-size: 1.5rem" }
+            .flex-grow-1
+              .fw-semibold= lot.name
+              .text-muted.small= lot.owner.name
+            .d-flex.align-items-center.gap-1.flex-shrink-0
+              - if other_count > 0
+                %span.small.text-muted= "See #{other_count} other #{"item".pluralize(other_count)} from this seller"
+              %i.bi.bi-chevron-right.text-muted
 
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)

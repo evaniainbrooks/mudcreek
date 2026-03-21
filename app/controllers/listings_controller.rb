@@ -38,12 +38,16 @@ class ListingsController < ApplicationController
     @search = params[:search].presence
     category = @category_hashid && Listings::Category.find_by(hashid: @category_hashid)
 
+    @lot_hashid = params[:lot_id].presence
+    lot = @lot_hashid && Lot.find_by(hashid: @lot_hashid)
+
     base = Listing.where(published: true, state: @tab).not_in_auction
     @filter_total = base.count
     scope = base.with_rich_text_description.with_attached_images.with_attached_videos.includes(:rental_rate_plans, :categories, lot: [ :owner, :address, { listing_placeholder_attachment: :blob } ]).order(position: :asc, id: :asc)
     scope = scope.where(id: Listings::CategoryAssignment.where(listings_category_id: category.id).select(:listing_id)) if category
     scope = scope.where(Listing.arel_table[:name].matches("%#{Listing.sanitize_sql_like(@search)}%")) if @search
-    @filter_count = (@search || @category_hashid) ? scope.count : @filter_total
+    scope = scope.where(lot_id: lot.id) if lot
+    @filter_count = (@search || @category_hashid || @lot_hashid) ? scope.count : @filter_total
     @pagy, @listings = pagy(:keyset, scope)
 
     respond_to do |format|

@@ -191,6 +191,17 @@ thead.thead-secondary {
   }
 }
 
+// Lot attribution button on listing show page
+.lot-attribution-btn {
+  border: 1px solid var(--bs-border-color);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--bs-tertiary-bg);
+    border-color: var(--bs-border-color-translucent);
+  }
+}
+
 // OAuth provider buttons
 .oauth-btn {
   display: flex;
