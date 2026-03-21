@@ -191,6 +191,10 @@ thead.thead-secondary {
   }
 }
 
+// Fixed navbar offset — fallback keeps content visible before JS runs
+:root { --navbar-height: 70px; }
+body  { padding-top: var(--navbar-height); }
+
 // Shrinking fixed navbar
 .navbar {
   transition: padding 0.25s ease;

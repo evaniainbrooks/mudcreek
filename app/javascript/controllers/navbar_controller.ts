@@ -8,12 +8,17 @@ export default class NavbarController extends Controller {
       this.element.classList.toggle("navbar-scrolled", window.scrollY > 8)
     }
     window.addEventListener("scroll", this.onScroll, { passive: true })
-    document.body.style.paddingTop = `${(this.element as HTMLElement).offsetHeight}px`
+    this.updateOffset()
     this.onScroll()
   }
 
   disconnect() {
     window.removeEventListener("scroll", this.onScroll)
-    document.body.style.paddingTop = ""
+    document.documentElement.style.removeProperty("--navbar-height")
+  }
+
+  private updateOffset() {
+    const height = (this.element as HTMLElement).offsetHeight
+    document.documentElement.style.setProperty("--navbar-height", `${height}px`)
   }
 }
