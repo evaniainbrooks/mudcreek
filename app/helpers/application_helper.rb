@@ -61,6 +61,23 @@ module ApplicationHelper
     OpenSSL::HMAC.hexdigest("SHA256", Rails.application.secret_key_base[0, 32], "bid:#{id}")
   end
 
+  def browse_tabs(active:)
+    tabs = [
+      { key: :auctions,   label: "Auctions",   icon: "bi-hammer", path: auctions_path },
+      { key: :listings,   label: "Listings",   icon: "bi-tag",    path: listings_path },
+      { key: :categories, label: "Categories", icon: "bi-grid",   path: categories_path },
+    ]
+    content_tag(:ul, class: "nav nav-tabs px-4 pt-3 flex-nowrap overflow-auto") do
+      safe_join(tabs.map do |tab|
+        content_tag(:li, class: "nav-item") do
+          link_to tab[:path], class: "nav-link d-flex flex-column align-items-center #{"active" if tab[:key] == active}" do
+            content_tag(:i, "", class: "bi #{tab[:icon]} mb-1") + content_tag(:span, tab[:label])
+          end
+        end
+      end)
+    end
+  end
+
   def oauth_provider_configured?(provider)
     key = case provider
     when :google   then Rails.application.credentials.dig(:oauth, :google, :client_id)

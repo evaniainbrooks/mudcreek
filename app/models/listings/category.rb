@@ -3,6 +3,7 @@ class Listings::Category < ApplicationRecord
   include HasHashid
 
   has_rich_text :description
+  has_one_attached :hero_image
 
   has_many :category_assignments, foreign_key: :listings_category_id, dependent: :destroy
   has_many :listings, through: :category_assignments

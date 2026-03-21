@@ -1,0 +1,20 @@
+- set_meta_tags title: "Categories",
+    description: "Browse listings by category.",
+    og: { title: "Categories", description: "Browse listings by category." }
+
+.page-container
+  = browse_tabs(active: :categories)
+
+  .p-4
+    .row.row-cols-1.row-cols-md-2.g-4
+      - @categories.each do |category|
+        .col
+          = link_to listings_path(category_id: category.hashid), class: "text-decoration-none" do
+            .position-relative.overflow-hidden.rounded.shadow-sm{ style: "height: 200px; background: #dee2e6" }
+              - if category.hero_image.attached?
+                = image_tag category.hero_image.variant(resize_to_fill: [800, 400]),
+                    class: "w-100 h-100",
+                    style: "object-fit: cover",
+                    alt: category.name
+              .position-absolute.bottom-0.start-0.end-0.p-3{ style: "background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%)" }
+                %h2.h5.mb-0.fw-semibold.text-white= category.name

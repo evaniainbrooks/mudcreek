@@ -1,0 +1,40 @@
+= form_with model: [:admin, user], url: admin_user_path(user), method: :patch do |f|
+  - if user.errors.any?
+    .alert.alert-danger.mb-4
+      = user.errors.full_messages.to_sentence
+
+  %fieldset.card.shadow-sm.border-0.mb-4
+    %legend.card-header.fw-semibold Basic Info
+    .card-body.p-4
+      .row.g-3
+        .col-sm-6
+          = f.label :first_name, class: "form-label required"
+          = f.text_field :first_name, class: "form-control #{'is-invalid' if user.errors[:first_name].any?}", required: true
+          - if user.errors[:first_name].any?
+            .invalid-feedback= user.errors[:first_name].to_sentence
+        .col-sm-6
+          = f.label :last_name, class: "form-label required"
+          = f.text_field :last_name, class: "form-control #{'is-invalid' if user.errors[:last_name].any?}", required: true
+          - if user.errors[:last_name].any?
+            .invalid-feedback= user.errors[:last_name].to_sentence
+        .col-sm-8
+          = f.label :email_address, "Email Address", class: "form-label required"
+          = f.email_field :email_address, class: "form-control #{'is-invalid' if user.errors[:email_address].any?}", required: true
+          - if user.errors[:email_address].any?
+            .invalid-feedback= user.errors[:email_address].to_sentence
+        .col-sm-2
+          = f.label :role_id, "Role", class: "form-label"
+          = f.select :role_id, roles.map { [it.name, it.id] },
+              { include_blank: "— No role —" },
+              class: "form-select #{'is-invalid' if user.errors[:role_id].any?}"
+          - if user.errors[:role_id].any?
+            .invalid-feedback= user.errors[:role_id].to_sentence
+        .col-sm-2
+          %label.form-label{ for: "user_activated" } Activated
+          = f.select :activated, [["Yes", "1"], ["No", "0"]],
+              { selected: user.activated? ? "1" : "0" },
+              class: "form-select"
+
+  .d-flex.gap-2
+    = f.submit "Save Changes", class: "btn btn-primary"
+    = link_to "Cancel", admin_user_path(user), class: "btn btn-outline-secondary"

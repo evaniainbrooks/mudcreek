@@ -99,24 +99,24 @@
                     = f.button class: "btn btn-primary flex-grow-1" do
                       %i.bi.bi-cart-plus.me-2
                       Add to Cart
-            - if Current.user && @listing.sale? && @listing.negotiable?
+            - if @listing.sale? && @listing.negotiable?
               %button.btn.btn-outline-primary.w-100.mb-4{type: "button",
                   data: { "bs-toggle": "modal", "bs-target": "#offer-modal" }}
                 %i.bi.bi-tag.me-2
                 Make an Offer
-            - elsif !Current.user && @listing.sale? && @listing.negotiable?
-              = link_to new_session_path, class: "btn btn-outline-secondary w-100 mb-4" do
-                %i.bi.bi-tag.me-2
-                Sign in to make an offer
         .listing-description
           = @listing.description
         - if @listing.categories.any?
           .mt-3= listing_categories_badges(@listing, css: "text-bg-dark")
+        - if (addr = @listing.effective_address)&.any?
+          .mt-3.text-muted.small
+            %i.bi.bi-geo-alt.me-1
+            = addr.to_fs(:short)
 
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)
 
 = render("listings/rental_modal",
     listing: @listing, booking_events: @booking_events) if @listing.rental? && Current.user
-= render("listings/offer_modal", listing: @listing) if @listing.sale? && @listing.negotiable? && Current.user
+= render("listings/offer_modal", listing: @listing) if @listing.sale? && @listing.negotiable?
 = render "shared/share_modal", url: listing_url(@listing), title: @listing.name

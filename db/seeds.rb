@@ -601,11 +601,42 @@ category_names = [
   "Garden & Outdoor"
 ]
 
+category_hero_images = {
+  "Furniture"               => "cabin.jpg",
+  "Antiques & Collectibles" => "homestead.jpg",
+  "Jewelry & Watches"       => "sunset.jpg",
+  "Tools & Workshop"        => "axe.jpg",
+  "Books & Media"           => "lodge.jpg",
+  "Kitchenware & Dining"    => "orchard.jpg",
+  "Art & Decor"             => "river.jpg",
+  "Vintage Clothing"        => "meadow.jpg",
+  "Electronics"             => "bluff.jpg",
+  "Garden & Outdoor"        => "farm.jpg",
+}
+
 categories = category_names.each_with_object({}) do |name, hash|
   hash[name] = Listings::Category.find_or_create_by!(name: name) do |c|
     c.tenant = mudcreek
   end
 end
+
+categories.each do |name, category|
+  next if category.hero_image.attached?
+
+  filename = category_hero_images[name]
+  next unless filename
+
+  path = Rails.root.join("spec/fixtures/images", filename)
+  next unless path.exist?
+
+  category.hero_image.attach(
+    io:           path.open("rb"),
+    filename:     filename,
+    content_type: "image/jpeg"
+  )
+end
+
+puts "Attached hero images to #{Listings::Category.joins(:hero_image_attachment).count} categories."
 
 category_assignments = {
   # Furniture

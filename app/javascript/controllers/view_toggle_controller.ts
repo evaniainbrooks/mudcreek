@@ -5,7 +5,7 @@ type ViewMode = "small" | "large" | "list"
 const GRID_CLASSES: Record<ViewMode, string> = {
   small: "row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4",
   large: "row row-cols-1 row-cols-sm-2 g-4",
-  list: "d-flex flex-column gap-3",
+  list: "d-flex flex-column gap-1",
 }
 
 const STORAGE_KEY = "listings-view-mode"

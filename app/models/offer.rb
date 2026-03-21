@@ -3,7 +3,7 @@ class Offer < ApplicationRecord
   include NativeEnum
 
   belongs_to :listing
-  belongs_to :user
+  belongs_to :user, optional: true
   has_one :invoice
 
   native_enum :state, %i[pending accepted declined]
@@ -12,6 +12,15 @@ class Offer < ApplicationRecord
 
   validates :amount_cents, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :listing_id, uniqueness: { conditions: -> { where(state: :accepted) }, message: "already has an accepted offer" }, if: :accepted?
+  validate :user_or_guest_contact_present
+
+  def guest?
+    user_id.nil?
+  end
+
+  def contact_email
+    user&.email_address || guest_email
+  end
 
   after_create_commit :record_category_interest
   after_update :mark_listing_sold, if: -> { saved_change_to_state?(to: "accepted") }
@@ -21,7 +30,13 @@ class Offer < ApplicationRecord
 
   private
 
+  def user_or_guest_contact_present
+    return if user.present?
+    errors.add(:base, "must provide an email or phone number") if guest_email.blank? && guest_phone.blank?
+  end
+
   def record_category_interest
+    return unless user
     UserCategoryInterest.record_for(user: user, listing: listing)
   end
 
@@ -30,6 +45,8 @@ class Offer < ApplicationRecord
   end
 
   def generate_offer_invoice
+    return unless user
+
     invoice = Invoice.create!(
       user: user,
       offer: self,

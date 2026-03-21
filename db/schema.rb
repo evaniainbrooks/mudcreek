@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_20_124126) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_21_013746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -393,12 +393,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_20_124126) do
   create_table "offers", force: :cascade do |t|
     t.integer "amount_cents", null: false
     t.datetime "created_at", null: false
+    t.string "guest_email"
+    t.string "guest_name"
+    t.string "guest_phone"
     t.bigint "listing_id", null: false
     t.string "message"
     t.enum "state", default: "pending", null: false, enum_type: "offer_state"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["listing_id"], name: "index_offers_on_listing_id"
     t.index ["listing_id"], name: "index_offers_on_listing_id_where_accepted", unique: true, where: "(state = 'accepted'::offer_state)"
     t.index ["tenant_id"], name: "index_offers_on_tenant_id"

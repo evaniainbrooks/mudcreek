@@ -7,7 +7,7 @@
   .card.shadow-sm.border-0.mb-4
     .card-header.fw-semibold New Category
     .card-body
-      = form_with model: @category, url: admin_listings_categories_path do |f|
+      = form_with model: @category, url: admin_listings_categories_path, multipart: true do |f|
         - if @category.errors.any?
           .alert.alert-danger.mb-3
             = @category.errors.full_messages.to_sentence
@@ -21,6 +21,9 @@
           = f.label :description, class: "form-label form-label-sm"
           = f.rich_text_area :description,
             class: "form-control form-control-sm #{'is-invalid' if @category.errors[:description].any?}"
+        .mb-3
+          = f.label :hero_image, class: "form-label form-label-sm"
+          = f.file_field :hero_image, accept: "image/*", class: "form-control form-control-sm"
         = f.submit "Add Category", class: "btn btn-primary btn-sm"
 
   = render_listings_categories_table(categories: @categories)

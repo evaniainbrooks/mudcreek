@@ -72,6 +72,12 @@ class Listing < ApplicationRecord
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :properties, allow_destroy: true, reject_if: :all_blank
 
+  def effective_address
+    return address if address&.any?
+    return lot.address if lot&.address&.any?
+    auction_listing&.auction&.address
+  end
+
   def requires_delivery? = delivery_method_set_id?
 
   def currency = tenant&.currency

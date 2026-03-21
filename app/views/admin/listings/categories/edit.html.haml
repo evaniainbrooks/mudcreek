@@ -1,0 +1,38 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tags-fill.me-2
+    = @category.name
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-body
+      = form_with model: @category, url: admin_listings_category_path(@category), method: :patch, multipart: true do |f|
+        - if @category.errors.any?
+          .alert.alert-danger.mb-3
+            = @category.errors.full_messages.to_sentence
+        .mb-3
+          = f.label :name, class: "form-label required"
+          = f.text_field :name,
+              class: "form-control #{'is-invalid' if @category.errors[:name].any?}",
+              required: true
+          - if @category.errors[:name].any?
+            .invalid-feedback= @category.errors[:name].to_sentence
+        .mb-3
+          = f.label :description, class: "form-label"
+          = f.rich_text_area :description,
+              class: "form-control #{'is-invalid' if @category.errors[:description].any?}"
+        .mb-3
+          = f.label :hero_image, class: "form-label"
+          - if @category.hero_image.attached?
+            .mb-2
+              = image_tag @category.hero_image.variant(resize_to_fill: [240, 120]),
+                  class: "rounded", style: "object-fit: cover"
+          = f.file_field :hero_image, accept: "image/*", class: "form-control"
+        .d-flex.gap-2
+          = f.submit "Save Changes", class: "btn btn-primary"
+          = link_to "Cancel", admin_listings_categories_path, class: "btn btn-outline-secondary"
+
+  .mt-3
+    = link_to admin_listings_categories_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Categories

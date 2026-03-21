@@ -4,31 +4,27 @@
     twitter: { card: "summary", title: "Auctions", description: "Browse upcoming and active auctions." }
 
 .page-container
-  %ul.nav.nav-tabs.px-4.pt-3
-    %li.nav-item
-      = link_to auctions_path, class: "nav-link active" do
-        %i.bi.bi-hammer.me-2
-        Auctions
-    %li.nav-item
-      = link_to listings_path, class: "nav-link" do
-        %i.bi.bi-tag.me-2
-        Listings
+  = browse_tabs(active: :auctions)
 
   .p-4
-    = form_with url: auctions_path, method: :get, html: { class: "d-flex flex-nowrap gap-2 align-items-center mb-4" } do |f|
-      .input-group.input-group-sm.flex-shrink-1{ style: "min-width: 0" }
-        = f.search_field :search, value: @search, placeholder: "Search auctions…", class: "form-control form-control-sm"
-        - if @search
-          = link_to auctions_path(state: @state, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
-            %i.bi.bi-x-lg
-      = f.select :category_id, @categories.map { [it.name, it.hashid] },
-        { include_blank: "All Categories", selected: @category_hashid },
-        class: "form-select form-select-sm w-auto flex-shrink-0",
-        onchange: "this.form.requestSubmit()"
-      = f.select :state, [["Live", "live"], ["Upcoming", "upcoming"], ["Ended", "ended"]],
-        { include_blank: "All", selected: @state },
-        class: "form-select form-select-sm w-auto flex-shrink-0",
-        onchange: "this.form.requestSubmit()"
+    = form_with url: auctions_path, method: :get, html: { class: "mb-1" } do |f|
+      .row.g-2.align-items-center
+        .col-12.col-sm
+          .input-group.input-group-sm
+            = f.search_field :search, value: @search, placeholder: "Search auctions…", class: "form-control form-control-sm"
+            - if @search
+              = link_to auctions_path(state: @state, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+                %i.bi.bi-x-lg
+        .col-auto
+          = f.select :category_id, @categories.map { [it.name, it.hashid] },
+            { include_blank: "All Categories", selected: @category_hashid },
+            class: "form-select form-select-sm",
+            onchange: "this.form.requestSubmit()"
+        .col-auto
+          = f.select :state, [["Live", "live"], ["Upcoming", "upcoming"], ["Ended", "ended"]],
+            { include_blank: "All", selected: @state },
+            class: "form-select form-select-sm",
+            onchange: "this.form.requestSubmit()"
 
     = render FilterInfoComponent.new(count: @filter_count, total: @filter_total, label: "auctions", clear_url: auctions_path)
 

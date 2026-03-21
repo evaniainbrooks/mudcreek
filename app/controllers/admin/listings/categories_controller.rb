@@ -1,5 +1,5 @@
 class Admin::Listings::CategoriesController < Admin::BaseController
-  before_action :set_category, only: [ :update, :destroy ]
+  before_action :set_category, only: [ :edit, :update, :destroy ]
 
   def index
     authorize(Listings::Category)
@@ -18,11 +18,14 @@ class Admin::Listings::CategoriesController < Admin::BaseController
     end
   end
 
+  def edit
+  end
+
   def update
-    @category.update(category_params)
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to admin_listings_categories_path }
+    if @category.update(category_params)
+      redirect_to admin_listings_categories_path, notice: "Category \"#{@category.name}\" was successfully updated."
+    else
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -39,6 +42,6 @@ class Admin::Listings::CategoriesController < Admin::BaseController
   end
 
   def category_params
-    params.require(:listings_category).permit(:name, :description)
+    params.require(:listings_category).permit(:name, :description, :hero_image)
   end
 end

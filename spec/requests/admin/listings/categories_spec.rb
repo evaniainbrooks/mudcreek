@@ -128,31 +128,10 @@ RSpec.describe "Admin::Listings::Categories", type: :request do
       expect(category.reload.name).to eq("Updated Name")
     end
 
-    context "HTML format" do
-      it "redirects to the categories index" do
-        patch admin_listings_category_path(category), params: { listings_category: { name: "Updated Name" } }
+    it "redirects to the categories index" do
+      patch admin_listings_category_path(category), params: { listings_category: { name: "Updated Name" } }
 
-        expect(response).to redirect_to(admin_listings_categories_path)
-      end
-    end
-
-    context "Turbo Stream format" do
-      it "responds with turbo_stream content type" do
-        patch admin_listings_category_path(category),
-          params: { listings_category: { name: "Updated Name" } },
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response.content_type).to start_with("text/vnd.turbo-stream.html")
-      end
-
-      it "renders a replace stream action for the category name cell" do
-        patch admin_listings_category_path(category),
-          params: { listings_category: { name: "Updated Name" } },
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response.body).to include('action="replace"')
-        expect(response.body).to include("#{ActionView::RecordIdentifier.dom_id(category)}_name")
-      end
+      expect(response).to redirect_to(admin_listings_categories_path)
     end
 
     context "with a blank name" do
@@ -163,18 +142,11 @@ RSpec.describe "Admin::Listings::Categories", type: :request do
         expect(category.reload.name).to eq(original_name)
       end
 
-      it "still responds with a redirect (HTML)" do
+      it "renders the edit form" do
         patch admin_listings_category_path(category), params: { listings_category: { name: "" } }
 
-        expect(response).to redirect_to(admin_listings_categories_path)
-      end
-
-      it "still responds with turbo_stream (Turbo Stream)" do
-        patch admin_listings_category_path(category),
-          params: { listings_category: { name: "" } },
-          headers: { "Accept" => "text/vnd.turbo-stream.html" }
-
-        expect(response.content_type).to start_with("text/vnd.turbo-stream.html")
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("can&#39;t be blank")
       end
     end
 

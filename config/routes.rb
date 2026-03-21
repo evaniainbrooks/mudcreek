@@ -8,6 +8,8 @@ resource :session
   resources :activations, only: [:show], param: :token
   resources :passwords, param: :token
 
+  resources :categories, only: [ :index ], param: :hashid
+
   resources :listings, only: [ :index, :show ], param: :hashid do
     resources :offers, only: [ :create ]
   end
@@ -60,7 +62,7 @@ resource :session
   namespace :admin do
     root to: "dashboard#index"
     resource :tenant, only: [ :show, :update ]
-    resources :users, only: [ :index, :show ]
+    resources :users, only: [ :index, :show, :update ]
     resources :lots, only: [ :index, :create, :show, :update, :destroy ], param: :hashid do
       resource :listing_placeholder, only: [ :destroy ], module: :lots
       resource :settlement,          only: [ :show ],    module: :lots do
@@ -71,7 +73,7 @@ resource :session
       resources :permissions, only: [ :index, :create, :destroy ]
     end
     namespace :listings do
-      resources :categories,            only: [ :index, :create, :update, :destroy ], param: :hashid
+      resources :categories,            only: [ :index, :create, :edit, :update, :destroy ], param: :hashid
       resources :property_sets,         only: [ :index, :create, :show, :destroy, :update ] do
         collection { patch :reorder }
         member { get :listing_fields }

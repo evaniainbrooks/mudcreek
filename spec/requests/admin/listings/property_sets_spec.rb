@@ -13,6 +13,7 @@ RSpec.describe "Admin::Listings::PropertySets", type: :request do
       r.permissions.create!(resource: "Listings::PropertySet", action: "create")
       r.permissions.create!(resource: "Listings::PropertySet", action: "update")
       r.permissions.create!(resource: "Listings::PropertySet", action: "destroy")
+      r.permissions.create!(resource: "Listings::PropertySet", action: "reorder")
     end
   end
 
@@ -20,6 +21,124 @@ RSpec.describe "Admin::Listings::PropertySets", type: :request do
   let(:property_set) { create(:listings_property_set) }
 
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
+
+  # ------------------------------------------------------------------ #
+  describe "GET /admin/listings/property_sets" do
+    it "returns 200" do
+      get admin_listings_property_sets_path
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "lists property sets" do
+      property_set  # force creation before request
+      get admin_listings_property_sets_path
+
+      expect(response.body).to include(property_set.name)
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        get admin_listings_property_sets_path
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the index permission" do
+      let(:role) { Role.create!(name: "no_access", description: "No access") }
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { get admin_listings_property_sets_path }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "GET /admin/listings/property_sets/:id" do
+    it "returns 200" do
+      get admin_listings_property_set_path(property_set)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "displays the property set name" do
+      get admin_listings_property_set_path(property_set)
+
+      expect(response.body).to include(property_set.name)
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        get admin_listings_property_set_path(property_set)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the show permission" do
+      let(:role) { Role.create!(name: "no_access", description: "No access") }
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          get admin_listings_property_set_path(property_set)
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "GET /admin/listings/property_sets/:id/listing_fields" do
+    let!(:property) { create(:listings_property, property_set: property_set, name: "Color", value: "Red") }
+
+    it "returns JSON" do
+      get listing_fields_admin_listings_property_set_path(property_set)
+
+      expect(response.content_type).to start_with("application/json")
+    end
+
+    it "includes property name and value" do
+      get listing_fields_admin_listings_property_set_path(property_set)
+
+      json = JSON.parse(response.body)
+      expect(json).to include("name" => "Color", "value" => "Red")
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        get listing_fields_admin_listings_property_set_path(property_set)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "PATCH /admin/listings/property_sets/reorder" do
+    let!(:property) { create(:listings_property, property_set: property_set) }
+
+    it "returns 200" do
+      patch reorder_admin_listings_property_sets_path, params: { id: property.id, position: 1 }
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        patch reorder_admin_listings_property_sets_path, params: { id: property.id, position: 1 }
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+  end
 
   # ------------------------------------------------------------------ #
   describe "POST /admin/listings/property_sets" do

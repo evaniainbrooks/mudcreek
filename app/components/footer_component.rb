@@ -1,4 +1,5 @@
 class FooterComponent < ViewComponent::Base
+  include CountriesHelper
   def initialize(tenant:)
     @tenant = tenant
   end

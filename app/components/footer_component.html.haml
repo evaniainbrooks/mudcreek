@@ -1,17 +1,20 @@
 %footer.bg-body-tertiary.border-top.py-5
   .container
     .row.g-0
-      .col-lg-4.px-4.py-2.d-flex.flex-column
-        %p.h5.fw-bold.mb-2.text-center= tenant.name
+      .col-lg-4.px-4.py-2.d-flex.flex-column.align-items-center.text-center
+        %p.h5.fw-bold.mb-2= tenant.name
         - if tenant.description.present?
           .text-muted.small.mb-3= tenant.description.to_plain_text.truncate(200)
-        .d-flex.flex-column.gap-1
+        .d-flex.flex-column.gap-1.align-items-center
           = link_to auctions_path, class: "text-decoration-none text-muted small" do
             %i.bi.bi-hammer.me-1
             Auctions
           = link_to listings_path, class: "text-decoration-none text-muted small" do
             %i.bi.bi-tag.me-1
             Listings
+          = link_to categories_path, class: "text-decoration-none text-muted small" do
+            %i.bi.bi-grid.me-1
+            Categories
           - footer_pages.each do |page|
             = link_to page_path(page), class: "text-decoration-none text-muted small" do
               - if page.icon.present?
@@ -22,13 +25,13 @@
           = Date.current.year
           = tenant.name
 
-      .col-lg-4.px-4.py-2.border-start
-        %p.h5.fw-bold.mb-3.text-center Contact
-        .d-flex.flex-column.gap-2
+      .col-lg-4.px-4.py-2.border-start.d-flex.flex-column.align-items-center.text-center
+        %p.h5.fw-bold.mb-3 Contact
+        .d-flex.flex-column.gap-2.align-items-center
           - if address&.any?
-            .d-flex.align-items-start.gap-2.text-muted.small
-              %i.bi.bi-geo-alt.flex-shrink-0.mt-1
-              %address.mb-0
+            .d-flex.flex-column.align-items-center.gap-1.text-muted.small
+              %i.bi.bi-geo-alt{"style": "font-size: 1.5rem"}
+              %address.mb-0.text-center
                 - if address.street_address.present?
                   = address.street_address
                   %br/
@@ -38,7 +41,7 @@
                   = city_line
                   %br/
                 - if address.country.present?
-                  = address.country
+                  = country_name(address.country)
           - if tenant.custom_domain.present?
             .d-flex.align-items-center.gap-2.text-muted.small
               %i.bi.bi-globe.flex-shrink-0
@@ -53,9 +56,9 @@
               = link_to tenant.phone_number, "tel:#{tenant.phone_number}", class: "text-decoration-none text-muted"
 
       - if social_media_accounts.any?
-        .col-lg-4.px-4.py-2.border-start
-          %p.h5.fw-bold.mb-3.text-center Follow Us
-          .d-flex.flex-wrap.gap-3
+        .col-lg-4.px-4.py-2.border-start.d-flex.flex-column.align-items-center.text-center
+          %p.h5.fw-bold.mb-3 Follow Us
+          .d-flex.flex-wrap.justify-content-center.gap-3
             - social_media_accounts.each do |account|
               = link_to social_media_url(account),
                   class: "text-muted",

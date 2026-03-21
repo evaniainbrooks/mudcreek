@@ -8,6 +8,17 @@
         %button.btn-close{ type: "button", data: { "bs-dismiss": "modal" }, aria: { label: "Close" } }
       = form_with url: listing_offers_path(listing), scope: :offer do |f|
         .modal-body
+          - unless Current.user
+            .mb-3
+              = f.label :guest_name, "Your name", class: "form-label"
+              = f.text_field :guest_name, class: "form-control", placeholder: "Name (optional)"
+            .mb-3
+              = f.label :guest_email, "Email", class: "form-label"
+              = f.email_field :guest_email, class: "form-control", placeholder: "your@email.com"
+            .mb-3
+              = f.label :guest_phone, "Phone", class: "form-label"
+              = f.phone_field :guest_phone, class: "form-control", placeholder: "Phone number"
+            %p.text-muted.small.mb-3 An email or phone number is required.
           .mb-3
             = f.label :amount, "Your offer", class: "form-label required"
             .input-group

@@ -5,7 +5,7 @@ class ListingMailer < ApplicationMailer
     @buyer = offer.user
 
     mail(
-      to: @listing.owner.email_address,
+      to: @listing.owner&.email_address,
       subject: "New offer on #{@listing.name}"
     )
   end

@@ -83,16 +83,111 @@ RSpec.describe "Offers", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
-        post listing_offers_path(listing), params: { offer: { amount: "25.00" } }
+      context "with email provided" do
+        let(:guest_params) { { amount: "25.00", guest_email: "buyer@example.com" } }
 
-        expect(response).to redirect_to(new_session_path)
+        it "creates the offer" do
+          expect {
+            post listing_offers_path(listing), params: { offer: guest_params }
+          }.to change { Offer.count }.by(1)
+        end
+
+        it "creates the offer in the pending state" do
+          post listing_offers_path(listing), params: { offer: guest_params }
+
+          expect(Offer.last).to be_pending
+        end
+
+        it "sets amount_cents correctly" do
+          post listing_offers_path(listing), params: { offer: guest_params }
+
+          expect(Offer.last.amount_cents).to eq(2500)
+        end
+
+        it "stores no user on the offer" do
+          post listing_offers_path(listing), params: { offer: guest_params }
+
+          expect(Offer.last.user).to be_nil
+        end
+
+        it "redirects to the listing with a notice" do
+          post listing_offers_path(listing), params: { offer: guest_params }
+
+          expect(response).to redirect_to(listing_path(listing))
+          expect(flash[:notice]).to eq("Your offer has been submitted.")
+        end
       end
 
-      it "does not create an offer" do
-        expect {
+      context "with phone provided instead of email" do
+        it "creates the offer" do
+          expect {
+            post listing_offers_path(listing), params: { offer: { amount: "25.00", guest_phone: "555-9999" } }
+          }.to change { Offer.count }.by(1)
+        end
+      end
+
+      context "with all guest fields" do
+        it "stores name, email, and phone on the offer" do
+          post listing_offers_path(listing), params: {
+            offer: { amount: "25.00", guest_name: "Jane Guest", guest_email: "jane@example.com", guest_phone: "555-1234" }
+          }
+
+          offer = Offer.last
+          expect(offer.guest_name).to eq("Jane Guest")
+          expect(offer.guest_email).to eq("jane@example.com")
+          expect(offer.guest_phone).to eq("555-1234")
+        end
+      end
+
+      context "with a message" do
+        it "stores the message" do
+          post listing_offers_path(listing), params: {
+            offer: { amount: "25.00", guest_email: "buyer@example.com", message: "Please consider!" }
+          }
+
+          expect(Offer.last.message).to eq("Please consider!")
+        end
+      end
+
+      context "without email or phone" do
+        it "does not create an offer" do
+          expect {
+            post listing_offers_path(listing), params: { offer: { amount: "25.00" } }
+          }.not_to change { Offer.count }
+        end
+
+        it "redirects with an alert" do
           post listing_offers_path(listing), params: { offer: { amount: "25.00" } }
-        }.not_to change { Offer.count }
+
+          expect(response).to redirect_to(listing_path(listing))
+          expect(flash[:alert]).to be_present
+        end
+      end
+
+      context "with a zero amount" do
+        it "does not create an offer" do
+          expect {
+            post listing_offers_path(listing), params: { offer: { amount: "0", guest_email: "buyer@example.com" } }
+          }.not_to change { Offer.count }
+        end
+      end
+
+      context "with a negative amount" do
+        it "does not create an offer" do
+          expect {
+            post listing_offers_path(listing), params: { offer: { amount: "-10", guest_email: "buyer@example.com" } }
+          }.not_to change { Offer.count }
+        end
+      end
+
+      context "for a rental listing" do
+        let!(:listing) { create(:listing, pricing_type: :negotiable, listing_type: :rental) }
+
+        it "does not create an offer" do
+          expect {
+            post listing_offers_path(listing), params: { offer: { amount: "25.00", guest_email: "buyer@example.com" } }
+          }.not_to change { Offer.count }
+        end
       end
     end
 

@@ -79,6 +79,10 @@
         - if @listing.categories.any?
           %p.text-muted.small.mb-0 Categories
           = listing_categories_badges(@listing, css: "text-bg-dark")
+        - if (addr = @listing.effective_address)&.any?
+          .mt-3.text-muted.small
+            %i.bi.bi-geo-alt.me-1
+            = addr.to_fs(:short)
 
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)
