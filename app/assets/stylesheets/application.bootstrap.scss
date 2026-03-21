@@ -191,6 +191,40 @@ thead.thead-secondary {
   }
 }
 
+// Shrinking fixed navbar
+.navbar {
+  transition: padding 0.25s ease;
+
+  .navbar-logo {
+    max-width: 48px;
+    margin-right: 0.5rem;
+    transition: max-width 0.25s ease, opacity 0.25s ease, margin 0.25s ease;
+  }
+
+  .navbar-tagline {
+    transition: opacity 0.2s ease, max-height 0.25s ease;
+    max-height: 2rem;
+    overflow: hidden;
+    opacity: 1;
+  }
+
+  &.navbar-scrolled {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+
+    .navbar-logo {
+      max-width: 0;
+      opacity: 0;
+      margin-right: 0;
+    }
+
+    .navbar-tagline {
+      max-height: 0;
+      opacity: 0;
+    }
+  }
+}
+
 // Lot attribution button on listing show page
 .lot-attribution-btn {
   border: 1px solid var(--bs-border-color);

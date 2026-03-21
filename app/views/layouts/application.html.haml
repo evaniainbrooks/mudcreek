@@ -17,13 +17,14 @@
     = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
   %body.d-flex.flex-column.min-vh-100
-    %nav.navbar.navbar-expand-lg.bg-secondary{"data-bs-theme": "dark"}
+    %nav.navbar.navbar-expand-lg.bg-secondary.fixed-top{"data-bs-theme": "dark", "data-controller": "navbar"}
       .container
-        = image_tag(Current.tenant.logo, style: "max-width: 75px; margin-right: 0.5rem") if Current.tenant.logo.attached?
+        - if Current.tenant.logo.attached?
+          = image_tag(Current.tenant.logo, class: "navbar-logo", style: "max-width: 48px; margin-right: 0.5rem")
         .lh-sm
           = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
           - if Current.tenant.tagline.present?
-            %span.text-muted.d-block.small= Current.tenant.tagline
+            %span.navbar-tagline.text-muted.d-block.small= Current.tenant.tagline
         %button.navbar-toggler{type: "button",
           "data-bs-toggle": "collapse",
           "data-bs-target": "#main-nav",
