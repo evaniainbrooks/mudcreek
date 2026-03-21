@@ -65,9 +65,9 @@ module ApplicationHelper
     tabs = [
       { key: :auctions,   label: "Auctions",   icon: "bi-hammer", path: auctions_path },
       { key: :listings,   label: "Listings",   icon: "bi-tag",    path: listings_path },
-      { key: :categories, label: "Categories", icon: "bi-grid",   path: categories_path },
+      { key: :categories, label: "Categories", icon: "bi-grid",   path: categories_path }
     ]
-    content_tag(:ul, class: "nav nav-tabs px-4 pt-3 flex-nowrap overflow-auto") do
+    content_tag(:ul, class: "nav nav-tabs px-4 pt-3 flex-nowrap overflow-x-auto overflow-y-hidden") do
       safe_join(tabs.map do |tab|
         content_tag(:li, class: "nav-item") do
           link_to tab[:path], class: "nav-link d-flex flex-column align-items-center #{"active" if tab[:key] == active}" do

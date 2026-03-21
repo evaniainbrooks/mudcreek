@@ -102,6 +102,32 @@ RSpec.describe "Admin::Offers", type: :request do
       end
     end
 
+    context "when the offer is a guest offer" do
+      let!(:offer) do
+        create(:offer, user: nil, guest_name: "Jane Guest", guest_email: "jane@example.com", guest_phone: "250-555-0199")
+      end
+
+      it "returns 200" do
+        get admin_offer_path(offer)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "displays the guest contact details" do
+        get admin_offer_path(offer)
+
+        expect(response.body).to include("Jane Guest")
+        expect(response.body).to include("jane@example.com")
+        expect(response.body).to include("250-555-0199")
+      end
+
+      it "shows Guest Contact as the label" do
+        get admin_offer_path(offer)
+
+        expect(response.body).to include("Guest Contact")
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 

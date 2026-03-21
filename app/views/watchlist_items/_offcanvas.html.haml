@@ -1,0 +1,9 @@
+#watchlist-offcanvas.offcanvas.offcanvas-end{ tabindex: -1, aria: { labelledby: "watchlist-offcanvas-label" }, style: "width: 380px" }
+  .offcanvas-header.border-bottom
+    %h5#watchlist-offcanvas-label.offcanvas-title.fw-semibold
+      %i.bi.bi-bookmark-fill.me-2
+      Watchlist
+    %button.btn-close{ type: "button", data: { bs_dismiss: "offcanvas" }, aria: { label: "Close" } }
+  .offcanvas-body.p-0
+    #watchlist-offcanvas-body
+      = render "watchlist_items/offcanvas_body", watchlist_items: offcanvas_watchlist_items

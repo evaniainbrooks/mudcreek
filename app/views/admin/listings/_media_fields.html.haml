@@ -1,0 +1,69 @@
+%fieldset.card.shadow-sm.border-0{ data: { controller: "direct-upload" } }
+  %legend.card-header.fw-semibold
+    %i.bi.bi-image.me-1
+    Media
+  .card-body.p-4
+    .mb-3.form-check
+      = f.check_box :show_video_as_poster, class: "form-check-input"
+      = f.label :show_video_as_poster, "Show video as poster (prefer video over image on cards)", class: "form-check-label"
+    .mb-3
+      = f.label :images, class: "form-label"
+      = f.file_field :images,
+        multiple: true,
+        direct_upload: true,
+        class: "form-control #{'is-invalid' if listing.errors[:images].any?}",
+        accept: "image/*"
+      - if listing.errors[:images].any?
+        .invalid-feedback= listing.errors[:images].to_sentence
+      - if listing.images.attached?
+        %ul.list-unstyled.mt-2.mb-0.small.text-muted
+          - listing.images_attachments.each do |attachment|
+            %li.d-flex.align-items-center.gap-1
+              %i.bi.bi-image
+              = attachment.filename
+              = link_to admin_listing_attachment_path(listing, attachment),
+                data: { turbo_method: :delete, turbo_confirm: "Remove #{attachment.filename}?" },
+                class: "text-danger ms-1",
+                aria: { label: "Remove #{attachment.filename}" } do
+                %i.bi.bi-x-lg
+    .mb-3
+      = f.label :videos, class: "form-label"
+      = f.file_field :videos,
+        multiple: true,
+        direct_upload: true,
+        class: "form-control #{'is-invalid' if listing.errors[:videos].any?}",
+        accept: "video/*"
+      - if listing.errors[:videos].any?
+        .invalid-feedback= listing.errors[:videos].to_sentence
+      - if listing.videos.attached?
+        %ul.list-unstyled.mt-2.mb-0.small.text-muted
+          - listing.videos_attachments.each do |attachment|
+            %li.d-flex.align-items-center.gap-1
+              %i.bi.bi-camera-video
+              = attachment.filename
+              = link_to admin_listing_attachment_path(listing, attachment),
+                data: { turbo_method: :delete, turbo_confirm: "Remove #{attachment.filename}?" },
+                class: "text-danger ms-1",
+                aria: { label: "Remove #{attachment.filename}" } do
+                %i.bi.bi-x-lg
+    .mb-0
+      = f.label :documents, class: "form-label"
+      = f.file_field :documents,
+        multiple: true,
+        direct_upload: true,
+        class: "form-control #{'is-invalid' if listing.errors[:documents].any?}",
+        accept: ".pdf,.doc,.docx,.xlsx"
+      - if listing.errors[:documents].any?
+        .invalid-feedback= listing.errors[:documents].to_sentence
+      - if listing.documents.attached?
+        %ul.list-unstyled.mt-2.mb-0.small.text-muted
+          - listing.documents_attachments.each do |attachment|
+            %li.d-flex.align-items-center.gap-1
+              %i.bi{ class: document_icon_class(attachment.content_type) }
+              = attachment.filename
+              = link_to admin_listing_attachment_path(listing, attachment),
+                data: { turbo_method: :delete, turbo_confirm: "Remove #{attachment.filename}?" },
+                class: "text-danger ms-1",
+                aria: { label: "Remove #{attachment.filename}" } do
+                %i.bi.bi-x-lg
+    .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }

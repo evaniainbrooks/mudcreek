@@ -26,8 +26,17 @@
         %dt.col-sm-3 Listing
         %dd.col-sm-9= link_to @offer.listing.name, admin_listing_path(@offer.listing)
 
-        %dt.col-sm-3 Buyer
-        %dd.col-sm-9= mail_to @offer.user.email_address
+        %dt.col-sm-3= @offer.guest? ? "Guest Contact" : "Buyer"
+        %dd.col-sm-9
+          - if @offer.user
+            = mail_to @offer.user.email_address
+          - else
+            - if @offer.guest_name.present?
+              %div= @offer.guest_name
+            - if @offer.guest_email.present?
+              %div= mail_to @offer.guest_email
+            - if @offer.guest_phone.present?
+              %div= @offer.guest_phone
 
         %dt.col-sm-3 Amount
         %dd.col-sm-9= humanized_money_with_symbol(@offer.amount)

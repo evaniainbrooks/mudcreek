@@ -1,2 +1,4 @@
 = turbo_stream.replace "watchlist_button_listing_#{@watchlist_item.listing_id}" do
   = render "shared/watchlist_button", listing: @watchlist_item.listing, watchlist_item: @watchlist_item
+= turbo_stream.replace "watchlist-offcanvas-body" do
+  = render "watchlist_items/offcanvas_body", watchlist_items: offcanvas_watchlist_items

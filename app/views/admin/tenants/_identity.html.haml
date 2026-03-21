@@ -37,25 +37,9 @@
     %i.bi.bi-geo-alt.me-2
     Location
   .card-body.p-4
-    = form.fields_for :address, form.object.address || form.object.build_address do |addr|
-      .mb-3
-        = addr.label :street_address, "Street Address", class: "form-label"
-        = addr.text_field :street_address, class: "form-control"
-      .row.g-3.mb-3
-        .col-md-6
-          = addr.label :city, "City", class: "form-label"
-          = addr.text_field :city, class: "form-control"
-        .col-md-6
-          = addr.label :province, "Province / State", class: "form-label"
-          = addr.text_field :province, class: "form-control"
-      .row.g-3.mb-3
-        .col-md-6
-          = addr.label :postal_code, "Postal Code", class: "form-label"
-          = addr.text_field :postal_code, class: "form-control"
-        .col-md-6
-          = addr.label :country, "Country", class: "form-label"
-          = addr.select :country, all_countries, { include_blank: "— Select country —" }, class: "form-select"
-    .mb-0
+    = form.fields_for :address, form.object.address || form.object.build_address do |af|
+      = render "shared/address_fields", af: af, col: "col-md-6"
+    .mt-3.mb-0
       = form.label :timezone, class: "form-label"
       = form.time_zone_select :timezone, ActiveSupport::TimeZone.all, { include_blank: "— Inherit system default —" },
         class: "form-select"

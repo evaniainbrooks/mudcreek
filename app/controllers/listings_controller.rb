@@ -7,8 +7,13 @@ class ListingsController < ApplicationController
                       .with_attached_images
                       .with_attached_videos
                       .with_attached_documents
-                      .includes(lot: [ :owner, :address, { listing_placeholder_attachment: :blob } ])
+                      .includes(lot: [ :owner, :address, { listing_placeholder_attachment: :blob } ],
+                                auction_listing: :auction)
                       .find_by!(hashid: params[:hashid])
+
+    if (al = @listing.auction_listing)
+      return redirect_to auction_auction_listing_path(al.auction, al)
+    end
     @next_listing = Listing.where(published: true).not_in_auction
                            .where("position > ?", @listing.position)
                            .order(position: :asc, id: :asc)

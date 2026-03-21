@@ -7,7 +7,9 @@ class Profiles::WatchlistItemsController < Profiles::BaseController
 
     @filter_total = Current.user.watchlist_items.count
     scope = Current.user.watchlist_items
-      .includes(listing: [ :images_attachments, :categories, lot: [ :owner, :address, :listing_placeholder_attachment ] ])
+      .includes(listing: [ :images_attachments, :categories,
+                           lot: [ :owner, :address, :listing_placeholder_attachment ],
+                           auction_listing: [ :auction, :current_bid ] ])
       .order(created_at: :desc)
     scope = scope.joins(listing: :category_assignments).where(listings_category_assignments: { listings_category_id: category.id }) if category
     scope = scope.joins(:listing).where(Listing.arel_table[:name].matches("%#{Listing.sanitize_sql_like(@search)}%")) if @search

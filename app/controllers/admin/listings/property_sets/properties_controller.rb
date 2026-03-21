@@ -32,7 +32,7 @@ class Admin::Listings::PropertySets::PropertiesController < Admin::BaseControlle
   private
 
   def property_params
-    params.require(:listings_property).permit(:name, :value)
+    params.require(:listings_property).permit(:name, :value, :icon)
   end
 
   def set_property_set

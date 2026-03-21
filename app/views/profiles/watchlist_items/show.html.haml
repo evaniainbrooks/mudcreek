@@ -25,10 +25,12 @@
       .row.row-cols-1.row-cols-sm-2.row-cols-lg-3.g-4
         - @watchlist_items.each do |item|
           - listing = item.listing
+          - al = listing.auction_listing
+          - listing_url = al ? auction_auction_listing_path(al.auction, al) : listing_path(listing)
           .col
             .card.h-100.shadow-sm.border-0
               .position-relative
-                = link_to listing_path(listing) do
+                = link_to listing_url do
                   - if listing.images.attached?
                     = optimized_image_tag listing.images.first,
                         preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
@@ -48,10 +50,23 @@
                     = lot_number_badge(listing.lot)
               .card-body.d-flex.flex-column
                 %h5.card-title.fw-semibold.mb-1
-                  = link_to listing.name, listing_path(listing), class: "text-decoration-none text-body"
-                .d-flex.align-items-center.gap-2.mb-0
-                  %p.text-primary.fw-bold.mb-0= humanized_money_with_symbol(listing.price)
-                %p.card-text.text-muted.small
+                  = link_to listing.name, listing_url, class: "text-decoration-none text-body"
+                - if al
+                  .d-flex.align-items-center.gap-2.mb-1
+                    %i.bi.bi-hammer.text-muted.small
+                    %span.text-muted.small= link_to al.auction.name, auction_path(al.auction), class: "text-muted text-decoration-none"
+                  - if al.current_bid
+                    .mb-0
+                      %span.small.text-muted Current bid:
+                      %span.text-primary.fw-bold.ms-1= humanized_money_with_symbol(al.current_bid.amount)
+                  - else
+                    .mb-0
+                      %span.small.text-muted Starting bid:
+                      %span.fw-bold.ms-1= humanized_money_with_symbol(al.starting_bid)
+                - else
+                  .d-flex.align-items-center.gap-2.mb-0
+                    %p.text-primary.fw-bold.mb-0= humanized_money_with_symbol(listing.price)
+                %p.card-text.text-muted.small.mt-1
                   = listing.description.to_plain_text.truncate(120)
                   - if listing.categories.any?
                     %br

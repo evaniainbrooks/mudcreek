@@ -41,6 +41,15 @@
                     %i{ class: "bi #{page.icon} me-1" }
                   = page.title
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0.align-items-center
+            - if Current.user
+              %li.nav-item.me-1
+                .position-relative.d-inline-block
+                  %button.btn.btn-sm.btn-outline-light{type: "button",
+                      data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
+                      aria: { label: "Open watchlist" }}
+                    %i.bi.bi-bookmark.fs-5
+                  - if watchlist_item_count > 0
+                    %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
             %li.nav-item.me-1
               .position-relative.d-inline-block
                 %button.btn.btn-sm.btn-outline-light{type: "button",
@@ -85,3 +94,5 @@
         = yield
     = render FooterComponent.new(tenant: Current.tenant)
     = render "carts/offcanvas"
+    - if Current.user
+      = render "watchlist_items/offcanvas"

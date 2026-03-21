@@ -28,7 +28,7 @@ export default class ListingPropertyController extends Controller {
       }
     })
 
-    const properties: Array<{ name: string; value: string }> = await response.json()
+    const properties: Array<{ name: string; value: string; icon: string | null }> = await response.json()
     const base = Date.now()
 
     properties.forEach((prop, idx) => {
@@ -40,8 +40,10 @@ export default class ListingPropertyController extends Controller {
 
       const nameInput  = temp.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[name]"]`)
       const valueInput = temp.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[value]"]`)
+      const iconInput  = temp.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[icon]"]`)
       if (nameInput)  nameInput.value  = prop.name
       if (valueInput) valueInput.value = prop.value
+      if (iconInput)  iconInput.value  = prop.icon ?? ""
 
       temp.childNodes.forEach(node => this.propertiesContainerTarget.appendChild(node.cloneNode(true)))
     })

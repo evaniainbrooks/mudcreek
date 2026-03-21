@@ -28,6 +28,12 @@ module Admin::Listings::PropertySetsHelper
       }
     )
     table.with_column("", html_class: "text-center pe-0") { tag.span("", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab; font-size: 1.1rem") }
+    table.with_column("Icon") do |p|
+      safe_join([
+        inline_edit_cell(p, :icon, p.icon, url: admin_listings_property_set_property_path(property_set, p), scope: :listings_property),
+        (tag.i("", class: "bi #{p.icon} ms-2 text-muted") if p.icon.present?)
+      ].compact)
+    end
     table.with_column("Name") { |p| inline_edit_cell(p, :name, p.name, url: admin_listings_property_set_property_path(property_set, p), scope: :listings_property) }
     table.with_column("Example Value") { |p| inline_edit_cell(p, :value, p.value, url: admin_listings_property_set_property_path(property_set, p), scope: :listings_property) }
     table.with_column("Actions", html_class: "text-end") do |p|

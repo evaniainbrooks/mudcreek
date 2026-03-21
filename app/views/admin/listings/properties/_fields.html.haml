@@ -1,5 +1,9 @@
 .d-flex.align-items-center.gap-2.mb-2
   = property_form.hidden_field :position
+  = property_form.text_field :icon,
+      class: "form-control form-control-sm",
+      placeholder: "bi-gear",
+      style: "width: 110px; flex-shrink: 0"
   = property_form.text_field :name,
       class: "form-control form-control-sm flex-grow-1",
       placeholder: "e.g. Manufacturer"

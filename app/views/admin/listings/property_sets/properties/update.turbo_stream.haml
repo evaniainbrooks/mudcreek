@@ -1,3 +1,5 @@
+= turbo_stream.replace "#{dom_id(@property)}_icon" do
+  = inline_edit_cell(@property, :icon, @property.icon, url: admin_listings_property_set_property_path(@property_set, @property), scope: :listings_property)
 = turbo_stream.replace "#{dom_id(@property)}_name" do
   = inline_edit_cell(@property, :name, @property.name, url: admin_listings_property_set_property_path(@property_set, @property), scope: :listings_property)
 = turbo_stream.replace "#{dom_id(@property)}_value" do

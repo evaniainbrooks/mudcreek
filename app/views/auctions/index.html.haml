@@ -13,7 +13,9 @@
           .input-group.input-group-sm
             = f.search_field :search, value: @search, placeholder: "Search auctions…", class: "form-control form-control-sm"
             - if @search
-              = link_to auctions_path(state: @state, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
+              = link_to auctions_path(state: @state, category_id: @category_hashid),
+                class: "btn btn-outline-secondary btn-sm",
+                aria: { label: "Clear search" } do
                 %i.bi.bi-x-lg
         .col-auto
           = f.select :category_id, @categories.map { [it.name, it.hashid] },

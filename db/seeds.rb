@@ -613,7 +613,7 @@ category_hero_images = {
   "Art & Decor"             => "river.jpg",
   "Vintage Clothing"        => "meadow.jpg",
   "Electronics"             => "bluff.jpg",
-  "Garden & Outdoor"        => "farm.jpg",
+  "Garden & Outdoor"        => "farm.jpg"
 }
 
 categories = category_names.each_with_object({}) do |name, hash|
@@ -759,327 +759,327 @@ property_set_data = [
   {
     name: "Books",
     properties: [
-      { name: "Author",        value: "Ernest Hemingway" },
-      { name: "Publisher",     value: "Scribner" },
-      { name: "Year",          value: "1952" },
-      { name: "Edition",       value: "First Edition" },
-      { name: "ISBN",          value: "978-0-684-80122-3" },
-      { name: "Genre",         value: "Fiction" },
-      { name: "Condition",     value: "Good" }
+      { name: "Author",        value: "Ernest Hemingway",       icon: "bi-person-fill" },
+      { name: "Publisher",     value: "Scribner",               icon: "bi-building" },
+      { name: "Year",          value: "1952",                   icon: "bi-calendar3" },
+      { name: "Edition",       value: "First Edition",          icon: "bi-journal-bookmark" },
+      { name: "ISBN",          value: "978-0-684-80122-3",      icon: "bi-upc-scan" },
+      { name: "Genre",         value: "Fiction",                icon: "bi-bookmark" },
+      { name: "Condition",     value: "Good",                   icon: "bi-stars" }
     ]
   },
   {
     name: "Vinyl Records",
     properties: [
-      { name: "Artist",        value: "Miles Davis" },
-      { name: "Album Title",   value: "Kind of Blue" },
-      { name: "Label",         value: "Columbia" },
-      { name: "Release Year",  value: "1959" },
-      { name: "Format",        value: "LP" },
-      { name: "Speed",         value: "33 RPM" },
-      { name: "Condition",     value: "VG+" }
+      { name: "Artist",        value: "Miles Davis",            icon: "bi-person-fill" },
+      { name: "Album Title",   value: "Kind of Blue",           icon: "bi-vinyl-fill" },
+      { name: "Label",         value: "Columbia",               icon: "bi-tag" },
+      { name: "Release Year",  value: "1959",                   icon: "bi-calendar3" },
+      { name: "Format",        value: "LP",                     icon: "bi-disc" },
+      { name: "Speed",         value: "33 RPM",                 icon: "bi-speedometer2" },
+      { name: "Condition",     value: "VG+",                    icon: "bi-stars" }
     ]
   },
   {
     name: "Vehicles",
     properties: [
-      { name: "Make",          value: "Ford" },
-      { name: "Model",         value: "F-100" },
-      { name: "Year",          value: "1967" },
-      { name: "Colour",        value: "Poppy Red" },
-      { name: "Mileage",       value: "87,400 miles" },
-      { name: "Engine",        value: "360 FE V8" },
-      { name: "Transmission",  value: "3-speed manual" },
-      { name: "VIN",           value: "F10YK7A12345" },
-      { name: "Condition",     value: "Running, needs cosmetics" }
+      { name: "Make",          value: "Ford",                   icon: "bi-car-front-fill" },
+      { name: "Model",         value: "F-100",                  icon: "bi-gear-fill" },
+      { name: "Year",          value: "1967",                   icon: "bi-calendar3" },
+      { name: "Colour",        value: "Poppy Red",              icon: "bi-palette2" },
+      { name: "Mileage",       value: "87,400 miles",           icon: "bi-speedometer2" },
+      { name: "Engine",        value: "360 FE V8",              icon: "bi-cpu-fill" },
+      { name: "Transmission",  value: "3-speed manual",         icon: "bi-sliders2" },
+      { name: "VIN",           value: "F10YK7A12345",           icon: "bi-hash" },
+      { name: "Condition",     value: "Running, needs cosmetics", icon: "bi-stars" }
     ]
   },
   {
     name: "Farm Equipment",
     properties: [
-      { name: "Make",          value: "John Deere" },
-      { name: "Model",         value: "4020" },
-      { name: "Year",          value: "1968" },
-      { name: "Hours",         value: "4,200" },
-      { name: "Serial Number", value: "T213R012345" },
-      { name: "Drive",         value: "2WD" },
-      { name: "Condition",     value: "Field ready" }
+      { name: "Make",          value: "John Deere",             icon: "bi-tools" },
+      { name: "Model",         value: "4020",                   icon: "bi-gear-fill" },
+      { name: "Year",          value: "1968",                   icon: "bi-calendar3" },
+      { name: "Hours",         value: "4,200",                  icon: "bi-clock-history" },
+      { name: "Serial Number", value: "T213R012345",            icon: "bi-hash" },
+      { name: "Drive",         value: "2WD",                    icon: "bi-gear" },
+      { name: "Condition",     value: "Field ready",            icon: "bi-stars" }
     ]
   },
   {
     name: "Paintings & Prints",
     properties: [
-      { name: "Artist",        value: "E. Sutton" },
-      { name: "Title",         value: "River Valley at Dawn" },
-      { name: "Medium",        value: "Oil on canvas" },
-      { name: "Dimensions",    value: "24\" × 30\"" },
-      { name: "Year",          value: "1938" },
-      { name: "Signed",        value: "Lower right" },
-      { name: "Framed",        value: "Yes — carved gilt" },
-      { name: "Condition",     value: "Good; minor craquelure" }
+      { name: "Artist",        value: "E. Sutton",              icon: "bi-person-fill" },
+      { name: "Title",         value: "River Valley at Dawn",   icon: "bi-journal-text" },
+      { name: "Medium",        value: "Oil on canvas",          icon: "bi-brush-fill" },
+      { name: "Dimensions",    value: "24\" × 30\"",            icon: "bi-rulers" },
+      { name: "Year",          value: "1938",                   icon: "bi-calendar3" },
+      { name: "Signed",        value: "Lower right",            icon: "bi-pen" },
+      { name: "Framed",        value: "Yes — carved gilt",      icon: "bi-aspect-ratio" },
+      { name: "Condition",     value: "Good; minor craquelure", icon: "bi-stars" }
     ]
   },
   {
     name: "Jewelry",
     properties: [
-      { name: "Metal",         value: "Yellow gold" },
-      { name: "Karat",         value: "10K" },
-      { name: "Gemstone",      value: "Amethyst" },
-      { name: "Weight",        value: "3.4 g" },
-      { name: "Hallmarks",     value: "Birks, 10K" },
-      { name: "Period",        value: "Victorian, c. 1890" },
-      { name: "Condition",     value: "Excellent" }
+      { name: "Metal",         value: "Yellow gold",            icon: "bi-gem" },
+      { name: "Karat",         value: "10K",                    icon: "bi-gem" },
+      { name: "Gemstone",      value: "Amethyst",               icon: "bi-gem" },
+      { name: "Weight",        value: "3.4 g",                  icon: "bi-scale" },
+      { name: "Hallmarks",     value: "Birks, 10K",             icon: "bi-award" },
+      { name: "Period",        value: "Victorian, c. 1890",     icon: "bi-clock-history" },
+      { name: "Condition",     value: "Excellent",              icon: "bi-stars" }
     ]
   },
   {
     name: "Hand Tools",
     properties: [
-      { name: "Manufacturer",  value: "Stanley" },
-      { name: "Type",          value: "Bench plane" },
-      { name: "Model",         value: "No. 5" },
-      { name: "Size",          value: "14\" blade" },
-      { name: "Material",      value: "Cast iron, rosewood" },
-      { name: "Era",           value: "c. 1940s" },
-      { name: "Condition",     value: "Good; light surface rust" }
+      { name: "Manufacturer",  value: "Stanley",                icon: "bi-building" },
+      { name: "Type",          value: "Bench plane",            icon: "bi-wrench" },
+      { name: "Model",         value: "No. 5",                  icon: "bi-gear" },
+      { name: "Size",          value: "14\" blade",             icon: "bi-rulers" },
+      { name: "Material",      value: "Cast iron, rosewood",    icon: "bi-box" },
+      { name: "Era",           value: "c. 1940s",               icon: "bi-hourglass" },
+      { name: "Condition",     value: "Good; light surface rust", icon: "bi-stars" }
     ]
   },
   {
     name: "Furniture",
     properties: [
-      { name: "Style",         value: "Victorian" },
-      { name: "Primary Wood",  value: "Quarter-sawn oak" },
-      { name: "Dimensions",    value: "72\"H × 38\"W × 20\"D" },
-      { name: "Hardware",      value: "Original brass" },
-      { name: "Finish",        value: "Original shellac" },
-      { name: "Joinery",       value: "Dovetailed" },
-      { name: "Condition",     value: "Good; minor patina" }
+      { name: "Style",         value: "Victorian",              icon: "bi-house" },
+      { name: "Primary Wood",  value: "Quarter-sawn oak",       icon: "bi-tree" },
+      { name: "Dimensions",    value: "72\"H × 38\"W × 20\"D",  icon: "bi-rulers" },
+      { name: "Hardware",      value: "Original brass",         icon: "bi-tools" },
+      { name: "Finish",        value: "Original shellac",       icon: "bi-paint-bucket" },
+      { name: "Joinery",       value: "Dovetailed",             icon: "bi-scissors" },
+      { name: "Condition",     value: "Good; minor patina",     icon: "bi-stars" }
     ]
   },
   {
     name: "Clocks & Watches",
     properties: [
-      { name: "Maker",         value: "Seth Thomas" },
-      { name: "Movement",      value: "8-day, key-wind" },
-      { name: "Case Material", value: "Black slate and marble" },
-      { name: "Dial",          value: "Porcelain, Roman numerals" },
-      { name: "Year",          value: "c. 1895" },
-      { name: "Running",       value: "Yes" },
-      { name: "Condition",     value: "Good" }
+      { name: "Maker",         value: "Seth Thomas",            icon: "bi-building" },
+      { name: "Movement",      value: "8-day, key-wind",        icon: "bi-gear" },
+      { name: "Case Material", value: "Black slate and marble", icon: "bi-box" },
+      { name: "Dial",          value: "Porcelain, Roman numerals", icon: "bi-clock" },
+      { name: "Year",          value: "c. 1895",                icon: "bi-calendar3" },
+      { name: "Running",       value: "Yes",                    icon: "bi-play-circle" },
+      { name: "Condition",     value: "Good",                   icon: "bi-stars" }
     ]
   },
   {
     name: "Ceramics & Pottery",
     properties: [
-      { name: "Maker",         value: "Wedgwood" },
-      { name: "Pattern",       value: "Cornucopia" },
-      { name: "Glaze",         value: "Creamware" },
-      { name: "Pieces",        value: "22" },
-      { name: "Period",        value: "c. 1900" },
-      { name: "Marks",         value: "Wedgwood England impressed" },
-      { name: "Condition",     value: "No chips or cracks" }
+      { name: "Maker",         value: "Wedgwood",               icon: "bi-building" },
+      { name: "Pattern",       value: "Cornucopia",             icon: "bi-grid" },
+      { name: "Glaze",         value: "Creamware",              icon: "bi-droplet" },
+      { name: "Pieces",        value: "22",                     icon: "bi-stack" },
+      { name: "Period",        value: "c. 1900",                icon: "bi-clock-history" },
+      { name: "Marks",         value: "Wedgwood England impressed", icon: "bi-stamp" },
+      { name: "Condition",     value: "No chips or cracks",     icon: "bi-stars" }
     ]
   },
   {
     name: "Silver & Silverplate",
     properties: [
-      { name: "Pattern",       value: "Chantilly" },
-      { name: "Maker",         value: "Birks" },
-      { name: "Metal",         value: "Sterling (.925)" },
-      { name: "Hallmarks",     value: "Birks Sterling Canada" },
-      { name: "Pieces",        value: "60" },
-      { name: "Weight",        value: "2.1 kg" },
-      { name: "Condition",     value: "Tarnished; polishes well" }
+      { name: "Pattern",       value: "Chantilly",              icon: "bi-grid" },
+      { name: "Maker",         value: "Birks",                  icon: "bi-building" },
+      { name: "Metal",         value: "Sterling (.925)",        icon: "bi-gem" },
+      { name: "Hallmarks",     value: "Birks Sterling Canada",  icon: "bi-award" },
+      { name: "Pieces",        value: "60",                     icon: "bi-stack" },
+      { name: "Weight",        value: "2.1 kg",                 icon: "bi-scale" },
+      { name: "Condition",     value: "Tarnished; polishes well", icon: "bi-stars" }
     ]
   },
   {
     name: "Cameras & Photography",
     properties: [
-      { name: "Make",          value: "Leica" },
-      { name: "Model",         value: "M3" },
-      { name: "Year",          value: "1955" },
-      { name: "Film Format",   value: "35mm" },
-      { name: "Lens",          value: "Summicron 50mm f/2" },
-      { name: "Serial Number", value: "700123" },
-      { name: "Condition",     value: "Excellent; shutter works" }
+      { name: "Make",          value: "Leica",                  icon: "bi-camera-fill" },
+      { name: "Model",         value: "M3",                     icon: "bi-gear" },
+      { name: "Year",          value: "1955",                   icon: "bi-calendar3" },
+      { name: "Film Format",   value: "35mm",                   icon: "bi-film" },
+      { name: "Lens",          value: "Summicron 50mm f/2",     icon: "bi-camera2" },
+      { name: "Serial Number", value: "700123",                 icon: "bi-hash" },
+      { name: "Condition",     value: "Excellent; shutter works", icon: "bi-stars" }
     ]
   },
   {
     name: "Rugs & Textiles",
     properties: [
-      { name: "Origin",        value: "Persia (Iran)" },
-      { name: "Type",          value: "Hand-knotted wool" },
-      { name: "Dimensions",    value: "4' × 6'" },
-      { name: "Pile",          value: "Wool on cotton warp" },
-      { name: "Age",           value: "c. 1920" },
-      { name: "Colours",       value: "Navy, ivory, rust" },
-      { name: "Condition",     value: "Good; even wear" }
+      { name: "Origin",        value: "Persia (Iran)",          icon: "bi-geo-alt-fill" },
+      { name: "Type",          value: "Hand-knotted wool",      icon: "bi-grid3x3" },
+      { name: "Dimensions",    value: "4' × 6'",                icon: "bi-rulers" },
+      { name: "Pile",          value: "Wool on cotton warp",    icon: "bi-layers" },
+      { name: "Age",           value: "c. 1920",                icon: "bi-hourglass" },
+      { name: "Colours",       value: "Navy, ivory, rust",      icon: "bi-palette2" },
+      { name: "Condition",     value: "Good; even wear",        icon: "bi-stars" }
     ]
   },
   {
     name: "Coins & Currency",
     properties: [
-      { name: "Country",       value: "Canada" },
-      { name: "Denomination",  value: "50 cents" },
-      { name: "Year",          value: "1921" },
-      { name: "Mint",          value: "Ottawa" },
-      { name: "Metal",         value: "80% silver" },
-      { name: "Grade",         value: "F-12" },
-      { name: "Notes",         value: "Key date" }
+      { name: "Country",       value: "Canada",                 icon: "bi-flag-fill" },
+      { name: "Denomination",  value: "50 cents",               icon: "bi-coin" },
+      { name: "Year",          value: "1921",                   icon: "bi-calendar3" },
+      { name: "Mint",          value: "Ottawa",                 icon: "bi-building" },
+      { name: "Metal",         value: "80% silver",             icon: "bi-gem" },
+      { name: "Grade",         value: "F-12",                   icon: "bi-award" },
+      { name: "Notes",         value: "Key date",               icon: "bi-chat-text" }
     ]
   },
   {
     name: "Power Tools",
     properties: [
-      { name: "Manufacturer",  value: "DeWalt" },
-      { name: "Model",         value: "DW618" },
-      { name: "Type",          value: "Fixed-base router" },
-      { name: "Voltage",       value: "120V" },
-      { name: "Amperage",      value: "12A" },
-      { name: "Included",      value: "Collets, edge guide" },
-      { name: "Condition",     value: "Good; runs well" }
+      { name: "Manufacturer",  value: "DeWalt",                 icon: "bi-building" },
+      { name: "Model",         value: "DW618",                  icon: "bi-gear" },
+      { name: "Type",          value: "Fixed-base router",      icon: "bi-plug-fill" },
+      { name: "Voltage",       value: "120V",                   icon: "bi-lightning-fill" },
+      { name: "Amperage",      value: "12A",                    icon: "bi-lightning-charge-fill" },
+      { name: "Included",      value: "Collets, edge guide",    icon: "bi-box-seam" },
+      { name: "Condition",     value: "Good; runs well",        icon: "bi-stars" }
     ]
   },
   {
     name: "Sporting & Outdoor",
     properties: [
-      { name: "Type",          value: "Fly rod" },
-      { name: "Manufacturer",  value: "Hardy" },
-      { name: "Model",         value: "Palakona" },
-      { name: "Length",        value: "9'" },
-      { name: "Line Weight",   value: "#6" },
-      { name: "Material",      value: "Split cane" },
-      { name: "Condition",     value: "Good; original bag and tube" }
+      { name: "Type",          value: "Fly rod",                icon: "bi-activity" },
+      { name: "Manufacturer",  value: "Hardy",                  icon: "bi-building" },
+      { name: "Model",         value: "Palakona",               icon: "bi-gear" },
+      { name: "Length",        value: "9'",                     icon: "bi-rulers" },
+      { name: "Line Weight",   value: "#6",                     icon: "bi-bezier2" },
+      { name: "Material",      value: "Split cane",             icon: "bi-box" },
+      { name: "Condition",     value: "Good; original bag and tube", icon: "bi-stars" }
     ]
   },
   {
     name: "Lighting & Lamps",
     properties: [
-      { name: "Style",         value: "Art Nouveau" },
-      { name: "Maker",         value: "Bradley & Hubbard" },
-      { name: "Base Material", value: "Cast spelter" },
-      { name: "Shade",         value: "Slag glass, 18\" dia." },
-      { name: "Height",        value: "24\"" },
-      { name: "Period",        value: "c. 1910" },
-      { name: "Condition",     value: "Very good; rewired" }
+      { name: "Style",         value: "Art Nouveau",            icon: "bi-brush" },
+      { name: "Maker",         value: "Bradley & Hubbard",      icon: "bi-building" },
+      { name: "Base Material", value: "Cast spelter",           icon: "bi-box" },
+      { name: "Shade",         value: "Slag glass, 18\" dia.",  icon: "bi-lightbulb" },
+      { name: "Height",        value: "24\"",                   icon: "bi-rulers" },
+      { name: "Period",        value: "c. 1910",                icon: "bi-clock-history" },
+      { name: "Condition",     value: "Very good; rewired",     icon: "bi-stars" }
     ]
   },
   {
     name: "Toys & Collectibles",
     properties: [
-      { name: "Manufacturer",  value: "Dinky Toys" },
-      { name: "Item",          value: "No. 139a Ford Fordor Sedan" },
-      { name: "Year",          value: "c. 1948" },
-      { name: "Scale",         value: "1:43" },
-      { name: "Box",           value: "No" },
-      { name: "Colour",        value: "Fawn" },
-      { name: "Condition",     value: "Good; minor paint wear" }
+      { name: "Manufacturer",  value: "Dinky Toys",             icon: "bi-building" },
+      { name: "Item",          value: "No. 139a Ford Fordor Sedan", icon: "bi-bag" },
+      { name: "Year",          value: "c. 1948",                icon: "bi-calendar3" },
+      { name: "Scale",         value: "1:43",                   icon: "bi-rulers" },
+      { name: "Box",           value: "No",                     icon: "bi-box-seam" },
+      { name: "Colour",        value: "Fawn",                   icon: "bi-palette2" },
+      { name: "Condition",     value: "Good; minor paint wear", icon: "bi-stars" }
     ]
   },
   {
     name: "Militaria",
     properties: [
-      { name: "Country",       value: "Canada" },
-      { name: "Branch",        value: "Royal Canadian Air Force" },
-      { name: "Period",        value: "Second World War" },
-      { name: "Item",          value: "Navigator's brevets" },
-      { name: "Markings",      value: "King's crown, RCAF" },
-      { name: "Provenance",    value: "With service record" },
-      { name: "Condition",     value: "Very good" }
+      { name: "Country",       value: "Canada",                 icon: "bi-flag-fill" },
+      { name: "Branch",        value: "Royal Canadian Air Force", icon: "bi-shield-fill" },
+      { name: "Period",        value: "Second World War",       icon: "bi-clock-history" },
+      { name: "Item",          value: "Navigator's brevets",    icon: "bi-bag" },
+      { name: "Markings",      value: "King's crown, RCAF",     icon: "bi-shield" },
+      { name: "Provenance",    value: "With service record",    icon: "bi-file-earmark-text" },
+      { name: "Condition",     value: "Very good",              icon: "bi-stars" }
     ]
   },
   {
     name: "Maps & Ephemera",
     properties: [
-      { name: "Title",         value: "Map of the Province of British Columbia" },
-      { name: "Cartographer",  value: "Dept. of Lands" },
-      { name: "Date",          value: "1922" },
-      { name: "Dimensions",    value: "32\" × 48\"" },
-      { name: "Colour",        value: "Hand-coloured" },
-      { name: "Condition",     value: "Good; folds as issued" }
+      { name: "Title",         value: "Map of the Province of British Columbia", icon: "bi-journal-text" },
+      { name: "Cartographer",  value: "Dept. of Lands",         icon: "bi-map" },
+      { name: "Date",          value: "1922",                   icon: "bi-calendar3" },
+      { name: "Dimensions",    value: "32\" × 48\"",            icon: "bi-rulers" },
+      { name: "Colour",        value: "Hand-coloured",          icon: "bi-palette2" },
+      { name: "Condition",     value: "Good; folds as issued",  icon: "bi-stars" }
     ]
   },
   {
     name: "Musical Instruments",
     properties: [
-      { name: "Type",          value: "Acoustic guitar" },
-      { name: "Maker",         value: "Gibson" },
-      { name: "Model",         value: "J-45" },
-      { name: "Year",          value: "1963" },
-      { name: "Serial Number", value: "123456" },
-      { name: "Finish",        value: "Sunburst" },
-      { name: "Case",          value: "Original hardshell" },
-      { name: "Condition",     value: "Good; plays well" }
+      { name: "Type",          value: "Acoustic guitar",        icon: "bi-music-note-beamed" },
+      { name: "Maker",         value: "Gibson",                 icon: "bi-building" },
+      { name: "Model",         value: "J-45",                   icon: "bi-gear" },
+      { name: "Year",          value: "1963",                   icon: "bi-calendar3" },
+      { name: "Serial Number", value: "123456",                 icon: "bi-hash" },
+      { name: "Finish",        value: "Sunburst",               icon: "bi-paint-bucket" },
+      { name: "Case",          value: "Original hardshell",     icon: "bi-briefcase" },
+      { name: "Condition",     value: "Good; plays well",       icon: "bi-stars" }
     ]
   },
   {
     name: "Glass & Crystal",
     properties: [
-      { name: "Maker",         value: "Waterford" },
-      { name: "Pattern",       value: "Lismore" },
-      { name: "Pieces",        value: "12" },
-      { name: "Type",          value: "Wine glasses" },
-      { name: "Height",        value: "7\"" },
-      { name: "Marks",         value: "Waterford etched base" },
-      { name: "Condition",     value: "Excellent; no chips" }
+      { name: "Maker",         value: "Waterford",              icon: "bi-building" },
+      { name: "Pattern",       value: "Lismore",                icon: "bi-grid" },
+      { name: "Pieces",        value: "12",                     icon: "bi-stack" },
+      { name: "Type",          value: "Wine glasses",           icon: "bi-cup" },
+      { name: "Height",        value: "7\"",                    icon: "bi-rulers" },
+      { name: "Marks",         value: "Waterford etched base",  icon: "bi-stamp" },
+      { name: "Condition",     value: "Excellent; no chips",    icon: "bi-stars" }
     ]
   },
   {
     name: "Architectural Salvage",
     properties: [
-      { name: "Type",          value: "Stained glass window" },
-      { name: "Dimensions",    value: "24\" × 48\"" },
-      { name: "Colours",       value: "Ruby, amber, clear" },
-      { name: "Period",        value: "c. 1905" },
-      { name: "Origin",        value: "Church demolition, Ontario" },
-      { name: "Frame",         value: "Lead came, oak surround" },
-      { name: "Condition",     value: "Good; one small crack" }
+      { name: "Type",          value: "Stained glass window",   icon: "bi-building" },
+      { name: "Dimensions",    value: "24\" × 48\"",            icon: "bi-rulers" },
+      { name: "Colours",       value: "Ruby, amber, clear",     icon: "bi-palette2" },
+      { name: "Period",        value: "c. 1905",                icon: "bi-clock-history" },
+      { name: "Origin",        value: "Church demolition, Ontario", icon: "bi-geo-alt-fill" },
+      { name: "Frame",         value: "Lead came, oak surround", icon: "bi-aspect-ratio" },
+      { name: "Condition",     value: "Good; one small crack",  icon: "bi-stars" }
     ]
   },
   {
     name: "Electronics & Radio",
     properties: [
-      { name: "Manufacturer",  value: "RCA" },
-      { name: "Model",         value: "Victor 66X11" },
-      { name: "Type",          value: "Tabletop AM radio" },
-      { name: "Year",          value: "1946" },
-      { name: "Cabinet",       value: "Bakelite, brown" },
-      { name: "Working",       value: "Yes" },
-      { name: "Condition",     value: "Very good" }
+      { name: "Manufacturer",  value: "RCA",                    icon: "bi-building" },
+      { name: "Model",         value: "Victor 66X11",           icon: "bi-gear" },
+      { name: "Type",          value: "Tabletop AM radio",      icon: "bi-radio" },
+      { name: "Year",          value: "1946",                   icon: "bi-calendar3" },
+      { name: "Cabinet",       value: "Bakelite, brown",        icon: "bi-box" },
+      { name: "Working",       value: "Yes",                    icon: "bi-check-circle-fill" },
+      { name: "Condition",     value: "Very good",              icon: "bi-stars" }
     ]
   },
   {
     name: "Native & Indigenous Art",
     properties: [
-      { name: "Nation / Region", value: "Haida, British Columbia" },
-      { name: "Artist",          value: "Unknown" },
-      { name: "Type",            value: "Argillite carving" },
-      { name: "Dimensions",      value: "6\" × 3\"" },
-      { name: "Period",          value: "Early 20th century" },
-      { name: "Provenance",      value: "Private collection, Vancouver" },
-      { name: "Condition",       value: "Very good" }
+      { name: "Nation / Region", value: "Haida, British Columbia", icon: "bi-geo-alt-fill" },
+      { name: "Artist",          value: "Unknown",              icon: "bi-person-fill" },
+      { name: "Type",            value: "Argillite carving",    icon: "bi-brush" },
+      { name: "Dimensions",      value: "6\" × 3\"",            icon: "bi-rulers" },
+      { name: "Period",          value: "Early 20th century",   icon: "bi-clock-history" },
+      { name: "Provenance",      value: "Private collection, Vancouver", icon: "bi-file-earmark-text" },
+      { name: "Condition",       value: "Very good",            icon: "bi-stars" }
     ]
   },
   {
     name: "Vintage Clothing & Accessories",
     properties: [
-      { name: "Type",          value: "Mink stole" },
-      { name: "Era",           value: "1950s" },
-      { name: "Size",          value: "One size" },
-      { name: "Colour",        value: "Natural brown" },
-      { name: "Maker",         value: "Holt Renfrew" },
-      { name: "Condition",     value: "Good; minor wear at clasp" }
+      { name: "Type",          value: "Mink stole",             icon: "bi-bag" },
+      { name: "Era",           value: "1950s",                  icon: "bi-hourglass" },
+      { name: "Size",          value: "One size",               icon: "bi-rulers" },
+      { name: "Colour",        value: "Natural brown",          icon: "bi-palette2" },
+      { name: "Maker",         value: "Holt Renfrew",           icon: "bi-building" },
+      { name: "Condition",     value: "Good; minor wear at clasp", icon: "bi-stars" }
     ]
   },
   {
     name: "Scientific & Medical",
     properties: [
-      { name: "Type",          value: "Brass microscope" },
-      { name: "Maker",         value: "R. & J. Beck" },
-      { name: "Model",         value: "No. 12" },
-      { name: "Period",        value: "c. 1895" },
-      { name: "Objectives",    value: "1\", 2/3\", 1/5\"" },
-      { name: "Case",          value: "Original mahogany" },
-      { name: "Condition",     value: "Good; optics clear" }
+      { name: "Type",          value: "Brass microscope",       icon: "bi-eyeglasses" },
+      { name: "Maker",         value: "R. & J. Beck",           icon: "bi-building" },
+      { name: "Model",         value: "No. 12",                 icon: "bi-gear" },
+      { name: "Period",        value: "c. 1895",                icon: "bi-clock-history" },
+      { name: "Objectives",    value: "1\", 2/3\", 1/5\"",      icon: "bi-eye" },
+      { name: "Case",          value: "Original mahogany",      icon: "bi-briefcase" },
+      { name: "Condition",     value: "Good; optics clear",     icon: "bi-stars" }
     ]
   }
 ]
@@ -1090,6 +1090,7 @@ property_set_data.each do |set_attrs|
     ps.properties.find_or_create_by!(name: prop_attrs[:name]) do |p|
       p.tenant = mudcreek
       p.value  = prop_attrs[:value]
+      p.icon   = prop_attrs[:icon]
     end
   end
 end

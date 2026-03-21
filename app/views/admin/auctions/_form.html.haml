@@ -174,24 +174,8 @@
           %i.bi.bi-geo-alt.me-1
           Location (optional)
         .card-body.p-4
-          = f.fields_for :address do |addr|
-            .mb-3
-              = addr.label :street_address, "Street Address", class: "form-label"
-              = addr.text_field :street_address, class: "form-control"
-            .row.g-3.mb-3
-              .col-sm-6
-                = addr.label :city, "City", class: "form-label"
-                = addr.text_field :city, class: "form-control"
-              .col-sm-6
-                = addr.label :province, "Province / State", class: "form-label"
-                = addr.text_field :province, class: "form-control"
-            .row.g-3
-              .col-sm-6
-                = addr.label :postal_code, "Postal Code", class: "form-label"
-                = addr.text_field :postal_code, class: "form-control"
-              .col-sm-6
-                = addr.label :country, "Country", class: "form-label"
-                = addr.select :country, all_countries, { include_blank: "— Select country —" }, class: "form-select"
+          = f.fields_for :address do |af|
+            = render "shared/address_fields", af: af
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

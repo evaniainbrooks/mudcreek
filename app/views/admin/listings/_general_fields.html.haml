@@ -1,0 +1,37 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-info-circle.me-1
+    General
+  .card-body.p-4
+    .mb-3
+      = f.label :listing_type, "Listing Type", class: "form-label"
+      - if listing.new_record?
+        = f.select :listing_type, [["For Sale", "sale"], ["Rental", "rental"]],
+            {}, class: "form-select",
+            data: { action: "change->listing-type#toggle" }
+      - else
+        %p.form-control-plaintext= listing.listing_type.humanize
+    .mb-3
+      = f.label :name, class: "form-label required"
+      = f.text_field :name, class: "form-control #{'is-invalid' if listing.errors[:name].any?}", required: true
+      - if listing.errors[:name].any?
+        .invalid-feedback= listing.errors[:name].to_sentence
+    .mb-3
+      = f.label :owner_id, "Owner", class: "form-label"
+      = f.collection_select :owner_id, User.order(:email_address), :id, :email_address,
+        { include_blank: "- No owner -" },
+        { class: "form-select #{'is-invalid' if listing.errors[:owner].any?}" }
+      - if listing.errors[:owner].any?
+        .invalid-feedback= listing.errors[:owner].to_sentence
+    .mb-3
+      = f.label :lot_id, "Lot", class: "form-label"
+      = f.collection_select :lot_id, lots, :id, :name,
+        { include_blank: "— No lot —" },
+        { class: "form-select #{'is-invalid' if listing.errors[:lot].any?}" }
+      - if listing.errors[:lot].any?
+        .invalid-feedback= listing.errors[:lot].to_sentence
+    .mb-0
+      = f.label :description, class: "form-label"
+      = f.rich_text_area :description, class: "form-control #{'is-invalid' if listing.errors[:description].any?}"
+      - if listing.errors[:description].any?
+        .invalid-feedback.d-block= listing.errors[:description].to_sentence

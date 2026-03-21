@@ -1,0 +1,8 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-geo-alt.me-1
+    Location
+  .card-body.p-4
+    = f.fields_for :address, (listing.address || listing.build_address(address_type: "primary")) do |af|
+      = af.hidden_field :address_type, value: "primary"
+      = render "shared/address_fields", af: af

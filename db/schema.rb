@@ -319,6 +319,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_015656) do
 
   create_table "listings_properties", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "icon"
     t.bigint "listing_id"
     t.string "name", null: false
     t.integer "position", default: 0, null: false
@@ -463,6 +464,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_015656) do
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "icon"
+    t.text "meta_description"
+    t.string "meta_title"
     t.integer "position", default: 0, null: false
     t.boolean "published", default: false, null: false
     t.boolean "show_in_footer", default: false, null: false

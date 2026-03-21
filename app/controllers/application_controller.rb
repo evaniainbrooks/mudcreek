@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  helper_method :cart_item_count, :offcanvas_cart_items
+  helper_method :cart_item_count, :offcanvas_cart_items, :offcanvas_watchlist_items, :watchlist_item_count
 
   private
 
@@ -29,6 +29,18 @@ class ApplicationController < ActionController::Base
     else
       CartItem.none
     end
+  end
+
+  def offcanvas_watchlist_items
+    @offcanvas_watchlist_items ||= if Current.user
+      Current.user.watchlist_items.includes(listing: { images_attachments: :blob }).order(:created_at)
+    else
+      WatchlistItem.none
+    end
+  end
+
+  def watchlist_item_count
+    @watchlist_item_count ||= Current.user ? Current.user.watchlist_items.count : 0
   end
 
   def cart_item_count

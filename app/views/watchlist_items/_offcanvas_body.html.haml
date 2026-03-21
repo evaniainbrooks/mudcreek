@@ -1,0 +1,26 @@
+- if watchlist_items.empty?
+  .text-center.text-muted.py-5
+    %i.bi.bi-bookmark.d-block.mb-2{ style: "font-size: 2.5rem" }
+    Your watchlist is empty.
+- else
+  .px-3.pt-3
+    - watchlist_items.each do |item|
+      .d-flex.align-items-center.gap-3.mb-3
+        = link_to listing_path(item.listing) do
+          - if item.listing.images.attached?
+            = image_tag item.listing.images.first,
+                class: "rounded-2 object-fit-cover flex-shrink-0",
+                style: "width: 52px; height: 52px"
+          - else
+            .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
+              %i.bi.bi-image.text-secondary
+        .flex-grow-1.lh-sm.overflow-hidden
+          = link_to item.listing.name, listing_path(item.listing),
+              class: "fw-semibold small text-truncate d-block text-decoration-none text-body"
+          .text-muted.small= humanized_money_with_symbol(item.listing.price)
+        = button_to watchlist_item_path(item), method: :delete,
+            class: "btn btn-sm btn-outline-secondary flex-shrink-0",
+            form: { data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" } } do
+          %i.bi.bi-bookmark-x
+  .border-top.px-3.py-3
+    = link_to "View full watchlist", profile_watchlist_path, class: "btn btn-outline-secondary w-100"

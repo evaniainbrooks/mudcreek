@@ -12,11 +12,14 @@
           .alert.alert-danger.mb-3
             = @property.errors.full_messages.to_sentence
         .row.g-3
-          .col-sm-5
+          .col-sm-2
+            = f.label :icon, class: "form-label form-label-sm"
+            = f.text_field :icon, class: "form-control form-control-sm", placeholder: "bi-gear"
+          .col-sm-4
             = f.label :name, class: "form-label form-label-sm required"
             = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:name].any?}",
                 required: true, placeholder: "e.g. Release Year"
-          .col-sm-5
+          .col-sm-4
             = f.label :value, "Example Value", class: "form-label form-label-sm required"
             = f.text_field :value, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:value].any?}",
                 required: true, placeholder: "e.g. 1998"
