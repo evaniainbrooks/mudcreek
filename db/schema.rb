@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -516,7 +516,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_160000) do
     t.datetime "updated_at", null: false
     t.index ["owner_id"], name: "index_qr_codes_on_owner_id"
     t.index ["tenant_id", "slug"], name: "index_qr_codes_on_tenant_id_and_slug", unique: true
-    t.index ["tenant_id"], name: "index_qr_codes_on_tenant_id"
   end
 
   create_table "qr_scans", force: :cascade do |t|
@@ -825,6 +824,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_160000) do
   add_foreign_key "auction_listings", "auctions"
   add_foreign_key "auction_listings", "listings"
   add_foreign_key "auction_registrations", "auctions"
+  add_foreign_key "auction_registrations", "tenants"
   add_foreign_key "auction_registrations", "users"
   add_foreign_key "auctions", "tenants"
   add_foreign_key "bid_increment_schedules", "auctions", on_delete: :cascade
@@ -882,6 +882,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_160000) do
   add_foreign_key "proxy_bids", "auction_listings"
   add_foreign_key "proxy_bids", "auction_registrations"
   add_foreign_key "qr_codes", "tenants"
+  add_foreign_key "qr_codes", "users", column: "owner_id"
   add_foreign_key "qr_scans", "qr_codes"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"

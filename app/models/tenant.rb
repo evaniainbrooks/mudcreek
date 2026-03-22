@@ -29,6 +29,8 @@ class Tenant < ApplicationRecord
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan", dependent: :restrict_with_error
   has_many :auctions, dependent: :restrict_with_error
   has_many :invoices, dependent: :destroy
+  has_many :qr_codes, dependent: :destroy
+  has_many :auction_registrations, dependent: :destroy
 
   has_many :social_media_accounts, dependent: :destroy
   has_many :property_sets, class_name: "Listings::PropertySet", dependent: :destroy
