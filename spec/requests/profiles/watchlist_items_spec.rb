@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Profiles::WatchlistItems", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true, features: { watchlist: true })
   end
 
   let(:user)     { create(:user) }

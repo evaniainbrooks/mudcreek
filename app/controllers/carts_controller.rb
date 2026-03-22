@@ -3,10 +3,10 @@ class CartsController < ApplicationController
 
   def show
     if Current.user
-      @cart_items = Current.user.cart_items.includes(listing: { images_attachments: :blob }).order(:created_at)
+      @cart_items = Current.user.cart_items.includes(listing: [{ images_attachments: :blob }, { auction_listing: :auction }]).order(:created_at)
     else
       token = session[:guest_cart_token]
-      @cart_items = token ? CartItem.where(guest_cart_token: token).includes(listing: { images_attachments: :blob }).order(:created_at) : CartItem.none
+      @cart_items = token ? CartItem.where(guest_cart_token: token).includes(listing: [{ images_attachments: :blob }, { auction_listing: :auction }]).order(:created_at) : CartItem.none
     end
 
     remove_sold_items

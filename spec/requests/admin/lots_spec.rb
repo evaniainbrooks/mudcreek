@@ -9,6 +9,7 @@ RSpec.describe "Admin::Lots", type: :request do
   let(:role) do
     Role.create!(name: "lot_manager", description: "Manage lots").tap do |r|
       r.permissions.create!(resource: "Lot", action: "index")
+      r.permissions.create!(resource: "Lot", action: "show")
       r.permissions.create!(resource: "Lot", action: "create")
       r.permissions.create!(resource: "Lot", action: "update")
       r.permissions.create!(resource: "Lot", action: "destroy")
@@ -49,6 +50,38 @@ RSpec.describe "Admin::Lots", type: :request do
 
       it "raises Pundit::NotAuthorizedError" do
         expect { get admin_lots_path }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "GET /admin/lots/:hashid" do
+    it "returns 200" do
+      get admin_lot_path(lot)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "includes the lot name in the response" do
+      get admin_lot_path(lot)
+
+      expect(response.body).to include(lot.name)
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        get admin_lot_path(lot)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the show permission" do
+      let(:role) { Role.create!(name: "no_show_lots", description: "No show access") }
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { get admin_lot_path(lot) }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
@@ -132,6 +165,20 @@ RSpec.describe "Admin::Lots", type: :request do
         patch admin_lot_path(lot), params: { lot: { owner_id: new_owner.id } }
 
         expect(lot.reload.owner).to eq(new_owner)
+      end
+    end
+
+    context "with a missing name" do
+      it "does not update the lot" do
+        expect {
+          patch admin_lot_path(lot), params: { lot: { name: "" } }
+        }.not_to change { lot.reload.name }
+      end
+
+      it "re-renders the show page with unprocessable entity status" do
+        patch admin_lot_path(lot), params: { lot: { name: "" } }
+
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

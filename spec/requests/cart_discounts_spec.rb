@@ -74,10 +74,11 @@ RSpec.describe "CartDiscounts", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "redirects to the cart with an alert" do
         post cart_discount_path, params: { discount_code: "ANYCODE" }
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to redirect_to(cart_path)
+        expect(flash[:alert]).to eq("Discount code not found.")
       end
     end
   end
@@ -124,10 +125,11 @@ RSpec.describe "CartDiscounts", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the sign-in page" do
+      it "redirects to the cart with a notice" do
         delete cart_discount_path
 
-        expect(response).to redirect_to(new_session_path)
+        expect(response).to redirect_to(cart_path)
+        expect(flash[:notice]).to eq("Discount code removed.")
       end
     end
   end
