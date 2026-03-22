@@ -1,6 +1,7 @@
 class QrCode < ApplicationRecord
   include MultiTenant
 
+  belongs_to :owner, class_name: "User", optional: true
   has_many :qr_scans, dependent: :destroy
 
   validates :name, presence: true

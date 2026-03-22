@@ -2,76 +2,169 @@
   %h1.h3.mb-0
     %i.bi.bi-qr-code.me-2
     = @qr_code.name
-  .d-flex.gap-2
-    = link_to "Edit", edit_admin_qr_code_path(@qr_code), class: "btn btn-outline-secondary"
-    = link_to "Back", admin_qr_codes_path, class: "btn btn-outline-secondary"
+  = button_to admin_qr_code_path(@qr_code), method: :delete, class: "btn btn-outline-danger btn-sm",
+      form: { data: { turbo_confirm: "Delete \"#{@qr_code.name}\"?" } } do
+    %i.bi.bi-trash.me-1
+    Delete
 
-.page-container.p-4
-  .row.g-4
-    .col-lg-6
-      .card.shadow-sm.border-0.mb-4
-        .card-header.fw-semibold
-          %i.bi.bi-info-circle.me-1
-          Details
-        .card-body
-          %dl.row.mb-0
-            %dt.col-sm-4 Status
-            %dd.col-sm-8
-              - if @qr_code.live?
-                %span.badge.bg-success Live
-              - elsif @qr_code.expires_at&.past?
-                %span.badge.bg-secondary Expired
-              - else
-                %span.badge.bg-warning.text-dark Inactive
-            %dt.col-sm-4 Scans
-            %dd.col-sm-8= @qr_code.scan_count
-            %dt.col-sm-4 Last scanned
-            %dd.col-sm-8= @qr_code.last_scanned_at&.strftime("%b %-d, %Y %H:%M") || "Never"
-            %dt.col-sm-4 Expires
-            %dd.col-sm-8= @qr_code.expires_at&.strftime("%b %-d, %Y") || "Never"
-            %dt.col-sm-4 Redirect URL
-            %dd.col-sm-8
-              %code.text-break= @qr_code.destination_url
-            - if @qr_code.inactive_url.present?
-              %dt.col-sm-4 Fallback URL
-              %dd.col-sm-8
-                %code.text-break= @qr_code.inactive_url
-            - if @qr_code.notes.present?
-              %dt.col-sm-4 Notes
-              %dd.col-sm-8= @qr_code.notes
-
-    .col-lg-6
-      .card.shadow-sm.border-0.mb-4
-        .card-header.fw-semibold
-          %i.bi.bi-qr-code.me-1
-          QR Image
-        .card-body.text-center
-          = image_tag qr_image_admin_qr_code_path(@qr_code, format: :svg),
-              alt: @qr_code.name, style: "width: 200px; height: 200px;"
-          .mt-3.d-flex.gap-2.justify-content-center
-            = link_to qr_image_admin_qr_code_path(@qr_code, format: :png),
-                class: "btn btn-outline-primary btn-sm" do
-              %i.bi.bi-download.me-1
-              Download PNG
-          .mt-3
-            %p.text-muted.small.mb-1 Public redirect URL:
-            %code.small= qr_redirect_url(@qr_code.slug)
-
-  - if @recent_scans.any?
-    .card.shadow-sm.border-0
-      .card-header.fw-semibold
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link.active{ id: "details-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#details-pane" },
+          aria: { controls: "details-pane", selected: "true" } }
+        %i.bi.bi-info-circle.me-1
+        Details
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#edit-pane" },
+          aria: { controls: "edit-pane", selected: "false" } }
+        %i.bi.bi-pencil.me-1
+        Edit
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "scans-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#scans-pane" },
+          aria: { controls: "scans-pane", selected: "false" } }
         %i.bi.bi-list-ul.me-1
-        Recent Scans
-      .card-body.p-0
-        %table.table.table-sm.mb-0
-          %thead.table-light
-            %tr
-              %th Time
-              %th IP Address
-              %th User Agent
-          %tbody
-            - @recent_scans.each do |scan|
-              %tr
-                %td= scan.created_at.strftime("%b %-d, %Y %H:%M")
-                %td= scan.ip_address || "—"
-                %td.text-truncate{style: "max-width: 300px"}= scan.user_agent || "—"
+        Scans
+        %span.badge.text-bg-secondary.ms-1= @qr_code.scan_count
+
+  .p-4
+    .tab-content
+      #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+        .row.g-4
+          .col-lg-6
+            .card.shadow-sm.border-0.mb-4
+              .card-header.fw-semibold
+                %i.bi.bi-info-circle.me-1
+                Details
+              .card-body
+                %dl.row.mb-0
+                  %dt.col-sm-4 Owner
+                  %dd.col-sm-8= @qr_code.owner ? render(TableCellComponent.new(value: @qr_code.owner)) : content_tag(:span, "—", class: "text-muted")
+                  %dt.col-sm-4 Status
+                  %dd.col-sm-8
+                    - if @qr_code.live?
+                      %span.badge.bg-success Live
+                    - elsif @qr_code.expires_at&.past?
+                      %span.badge.bg-secondary Expired
+                    - else
+                      %span.badge.bg-warning.text-dark Inactive
+                  %dt.col-sm-4 Scans
+                  %dd.col-sm-8= @qr_code.scan_count
+                  %dt.col-sm-4 Last scanned
+                  %dd.col-sm-8= @qr_code.last_scanned_at&.strftime("%b %-d, %Y %H:%M") || "Never"
+                  %dt.col-sm-4 Expires
+                  %dd.col-sm-8= @qr_code.expires_at&.strftime("%b %-d, %Y") || "Never"
+                  %dt.col-sm-4 Redirect URL
+                  %dd.col-sm-8
+                    %code.text-break= @qr_code.destination_url
+                  - if @qr_code.inactive_url.present?
+                    %dt.col-sm-4 Fallback URL
+                    %dd.col-sm-8
+                      %code.text-break= @qr_code.inactive_url
+                  - if @qr_code.notes.present?
+                    %dt.col-sm-4 Notes
+                    %dd.col-sm-8= @qr_code.notes
+
+          .col-lg-6
+            .card.shadow-sm.border-0.mb-4{
+                data: { controller: "qr-image",
+                        "qr-image-base-url-value": qr_image_admin_qr_code_path(@qr_code) } }
+              .card-header.fw-semibold
+                %i.bi.bi-qr-code.me-1
+                QR Image
+              .card-body.text-center
+                = image_tag qr_image_admin_qr_code_path(@qr_code, format: :svg, size: "md", style: "standard"),
+                    alt: @qr_code.name, style: "width: 200px; height: 200px;",
+                    data: { "qr-image-target": "preview" }
+
+                .mt-3
+                  .input-group.input-group-sm.justify-content-center
+                    %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
+                      Size:&nbsp;
+                      %span{ data: { "qr-image-target": "sizeLabel" } } Medium
+                    %ul.dropdown-menu
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "sm" } } Small
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "md" } } Medium
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "lg" } } Large
+                    %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
+                      Format:&nbsp;
+                      %span{ data: { "qr-image-target": "formatLabel" } } PNG
+                    %ul.dropdown-menu
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectFormat", format: "png" } } PNG
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectFormat", format: "svg" } } SVG
+                    %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
+                      Style:&nbsp;
+                      %span{ data: { "qr-image-target": "styleLabel" } } Standard
+                    %ul.dropdown-menu
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "standard" } } Standard
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "blue" } } Blue
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "indigo" } } Indigo
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "purple" } } Purple
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "pink" } } Pink
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "red" } } Red
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "orange" } } Orange
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "green" } } Green
+                      %li
+                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "teal" } } Teal
+                    = link_to "#", class: "btn btn-primary",
+                        data: { "qr-image-target": "downloadBtn" } do
+                      %i.bi.bi-download.me-1
+                      Download
+                    %button.btn.btn-outline-secondary{ type: "button",
+                        data: { action: "qr-image#copyUrl" } }
+                      %i.bi.bi-clipboard.me-1
+                      Copy URL
+
+                .mt-3
+                  %p.text-muted.small.mb-1 Public redirect URL:
+                  %code.small= qr_redirect_url(@qr_code.slug)
+
+              .toast-container.position-fixed.bottom-0.end-0.p-3
+                .toast.align-items-center.text-bg-success.border-0{
+                    role: "alert", "aria-live": "assertive",
+                    data: { "qr-image-target": "toast" } }
+                  .d-flex
+                    .toast-body URL copied to clipboard.
+                    %button.btn-close.btn-close-white.me-2.m-auto{ type: "button", "data-bs-dismiss": "toast" }
+
+      #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
+        = render "form", qr_code: @qr_code
+
+      #scans-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "scans-tab" } }
+        - if @recent_scans.any?
+          .card.shadow-sm.border-0
+            .card-body.p-0
+              %table.table.table-sm.mb-0
+                %thead.table-light
+                  %tr
+                    %th Time
+                    %th IP Address
+                    %th User Agent
+                %tbody
+                  - @recent_scans.each do |scan|
+                    %tr
+                      %td= scan.created_at.strftime("%b %-d, %Y %H:%M")
+                      %td= scan.ip_address || "—"
+                      %td.text-truncate{ style: "max-width: 400px" }= scan.user_agent || "—"
+        - else
+          .text-muted.py-3 No scans recorded yet.
+
+    .mt-3
+      = link_to admin_qr_codes_path, class: "btn btn-outline-secondary" do
+        %i.bi.bi-arrow-left.me-1
+        Back to QR Codes

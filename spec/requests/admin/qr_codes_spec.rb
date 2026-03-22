@@ -57,6 +57,56 @@ RSpec.describe "Admin::QrCodes", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Test Code")
     end
+
+    it "displays the owner name" do
+      qr_code.update!(owner: user)
+
+      get admin_qr_code_path(qr_code)
+
+      expect(response.body).to include(user.name)
+    end
+
+    context "with recent scans" do
+      before { qr_code.qr_scans.create!(ip_address: "1.2.3.4", user_agent: "ScanBot/1.0") }
+
+      it "displays the scan log" do
+        get admin_qr_code_path(qr_code)
+
+        expect(response.body).to include("1.2.3.4")
+        expect(response.body).to include("ScanBot/1.0")
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to sign in" do
+        get admin_qr_code_path(qr_code)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the show permission" do
+      let(:role) do
+        Role.create!(name: "index_only_qr", description: "Index-only QR access").tap do |r|
+          r.permissions.create!(resource: "QrCode", action: "index")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { get admin_qr_code_path(qr_code) }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "GET /admin/qr_codes/:slug/edit" do
+    it "returns 200" do
+      get edit_admin_qr_code_path(qr_code)
+
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   # ------------------------------------------------------------------ #
@@ -67,6 +117,52 @@ RSpec.describe "Admin::QrCodes", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to include("image/svg+xml")
     end
+
+    it "serves inline by default" do
+      get qr_image_admin_qr_code_path(qr_code, format: :svg)
+
+      expect(response.headers["Content-Disposition"]).to include("inline")
+    end
+
+    it "serves as attachment when download param is set" do
+      get qr_image_admin_qr_code_path(qr_code, format: :svg, download: "1")
+
+      expect(response.headers["Content-Disposition"]).to include("attachment")
+    end
+
+    it "includes the slug in the filename" do
+      get qr_image_admin_qr_code_path(qr_code, format: :svg, download: "1")
+
+      expect(response.headers["Content-Disposition"]).to include("test-code")
+    end
+
+    %w[sm md lg].each do |size|
+      it "accepts size=#{size}" do
+        get qr_image_admin_qr_code_path(qr_code, format: :svg, size: size)
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it "falls back to md for an unknown size" do
+      get qr_image_admin_qr_code_path(qr_code, format: :svg, size: "xxl")
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    %w[standard blue indigo purple pink red orange green teal].each do |style|
+      it "accepts style=#{style}" do
+        get qr_image_admin_qr_code_path(qr_code, format: :svg, style: style)
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it "falls back to standard for an unknown style" do
+      get qr_image_admin_qr_code_path(qr_code, format: :svg, style: "neon")
+
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   describe "GET /admin/qr_codes/:slug/qr_image.png" do
@@ -75,6 +171,26 @@ RSpec.describe "Admin::QrCodes", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to include("image/png")
+    end
+
+    it "serves as attachment" do
+      get qr_image_admin_qr_code_path(qr_code, format: :png)
+
+      expect(response.headers["Content-Disposition"]).to include("attachment")
+    end
+
+    it "includes the slug in the filename" do
+      get qr_image_admin_qr_code_path(qr_code, format: :png)
+
+      expect(response.headers["Content-Disposition"]).to include("test-code")
+    end
+
+    %w[sm md lg].each do |size|
+      it "accepts size=#{size}" do
+        get qr_image_admin_qr_code_path(qr_code, format: :png, size: size)
+
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
@@ -110,6 +226,12 @@ RSpec.describe "Admin::QrCodes", type: :request do
         post admin_qr_codes_path, params: { qr_code: { name: "Auto Slug Code", slug: "", destination_url: "https://example.com" } }
 
         expect(QrCode.find_by(name: "Auto Slug Code").slug).to eq("auto-slug-code")
+      end
+
+      it "sets the owner to the current user" do
+        post admin_qr_codes_path, params: valid_params
+
+        expect(QrCode.find_by(name: "New Code").owner).to eq(user)
       end
     end
 
@@ -165,6 +287,15 @@ RSpec.describe "Admin::QrCodes", type: :request do
         patch admin_qr_code_path(qr_code), params: { qr_code: { name: "Updated Name" } }
 
         expect(response).to redirect_to(admin_qr_codes_path)
+      end
+
+      it "does not allow the owner to be changed" do
+        qr_code.update!(owner: user)
+        other_user = create(:user)
+
+        patch admin_qr_code_path(qr_code), params: { qr_code: { owner_id: other_user.id } }
+
+        expect(qr_code.reload.owner).to eq(user)
       end
     end
 

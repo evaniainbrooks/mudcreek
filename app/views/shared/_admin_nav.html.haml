@@ -91,3 +91,8 @@
           = link_to admin_pages_path, class: "dropdown-item" do
             %i.bi.bi-file-earmark-text.me-1
             Pages
+      - if policy(QrCode).index?
+        %li
+          = link_to admin_qr_codes_path, class: "dropdown-item" do
+            %i.bi.bi-qr-code.me-1
+            QR Codes

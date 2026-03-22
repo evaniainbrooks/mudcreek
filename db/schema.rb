@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_151038) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_153100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -507,10 +507,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_151038) do
     t.datetime "last_scanned_at"
     t.string "name", null: false
     t.text "notes"
+    t.bigint "owner_id"
     t.integer "scan_count", default: 0, null: false
     t.string "slug", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_qr_codes_on_owner_id"
     t.index ["tenant_id", "slug"], name: "index_qr_codes_on_tenant_id_and_slug", unique: true
     t.index ["tenant_id"], name: "index_qr_codes_on_tenant_id"
   end

@@ -28,6 +28,34 @@ RSpec.describe "QrRedirects", type: :request do
           get qr_redirect_path("my-code")
         }.to change(QrScan, :count).by(1)
       end
+
+      it "records last_scanned_at" do
+        get qr_redirect_path("my-code")
+
+        expect(qr_code.reload.last_scanned_at).to be_within(5.seconds).of(Time.current)
+      end
+
+      it "captures the user agent on the scan record" do
+        get qr_redirect_path("my-code"), headers: { "User-Agent" => "TestBrowser/1.0" }
+
+        expect(QrScan.last.user_agent).to eq("TestBrowser/1.0")
+      end
+    end
+
+    context "with a code that has a future expiry" do
+      let!(:qr_code) { create(:qr_code, :with_expiry, slug: "expiring-code", destination_url: "https://destination.example.com") }
+
+      it "treats the code as live and redirects" do
+        get qr_redirect_path("expiring-code")
+
+        expect(response).to redirect_to("https://destination.example.com")
+      end
+
+      it "increments scan_count" do
+        expect {
+          get qr_redirect_path("expiring-code")
+        }.to change { qr_code.reload.scan_count }.by(1)
+      end
     end
 
     context "with an inactive code" do
@@ -53,6 +81,12 @@ RSpec.describe "QrRedirects", type: :request do
           get qr_redirect_path("inactive-code")
         }.not_to change { qr_code.reload.scan_count }
       end
+
+      it "does not create a QrScan record" do
+        expect {
+          get qr_redirect_path("inactive-code")
+        }.not_to change(QrScan, :count)
+      end
     end
 
     context "with an expired code" do
@@ -71,6 +105,18 @@ RSpec.describe "QrRedirects", type: :request do
         get qr_redirect_path("expired-code")
 
         expect(response).to redirect_to("https://fallback.example.com")
+      end
+
+      it "does not increment scan_count" do
+        expect {
+          get qr_redirect_path("expired-code")
+        }.not_to change { qr_code.reload.scan_count }
+      end
+
+      it "does not create a QrScan record" do
+        expect {
+          get qr_redirect_path("expired-code")
+        }.not_to change(QrScan, :count)
       end
     end
 
