@@ -49,9 +49,16 @@ export default class extends Controller<HTMLElement> {
   private onError = (event: Event) => {
     event.preventDefault()
     const { id } = (event as CustomEvent).detail
-    const bar = this.uploads.get(id)?.querySelector<HTMLElement>(".progress-bar")
+    const item = this.uploads.get(id)
+    if (!item) return
+    const bar = item.querySelector<HTMLElement>(".progress-bar")
     bar?.classList.replace("progress-bar-animated", "bg-danger")
     bar?.classList.remove("progress-bar-striped")
+    item.querySelector<HTMLElement>(".text-muted")!.textContent = "Failed"
+    const msg = document.createElement("p")
+    msg.className = "text-danger small mb-0 mt-1"
+    msg.textContent = "Upload failed. Please remove the file and try again."
+    item.appendChild(msg)
   }
 
   private onEnd = (event: Event) => {
