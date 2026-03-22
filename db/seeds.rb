@@ -1600,6 +1600,7 @@ end
 puts "Seeded #{Auction.count} auctions with #{AuctionListing.count} auction listings."
 
 # Auction Registrations
+Current.tenant = mudcreek
 if Rails.env.local?
   regular_users = User.where(tenant: mudcreek).where.not(email_address: "admin@mudcreek").limit(10).to_a
 

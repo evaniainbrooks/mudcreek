@@ -11,6 +11,7 @@ class User < ApplicationRecord
   belongs_to :role, optional: true
   has_many :listings, foreign_key: :owner_id, dependent: :destroy
   has_many :lots, foreign_key: :owner_id, dependent: :destroy
+  has_many :qr_codes, foreign_key: :owner_id, dependent: :nullify
   has_many :cart_items, dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :orders, dependent: :destroy
