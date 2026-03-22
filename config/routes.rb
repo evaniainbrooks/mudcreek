@@ -59,6 +59,8 @@ resource :session
   resources :subdivisions, only: [ :index ]
   resources :pages, only: [ :show ], param: :slug
 
+  get "/q/:slug", to: "qr_redirects#show", as: :qr_redirect
+
   namespace :admin do
     root to: "dashboard#index"
     resource :tenant, only: [ :show, :update ]
@@ -102,6 +104,9 @@ resource :session
     resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
     resources :pages
+    resources :qr_codes, param: :slug do
+      member { get :qr_image }
+    end
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

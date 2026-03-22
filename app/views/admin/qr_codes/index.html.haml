@@ -1,0 +1,46 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-qr-code.me-2
+    QR Codes
+  = link_to new_admin_qr_code_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    New QR Code
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body.p-0
+      %table.table.table-hover.mb-0
+        %thead.table-light
+          %tr
+            %th Name
+            %th Slug
+            %th Destination
+            %th.text-center Status
+            %th.text-end Scans
+            %th Last Scanned
+            %th
+        %tbody
+          - if @qr_codes.empty?
+            %tr
+              %td.text-muted.text-center{colspan: 7} No QR codes yet.
+          - @qr_codes.each do |qr_code|
+            %tr
+              %td= link_to qr_code.name, admin_qr_code_path(qr_code)
+              %td
+                %code= qr_code.slug
+              %td.text-truncate{style: "max-width: 200px"}= qr_code.destination_url
+              %td.text-center
+                - if qr_code.live?
+                  %span.badge.bg-success Live
+                - elsif qr_code.expires_at&.past?
+                  %span.badge.bg-secondary Expired
+                - else
+                  %span.badge.bg-warning.text-dark Inactive
+              %td.text-end= qr_code.scan_count
+              %td= qr_code.last_scanned_at&.strftime("%b %-d, %Y") || "—"
+              %td.text-end
+                = link_to "Edit", edit_admin_qr_code_path(qr_code), class: "btn btn-sm btn-outline-secondary"
+                = link_to "Delete",
+                  admin_qr_code_path(qr_code),
+                  data: { turbo_method: :delete, turbo_confirm: "Delete \"#{qr_code.name}\"?" },
+                  class: "btn btn-sm btn-outline-danger ms-1"

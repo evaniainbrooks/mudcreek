@@ -1,0 +1,77 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-qr-code.me-2
+    = @qr_code.name
+  .d-flex.gap-2
+    = link_to "Edit", edit_admin_qr_code_path(@qr_code), class: "btn btn-outline-secondary"
+    = link_to "Back", admin_qr_codes_path, class: "btn btn-outline-secondary"
+
+.page-container.p-4
+  .row.g-4
+    .col-lg-6
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold
+          %i.bi.bi-info-circle.me-1
+          Details
+        .card-body
+          %dl.row.mb-0
+            %dt.col-sm-4 Status
+            %dd.col-sm-8
+              - if @qr_code.live?
+                %span.badge.bg-success Live
+              - elsif @qr_code.expires_at&.past?
+                %span.badge.bg-secondary Expired
+              - else
+                %span.badge.bg-warning.text-dark Inactive
+            %dt.col-sm-4 Scans
+            %dd.col-sm-8= @qr_code.scan_count
+            %dt.col-sm-4 Last scanned
+            %dd.col-sm-8= @qr_code.last_scanned_at&.strftime("%b %-d, %Y %H:%M") || "Never"
+            %dt.col-sm-4 Expires
+            %dd.col-sm-8= @qr_code.expires_at&.strftime("%b %-d, %Y") || "Never"
+            %dt.col-sm-4 Redirect URL
+            %dd.col-sm-8
+              %code.text-break= @qr_code.destination_url
+            - if @qr_code.inactive_url.present?
+              %dt.col-sm-4 Fallback URL
+              %dd.col-sm-8
+                %code.text-break= @qr_code.inactive_url
+            - if @qr_code.notes.present?
+              %dt.col-sm-4 Notes
+              %dd.col-sm-8= @qr_code.notes
+
+    .col-lg-6
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold
+          %i.bi.bi-qr-code.me-1
+          QR Image
+        .card-body.text-center
+          = image_tag qr_image_admin_qr_code_path(@qr_code, format: :svg),
+              alt: @qr_code.name, style: "width: 200px; height: 200px;"
+          .mt-3.d-flex.gap-2.justify-content-center
+            = link_to qr_image_admin_qr_code_path(@qr_code, format: :png),
+                class: "btn btn-outline-primary btn-sm" do
+              %i.bi.bi-download.me-1
+              Download PNG
+          .mt-3
+            %p.text-muted.small.mb-1 Public redirect URL:
+            %code.small= qr_redirect_url(@qr_code.slug)
+
+  - if @recent_scans.any?
+    .card.shadow-sm.border-0
+      .card-header.fw-semibold
+        %i.bi.bi-list-ul.me-1
+        Recent Scans
+      .card-body.p-0
+        %table.table.table-sm.mb-0
+          %thead.table-light
+            %tr
+              %th Time
+              %th IP Address
+              %th User Agent
+          %tbody
+            - @recent_scans.each do |scan|
+              %tr
+                %td= scan.created_at.strftime("%b %-d, %Y %H:%M")
+                %td= scan.ip_address || "—"
+                %td.text-truncate{style: "max-width: 300px"}= scan.user_agent || "—"

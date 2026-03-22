@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_124556) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_151038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -498,6 +498,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_124556) do
     t.index ["auction_registration_id"], name: "index_proxy_bids_on_auction_registration_id"
   end
 
+  create_table "qr_codes", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.text "destination_url", null: false
+    t.datetime "expires_at"
+    t.text "inactive_url"
+    t.datetime "last_scanned_at"
+    t.string "name", null: false
+    t.text "notes"
+    t.integer "scan_count", default: 0, null: false
+    t.string "slug", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "slug"], name: "index_qr_codes_on_tenant_id_and_slug", unique: true
+    t.index ["tenant_id"], name: "index_qr_codes_on_tenant_id"
+  end
+
+  create_table "qr_scans", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "ip_address"
+    t.bigint "qr_code_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.index ["qr_code_id"], name: "index_qr_scans_on_qr_code_id"
+  end
+
   create_table "rental_bookings", force: :cascade do |t|
     t.bigint "cart_item_id"
     t.datetime "created_at", null: false
@@ -851,6 +877,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_124556) do
   add_foreign_key "permissions", "tenants"
   add_foreign_key "proxy_bids", "auction_listings"
   add_foreign_key "proxy_bids", "auction_registrations"
+  add_foreign_key "qr_codes", "tenants"
+  add_foreign_key "qr_scans", "qr_codes"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"

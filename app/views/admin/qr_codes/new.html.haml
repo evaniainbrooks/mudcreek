@@ -1,0 +1,9 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-plus-lg.me-2
+    New QR Code
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body
+      = render "form", qr_code: @qr_code
