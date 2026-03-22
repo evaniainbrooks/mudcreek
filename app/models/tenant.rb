@@ -1,6 +1,8 @@
 class Tenant < ApplicationRecord
   has_rich_text :description
 
+  attribute :features, Tenant::Features.to_type
+
   has_one_attached :logo
   has_one_attached :listing_placeholder
   has_one_attached :auction_placeholder

@@ -1,4 +1,5 @@
 class AuctionRegistrationsController < ApplicationController
+  include AuctionFeatureGated
   before_action :set_auction
 
   def create

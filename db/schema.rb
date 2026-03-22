@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_21_015656) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_124556) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -717,6 +717,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_015656) do
     t.boolean "default", default: false, null: false
     t.bigint "default_delivery_method_set_id"
     t.string "email_address"
+    t.jsonb "features", default: {}, null: false
     t.string "footer_color"
     t.string "key", null: false
     t.string "link_color"

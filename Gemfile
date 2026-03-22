@@ -63,6 +63,9 @@ gem "pagy"
 # Safe database migrations
 gem "strong_migrations"
 
+# Embedded value objects for ActiveRecord attributes
+gem "store_model"
+
 # Database functions and triggers
 gem "fx"
 

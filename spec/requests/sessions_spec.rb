@@ -24,6 +24,22 @@ RSpec.describe "Sessions", type: :request do
         expect(response).to redirect_to(root_path)
       end
     end
+
+    context "with a session cookie from a different tenant" do
+      before do
+        # Establish a session on the default tenant
+        post session_path, params: { email_address: user.email_address, password: "password" }
+        # Create a second tenant and switch to it via subdomain
+        Tenant.create!(name: "Other", key: "other", default: false)
+        host! "other.example.com"
+      end
+
+      it "renders the sign-in page rather than redirecting away" do
+        get new_session_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe "POST /session" do

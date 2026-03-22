@@ -6,15 +6,17 @@
         - if tenant.description.present?
           .text-muted.small.mb-3= tenant.description.to_plain_text.truncate(200)
         .d-flex.flex-column.gap-1.align-items-center
-          = link_to auctions_path, class: "text-decoration-none text-muted small" do
-            %i.bi.bi-hammer.me-1
-            Auctions
+          - if tenant.features.auctions?
+            = link_to auctions_path, class: "text-decoration-none text-muted small" do
+              %i.bi.bi-hammer.me-1
+              Auctions
           = link_to listings_path, class: "text-decoration-none text-muted small" do
             %i.bi.bi-tag.me-1
             Listings
-          = link_to categories_path, class: "text-decoration-none text-muted small" do
-            %i.bi.bi-grid.me-1
-            Categories
+          - if Listings::Category.exists?
+            = link_to categories_path, class: "text-decoration-none text-muted small" do
+              %i.bi.bi-grid.me-1
+              Categories
           - footer_pages.each do |page|
             = link_to page_path(page), class: "text-decoration-none text-muted small" do
               - if page.icon.present?

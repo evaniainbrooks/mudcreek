@@ -16,17 +16,19 @@
               - if @search
                 = link_to listings_path(tab: @tab, category_id: @category_hashid), class: "btn btn-outline-secondary btn-sm", aria: { label: "Clear search" } do
                   %i.bi.bi-x-lg
-          .col-auto
-            = f.select :tab, [["On Sale", "on_sale"], ["Sold", "sold"]],
-              { selected: @tab },
-              class: "form-select form-select-sm",
-              onchange: "this.form.requestSubmit()"
+          - if Current.tenant.features.sold_listings?
+            .col-auto
+              = f.select :tab, [["On Sale", "on_sale"], ["Sold", "sold"]],
+                { selected: @tab },
+                class: "form-select form-select-sm",
+                onchange: "this.form.requestSubmit()"
           .w-100.d-sm-none
-          .col
-            = f.select :category_id, @categories.map { [it.name, it.hashid] },
-              { include_blank: "All Categories", selected: @category_hashid },
-              class: "form-select form-select-sm",
-              onchange: "this.form.requestSubmit()"
+          - if categories_exist?
+            .col
+              = f.select :category_id, @categories.map { [it.name, it.hashid] },
+                { include_blank: "All Categories", selected: @category_hashid },
+                class: "form-select form-select-sm",
+                onchange: "this.form.requestSubmit()"
           .col-auto
             %select.form-select.form-select-sm{ data: { "view-toggle-target": "select", action: "change->view-toggle#change" } }
               %option{ value: "list" } List View

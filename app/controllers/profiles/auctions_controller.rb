@@ -1,4 +1,5 @@
 class Profiles::AuctionsController < Profiles::BaseController
+  include AuctionFeatureGated
   REGISTRATIONS_PER_PAGE = 20
 
   def show

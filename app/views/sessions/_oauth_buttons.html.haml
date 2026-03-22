@@ -1,4 +1,4 @@
-- if oauth_provider_configured?(:google) || oauth_provider_configured?(:facebook) || oauth_provider_configured?(:apple)
+- if Current.tenant.features.oauth_login? && (oauth_provider_configured?(:google) || oauth_provider_configured?(:facebook) || oauth_provider_configured?(:apple))
   .d-flex.align-items-center.my-4
     %hr.flex-grow-1.m-0
     %span.px-3.text-muted.small.text-nowrap or

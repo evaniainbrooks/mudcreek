@@ -61,12 +61,18 @@ module ApplicationHelper
     OpenSSL::HMAC.hexdigest("SHA256", Rails.application.secret_key_base[0, 32], "bid:#{id}")
   end
 
+  def categories_exist?
+    @categories_exist ||= Listings::Category.exists?
+  end
+
   def browse_tabs(active:)
-    tabs = [
-      { key: :auctions,   label: "Auctions",   icon: "bi-hammer", path: auctions_path },
-      { key: :listings,   label: "Listings",   icon: "bi-tag",    path: listings_path },
-      { key: :categories, label: "Categories", icon: "bi-grid",   path: categories_path }
-    ]
+    has_auctions   = Current.tenant.features.auctions?
+    has_categories = categories_exist?
+    tabs = []
+    tabs << { key: :auctions,   label: "Auctions",   icon: "bi-hammer", path: auctions_path }   if has_auctions
+    tabs << { key: :listings,   label: "Listings",   icon: "bi-tag",    path: listings_path }   if has_auctions || has_categories
+    tabs << { key: :categories, label: "Categories", icon: "bi-grid",   path: categories_path } if has_categories
+    return if tabs.empty?
     content_tag(:ul, class: "nav nav-tabs px-4 pt-3 flex-nowrap overflow-x-auto overflow-y-hidden") do
       safe_join(tabs.map do |tab|
         content_tag(:li, class: "nav-item") do

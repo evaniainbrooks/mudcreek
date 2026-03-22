@@ -1,4 +1,5 @@
 class ProxyBidsController < ApplicationController
+  include AuctionFeatureGated
   before_action :require_authentication
 
   def create

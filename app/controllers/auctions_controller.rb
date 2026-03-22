@@ -1,4 +1,5 @@
 class AuctionsController < ApplicationController
+  include AuctionFeatureGated
   allow_unauthenticated_access
 
   def index

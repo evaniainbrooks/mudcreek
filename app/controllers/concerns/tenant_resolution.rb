@@ -4,7 +4,7 @@ module TenantResolution
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_current_tenant
+    prepend_before_action :set_current_tenant
   end
 
   private
