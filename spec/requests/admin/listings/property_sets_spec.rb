@@ -105,7 +105,7 @@ RSpec.describe "Admin::Listings::PropertySets", type: :request do
       get listing_fields_admin_listings_property_set_path(property_set)
 
       json = JSON.parse(response.body)
-      expect(json).to include("name" => "Color", "value" => "Red")
+      expect(json).to include(include("name" => "Color", "value" => "Red"))
     end
 
     context "when unauthenticated" do
