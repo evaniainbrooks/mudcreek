@@ -21,10 +21,11 @@
     = link_to profile_listings_path, class: "nav-link #{'active' if request.path == profile_listings_path}" do
       %i.bi.bi-tag.me-2
       Listings
-  %li.nav-item
-    = link_to profile_watchlist_path, class: "nav-link #{'active' if request.path == profile_watchlist_path}" do
-      %i.bi.bi-bookmark.me-2
-      Watchlist
+  - if Current.tenant.features.watchlist?
+    %li.nav-item
+      = link_to profile_watchlist_path, class: "nav-link #{'active' if request.path == profile_watchlist_path}" do
+        %i.bi.bi-bookmark.me-2
+        Watchlist
   %li.nav-item
     = link_to profile_payment_methods_page_path,
       class: "nav-link #{'active' if request.path == profile_payment_methods_page_path}" do

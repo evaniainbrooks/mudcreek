@@ -1,4 +1,6 @@
 class Profiles::WatchlistItemsController < Profiles::BaseController
+  before_action { redirect_to root_path unless Current.tenant.features.watchlist? }
+
   def show
     @categories = Listings::Category.order(:name)
     @search = params[:search].presence

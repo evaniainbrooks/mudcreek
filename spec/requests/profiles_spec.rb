@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Profiles", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true, features: { auctions: true })
   end
 
   let(:user) { create(:user) }

@@ -1,4 +1,5 @@
 class AuctionRegistration < ApplicationRecord
+  include MultiTenant
   include NativeEnum
 
   belongs_to :auction

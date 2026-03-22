@@ -63,7 +63,7 @@ module Admin::AuctionRegistrationsHelper
   private
 
   def add_auction_registration_columns(table)
-    table.with_column("Auction") { |r| link_to(r.auction.name, admin_auction_path(r.auction)) }
+    table.with_column("Auction") { |r| r.auction ? link_to(r.auction.name, admin_auction_path(r.auction)) : content_tag(:span, "—", class: "text-muted") }
     table.with_value_column("User") { it.user }
     table.with_column("State") { |r| auction_registration_state_inline_cell(r) }
     table.with_column("Notes") { |r| auction_registration_notes_inline_cell(r) }

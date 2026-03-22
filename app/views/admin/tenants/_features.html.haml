@@ -1,0 +1,26 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-toggles.me-2
+    Features
+  .card-body.p-4
+    = form.fields_for :features do |ff|
+      .mb-3
+        .form-check
+          = ff.check_box :auctions, class: "form-check-input"
+          = ff.label :auctions, "Auctions", class: "form-check-label"
+          .form-text Enable auction listings, bidding, and registration.
+      .mb-3
+        .form-check
+          = ff.check_box :watchlist, class: "form-check-input"
+          = ff.label :watchlist, "Watchlist", class: "form-check-label"
+          .form-text Allow users to save listings to a personal watchlist.
+      .mb-3
+        .form-check
+          = ff.check_box :sold_listings, class: "form-check-input"
+          = ff.label :sold_listings, "Sold Listings", class: "form-check-label"
+          .form-text Show a Sold tab on the public listings page.
+      .mb-0
+        .form-check
+          = ff.check_box :oauth_login, class: "form-check-input"
+          = ff.label :oauth_login, "OAuth Login", class: "form-check-label"
+          .form-text Enable sign-in with third-party OAuth providers.

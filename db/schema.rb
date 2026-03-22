@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_153100) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -103,9 +103,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_153100) do
     t.bigint "auction_id", null: false
     t.datetime "created_at", null: false
     t.string "state", default: "pending", null: false
+    t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["auction_id", "user_id"], name: "index_auction_registrations_on_auction_id_and_user_id", unique: true
+    t.index ["tenant_id"], name: "index_auction_registrations_on_tenant_id"
     t.index ["user_id"], name: "index_auction_registrations_on_user_id"
   end
 

@@ -8,7 +8,7 @@ RSpec.describe TenantResolution, type: :request do
     before { host! "example.com" }
 
     context "when a default tenant exists" do
-      before { Tenant.create!(name: "Default", key: "default", default: true) }
+      before { Tenant.create!(name: "Default", key: "default", default: true, features: { auctions: true }) }
 
       it "resolves the tenant and returns 200" do
         get auctions_path
@@ -30,7 +30,7 @@ RSpec.describe TenantResolution, type: :request do
     before { host! "acme.example.com" }
 
     context "when a tenant with a matching key exists" do
-      before { Tenant.create!(name: "Acme", key: "acme", default: false) }
+      before { Tenant.create!(name: "Acme", key: "acme", default: false, features: { auctions: true }) }
 
       it "resolves the tenant and returns 200" do
         get auctions_path

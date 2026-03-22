@@ -1,4 +1,6 @@
 class CartDiscountsController < ApplicationController
+  allow_unauthenticated_access
+
   def create
     code = DiscountCode.find_by(key: params[:discount_code]&.upcase&.strip)
 

@@ -27,7 +27,7 @@
           class: "btn btn-outline-secondary btn-sm", data: { transition: "forward" } do
         Next listing
         %i.bi.bi-arrow-right.ms-1
-    - if Current.user
+    - if Current.user && Current.tenant.features.watchlist?
       = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
     %button.btn.btn-outline-secondary.btn-sm{type: "button",
         data: { "bs-toggle": "modal", "bs-target": "#share-modal" }}

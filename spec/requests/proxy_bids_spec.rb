@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "ProxyBids", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true, features: { auctions: true })
   end
 
   let(:user)    { create(:user) }
@@ -191,7 +191,7 @@ end
 RSpec.describe "Manual bids trigger proxy counter-bids", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true)
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true, features: { auctions: true })
   end
 
   let(:proxy_holder) { create(:user) }

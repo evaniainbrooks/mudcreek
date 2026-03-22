@@ -101,11 +101,12 @@
           .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
             %i.bi.bi-hammer{ style: "font-size: 1.25rem" }
             %span.small.fw-semibold My Bids
-        = link_to auction_path(auction, filter: "watchlist"),
-            class: "btn btn-outline-secondary py-2 #{'active' if filter == 'watchlist'}", style: "flex: 1 0 0%" do
-          .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
-            %i.bi.bi-bookmark{ style: "font-size: 1.25rem" }
-            %span.small.fw-semibold Watchlist
+        - if Current.tenant.features.watchlist?
+          = link_to auction_path(auction, filter: "watchlist"),
+              class: "btn btn-outline-secondary py-2 #{'active' if filter == 'watchlist'}", style: "flex: 1 0 0%" do
+            .d-flex.flex-column.align-items-center.justify-content-center.gap-1.h-100
+              %i.bi.bi-bookmark{ style: "font-size: 1.25rem" }
+              %span.small.fw-semibold Watchlist
     = render "auctions/bid_increment_schedule", schedule: auction.effective_bid_increment_schedule
     - if auction.terms_and_conditions.attached?
       %hr.my-4
