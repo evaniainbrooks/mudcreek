@@ -58,7 +58,7 @@ class Admin::QrCodesController < Admin::BaseController
     "red"       => { svg_color: "dc3545", png_color: "#dc3545", png_fill: "white" },
     "orange"    => { svg_color: "fd7e14", png_color: "#fd7e14", png_fill: "white" },
     "green"     => { svg_color: "198754", png_color: "#198754", png_fill: "white" },
-    "teal"      => { svg_color: "20c997", png_color: "#20c997", png_fill: "white" },
+    "teal"      => { svg_color: "20c997", png_color: "#20c997", png_fill: "white" }
   }.freeze
 
   def qr_image

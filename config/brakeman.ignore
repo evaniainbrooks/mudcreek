@@ -41,7 +41,7 @@
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
       "file": "app/views/pages/show.html.haml",
-      "line": 9,
+      "line": 19,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
       "code": "::Haml::AttributeBuilder.build_class(true, \"bi #{Page.published.find_by!(:slug => params[:slug]).icon} me-2\")",
       "render_path": [
@@ -65,6 +65,52 @@
       "confidence": "Weak",
       "cwe_id": [
         79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "67cc148a687d6323a29da64e2a82df6ed0aa6afbc57d056b143d38537a326bcb",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/qr_redirects_controller.rb",
+      "line": 11,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to((QrCode.find_by!(:slug => params[:slug]).fallback_url or root_path), :allow_other_host => true, :status => :found)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "QrRedirectsController",
+        "method": "show"
+      },
+      "user_input": "QrCode.find_by!(:slug => params[:slug]).fallback_url",
+      "confidence": "Weak",
+      "cwe_id": [
+        601
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "79119f121d432013cbe9bad8c07774eb079ea038abf36e6af425367c7f6b4a23",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/qr_redirects_controller.rb",
+      "line": 9,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(QrCode.find_by!(:slug => params[:slug]).destination_url, :allow_other_host => true, :status => :found)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "QrRedirectsController",
+        "method": "show"
+      },
+      "user_input": "QrCode.find_by!(:slug => params[:slug]).destination_url",
+      "confidence": "Weak",
+      "cwe_id": [
+        601
       ],
       "note": ""
     }
