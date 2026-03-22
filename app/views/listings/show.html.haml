@@ -118,7 +118,8 @@
         - if (lot = @listing.lot)&.show_attribution?
           - other_count = lot.listings.where(published: true).where.not(id: @listing.id).count
           %hr.mt-4.mb-3
-          = link_to listings_path(lot_id: lot.hashid), class: "d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 lot-attribution-btn" do
+          = link_to listings_path(lot_id: lot.hashid),
+              class: "d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 lot-attribution-btn" do
             .rounded-circle.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 48px; height: 48px" }
               %i.bi.bi-person-fill.text-secondary{ style: "font-size: 1.5rem" }
             .flex-grow-1
@@ -126,7 +127,7 @@
               .text-muted.small= lot.owner.name
             .d-flex.align-items-center.gap-1.flex-shrink-0
               - if other_count > 0
-                %span.small.text-muted= "See #{other_count} other #{"item".pluralize(other_count)} from this seller"
+                %span.small.text-muted See #{other_count} other #{"item".pluralize(other_count)} from this seller
               %i.bi.bi-chevron-right.text-muted
 
   = render("listings/properties", listing: @listing)

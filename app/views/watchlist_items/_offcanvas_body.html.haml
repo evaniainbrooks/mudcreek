@@ -6,7 +6,7 @@
   .px-3.pt-3
     - watchlist_items.each do |item|
       .d-flex.align-items-center.gap-3.mb-3
-        = link_to listing_path(item.listing) do
+        = link_to public_listing_path(item.listing) do
           - if item.listing.images.attached?
             = image_tag item.listing.images.first,
                 class: "rounded-2 object-fit-cover flex-shrink-0",
@@ -15,7 +15,7 @@
             .rounded-2.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 52px; height: 52px" }
               %i.bi.bi-image.text-secondary
         .flex-grow-1.lh-sm.overflow-hidden
-          = link_to item.listing.name, listing_path(item.listing),
+          = link_to item.listing.name, public_listing_path(item.listing),
               class: "fw-semibold small text-truncate d-block text-decoration-none text-body"
           .text-muted.small= humanized_money_with_symbol(item.listing.price)
         = button_to watchlist_item_path(item), method: :delete,
