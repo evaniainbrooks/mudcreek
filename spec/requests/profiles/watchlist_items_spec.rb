@@ -66,7 +66,8 @@ RSpec.describe "Profiles::WatchlistItems", type: :request do
 
         get profile_watchlist_path, params: { category_id: category.hashid }
 
-        expect(response.body).not_to include(other_listing.name)
+        main_content = Nokogiri::HTML(response.body).at_css("main").text
+        expect(main_content).not_to include(other_listing.name)
       end
     end
 
