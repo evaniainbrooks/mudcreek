@@ -7,6 +7,7 @@ class Listings::Variant < ApplicationRecord
            foreign_key: :variant_id, dependent: :destroy
   has_many :option_values, through: :variant_option_values,
            class_name: "Listings::OptionValue", source: :option_value
+  has_many :cart_items, dependent: :nullify
 
   monetize :price_cents, allow_nil: true, with_model_currency: :currency
 

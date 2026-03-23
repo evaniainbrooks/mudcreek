@@ -1,3 +1,2 @@
-BOOTSTRAP_ICON_NAMES = JSON.parse(
-  File.read(Rails.root.join("node_modules/bootstrap-icons/font/bootstrap-icons.json"))
-).keys.freeze
+icons_json = Rails.root.join("node_modules/bootstrap-icons/font/bootstrap-icons.json")
+BOOTSTRAP_ICON_NAMES = icons_json.exist? ? JSON.parse(icons_json.read).keys.freeze : [].freeze

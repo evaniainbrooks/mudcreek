@@ -3,4 +3,6 @@ class Listings::VariantOptionValue < ApplicationRecord
 
   belongs_to :variant,      class_name: "Listings::Variant"
   belongs_to :option_value, class_name: "Listings::OptionValue"
+
+  validates :option_value_id, uniqueness: { scope: :variant_id }
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_23_021128) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_23_023414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -384,7 +384,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_23_021128) do
     t.bigint "variant_id", null: false
     t.index ["option_value_id"], name: "index_listings_variant_option_values_on_option_value_id"
     t.index ["variant_id", "option_value_id"], name: "idx_on_variant_id_option_value_id_7c0293e78f", unique: true
-    t.index ["variant_id"], name: "index_listings_variant_option_values_on_variant_id"
   end
 
   create_table "listings_variants", force: :cascade do |t|
@@ -903,7 +902,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_23_021128) do
   add_foreign_key "listings_delivery_method_sets", "tenants"
   add_foreign_key "listings_option_values", "listings_options", column: "option_id"
   add_foreign_key "listings_options", "listings"
-  add_foreign_key "listings_options", "tenants"
+  add_foreign_key "listings_options", "tenants", on_delete: :cascade
   add_foreign_key "listings_properties", "listings"
   add_foreign_key "listings_properties", "listings_property_sets", column: "property_set_id"
   add_foreign_key "listings_properties", "tenants", on_delete: :cascade
@@ -913,7 +912,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_23_021128) do
   add_foreign_key "listings_variant_option_values", "listings_option_values", column: "option_value_id"
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"
-  add_foreign_key "listings_variants", "tenants"
+  add_foreign_key "listings_variants", "tenants", on_delete: :cascade
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
   add_foreign_key "oauth_identities", "tenants"
@@ -933,7 +932,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_23_021128) do
   add_foreign_key "proxy_bids", "auction_listings"
   add_foreign_key "proxy_bids", "auction_registrations"
   add_foreign_key "qr_codes", "tenants"
-  add_foreign_key "qr_codes", "users", column: "owner_id"
+  add_foreign_key "qr_codes", "users", column: "owner_id", on_delete: :nullify
   add_foreign_key "qr_scans", "qr_codes"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"

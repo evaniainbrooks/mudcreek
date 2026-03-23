@@ -36,21 +36,23 @@ Offer:
       enabled: false
 
 CartItem:
+  # Partial indexes (WHERE clause) — database_consistency cannot correlate these
+  # with conditional validators, but both the DB constraint and model validation are in place.
   index_cart_items_on_invoice_item_id_unique:
     UniqueIndexChecker:
       enabled: false
-  index_cart_items_unique_user_listing:
+  index_cart_items_unique_user_listing_variant:
     UniqueIndexChecker:
       enabled: false
-  index_cart_items_unique_guest_listing:
+  index_cart_items_unique_guest_listing_variant:
     UniqueIndexChecker:
       enabled: false
   invoice_item_id:
     MissingUniqueIndexChecker:
       enabled: false
-  listing_id+user_id:
+  listing_id+user_id+variant_id:
     MissingUniqueIndexChecker:
       enabled: false
-  listing_id+guest_cart_token:
+  listing_id+guest_cart_token+variant_id:
     MissingUniqueIndexChecker:
       enabled: false
