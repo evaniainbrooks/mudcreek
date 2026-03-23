@@ -12,9 +12,9 @@
           .alert.alert-danger.mb-3
             = @property.errors.full_messages.to_sentence
         .row.g-3
-          .col-sm-2
+          .col-sm-auto
             = f.label :icon, class: "form-label form-label-sm"
-            = f.text_field :icon, class: "form-control form-control-sm", placeholder: "bi-gear"
+            = render(IconPickerComponent.new(form: f, field: :icon))
           .col-sm-4
             = f.label :name, class: "form-label form-label-sm required"
             = f.text_field :name, class: "form-control form-control-sm #{'is-invalid' if @property.errors[:name].any?}",

@@ -31,17 +31,9 @@
             %small.text-muted Lowercase letters, numbers, and hyphens only (e.g. about-us)
           .mb-3
             = f.label :icon, class: "form-label"
-            = f.text_field :icon,
-                class: "form-control #{'is-invalid' if page.errors[:icon].any?}",
-                placeholder: "e.g. bi-info-circle"
-            - if page.icon.present?
-              %small.text-muted
-                Preview:
-                %i{ class: "bi #{page.icon} ms-1" }
-            - else
-              %small.text-muted Bootstrap Icons class name (optional, e.g. bi-info-circle)
+            = render(IconPickerComponent.new(form: f, field: :icon))
             - if page.errors[:icon].any?
-              .invalid-feedback= page.errors[:icon].to_sentence
+              .invalid-feedback.d-block= page.errors[:icon].to_sentence
           .mb-0
             = f.label :body, class: "form-label"
             = f.rich_text_area :body, class: "form-control #{'is-invalid' if page.errors[:body].any?}"

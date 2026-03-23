@@ -10,13 +10,8 @@
     = account_form.text_field :slug,
         class: "form-control form-control-sm",
         placeholder: "username"
-  .input-group.input-group-sm{ style: "width: 180px; flex-shrink: 0" }
-    %span.input-group-text
-      %i{ class: account_form.object.icon.presence || "bi-share" }
-    = account_form.text_field :icon,
-        class: "form-control form-control-sm",
-        placeholder: "bi-facebook",
-        data: { "social-media-account-target": "iconField" }
+  = render(IconPickerComponent.new(form: account_form, field: :icon,
+      data: { "social-media-account-target": "iconField" }))
   .form-check.ms-1
     = account_form.check_box :_destroy, class: "form-check-input"
     = account_form.label :_destroy, "Remove", class: "form-check-label small text-danger"

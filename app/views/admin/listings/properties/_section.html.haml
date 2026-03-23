@@ -10,18 +10,20 @@
             options_for_select([[ "— Apply a property set —", "" ]] + property_sets.map { |ps| [ps.name, ps.id] }),
             class: "form-select form-select-sm",
             data: { action: "change->listing-property#applyPropertySet" }
-    .d-flex.gap-2.mb-1
-      %small.text-muted{ style: "width: 110px; flex-shrink: 0" } Icon
-      %small.text-muted.flex-grow-1 Name
-      %small.text-muted.flex-grow-1 Value
-    .properties-container{ data: { listing_property_target: "propertiesContainer" } }
-      = form.fields_for :properties do |f|
-        = render "admin/listings/properties/fields", property_form: f
-    .mt-2
-      %button.btn.btn-sm.btn-outline-secondary{type: "button",
-          data: { action: "listing-property#addRow" }}
-        %i.bi.bi-plus-lg.me-1
-        Add Property
+    %table.table.table-sm.mb-2
+      %thead
+        %tr
+          %th Icon
+          %th Name
+          %th Value
+          %th
+      %tbody{ data: { listing_property_target: "propertiesContainer" } }
+        = form.fields_for :properties do |f|
+          = render "admin/listings/properties/fields", property_form: f
+    %button.btn.btn-sm.btn-outline-secondary{type: "button",
+        data: { action: "listing-property#addRow" }}
+      %i.bi.bi-plus-lg.me-1
+      Add Property
   %template{ data: { listing_property_target: "rowTemplate" } }
     = form.fields_for :properties, Listings::Property.new, child_index: "new_property" do |f|
       = render "admin/listings/properties/fields", property_form: f

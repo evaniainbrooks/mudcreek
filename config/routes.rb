@@ -59,7 +59,8 @@ resource :session
   resources :subdivisions, only: [ :index ]
   resources :pages, only: [ :show ], param: :slug
 
-  get "/q/:slug", to: "qr_redirects#show", as: :qr_redirect
+  get "/q/:slug",       to: "qr_redirects#show",  as: :qr_redirect
+  get "/qr/:slug/image", to: "qr_codes#qr_image", as: :qr_code_image
 
   namespace :admin do
     root to: "dashboard#index"

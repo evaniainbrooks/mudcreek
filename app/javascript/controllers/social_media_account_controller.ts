@@ -35,6 +35,7 @@ export default class SocialMediaAccountController extends Controller {
     const iconField = row.querySelector<HTMLInputElement>("[data-social-media-account-target='iconField']")
     if (iconField && !iconField.value && platform) {
       iconField.value = PLATFORM_ICONS[platform] ?? ""
+      iconField.dispatchEvent(new Event("change", { bubbles: true }))
     }
   }
 }

@@ -250,10 +250,62 @@ RSpec.describe "Orders", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "redirects to the cart" do
+      it "redirects to the cart when the cart is empty" do
         post orders_path
 
         expect(response).to redirect_to(cart_path)
+      end
+
+      context "with a guest cart item but no contact information" do
+        before { post cart_items_path, params: { listing_id: listing.id } }
+
+        it "redirects to the cart with an alert" do
+          post orders_path
+
+          expect(response).to redirect_to(cart_path)
+          follow_redirect!
+          expect(response.body).to include("Please provide your contact information.")
+        end
+
+        it "does not create an order" do
+          expect { post orders_path }.not_to change { Order.count }
+        end
+      end
+
+      context "with a guest cart item and contact information" do
+        before do
+          post cart_items_path, params: { listing_id: listing.id }
+          post cart_guest_info_path, params: { guest_info: { email: "guest@example.com", name: "Guest User" } }
+        end
+
+        it "creates an order" do
+          expect { post orders_path }.to change { Order.count }.by(1)
+        end
+
+        it "redirects to the order show page" do
+          post orders_path
+
+          expect(response).to redirect_to(order_path(Order.last))
+        end
+
+        it "sets the guest_order_token in the session" do
+          post orders_path
+
+          expect(session[:guest_order_token]).to be_present
+        end
+
+        it "clears the cart items" do
+          token = session[:guest_cart_token]
+          post orders_path
+
+          expect(CartItem.where(guest_cart_token: token)).to be_empty
+        end
+
+        it "stores the guest email on the order" do
+          post orders_path
+
+          expect(Order.last.guest_email).to eq("guest@example.com")
+        end
       end
     end
   end
@@ -348,7 +400,45 @@ RSpec.describe "Orders", type: :request do
     context "when unauthenticated" do
       before { delete session_path }
 
-      it "returns not found" do
+      context "with the guest token in params" do
+        let!(:guest_order) { create(:order, user: nil, guest_token: "secret-token-abc", guest_email: "g@example.com", guest_name: "Guest") }
+
+        it "returns 200" do
+          get order_path(guest_order), params: { token: "secret-token-abc" }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "with the guest token in session" do
+        let!(:guest_order) { create(:order, user: nil, guest_token: "session-tok-xyz", guest_email: "g@example.com", guest_name: "Guest") }
+
+        before do
+          # Place a real guest order so the token lands in session
+          listing_for_guest = create(:listing)
+          post cart_items_path, params: { listing_id: listing_for_guest.id }
+          post cart_guest_info_path, params: { guest_info: { email: "g@example.com", name: "Guest" } }
+          post orders_path
+          # session[:guest_order_token] is now set
+        end
+
+        it "returns 200 for the just-placed order" do
+          get order_path(Order.where(user: nil).last)
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "with no token" do
+        it "returns not found for a guest order" do
+          guest_order = create(:order, user: nil, guest_token: "tok", guest_email: "g@example.com", guest_name: "Guest")
+          get order_path(guest_order)
+
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      it "returns not found for an authenticated user's order" do
         get order_path(order)
 
         expect(response).to have_http_status(:not_found)

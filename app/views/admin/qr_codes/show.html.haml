@@ -68,14 +68,16 @@
                     %dd.col-sm-8= @qr_code.notes
 
           .col-lg-6
+            - image_base = @qr_code.live? ? qr_code_image_path(@qr_code.slug) : qr_image_admin_qr_code_path(@qr_code)
+            - preview_src = @qr_code.live? ? qr_code_image_path(@qr_code.slug, format: :svg, size: "md", style: "standard") : qr_image_admin_qr_code_path(@qr_code, format: :svg, size: "md", style: "standard")
             .card.shadow-sm.border-0.mb-4{
                 data: { controller: "qr-image",
-                        "qr-image-base-url-value": qr_image_admin_qr_code_path(@qr_code) }}
+                        "qr-image-base-url-value": image_base }}
               .card-header.fw-semibold
                 %i.bi.bi-qr-code.me-1
                 QR Image
               .card-body.text-center
-                = image_tag qr_image_admin_qr_code_path(@qr_code, format: :svg, size: "md", style: "standard"),
+                = image_tag preview_src,
                     alt: @qr_code.name, style: "width: 200px; height: 200px;",
                     data: { "qr-image-target": "preview" }
 

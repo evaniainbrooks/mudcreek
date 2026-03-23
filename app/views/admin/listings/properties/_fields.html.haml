@@ -1,15 +1,16 @@
-.d-flex.align-items-center.gap-2.mb-2
-  = property_form.hidden_field :position
-  = property_form.text_field :icon,
-      class: "form-control form-control-sm",
-      placeholder: "bi-gear",
-      style: "width: 110px; flex-shrink: 0"
-  = property_form.text_field :name,
-      class: "form-control form-control-sm flex-grow-1",
-      placeholder: "e.g. Manufacturer"
-  = property_form.text_field :value,
-      class: "form-control form-control-sm flex-grow-1",
-      placeholder: "e.g. John Deere"
-  .form-check.ms-1
-    = property_form.check_box :_destroy, class: "form-check-input"
-    = property_form.label :_destroy, "Remove", class: "form-check-label small text-danger"
+%tr
+  %td
+    = property_form.hidden_field :position
+    = render(IconPickerComponent.new(form: property_form, field: :icon))
+  %td
+    = property_form.text_field :name,
+        class: "form-control form-control-sm",
+        placeholder: "e.g. Manufacturer"
+  %td
+    = property_form.text_field :value,
+        class: "form-control form-control-sm",
+        placeholder: "e.g. John Deere"
+  %td.text-nowrap
+    .form-check
+      = property_form.check_box :_destroy, class: "form-check-input"
+      = property_form.label :_destroy, "Remove", class: "form-check-label small text-danger"
