@@ -1,0 +1,17 @@
+%fieldset.card.shadow-sm.border-0{ data: { controller: "listing-options" } }
+  %legend.card-header.fw-semibold
+    %i.bi.bi-sliders.me-2
+    Options
+  .card-body.p-4
+    %p.text-muted.small.mb-3
+      Define the axes buyers choose from (e.g. "Size", "Color"). Add values for each option below.
+    .mb-2{ data: { "listing-options-target": "optionsContainer" } }
+      = form.fields_for :options do |option_form|
+        = render "admin/listings/options/option_fields", option_form: option_form
+    %button.btn.btn-sm.btn-outline-secondary{ type: "button",
+        data: { action: "listing-options#addOption" } }
+      %i.bi.bi-plus-lg.me-1
+      Add Option
+  %template{ data: { "listing-options-target": "optionTemplate" } }
+    = form.fields_for :options, Listings::Option.new, child_index: "new_option" do |option_form|
+      = render "admin/listings/options/option_fields", option_form: option_form

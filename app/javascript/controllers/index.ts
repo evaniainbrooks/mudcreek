@@ -23,6 +23,7 @@ import SortableController from "./sortable_controller"
 import SquarePaymentController from "./square_payment_controller"
 import ViewToggleController from "./view_toggle_controller"
 import IconPickerController from "./icon_picker_controller"
+import ListingOptionsController from "./listing_options_controller"
 import QrImageController from "./qr_image_controller"
 
 application.register("add-card", AddCardController)
@@ -49,4 +50,5 @@ application.register("sortable", SortableController)
 application.register("square-payment", SquarePaymentController)
 application.register("view-toggle", ViewToggleController)
 application.register("icon-picker", IconPickerController)
+application.register("listing-options", ListingOptionsController)
 application.register("qr-image", QrImageController)

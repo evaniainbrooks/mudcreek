@@ -1,5 +1,6 @@
 class AuctionListing < ApplicationRecord
   include HasHashid
+  include AuctionListingScopes
 
   belongs_to :auction
   belongs_to :listing

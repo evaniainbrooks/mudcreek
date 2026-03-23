@@ -28,6 +28,9 @@ class Listing < ApplicationRecord
   has_many :auction_listings, dependent: :destroy
   has_one :auction_listing
 
+  has_many :options,  class_name: "Listings::Option",  dependent: :destroy
+  has_many :variants, class_name: "Listings::Variant", dependent: :destroy
+
   has_many :watchlist_items, dependent: :destroy
 
   has_rich_text :description
@@ -71,6 +74,12 @@ class Listing < ApplicationRecord
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :properties, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :options, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :variants, allow_destroy: true
+
+  def has_variants?
+    variants.loaded? ? variants.any? : variants.exists?
+  end
 
   def effective_address
     return address if address&.any?

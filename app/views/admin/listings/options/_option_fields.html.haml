@@ -1,0 +1,22 @@
+.border.rounded.p-3.mb-2{ data: { "listing-options-target": "optionRow" } }
+  = option_form.hidden_field :position
+  = option_form.hidden_field :_destroy, value: "0", data: { "listing-options-target": "destroyField" }
+  .d-flex.align-items-center.gap-2.mb-2
+    = option_form.text_field :name,
+        class: "form-control form-control-sm flex-grow-1",
+        placeholder: "Option name (e.g. Size, Color)"
+    %button.btn.btn-sm.btn-outline-danger{ type: "button",
+        data: { action: "listing-options#removeOption" } }
+      %i.bi.bi-trash
+  .ps-2
+    %p.small.text-muted.mb-1 Values
+    .mb-1{ data: { "listing-options-target": "valuesContainer" } }
+      = option_form.fields_for :option_values do |value_form|
+        = render "admin/listings/options/value_fields", value_form: value_form
+    %button.btn.btn-sm.btn-outline-secondary{ type: "button",
+        data: { action: "listing-options#addValue" } }
+      %i.bi.bi-plus-lg.me-1
+      Add Value
+  %template{ data: { "listing-options-target": "valueTemplate" } }
+    = option_form.fields_for :option_values, Listings::OptionValue.new, child_index: "new_value" do |value_form|
+      = render "admin/listings/options/value_fields", value_form: value_form

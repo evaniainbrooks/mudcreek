@@ -94,8 +94,16 @@
               - else
                 = form_with url: cart_items_path, method: :post, class: "mb-3" do |f|
                   = f.hidden_field :listing_id, value: @listing.id
+                  - if Current.tenant.features.listing_variants? && @listing.has_variants?
+                    - @listing.options.order(:position).each do |option|
+                      .mb-2
+                        = label_tag "option_values[#{option.id}]", option.name,
+                            class: "form-label fw-semibold small"
+                        = select_tag "option_values[#{option.id}]",
+                            options_for_select(option.option_values.order(:position).map { |v| [v.value, v.id] }),
+                            class: "form-select form-select-sm"
                   .d-flex.gap-2
-                    - if @listing.quantity > 1
+                    - if @listing.quantity > 1 && !(@listing.has_variants? && Current.tenant.features.listing_variants?)
                       = f.number_field :quantity, value: 1, min: 1,
                           max: @listing.quantity, class: "form-control", style: "width: 80px"
                     = f.button class: "btn btn-primary flex-grow-1" do

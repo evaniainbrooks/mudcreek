@@ -4,10 +4,11 @@ class CartItem < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :listing
   belongs_to :invoice_item, optional: true
+  belongs_to :variant, class_name: "Listings::Variant", optional: true
   has_one :rental_booking, dependent: :nullify, autosave: true
 
-  validates :listing_id, uniqueness: { scope: :user_id, conditions: -> { where("user_id IS NOT NULL AND rental_start_at IS NULL").where("invoice_item_id IS NULL") } }
-  validates :listing_id, uniqueness: { scope: :guest_cart_token, conditions: -> { where.not(guest_cart_token: nil).where(rental_start_at: nil) } }
+  validates :listing_id, uniqueness: { scope: [:user_id, :variant_id], conditions: -> { where("user_id IS NOT NULL AND rental_start_at IS NULL").where("invoice_item_id IS NULL") } }
+  validates :listing_id, uniqueness: { scope: [:guest_cart_token, :variant_id], conditions: -> { where.not(guest_cart_token: nil).where(rental_start_at: nil) } }
   validates :invoice_item_id, uniqueness: true, allow_nil: true
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validate :user_or_guest_token_present
@@ -25,6 +26,8 @@ class CartItem < ApplicationRecord
       Money.new(invoice_item.amount_cents)
     elsif rental?
       Money.new(rental_price_cents.to_i)
+    elsif variant&.price_cents
+      Money.new(variant.price_cents)
     else
       Money.new(listing.price_cents)
     end

@@ -1,6 +1,7 @@
 class Auction < ApplicationRecord
   include MultiTenant
   include HasHashid
+  include AuctionScopes
 
   has_one :address, as: :addressable, dependent: :destroy
   accepts_nested_attributes_for :address, allow_destroy: true, update_only: true

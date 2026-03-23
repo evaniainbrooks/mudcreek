@@ -24,6 +24,12 @@
       .mb-4
         = render "admin/listings/properties/section", listing: listing, form: f, property_sets: property_sets
 
+      - if Current.tenant.features.listing_variants?
+        .mb-4
+          = render "admin/listings/options/section", listing: listing, form: f
+        .mb-4
+          = render "admin/listings/variants/section", listing: listing, form: f
+
       = render "admin/listings/media_fields", f: f, listing: listing
 
   .d-flex.gap-2.mt-4

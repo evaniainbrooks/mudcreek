@@ -4,5 +4,6 @@ class Tenant::Features
   attribute :auctions,      :boolean, default: false
   attribute :oauth_login,   :boolean, default: false
   attribute :sold_listings, :boolean, default: false
-  attribute :watchlist,     :boolean, default: false
+  attribute :watchlist,         :boolean, default: false
+  attribute :listing_variants,  :boolean, default: false
 end

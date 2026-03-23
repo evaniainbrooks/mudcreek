@@ -1,0 +1,27 @@
+%fieldset.card.shadow-sm.border-0
+  %legend.card-header.fw-semibold
+    %i.bi.bi-grid-3x3-gap.me-2
+    Variants
+  .card-body.p-4
+    - if listing.variants.any?
+      .table-responsive
+        %table.table.table-sm.align-middle
+          %thead.thead-secondary
+            %tr
+              %th Combination
+              %th.text-end{ style: "width: 120px" } Qty
+              %th.text-end{ style: "width: 150px" } Price Override
+              %th{ style: "width: 140px" } SKU
+              %th
+          %tbody
+            = form.fields_for :variants do |variant_form|
+              = render "admin/listings/variants/variant_fields",
+                  variant_form: variant_form,
+                  listing: listing
+    - else
+      .text-muted.small
+        No variants yet. Save options and values above to generate variants, or
+        %button.btn.btn-sm.btn-outline-secondary.ms-1{ type: "button",
+            data: { action: "listing-variants#generate" } }
+          %i.bi.bi-magic.me-1
+          Generate from Options

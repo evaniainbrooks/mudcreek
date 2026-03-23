@@ -113,7 +113,10 @@ class Admin::ListingsController < Admin::BaseController
     p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [],
       rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],
       properties_attributes: [:id, :name, :value, :icon, :position, :_destroy],
-      address_attributes: [:id, :street_address, :city, :province, :postal_code, :country, :address_type])
+      address_attributes: [:id, :street_address, :city, :province, :postal_code, :country, :address_type],
+      options_attributes: [:id, :name, :position, :_destroy,
+        option_values_attributes: [:id, :value, :position, :_destroy]],
+      variants_attributes: [:id, :quantity, :price_cents, :sku, :_destroy])
     %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
     p
   end

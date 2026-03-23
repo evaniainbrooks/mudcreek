@@ -78,6 +78,7 @@ class OrdersController < ApplicationController
       order.order_items.build(
         listing:         item.listing,
         name:            item.listing.name,
+        variant_name:    item.variant&.display_name,
         price_cents:     item.effective_price.cents,
         listing_type:    item.listing.listing_type,
         rental_start_at: item.rental_start_at,

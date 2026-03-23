@@ -12,19 +12,14 @@ class AuctionsController < ApplicationController
     @filter_total = base.count
     scope = base.with_attached_poster.includes(:address)
 
-    scope = scope.where("auctions.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
+    scope = scope.search_name(@search) if @search
 
     if @category_hashid
       category = Listings::Category.find_by(hashid: @category_hashid)
-      scope = scope.where(id: Auction.joins(listings: :categories).where(listings_categories: { id: category.id }).select(:id)) if category
+      scope = scope.by_category(category) if category
     end
 
-    scope = case @state
-    when "live"     then scope.where("starts_at <= NOW() AND ends_at > NOW()")
-    when "upcoming" then scope.where("starts_at > NOW()")
-    when "ended"    then scope.where("ends_at < NOW()")
-    else scope
-    end
+    scope = scope.public_send(@state) if @state
 
     @registrations_by_auction_id = if Current.user
       AuctionRegistration.where(auction: scope, user: Current.user).index_by(&:auction_id)
@@ -32,14 +27,7 @@ class AuctionsController < ApplicationController
       {}
     end
 
-    @auctions = scope.order(Arel.sql(<<~SQL.squish))
-      CASE
-        WHEN starts_at <= NOW() AND ends_at > NOW() THEN 0
-        WHEN starts_at > NOW() THEN 1
-        ELSE 2
-      END,
-      starts_at ASC
-    SQL
+    @auctions = scope.by_status_order
     @filter_count = @auctions.size
   end
 
@@ -65,56 +53,22 @@ class AuctionsController < ApplicationController
     @auction_listing_count = @auction.auction_listings.count
 
     scope = @auction.auction_listings.joins(:listing)
-    scope = scope.where("listings.name ILIKE ?", "%#{ActiveRecord::Base.sanitize_sql_like(@search)}%") if @search
+    scope = scope.search_listing_name(@search) if @search
+
     case @filter
-    when "my_listings"
-      scope = scope.where(listings: { state: "sold" }).where(<<~SQL.squish, Current.user.id)
-        (
-          SELECT auction_registrations.user_id FROM bids
-          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
-          WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'
-          ORDER BY bids.amount_cents DESC, bids.created_at DESC
-          LIMIT 1
-        ) = ?
-      SQL
-    when "my_bids"
-      scope = scope.where(<<~SQL.squish, Current.user.id)
-        EXISTS (
-          SELECT 1 FROM bids
-          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
-          WHERE bids.auction_listing_id = auction_listings.id
-            AND bids.state = 'placed'
-            AND auction_registrations.user_id = ?
-        )
-      SQL
-    when "watchlist"
-      scope = scope.where(
-        listing_id: WatchlistItem.where(user: Current.user).select(:listing_id)
-      )
+    when "my_listings" then scope = scope.won_by(Current.user)
+    when "my_bids"     then scope = scope.bid_on_by(Current.user)
+    when "watchlist"   then scope = scope.on_watchlist_of(Current.user)
     else
       scope = scope.where(listings: { state: @listing_state }) if @listing_state
     end
+
     if @category_hashid
       category = Listings::Category.find_by(hashid: @category_hashid)
-      scope = scope.where(listing_id: Listing.joins(:categories).where(listings_categories: { id: category.id }).select(:id)) if category
+      scope = scope.by_category(category) if category
     end
 
-    @auction_listings = scope
-      .select(<<~SQL.squish)
-        auction_listings.*,
-        COALESCE(
-          (SELECT COUNT(*) FROM bids WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'),
-          0
-        ) as bids_count,
-        (
-          SELECT auction_registrations.user_id FROM bids
-          JOIN auction_registrations ON auction_registrations.id = bids.auction_registration_id
-          WHERE bids.auction_listing_id = auction_listings.id AND bids.state = 'placed'
-          ORDER BY bids.amount_cents DESC, bids.created_at DESC
-          LIMIT 1
-        ) as highest_bidder_id
-      SQL
-      .order(:position).to_a
+    @auction_listings = scope.with_bid_stats.order(:position).to_a
     listing_ids = @auction_listings.map(&:listing_id)
     listings_by_id = Listing
       .where(id: listing_ids)

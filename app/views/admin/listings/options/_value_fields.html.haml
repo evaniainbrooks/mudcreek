@@ -1,0 +1,9 @@
+.d-flex.align-items-center.gap-2.mb-1{ data: { "listing-options-target": "valueRow" } }
+  = value_form.hidden_field :position
+  = value_form.hidden_field :_destroy, value: "0", data: { "listing-options-target": "valueDestroyField" }
+  = value_form.text_field :value,
+      class: "form-control form-control-sm",
+      placeholder: "e.g. Small"
+  %button.btn.btn-sm.btn-outline-danger{ type: "button",
+      data: { action: "listing-options#removeValue" } }
+    %i.bi.bi-x-lg
