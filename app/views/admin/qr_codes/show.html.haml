@@ -68,8 +68,21 @@
                     %dd.col-sm-8= @qr_code.notes
 
           .col-lg-6
-            - image_base = @qr_code.live? ? qr_code_image_path(@qr_code.slug) : qr_image_admin_qr_code_path(@qr_code)
-            - preview_src = @qr_code.live? ? qr_code_image_path(@qr_code.slug, format: :svg, size: "md", style: "standard") : qr_image_admin_qr_code_path(@qr_code, format: :svg, size: "md", style: "standard")
+            :ruby
+              image_base =
+                if @qr_code.live?
+                  qr_code_image_path(@qr_code.slug)
+                else
+                  qr_image_admin_qr_code_path(@qr_code)
+                end
+
+              preview_src =
+                if @qr_code.live?
+                  qr_code_image_path(@qr_code.slug, format: :svg, size: "md", style: "standard")
+                else
+                  qr_image_admin_qr_code_path(@qr_code, format: :svg, size: "md", style: "standard")
+                end
+
             .card.shadow-sm.border-0.mb-4{
                 data: { controller: "qr-image",
                         "qr-image-base-url-value": image_base }}
