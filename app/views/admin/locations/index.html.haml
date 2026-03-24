@@ -1,0 +1,35 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-geo-alt.me-2
+    Locations
+  = link_to new_admin_location_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    New Location
+
+.page-container.p-4
+  - if @locations.any?
+    .card.shadow-sm.border-0
+      .card-body.p-0
+        %table.table.table-hover.mb-0
+          %thead.table-light
+            %tr
+              %th Name
+              %th Address
+              %th Check-ins
+              %th
+          %tbody
+            - @locations.each do |location|
+              %tr
+                %td= link_to location.name, admin_location_path(location), class: "fw-medium text-decoration-none"
+                %td.text-muted= location.address&.to_fs(:long).presence || "—"
+                %td= location.check_ins.count
+                %td.text-end
+                  = link_to "View", admin_location_path(location), class: "btn btn-sm btn-outline-secondary"
+  - else
+    .text-muted.py-3.text-center No locations yet.
+
+  - if @pagy.next
+    .d-flex.justify-content-end.mt-3
+      = link_to admin_locations_path(page: @pagy.next), class: "btn btn-outline-secondary btn-sm" do
+        Next
+        %i.bi.bi-chevron-right

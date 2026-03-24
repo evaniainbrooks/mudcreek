@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_100003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -92,10 +92,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
     t.integer "reserve_price_cents"
     t.integer "starting_bid_cents", null: false
     t.datetime "updated_at", null: false
+    t.bigint "variant_id"
     t.index ["auction_id"], name: "index_auction_listings_on_auction_id"
     t.index ["ends_at"], name: "index_auction_listings_on_ends_at"
     t.index ["hashid"], name: "index_auction_listings_on_hashid", unique: true
-    t.index ["listing_id"], name: "index_auction_listings_on_listing_id", unique: true
+    t.index ["listing_id", "variant_id"], name: "index_auction_listings_on_listing_id_and_variant_id", unique: true, where: "(variant_id IS NOT NULL)"
+    t.index ["listing_id"], name: "index_auction_listings_on_listing_id_no_variant", unique: true, where: "(variant_id IS NULL)"
   end
 
   create_table "auction_registrations", force: :cascade do |t|
@@ -180,6 +182,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id", "variant_id"], name: "index_cart_items_unique_user_listing_variant", unique: true, where: "((user_id IS NOT NULL) AND (rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
     t.index ["variant_id"], name: "index_cart_items_on_variant_id"
+  end
+
+  create_table "check_ins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "guest_name"
+    t.bigint "location_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
+    t.index ["location_id"], name: "index_check_ins_on_location_id"
+    t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
+    t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
+    t.index ["user_id"], name: "index_check_ins_on_user_id"
+    t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
   end
 
   create_table "delivery_methods", force: :cascade do |t|
@@ -397,6 +414,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
     t.datetime "updated_at", null: false
     t.index ["listing_id"], name: "index_listings_variants_on_listing_id"
     t.index ["tenant_id"], name: "index_listings_variants_on_tenant_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string "city"
+    t.string "country", default: "CA"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "postal_code"
+    t.string "province"
+    t.string "street_address"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "name"], name: "index_locations_on_tenant_id_and_name"
+    t.index ["tenant_id"], name: "index_locations_on_tenant_id"
   end
 
   create_table "lots", force: :cascade do |t|
@@ -866,6 +897,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "auction_listings", "auctions"
   add_foreign_key "auction_listings", "listings"
+  add_foreign_key "auction_listings", "listings_variants", column: "variant_id", on_delete: :cascade
   add_foreign_key "auction_registrations", "auctions"
   add_foreign_key "auction_registrations", "tenants"
   add_foreign_key "auction_registrations", "users"
@@ -880,6 +912,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
   add_foreign_key "cart_items", "listings_variants", column: "variant_id", on_delete: :nullify
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
+  add_foreign_key "check_ins", "locations"
+  add_foreign_key "check_ins", "tenants"
+  add_foreign_key "check_ins", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "invoice_items", "invoices"
@@ -914,6 +949,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"
   add_foreign_key "listings_variants", "tenants", on_delete: :cascade
+  add_foreign_key "locations", "tenants"
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
   add_foreign_key "oauth_identities", "tenants"

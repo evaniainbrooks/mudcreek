@@ -1,0 +1,61 @@
+= form_with model: [:admin, location], class: "needs-validation" do |f|
+  - if location.errors.any?
+    .alert.alert-danger.mb-4
+      %h5.alert-heading
+        %i.bi.bi-exclamation-triangle-fill.me-2
+        = pluralize(location.errors.count, "error")
+        prohibited this location from being saved:
+      %ul.mb-0
+        - location.errors.full_messages.each do |message|
+          %li= message
+
+  .row.g-4
+    .col-lg-8
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-info-circle.me-1
+          Details
+        .card-body.p-4
+          .mb-0
+            = f.label :name, class: "form-label required"
+            = f.text_field :name, class: "form-control #{'is-invalid' if location.errors[:name].any?}", required: true
+            - if location.errors[:name].any?
+              .invalid-feedback= location.errors[:name].to_sentence
+
+      = f.fields_for :address do |a|
+        %fieldset.card.shadow-sm.border-0
+          %legend.card-header.fw-semibold
+            %i.bi.bi-house.me-1
+            Address
+          .card-body.p-4
+            .mb-3
+              = a.label :street_address, class: "form-label"
+              = a.text_field :street_address, class: "form-control #{'is-invalid' if location.errors[:'address.street_address'].any?}"
+              - if location.errors[:'address.street_address'].any?
+                .invalid-feedback= location.errors[:'address.street_address'].to_sentence
+            .row.g-3.mb-3
+              .col-md-6
+                = a.label :city, class: "form-label"
+                = a.text_field :city, class: "form-control #{'is-invalid' if location.errors[:'address.city'].any?}"
+                - if location.errors[:'address.city'].any?
+                  .invalid-feedback= location.errors[:'address.city'].to_sentence
+              .col-md-6
+                = a.label :province, "Province / State", class: "form-label"
+                = a.text_field :province, class: "form-control #{'is-invalid' if location.errors[:'address.province'].any?}"
+                - if location.errors[:'address.province'].any?
+                  .invalid-feedback= location.errors[:'address.province'].to_sentence
+            .row.g-3.mb-0
+              .col-md-6
+                = a.label :postal_code, class: "form-label"
+                = a.text_field :postal_code, class: "form-control #{'is-invalid' if location.errors[:'address.postal_code'].any?}"
+                - if location.errors[:'address.postal_code'].any?
+                  .invalid-feedback= location.errors[:'address.postal_code'].to_sentence
+              .col-md-6
+                = a.label :country, class: "form-label"
+                = a.text_field :country, class: "form-control #{'is-invalid' if location.errors[:'address.country'].any?}"
+                - if location.errors[:'address.country'].any?
+                  .invalid-feedback= location.errors[:'address.country'].to_sentence
+
+  .d-flex.gap-2.mt-4
+    = f.submit class: "btn btn-primary"
+    = link_to "Cancel", admin_locations_path, class: "btn btn-outline-secondary"

@@ -1,0 +1,115 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-geo-alt.me-2
+    = @location.name
+  .d-flex.gap-2
+    = link_to edit_admin_location_path(@location), class: "btn btn-outline-secondary btn-sm" do
+      %i.bi.bi-pencil.me-1
+      Edit
+    = button_to admin_location_path(@location), method: :delete, class: "btn btn-outline-danger btn-sm",
+        form: { data: { turbo_confirm: "Delete \"#{@location.name}\"?" } } do
+      %i.bi.bi-trash.me-1
+      Delete
+
+.page-container.p-4
+  .row.g-4.mb-4
+
+    .col-md-4
+      .card.shadow-sm.border-0.h-100
+        .card-body
+          %h6.card-title.text-muted.text-uppercase.small.mb-1 Total Check-ins
+          %p.display-6.fw-bold.mb-0= @total_check_ins
+
+    .col-md-4
+      .card.shadow-sm.border-0.h-100
+        .card-body
+          %h6.card-title.text-muted.text-uppercase.small.mb-1 This Week
+          %p.display-6.fw-bold.mb-0= @week_check_ins
+
+    .col-md-4
+      .card.shadow-sm.border-0.h-100
+        .card-body
+          %h6.card-title.text-muted.text-uppercase.small.mb-1 This Month
+          %p.display-6.fw-bold.mb-0= @month_check_ins
+
+  .row.g-4
+
+    .col-lg-4
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold
+          %i.bi.bi-info-circle.me-1
+          Details
+        .card-body
+          %dl.row.mb-0
+            %dt.col-sm-5 Name
+            %dd.col-sm-7= @location.name
+            %dt.col-sm-5 Address
+            %dd.col-sm-7= @location.address&.to_fs(:long).presence || content_tag(:span, "—", class: "text-muted")
+
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold
+          %i.bi.bi-qr-code.me-1
+          Check-in QR Code
+        .card-body.text-center
+          - qr = RQRCode::QRCode.new(location_checkin_url(@location))
+          = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
+          %p.mt-2.mb-0
+            %small.text-muted.text-break= location_checkin_url(@location)
+
+    .col-lg-8
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold
+          %i.bi.bi-people.me-1
+          Check-ins by User
+        - if @user_stats.any?
+          .card-body.p-0
+            %table.table.table-sm.mb-0
+              %thead.table-light
+                %tr
+                  %th User
+                  %th.text-center Total
+                  %th Last Check-in
+              %tbody
+                - @user_stats.each do |stat|
+                  %tr
+                    %td
+                      - if stat[:user]
+                        = link_to stat[:user].name, admin_user_path(stat[:user]), class: "text-decoration-none"
+                        %small.text-muted.d-block= stat[:user].email_address
+                      - elsif stat[:guest]
+                        %span.text-muted Guest check-ins
+                      - else
+                        %span.text-muted Deleted user
+                    %td.text-center= stat[:count]
+                    %td= stat[:last_at]&.strftime("%b %-d, %Y %H:%M") || "—"
+        - else
+          .card-body.text-muted No check-ins yet.
+
+  - if @recent_check_ins.any?
+    .card.shadow-sm.border-0.mt-4
+      .card-header.fw-semibold
+        %i.bi.bi-clock-history.me-1
+        Recent Check-ins
+      .card-body.p-0
+        %table.table.table-sm.mb-0
+          %thead.table-light
+            %tr
+              %th Time
+              %th User
+          %tbody
+            - @recent_check_ins.each do |ci|
+              %tr
+                %td= ci.created_at.strftime("%b %-d, %Y %H:%M")
+                %td
+                  - if ci.user
+                    = link_to ci.user.name, admin_user_path(ci.user), class: "text-decoration-none"
+                  - elsif ci.guest_name.present?
+                    = ci.guest_name
+                    %small.text-muted.ms-1 (guest)
+                  - else
+                    %span.text-muted Unknown
+
+  .mt-3
+    = link_to admin_locations_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Locations
