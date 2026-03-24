@@ -4,6 +4,7 @@ class AuctionListing < ApplicationRecord
 
   belongs_to :auction
   belongs_to :listing
+  belongs_to :variant, class_name: "Listings::Variant", optional: true
 
   acts_as_list scope: :auction
 
@@ -18,7 +19,7 @@ class AuctionListing < ApplicationRecord
     .order(amount_cents: :desc, created_at: :desc)
   }, class_name: "Bid"
 
-  validates :listing_id, uniqueness: true
+  validates :listing_id, uniqueness: { scope: :variant_id }
 
   after_create :initialize_end_time
 

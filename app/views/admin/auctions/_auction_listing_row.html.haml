@@ -1,7 +1,10 @@
 %tr{data: { id: auction_listing.id }}
   %td.text-center.pe-0
     %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab; font-size: 1.1rem"}
-  %td= link_to auction_listing.listing.name, admin_listing_path(auction_listing.listing)
+  %td
+    = link_to auction_listing.listing.name, admin_listing_path(auction_listing.listing)
+    - if auction_listing.variant
+      %span.text-muted.ms-1= "– #{auction_listing.variant.display_name}"
   %td= auction_listing_state_inline_cell(auction_listing, auction)
   %td= auction_listing_money_inline_cell("starting_bid", auction_listing, auction)
   %td= auction_listing_money_inline_cell("reserve_price", auction_listing, auction)
