@@ -35,6 +35,19 @@ Offer:
     MissingUniqueIndexChecker:
       enabled: false
 
+AuctionListing:
+  # Partial indexes (WHERE clause) paired with a single uniqueness validator —
+  # database_consistency cannot correlate partial indexes with model validators.
+  index_auction_listings_on_listing_id_and_variant_id:
+    UniqueIndexChecker:
+      enabled: false
+  index_auction_listings_on_listing_id_no_variant:
+    UniqueIndexChecker:
+      enabled: false
+  listing_id+variant_id:
+    MissingUniqueIndexChecker:
+      enabled: false
+
 CartItem:
   # Partial indexes (WHERE clause) — database_consistency cannot correlate these
   # with conditional validators, but both the DB constraint and model validation are in place.

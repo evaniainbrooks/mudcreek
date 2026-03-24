@@ -16,6 +16,7 @@ class Permission < ApplicationRecord
     Page
     ListingInferenceBatch
     QrCode
+    Location
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze
