@@ -1,22 +1,17 @@
-.border.rounded.p-3.mb-2{ data: { "listing-options-target": "optionRow" } }
-  = option_form.hidden_field :position
-  = option_form.hidden_field :_destroy, value: "0", data: { "listing-options-target": "destroyField" }
+.border.rounded.p-3.mb-2
+  = option_form.hidden_field :position if option_form.object.persisted?
   .d-flex.align-items-center.gap-2.mb-2
     = option_form.text_field :name,
         class: "form-control form-control-sm flex-grow-1",
         placeholder: "Option name (e.g. Size, Color)"
-    %button.btn.btn-sm.btn-outline-danger{ type: "button",
-        data: { action: "listing-options#removeOption" } }
-      %i.bi.bi-trash
+    - if option_form.object.persisted?
+      .form-check.mb-0
+        = option_form.check_box :_destroy, class: "form-check-input"
+        = option_form.label :_destroy, "Remove", class: "form-check-label small text-danger"
   .ps-2
     %p.small.text-muted.mb-1 Values
-    .mb-1{ data: { "listing-options-target": "valuesContainer" } }
-      = option_form.fields_for :option_values do |value_form|
-        = render "admin/listings/options/value_fields", value_form: value_form
-    %button.btn.btn-sm.btn-outline-secondary{ type: "button",
-        data: { action: "listing-options#addValue" } }
-      %i.bi.bi-plus-lg.me-1
-      Add Value
-  %template{ data: { "listing-options-target": "valueTemplate" } }
-    = option_form.fields_for :option_values, Listings::OptionValue.new, child_index: "new_value" do |value_form|
+    = option_form.fields_for :option_values do |value_form|
       = render "admin/listings/options/value_fields", value_form: value_form
+    - if option_form.object.persisted?
+      = option_form.fields_for :option_values, Listings::OptionValue.new, child_index: option_form.object.option_values.size do |value_form|
+        = render "admin/listings/options/value_fields", value_form: value_form

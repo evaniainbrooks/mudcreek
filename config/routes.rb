@@ -94,6 +94,7 @@ resource :session
       collection { patch :reorder }
       resources :attachments,       only: [ :destroy ], module: :listings
       resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
+      resources :variants,          only: [ :create ], module: :listings
     end
     resources :auctions, param: :hashid do
       resources :auction_listings, only: [ :destroy, :update ], module: :auctions do

@@ -58,7 +58,7 @@ module Admin
         :footer_color,
         :card_color,
         :container_color,
-        features: %i[auctions oauth_login sold_listings watchlist],
+        features_attributes: Tenant::Features.attribute_names.map(&:to_sym),
         address_attributes: %i[id street_address city province postal_code country _destroy],
         social_media_accounts_attributes: %i[id platform slug icon position _destroy],
         default_bid_increment_schedule_attributes: [

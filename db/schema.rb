@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_23_023836) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_020447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -269,6 +269,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_23_023836) do
     t.boolean "published", default: false, null: false
     t.integer "quantity", default: 1, null: false
     t.boolean "show_video_as_poster", default: false, null: false
+    t.string "sku"
     t.enum "state", default: "on_sale", null: false, enum_type: "listing_state"
     t.boolean "tax_exempt", default: false, null: false
     t.bigint "tenant_id", null: false

@@ -30,7 +30,7 @@
             class: "form-control #{'is-invalid' if listing.errors[:acquisition_price_cents].any?}"
       - if listing.errors[:acquisition_price_cents].any?
         .invalid-feedback.d-block= listing.errors[:acquisition_price_cents].to_sentence
-    .mb-0
+    .mb-3
       = f.label :quantity, class: "form-label #{'required' unless listing.rental?}"
       = f.number_field :quantity,
         class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}",
@@ -39,3 +39,6 @@
         data: { required: "true" }
       - if listing.errors[:quantity].any?
         .invalid-feedback= listing.errors[:quantity].to_sentence
+    .mb-0
+      = f.label :sku, "SKU", class: "form-label"
+      = f.text_field :sku, class: "form-control", placeholder: "Optional"

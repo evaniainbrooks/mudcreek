@@ -21,7 +21,8 @@
     - else
       .text-muted.small
         No variants yet. Save options and values above to generate variants, or
-        %button.btn.btn-sm.btn-outline-secondary.ms-1{ type: "button",
-            data: { action: "listing-variants#generate" } }
+        = link_to admin_listing_variants_path(listing),
+            data: { turbo_method: :post },
+            class: "btn btn-sm btn-outline-secondary ms-1" do
           %i.bi.bi-magic.me-1
           Generate from Options

@@ -1,4 +1,6 @@
 class Tenant < ApplicationRecord
+  include StoreModel::NestedAttributes
+
   has_rich_text :description
 
   attribute :features, Tenant::Features.to_type
@@ -12,6 +14,7 @@ class Tenant < ApplicationRecord
   has_one :address, as: :addressable, dependent: :destroy
 
   accepts_nested_attributes_for :address
+  accepts_nested_attributes_for :features
 
   has_many :lots, dependent: :restrict_with_error
   has_many :listings, dependent: :restrict_with_error

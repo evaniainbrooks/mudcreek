@@ -4,23 +4,8 @@
     Features
   .card-body.p-4
     = form.fields_for :features do |ff|
-      .mb-3
-        .form-check
-          = ff.check_box :auctions, class: "form-check-input"
-          = ff.label :auctions, "Auctions", class: "form-check-label"
-          .form-text Enable auction listings, bidding, and registration.
-      .mb-3
-        .form-check
-          = ff.check_box :watchlist, class: "form-check-input"
-          = ff.label :watchlist, "Watchlist", class: "form-check-label"
-          .form-text Allow users to save listings to a personal watchlist.
-      .mb-3
-        .form-check
-          = ff.check_box :sold_listings, class: "form-check-input"
-          = ff.label :sold_listings, "Sold Listings", class: "form-check-label"
-          .form-text Show a Sold tab on the public listings page.
-      .mb-0
-        .form-check
-          = ff.check_box :oauth_login, class: "form-check-input"
-          = ff.label :oauth_login, "OAuth Login", class: "form-check-label"
-          .form-text Enable sign-in with third-party OAuth providers.
+      - Tenant::Features::DESCRIPTIONS.each_with_index do |(key, description), i|
+        .form-check{ class: i < Tenant::Features::DESCRIPTIONS.size - 1 ? "mb-3" : "mb-0" }
+          = ff.check_box key, class: "form-check-input"
+          = ff.label key, key.to_s.humanize, class: "form-check-label"
+          .form-text= description
