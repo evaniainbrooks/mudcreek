@@ -13,6 +13,7 @@ import ImageZoomController from "./image_zoom_controller"
 import InfiniteScrollController from "./infinite_scroll_controller"
 import InlineEditController from "./inline_edit_controller"
 import ListingCarouselController from "./listing_carousel_controller"
+import ListingOptionController from "./listing_option_controller"
 import ListingPropertyController from "./listing_property_controller"
 import ListingTypeController from "./listing_type_controller"
 import RentalAvailabilityController from "./rental_availability_controller"
@@ -39,6 +40,7 @@ application.register("image-zoom", ImageZoomController)
 application.register("infinite-scroll", InfiniteScrollController)
 application.register("inline-edit", InlineEditController)
 application.register("listing-carousel", ListingCarouselController)
+application.register("listing-option", ListingOptionController)
 application.register("listing-property", ListingPropertyController)
 application.register("listing-type", ListingTypeController)
 application.register("rental-availability", RentalAvailabilityController)
