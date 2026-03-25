@@ -10,17 +10,79 @@
           %li= message
 
   .row.g-4
-    .col-lg-8
+    .col-lg-6
       %fieldset.card.shadow-sm.border-0.mb-4
         %legend.card-header.fw-semibold
           %i.bi.bi-info-circle.me-1
           Details
         .card-body.p-4
+          .mb-3
+            .form-check
+              = f.check_box :published, class: "form-check-input"
+              = f.label :published, class: "form-check-label"
           .mb-0
             = f.label :name, class: "form-label required"
             = f.text_field :name, class: "form-control #{'is-invalid' if location.errors[:name].any?}", required: true
             - if location.errors[:name].any?
               .invalid-feedback= location.errors[:name].to_sentence
+
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-calendar-event.me-1
+          Calendar
+        .card-body.p-4
+          .mb-0
+            = f.label :ical_url, "iCal / ICS Feed URL", class: "form-label"
+            = f.url_field :ical_url, class: "form-control", placeholder: "https://..."
+            .form-text
+              Paste a public .ics URL. Events for the current day will appear on the showroom screen.
+              - if location.calendar_file.attached?
+                %span.ms-1.text-success
+                  %i.bi.bi-check-circle-fill.me-1
+                  Calendar synced.
+
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
+          %i.bi.bi-chat-text.me-1
+          Message
+        .card-body.p-4
+          = f.rich_text_area :message, class: "form-control"
+
+    .col-lg-6
+      %fieldset.card.shadow-sm.border-0.mb-4{ data: { controller: "direct-upload" } }
+        %legend.card-header.fw-semibold
+          %i.bi.bi-image.me-1
+          Media
+        .card-body.p-4
+          .mb-3
+            = f.label :logo, class: "form-label"
+            = f.file_field :logo, direct_upload: true, class: "form-control", accept: "image/*"
+            - if location.logo.attached?
+              .mt-2.d-flex.align-items-center.gap-2
+                = image_tag location.logo.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+                - if location.persisted?
+                  = link_to admin_location_path(location, remove_logo: "1"),
+                      class: "btn btn-sm btn-outline-danger",
+                      data: { turbo_method: :patch, turbo_confirm: "Remove logo?" } do
+                    %i.bi.bi-x-lg.me-1
+                    Remove
+          .mb-0
+            = f.label :background, "Background (image or video)", class: "form-label"
+            = f.file_field :background, direct_upload: true, class: "form-control", accept: "image/*,video/*"
+            - if location.background.attached?
+              .mt-2.d-flex.align-items-center.gap-2
+                - if location.background.video?
+                  %video{ src: url_for(location.background), width: 120, height: 80,
+                      style: "object-fit: cover; border-radius: 0.25rem", muted: true }
+                - else
+                  = image_tag location.background.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+                - if location.persisted?
+                  = link_to admin_location_path(location, remove_background: "1"),
+                      class: "btn btn-sm btn-outline-danger",
+                      data: { turbo_method: :patch, turbo_confirm: "Remove background?" } do
+                    %i.bi.bi-x-lg.me-1
+                    Remove
+          .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
       = f.fields_for :address do |a|
         %fieldset.card.shadow-sm.border-0
@@ -28,33 +90,7 @@
             %i.bi.bi-house.me-1
             Address
           .card-body.p-4
-            .mb-3
-              = a.label :street_address, class: "form-label"
-              = a.text_field :street_address, class: "form-control #{'is-invalid' if location.errors[:'address.street_address'].any?}"
-              - if location.errors[:'address.street_address'].any?
-                .invalid-feedback= location.errors[:'address.street_address'].to_sentence
-            .row.g-3.mb-3
-              .col-md-6
-                = a.label :city, class: "form-label"
-                = a.text_field :city, class: "form-control #{'is-invalid' if location.errors[:'address.city'].any?}"
-                - if location.errors[:'address.city'].any?
-                  .invalid-feedback= location.errors[:'address.city'].to_sentence
-              .col-md-6
-                = a.label :province, "Province / State", class: "form-label"
-                = a.text_field :province, class: "form-control #{'is-invalid' if location.errors[:'address.province'].any?}"
-                - if location.errors[:'address.province'].any?
-                  .invalid-feedback= location.errors[:'address.province'].to_sentence
-            .row.g-3.mb-0
-              .col-md-6
-                = a.label :postal_code, class: "form-label"
-                = a.text_field :postal_code, class: "form-control #{'is-invalid' if location.errors[:'address.postal_code'].any?}"
-                - if location.errors[:'address.postal_code'].any?
-                  .invalid-feedback= location.errors[:'address.postal_code'].to_sentence
-              .col-md-6
-                = a.label :country, class: "form-label"
-                = a.text_field :country, class: "form-control #{'is-invalid' if location.errors[:'address.country'].any?}"
-                - if location.errors[:'address.country'].any?
-                  .invalid-feedback= location.errors[:'address.country'].to_sentence
+            = render "shared/address_fields", af: a
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

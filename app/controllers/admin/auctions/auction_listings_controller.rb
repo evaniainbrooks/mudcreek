@@ -4,8 +4,10 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
 
   def destroy
     authorize(@auction_listing)
+    listing = @auction_listing.listing
     @auction_listing.destroy!
-    redirect_to admin_auction_path(@auction), notice: "Listing removed from auction."
+    redirect_to admin_auction_path(@auction),
+      notice: ActionController::Base.helpers.link_to(listing.name, admin_listing_path(listing)) + " removed from auction."
   end
 
   def update

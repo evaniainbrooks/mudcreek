@@ -8,23 +8,7 @@
 
 .page-container.p-4
   - if @locations.any?
-    .card.shadow-sm.border-0
-      .card-body.p-0
-        %table.table.table-hover.mb-0
-          %thead.table-light
-            %tr
-              %th Name
-              %th Address
-              %th Check-ins
-              %th
-          %tbody
-            - @locations.each do |location|
-              %tr
-                %td= link_to location.name, admin_location_path(location), class: "fw-medium text-decoration-none"
-                %td.text-muted= location.address&.to_fs(:long).presence || "—"
-                %td= location.check_ins.count
-                %td.text-end
-                  = link_to "View", admin_location_path(location), class: "btn btn-sm btn-outline-secondary"
+    = render_locations_table(locations: @locations)
   - else
     .text-muted.py-3.text-center No locations yet.
 

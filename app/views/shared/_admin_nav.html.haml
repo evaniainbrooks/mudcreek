@@ -91,6 +91,11 @@
           = link_to admin_pages_path, class: "dropdown-item" do
             %i.bi.bi-file-earmark-text.me-1
             Pages
+      - if Current.tenant.features.locations? && policy(Location).index?
+        %li
+          = link_to admin_locations_path, class: "dropdown-item" do
+            %i.bi.bi-geo-alt-fill.me-1
+            Locations
       - if policy(QrCode).index?
         %li
           = link_to admin_qr_codes_path, class: "dropdown-item" do

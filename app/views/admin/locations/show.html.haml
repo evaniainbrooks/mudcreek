@@ -1,8 +1,13 @@
+
 .d-flex.justify-content-between.align-items-center.mb-4
   %h1.h3.mb-0
     %i.bi.bi-geo-alt.me-2
     = @location.name
   .d-flex.gap-2
+    - if @location.published?
+      = link_to location_path(@location), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
+        %i.bi.bi-box-arrow-up-right.me-1
+        Public View
     = link_to edit_admin_location_path(@location), class: "btn btn-outline-secondary btn-sm" do
       %i.bi.bi-pencil.me-1
       Edit
@@ -14,19 +19,25 @@
 .page-container.p-4
   .row.g-4.mb-4
 
-    .col-md-4
+    .col-md-3
       .card.shadow-sm.border-0.h-100
         .card-body
           %h6.card-title.text-muted.text-uppercase.small.mb-1 Total Check-ins
           %p.display-6.fw-bold.mb-0= @total_check_ins
 
-    .col-md-4
+    .col-md-3
+      .card.shadow-sm.border-0.h-100
+        .card-body
+          %h6.card-title.text-muted.text-uppercase.small.mb-1 Today
+          %p.display-6.fw-bold.mb-0= @today_check_ins
+
+    .col-md-3
       .card.shadow-sm.border-0.h-100
         .card-body
           %h6.card-title.text-muted.text-uppercase.small.mb-1 This Week
           %p.display-6.fw-bold.mb-0= @week_check_ins
 
-    .col-md-4
+    .col-md-3
       .card.shadow-sm.border-0.h-100
         .card-body
           %h6.card-title.text-muted.text-uppercase.small.mb-1 This Month
@@ -44,14 +55,39 @@
             %dt.col-sm-5 Name
             %dd.col-sm-7= @location.name
             %dt.col-sm-5 Address
-            %dd.col-sm-7= @location.address&.to_fs(:long).presence || content_tag(:span, "—", class: "text-muted")
+            %dd.col-sm-7
+              - if @location.address&.any?
+                %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
+                  = @location.address.to_fs(:long)
+              - else
+                %span.text-muted —
+            %dt.col-sm-5 Logo
+            %dd.col-sm-7
+              - if @location.logo.attached?
+                = image_tag @location.logo.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
+              - else
+                %span.text-muted —
+            %dt.col-sm-5 Background
+            %dd.col-sm-7
+              - if @location.background.attached?
+                - if @location.background.video?
+                  %video{ src: url_for(@location.background), width: 80, height: 80,
+                      style: "object-fit: cover; border-radius: 0.25rem", muted: true }
+                - else
+                  = image_tag @location.background.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
+              - else
+                %span.text-muted —
+            - if @location.message.present?
+              %dt.col-sm-5 Message
+              %dd.col-sm-7= @location.message
+
 
       .card.shadow-sm.border-0
         .card-header.fw-semibold
           %i.bi.bi-qr-code.me-1
           Check-in QR Code
         .card-body.text-center
-          - qr = RQRCode::QRCode.new(location_checkin_url(@location))
+          - qr = RQRCode::QRCode.new(location_checkin_url(@location, tenant_key: Current.tenant.key))
           = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
           %p.mt-2.mb-0
             %small.text-muted.text-break= location_checkin_url(@location)
@@ -113,3 +149,6 @@
     = link_to admin_locations_path, class: "btn btn-outline-secondary" do
       %i.bi.bi-arrow-left.me-1
       Back to Locations
+
+- if @location.address&.any?
+  = render "shared/map_modal", address: @location.address

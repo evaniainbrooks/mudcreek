@@ -56,7 +56,7 @@ resource :session
   resources :invoices,     only: [:show], param: :number do
     member { post :pay }
   end
-  resources :locations, only: [] do
+  resources :locations, only: [:show], param: :hashid do
     resource :checkin, only: [ :show, :create ], controller: "location_check_ins"
   end
   resources :subdivisions, only: [ :index ]
@@ -112,7 +112,7 @@ resource :session
     resources :qr_codes, param: :slug do
       member { get :qr_image }
     end
-    resources :locations
+    resources :locations, param: :hashid
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

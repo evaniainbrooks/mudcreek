@@ -8,6 +8,7 @@ class Admin::LocationsController < Admin::BaseController
 
   def show
     @total_check_ins   = @location.check_ins.count
+    @today_check_ins   = @location.check_ins.today.count
     @week_check_ins    = @location.check_ins.this_week.count
     @month_check_ins   = @location.check_ins.this_month.count
 
@@ -42,6 +43,7 @@ class Admin::LocationsController < Admin::BaseController
     authorize(@location)
 
     if @location.save
+      SyncLocationCalendarJob.perform_later(@location.id, Current.tenant.id) if @location.ical_url.present?
       redirect_to admin_location_path(@location), notice: "Location was successfully created."
     else
       render :new, status: :unprocessable_content
@@ -49,7 +51,10 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def update
+    @location.logo.purge_later if params[:remove_logo].present?
+    @location.background.purge_later if params[:remove_background].present?
     if @location.update(location_params)
+      SyncLocationCalendarJob.perform_later(@location.id, Current.tenant.id) if @location.ical_url.present?
       redirect_to admin_location_path(@location), notice: "Location was successfully updated."
     else
       render :edit, status: :unprocessable_content
@@ -64,11 +69,11 @@ class Admin::LocationsController < Admin::BaseController
   private
 
   def set_location
-    @location = Location.find(params[:id])
+    @location = Location.find_by!(hashid: params[:hashid])
     authorize(@location)
   end
 
   def location_params
-    params.require(:location).permit(:name, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
+    params.require(:location).permit(:name, :published, :logo, :background, :ical_url, :message, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
   end
 end

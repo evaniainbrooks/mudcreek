@@ -1,4 +1,6 @@
 class LocationCheckInsController < ApplicationController
+  include LocationFeatureGated
+
   allow_unauthenticated_access
 
   before_action :set_location
@@ -15,14 +17,17 @@ class LocationCheckInsController < ApplicationController
 
   def create
     @check_in = @location.check_ins.build(guest_name: check_in_params[:guest_name])
-    @checked_in = @check_in.save
-    render :show
+    if @check_in.save
+      redirect_to location_checkin_path(@location), flash: { guest_checked_in: @check_in.guest_name }
+    else
+      render :show, status: :unprocessable_entity
+    end
   end
 
   private
 
   def set_location
-    @location = Location.find(params[:location_id])
+    @location = Location.find_by!(hashid: params[:location_hashid], published: true)
   end
 
   def check_in_params

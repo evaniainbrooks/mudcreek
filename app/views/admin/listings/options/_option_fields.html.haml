@@ -10,7 +10,7 @@
         = option_form.label :_destroy, "Remove", class: "form-check-label small text-danger"
   .ps-2
     %p.small.text-muted.mb-1 Values
-    .{ data: { listing_option_target: "valuesContainer" } }
+    %div{ data: { listing_option_target: "valuesContainer" } }
       = option_form.fields_for :option_values do |value_form|
         = render "admin/listings/options/value_fields", value_form: value_form
     %button.btn.btn-sm.btn-outline-secondary{ type: "button",

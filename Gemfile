@@ -152,6 +152,7 @@ group :test do
   gem "rspec-github", require: false
 end
 
+gem "icalendar"
 gem "imgproxy", "~> 3.0"
 gem "geocoder", "~> 1.8"
 gem "aws-sdk-s3", require: false

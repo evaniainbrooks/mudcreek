@@ -18,8 +18,9 @@ class AddListingsToAuctionService
 
   def add_listing(listing)
     if listing.has_variants?
-      listing.variants.each { |variant| create_variant_listing(listing, variant) }
-      listing.update_column(:state, @listing_state) if @listing_state.present?
+      listing.variants.includes(option_values: :option).each do |variant|
+        create_variant_listing(listing, variant)
+      end
     else
       return unless create_listing(listing)
       listing.update_column(:state, @listing_state) if @listing_state.present?
@@ -27,14 +28,36 @@ class AddListingsToAuctionService
   end
 
   def create_variant_listing(listing, variant)
+    ordered_ovs = variant.option_values.sort_by { |ov| ov.option.position }
+    variant_label = ordered_ovs.map(&:value).join("/")
+
+    new_listing = listing.dup
+    new_listing.name = "#{listing.name} (#{variant_label})"
+    new_listing.quantity = variant.quantity
+    new_listing.sku = variant.sku
+    new_listing.price_cents = variant.effective_price_cents
+    new_listing.description = listing.description.body if listing.description.present?
+
+    listing.properties.order(:position).each_with_index do |prop, idx|
+      new_listing.properties.build(name: prop.name, value: prop.value, icon: prop.icon, position: idx + 1)
+    end
+
+    base_position = listing.properties.size
+    ordered_ovs.each_with_index do |ov, idx|
+      new_listing.properties.build(name: ov.option.name, value: ov.value, position: base_position + idx + 1)
+    end
+
+    new_listing.save!
+
     AuctionListing.create!(
       auction: @auction,
-      listing: listing,
-      variant: variant,
+      listing: new_listing,
       starting_bid_cents: compute_starting_bid(variant.effective_price_cents)
     )
+
+    new_listing.update_column(:state, @listing_state) if @listing_state.present?
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    # skip duplicate or invalid variant
+    # skip duplicate or invalid variant listing
   end
 
   def create_listing(listing)
