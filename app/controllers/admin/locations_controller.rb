@@ -74,6 +74,6 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def location_params
-    params.require(:location).permit(:name, :published, :logo, :background, :ical_url, :message, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
+    params.require(:location).permit(:name, :published, :logo, :background, :ical_url, :message, :checkin_exit_url, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
   end
 end

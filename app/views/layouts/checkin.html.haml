@@ -1,0 +1,18 @@
+!!!
+%html{lang: "en"}
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width,initial-scale=1"}
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    = tenant_theme_tag(Current.tenant)
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+  %body.d-flex.flex-column.min-vh-100
+    %main.flex-grow-1
+      #flash
+        - flash.each do |type, message|
+          .alert.alert-dismissible.fade.show{class: "alert-#{bootstrap_flash_class(type)}", role: "alert"}
+            != message
+            %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
+      = yield

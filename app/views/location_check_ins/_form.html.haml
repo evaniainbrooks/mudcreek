@@ -1,7 +1,6 @@
 %p.text-muted Check in as a guest below, or sign in for a faster experience.
 = form_with model: @check_in, url: location_checkin_path(@location), method: :post do |f|
   .mb-3
-    = f.label :guest_name, "Your Name", class: "form-label"
     = f.text_field :guest_name, class: "form-control form-control-lg",
         required: true, autofocus: true, placeholder: "Enter your name"
   = f.submit "Check In", class: "btn btn-primary btn-lg w-100"

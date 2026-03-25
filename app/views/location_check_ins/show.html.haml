@@ -3,16 +3,14 @@
     .col-md-6.text-center
       %h2.mb-4= @location.name
 
-      - if @check_in.persisted? || @checked_in || flash[:guest_checked_in]
+      - if @check_in.persisted? || @checked_in || @guest_checked_in
         %i.bi.bi-check-circle-fill.text-success{ style: "font-size: 4rem" }
         %h3.mt-3 Checked in!
         - if Current.user
           %p.text-muted Welcome, #{Current.user.first_name}.
-        - elsif flash[:guest_checked_in]
-          %p.text-muted Welcome, #{flash[:guest_checked_in]}.
-        - elsif @check_in.guest_name.present?
-          %p.text-muted Welcome, #{@check_in.guest_name}.
-        = link_to "Back to home", root_path, class: "btn btn-outline-secondary mt-2"
+        - elsif @guest_checked_in
+          %p.text-muted Welcome, #{@guest_checked_in}.
+        = link_to "Close", @location.checkin_exit_url.presence || root_path, class: "btn btn-outline-secondary mt-2"
       - else
         - if @check_in.errors.any?
           .alert.alert-danger.text-start= @check_in.errors.full_messages.to_sentence

@@ -31,6 +31,11 @@
           %i.bi.bi-calendar-event.me-1
           Calendar
         .card-body.p-4
+          .mb-3
+            = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
+            = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
+            .form-text
+              Where the "Close" button on the check-in screen links to.
           .mb-0
             = f.label :ical_url, "iCal / ICS Feed URL", class: "form-label"
             = f.url_field :ical_url, class: "form-control", placeholder: "https://..."

@@ -83,7 +83,6 @@ RSpec.describe "LocationCheckIns", type: :request do
     it "renders the guest name form" do
       get location_checkin_path(location)
 
-      expect(response.body).to include("Your Name")
       expect(response.body).to include("Check In")
     end
 
@@ -118,10 +117,10 @@ RSpec.describe "LocationCheckIns", type: :request do
   describe "POST /locations/:location_id/checkin — guest check-in" do
     let(:guest_params) { { check_in: { guest_name: "Bob Guest" } } }
 
-    it "returns 200" do
+    it "redirects to the check-in page" do
       post location_checkin_path(location), params: guest_params
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to redirect_to(location_checkin_path(location))
     end
 
     it "creates a check-in with the guest name" do
@@ -138,8 +137,9 @@ RSpec.describe "LocationCheckIns", type: :request do
       expect(check_in.user).to be_nil
     end
 
-    it "shows the success message and the guest's name" do
+    it "shows the success message and guest name after redirect" do
       post location_checkin_path(location), params: guest_params
+      follow_redirect!
 
       expect(response.body).to include("Checked in")
       expect(response.body).to include("Bob Guest")
@@ -169,7 +169,7 @@ RSpec.describe "LocationCheckIns", type: :request do
       it "re-renders the form with an error" do
         post location_checkin_path(location), params: blank_params
 
-        expect(response.body).to include("Your Name")
+        expect(response.body).to include("Check in as a guest below")
       end
     end
 
