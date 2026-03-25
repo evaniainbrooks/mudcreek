@@ -14,4 +14,4 @@
       - else
         - if @check_in.errors.any?
           .alert.alert-danger.text-start= @check_in.errors.full_messages.to_sentence
-        = render "form"
+        = render "form", location: @location, check_in: @check_in

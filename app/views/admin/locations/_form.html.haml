@@ -77,8 +77,8 @@
             - if location.background.attached?
               .mt-2.d-flex.align-items-center.gap-2
                 - if location.background.video?
-                  %video{ src: url_for(location.background), width: 120, height: 80,
-                      style: "object-fit: cover; border-radius: 0.25rem", muted: true }
+                  %video{src: url_for(location.background), width: 120, height: 80,
+                      style: "object-fit: cover; border-radius: 0.25rem", muted: true}
                 - else
                   = image_tag location.background.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
                 - if location.persisted?

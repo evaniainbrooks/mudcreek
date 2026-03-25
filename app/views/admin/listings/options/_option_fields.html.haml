@@ -13,8 +13,8 @@
     %div{ data: { listing_option_target: "valuesContainer" } }
       = option_form.fields_for :option_values do |value_form|
         = render "admin/listings/options/value_fields", value_form: value_form
-    %button.btn.btn-sm.btn-outline-secondary{ type: "button",
-        data: { action: "listing-option#addValue" } }
+    %button.btn.btn-sm.btn-outline-secondary{type: "button",
+        data: { action: "listing-option#addValue" }}
       %i.bi.bi-plus-lg.me-1
       Add Value
   %template{ data: { listing_option_target: "valueTemplate" } }

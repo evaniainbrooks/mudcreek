@@ -6,10 +6,10 @@
     %span{ data: { "icon-picker-target": "label" } }= current_value.presence || "Choose icon…"
   .icon-picker-dropdown.d-none{ data: { "icon-picker-target": "dropdown" } }
     .icon-picker-search-wrap.p-2
-      %input.form-control.form-control-sm{ type: "text", placeholder: "Search icons…",
-        data: { "icon-picker-target": "search", action: "input->icon-picker#filter" } }
+      %input.form-control.form-control-sm{type: "text", placeholder: "Search icons…",
+        data: { "icon-picker-target": "search", action: "input->icon-picker#filter" }}
     .icon-picker-grid{ data: { "icon-picker-target": "grid" } }
       - icons.each do |name|
-        %button.icon-picker-item{ type: "button",
-          data: { action: "click->icon-picker#select", name: name } }
+        %button.icon-picker-item{type: "button",
+          data: { action: "click->icon-picker#select", name: name }}
           %i.bi{ class: "bi-#{name}" }
