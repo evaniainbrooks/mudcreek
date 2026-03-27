@@ -65,7 +65,7 @@ gem "strong_migrations"
 
 # Embedded value objects for ActiveRecord attributes
 gem "store_model"
-gem "rqrcode", "~> 2.2"
+gem "rqrcode", "~> 3.2"
 
 # Database functions and triggers
 gem "fx"
