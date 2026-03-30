@@ -1,8 +1,8 @@
 class FixLocationsAndCheckIns < ActiveRecord::Migration[8.1]
   def up
-    remove_index :locations, name: "index_locations_on_tenant_id"
-    remove_index :check_ins, name: "index_check_ins_on_location_id"
-    remove_index :check_ins, name: "index_check_ins_on_user_id"
+    remove_index :locations, name: "index_locations_on_tenant_id",   if_exists: true
+    remove_index :check_ins, name: "index_check_ins_on_location_id", if_exists: true
+    remove_index :check_ins, name: "index_check_ins_on_user_id",     if_exists: true
 
     Location.where(hashid: nil).find_each do |location|
       location.send(:generate_hashid)

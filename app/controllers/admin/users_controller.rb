@@ -24,7 +24,7 @@ class Admin::UsersController < Admin::BaseController
       redirect_to admin_user_path(@user), notice: "User updated."
     else
       @roles = Role.order(:name)
-      render :show, status: :unprocessable_entity
+      render :show, status: :unprocessable_content
     end
   end
 

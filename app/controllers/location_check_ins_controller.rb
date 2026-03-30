@@ -23,7 +23,7 @@ class LocationCheckInsController < ApplicationController
       session[:guest_checked_in] = @check_in.guest_name
       redirect_to location_checkin_path(@location)
     else
-      render :show, status: :unprocessable_entity
+      render :show, status: :unprocessable_content
     end
   end
 

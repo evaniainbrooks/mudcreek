@@ -193,7 +193,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
-    t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
   end
@@ -279,6 +278,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
     t.bigint "lot_id"
     t.string "name", null: false
     t.bigint "owner_id"
+    t.boolean "physical", default: false, null: false
     t.integer "position", null: false
     t.integer "price_cents", null: false
     t.enum "pricing_type", default: "firm", null: false, enum_type: "listing_pricing_type"
@@ -327,7 +327,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["delivery_method_id"], name: "index_listings_deliveries_on_delivery_method_id"
+    t.index ["delivery_method_set_id", "delivery_method_id"], name: "index_listings_deliveries_unique", unique: true
     t.index ["delivery_method_set_id"], name: "index_listings_deliveries_on_delivery_method_set_id"
+    t.index ["tenant_id"], name: "index_listings_deliveries_on_tenant_id"
   end
 
   create_table "listings_delivery_method_sets", force: :cascade do |t|
@@ -418,16 +420,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   create_table "locations", force: :cascade do |t|
     t.float "background_tint_opacity", default: 0.5, null: false
     t.string "checkin_exit_url"
-    t.string "city"
-    t.string "country", default: "CA"
     t.datetime "created_at", null: false
     t.string "hashid", null: false
     t.string "ical_url"
     t.string "name", null: false
-    t.string "postal_code"
-    t.string "province"
     t.boolean "published", default: false, null: false
-    t.string "street_address"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_locations_on_hashid", unique: true
@@ -932,7 +929,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "check_ins", "locations"
-  add_foreign_key "check_ins", "tenants"
+  add_foreign_key "check_ins", "tenants", on_delete: :cascade
   add_foreign_key "check_ins", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
@@ -944,7 +941,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "invoices", "users"
   add_foreign_key "listing_inference_batches", "lots"
   add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade
-  add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify
+  add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify, validate: false
   add_foreign_key "listings", "lots", on_delete: :cascade
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
@@ -952,9 +949,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
   add_foreign_key "listings_deliveries", "delivery_methods", on_delete: :cascade
-  add_foreign_key "listings_deliveries", "listings_delivery_method_sets", column: "delivery_method_set_id"
+  add_foreign_key "listings_deliveries", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :cascade
   add_foreign_key "listings_deliveries", "tenants", on_delete: :cascade
-  add_foreign_key "listings_delivery_method_sets", "tenants"
+  add_foreign_key "listings_delivery_method_sets", "tenants", on_delete: :cascade
   add_foreign_key "listings_option_values", "listings_options", column: "option_id"
   add_foreign_key "listings_options", "listings"
   add_foreign_key "listings_options", "tenants", on_delete: :cascade
@@ -968,7 +965,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"
   add_foreign_key "listings_variants", "tenants", on_delete: :cascade
-  add_foreign_key "locations", "tenants"
+  add_foreign_key "locations", "tenants", on_delete: :cascade
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
   add_foreign_key "oauth_identities", "tenants"
@@ -1009,7 +1006,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
   add_foreign_key "transactions", "orders"
   add_foreign_key "user_category_interests", "listings_categories"
   add_foreign_key "user_category_interests", "tenants", on_delete: :cascade

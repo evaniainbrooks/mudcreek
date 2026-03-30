@@ -208,7 +208,7 @@ RSpec.describe "Admin::Users", type: :request do
       it "returns 422" do
         patch admin_user_path(target), params: { user: { email_address: "" } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

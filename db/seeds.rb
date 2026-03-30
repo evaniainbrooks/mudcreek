@@ -2007,8 +2007,8 @@ Current.tenant = mudcreek
 
   unless location.logo.attached?
     location.logo.attach(
-      io:           Rails.root.join("spec/fixtures/images/mudcreek_logo.png").open("rb"),
-      filename:     "mudcreek_logo.png",
+      io:           Rails.root.join("spec/fixtures/images/logos/mudcreek.png").open("rb"),
+      filename:     "mudcreek.png",
       content_type: "image/png"
     )
   end
