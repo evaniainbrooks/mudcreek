@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "LocationCheckIns", type: :request do
   before do
     host! "example.com"
-    Current.tenant = Tenant.create!(key: "test", name: "Test", default: true)
+    Current.tenant = Tenant.create!(key: "test", name: "Test", default: true, features: { locations: true })
   end
 
-  let!(:location) { create(:location, name: "Front Desk") }
+  let!(:location) { create(:location, name: "Front Desk", published: true) }
 
   # ------------------------------------------------------------------ #
   describe "GET /locations/:location_id/checkin — authenticated" do
@@ -105,10 +105,10 @@ RSpec.describe "LocationCheckIns", type: :request do
     end
 
     context "with an unknown location id" do
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          get location_checkin_path(id: 0)
-        }.to raise_error(ActiveRecord::RecordNotFound)
+      it "returns 404" do
+        get location_checkin_path(location_hashid: "nonexistent")
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -147,6 +147,7 @@ RSpec.describe "LocationCheckIns", type: :request do
 
     it "shows the location name" do
       post location_checkin_path(location), params: guest_params
+      follow_redirect!
 
       expect(response.body).to include("Front Desk")
     end
@@ -174,10 +175,10 @@ RSpec.describe "LocationCheckIns", type: :request do
     end
 
     context "with an unknown location id" do
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          post location_checkin_path(id: 0), params: guest_params
-        }.to raise_error(ActiveRecord::RecordNotFound)
+      it "returns 404" do
+        post location_checkin_path(location_hashid: "nonexistent"), params: guest_params
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

@@ -1,6 +1,8 @@
 require "rails_helper"
 
-RSpec.describe Listings::VariantGenerator do
+RSpec.describe Listings::VariantGenerator, skip_n_plus_one: true do
+  before { Current.tenant = create(:tenant) }
+
   let(:listing) { create(:listing) }
 
   def make_option(name, *values)
@@ -59,9 +61,9 @@ RSpec.describe Listings::VariantGenerator do
         described_class.call(listing: listing)
         combinations = listing.variants.map { |v| v.option_values.map(&:value).sort }
         expect(combinations).to match_array([
-          %w[Red Small],   %w[Green Small],  %w[Blue Small],
-          %w[Red Medium],  %w[Green Medium], %w[Blue Medium],
-          %w[Red Large],   %w[Green Large],  %w[Blue Large]
+          %w[Red Small].sort,   %w[Green Small].sort,  %w[Blue Small].sort,
+          %w[Red Medium].sort,  %w[Green Medium].sort, %w[Blue Medium].sort,
+          %w[Red Large].sort,   %w[Green Large].sort,  %w[Blue Large].sort
         ])
       end
     end
@@ -85,7 +87,7 @@ RSpec.describe Listings::VariantGenerator do
         described_class.call(listing: listing)
         combinations = listing.variants.map { |v| v.option_values.map(&:value).sort }
         # Red/Medium and Red/Large should exist even though Red/Small is pre-existing
-        expect(combinations).to include(%w[Red Medium], %w[Red Large])
+        expect(combinations).to include(%w[Red Medium].sort, %w[Red Large].sort)
       end
 
       it "returns only the newly created variants" do

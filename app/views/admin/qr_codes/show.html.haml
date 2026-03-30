@@ -158,7 +158,7 @@
                     %button.btn-close.btn-close-white.me-2.m-auto{ type: "button", "data-bs-dismiss": "toast" }
 
       #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
-        = render "form", qr_code: @qr_code, location_qr_code: @location_qr_code
+        = render "form", qr_code: @qr_code, location_qr_code: @location_qr_code, users: @users
 
       #scans-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "scans-tab" } }
         - if @recent_scans.any?

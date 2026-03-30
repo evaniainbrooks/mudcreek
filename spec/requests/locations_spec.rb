@@ -35,28 +35,28 @@ RSpec.describe "Locations", type: :request do
     context "when the location is not published" do
       let!(:location) { create(:location, published: false) }
 
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          get location_path(location)
-        }.to raise_error(ActiveRecord::RecordNotFound)
+      it "returns 404" do
+        get location_path(location)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
 
     context "when the locations feature is disabled" do
       before { Current.tenant.update!(features: { locations: false }) }
 
-      it "raises ActionController::RoutingError" do
-        expect {
-          get location_path(location)
-        }.to raise_error(ActionController::RoutingError)
+      it "returns 404" do
+        get location_path(location)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
 
     context "with an unknown hashid" do
-      it "raises ActiveRecord::RecordNotFound" do
-        expect {
-          get location_path(id: "unknown")
-        }.to raise_error(ActiveRecord::RecordNotFound)
+      it "returns 404" do
+        get location_path(hashid: "unknown")
+
+        expect(response).to have_http_status(:not_found)
       end
     end
 

@@ -33,6 +33,7 @@ class Admin::QrCodesController < Admin::BaseController
     if @qr_code.save
       redirect_to admin_qr_codes_path, notice: "QR code was successfully created."
     else
+      @users = User.order(:first_name, :last_name)
       render :new, status: :unprocessable_content
     end
   end

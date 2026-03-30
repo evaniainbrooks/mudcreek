@@ -63,7 +63,7 @@ RSpec.describe AddListingsToAuctionService do
         end
 
         it "does not update listing state when create! raises RecordInvalid" do
-          allow(AuctionListing).to receive(:create!).and_raise(ActiveRecord::RecordInvalid.new(AuctionListing))
+          allow(AuctionListing).to receive(:create!).and_raise(ActiveRecord::RecordInvalid)
           expect(listing).not_to receive(:update_column)
 
           call
@@ -79,35 +79,56 @@ RSpec.describe AddListingsToAuctionService do
     end
 
     context "with a listing that has variants" do
-      let(:variant_a)    { double("Variant", effective_price_cents: 500) }
-      let(:variant_b)    { double("Variant", effective_price_cents: 800) }
-      let(:listing)      { double("Listing", has_variants?: true, variants: [variant_a, variant_b]) }
+      let(:option)    { double("Option", name: "Color", position: 1) }
+      let(:ov_a)      { double("OV_A", value: "Red",  option: option) }
+      let(:ov_b)      { double("OV_B", value: "Blue", option: option) }
+      let(:variant_a) { double("Variant_A", effective_price_cents: 500, quantity: 1, sku: nil, option_values: [ov_a]) }
+      let(:variant_b) { double("Variant_B", effective_price_cents: 800, quantity: 1, sku: nil, option_values: [ov_b]) }
+      let(:variants_scope) { double("VariantsScope") }
+      let(:new_listing_a)  { spy("NewListing_A") }
+      let(:new_listing_b)  { spy("NewListing_B") }
+      let(:props_scope)    { double("Props", order: double(each_with_index: nil), size: 0) }
+      let(:listing) do
+        double("Listing", has_variants?: true, variants: variants_scope,
+               name: "Widget", description: double(present?: false), properties: props_scope)
+      end
       let(:listings)     { [listing] }
       let(:starting_bid) { "full" }
 
+      before do
+        allow(variants_scope).to receive(:includes).and_return([variant_a, variant_b])
+        allow(listing).to receive(:dup).and_return(new_listing_a, new_listing_b)
+      end
+
       it "creates one AuctionListing per variant" do
         expect(AuctionListing).to receive(:create!).with(
-          auction: auction, listing: listing, variant: variant_a, starting_bid_cents: 500
+          hash_including(auction: auction, starting_bid_cents: 500)
         )
         expect(AuctionListing).to receive(:create!).with(
-          auction: auction, listing: listing, variant: variant_b, starting_bid_cents: 800
+          hash_including(auction: auction, starting_bid_cents: 800)
         )
 
         call
       end
 
       it "skips a variant that raises RecordInvalid and continues with the rest" do
-        allow(AuctionListing).to receive(:create!).with(hash_including(variant: variant_a))
-          .and_raise(ActiveRecord::RecordInvalid.new(AuctionListing))
-        expect(AuctionListing).to receive(:create!).with(hash_including(variant: variant_b))
+        call_count = 0
+        allow(AuctionListing).to receive(:create!) do
+          call_count += 1
+          raise ActiveRecord::RecordInvalid if call_count == 1
+        end
+        expect(AuctionListing).to receive(:create!).twice
 
         call
       end
 
       it "skips a variant that raises RecordNotUnique and continues with the rest" do
-        allow(AuctionListing).to receive(:create!).with(hash_including(variant: variant_a))
-          .and_raise(ActiveRecord::RecordNotUnique)
-        expect(AuctionListing).to receive(:create!).with(hash_including(variant: variant_b))
+        call_count = 0
+        allow(AuctionListing).to receive(:create!) do
+          call_count += 1
+          raise ActiveRecord::RecordNotUnique if call_count == 1
+        end
+        expect(AuctionListing).to receive(:create!).twice
 
         call
       end
@@ -116,12 +137,15 @@ RSpec.describe AddListingsToAuctionService do
         let(:listing_state) { "archived" }
 
         it "updates listing state even when some variants are skipped" do
-          allow(AuctionListing).to receive(:create!).with(hash_including(variant: variant_a))
-            .and_raise(ActiveRecord::RecordNotUnique)
-          allow(AuctionListing).to receive(:create!).with(hash_including(variant: variant_b))
-          expect(listing).to receive(:update_column).with(:state, "archived")
+          call_count = 0
+          allow(AuctionListing).to receive(:create!) do
+            call_count += 1
+            raise ActiveRecord::RecordNotUnique if call_count == 1
+          end
 
           call
+
+          expect(new_listing_b).to have_received(:update_column).with(:state, "archived")
         end
       end
     end

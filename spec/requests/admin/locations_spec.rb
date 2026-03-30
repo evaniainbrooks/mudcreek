@@ -85,10 +85,16 @@ RSpec.describe "Admin::Locations", type: :request do
     end
 
     it "renders a QR code for the check-in URL" do
+      location.create_qr_code!(
+        name: "#{location.name} Check-in",
+        destination_url: location_checkin_url(location),
+        active: true
+      )
+
       get admin_location_path(location)
 
       expect(response.body).to include("svg")
-      expect(response.body).to include(location_checkin_url(location))
+      expect(response.body).to include(qr_redirect_url(location.qr_code))
     end
 
     context "when unauthenticated" do

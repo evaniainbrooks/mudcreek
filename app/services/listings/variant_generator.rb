@@ -2,6 +2,8 @@ module Listings
   class VariantGenerator
     def self.call(listing:)
       option_values_by_option = listing.options.includes(:option_values).map { |o| o.option_values.to_a }
+      return [] if option_values_by_option.empty?
+
       combinations = option_values_by_option.reduce([[]]) { |combos, vals| combos.product(vals).map(&:flatten) }
 
       combinations.each_with_object([]) do |combo, created|
