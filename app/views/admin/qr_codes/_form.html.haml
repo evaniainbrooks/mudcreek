@@ -9,7 +9,7 @@
         - qr_code.errors.full_messages.each do |message|
           %li= message
 
-  - if @location_qr_code
+  - if location_qr_code
     .alert.alert-info.d-flex.align-items-center.gap-2.mb-4
       %i.bi.bi-geo-alt-fill
       This QR code is managed by a location. Only the Admin section can be edited.
@@ -17,7 +17,7 @@
 
   .row.g-4
     .col-lg-8
-      - unless @location_qr_code
+      - unless location_qr_code
         %fieldset.card.shadow-sm.border-0.mb-4
           %legend.card-header.fw-semibold
             %i.bi.bi-info-circle.me-1
@@ -61,7 +61,7 @@
           .mb-3
             = f.label :notify_user_id, "Scan notification", class: "form-label"
             = f.select :notify_user_id,
-                options_from_collection_for_select(@users, :id, :name, qr_code.notify_user_id),
+                options_from_collection_for_select(users, :id, :name, qr_code.notify_user_id),
                 { include_blank: "— none —" },
                 class: "form-select"
             .form-text An email will be sent to this user each time the QR code is scanned.
@@ -73,7 +73,7 @@
             - if qr_code.errors[:notes].any?
               .invalid-feedback= qr_code.errors[:notes].to_sentence
 
-    - unless @location_qr_code
+    - unless location_qr_code
       .col-lg-4
         %fieldset.card.shadow-sm.border-0
           %legend.card-header.fw-semibold

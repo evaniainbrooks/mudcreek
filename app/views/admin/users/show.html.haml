@@ -69,7 +69,7 @@
                   - if @user.verification.validated?
                     %span.badge.text-bg-success Validated
                     - if @user.verification.validated_by
-                      %span.text-muted.ms-2.small= "by #{@user.verification.validated_by.name}"
+                      %span.text-muted.ms-2.small by #{@user.verification.validated_by.name}
                   - else
                     %span.badge.text-bg-warning Not Validated
                 - else

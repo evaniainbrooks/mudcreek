@@ -98,7 +98,7 @@
             %p.mt-2.mb-1
               %small.text-muted.text-break= qr_redirect_url(@qr_code)
             .d-flex.justify-content-center.gap-3.text-muted.small
-              %span= "#{@qr_code.scan_count} scans"
+              %span #{@qr_code.scan_count} scans
               - if @qr_code.last_scanned_at
                 %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
         - else
