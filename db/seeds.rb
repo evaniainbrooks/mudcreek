@@ -7,9 +7,59 @@ mudcreek = Tenant.find_or_create_by!(key: "mudcreek") do |t|
   t.default = true
 end
 
-Tenant.find_or_create_by!(key: "whitelabel") do |t|
-  t.name = "Whitelabel"
+chignecto = Tenant.find_or_create_by!(key: "chignecto") do |t|
+  t.name    = "Chignecto Mercantile"
+  t.tagline = "Where Atlantic Canada comes to trade"
   t.default = false
+end
+
+chignecto.features.tap do |f|
+  f.auctions         = true
+  f.locations        = true
+  f.oauth_login      = true
+  f.sold_listings    = true
+  f.watchlist        = true
+  f.listing_variants = true
+end
+chignecto.primary_color   = "#C9A24A"
+chignecto.secondary_color = "#1F3442"
+chignecto.save!
+
+junglefowl = Tenant.find_or_create_by!(key: "junglefowl") do |t|
+  t.name          = "Junglefowl BJJ"
+  t.tagline       = "Martial Arts in Sackville, NB"
+  t.custom_domain = "junglefowlbjj.ca"
+  t.default       = false
+end
+
+junglefowl.features.tap do |f|
+  f.auctions         = true
+  f.locations        = true
+  f.oauth_login      = true
+  f.sold_listings    = true
+  f.watchlist        = true
+  f.listing_variants = true
+end
+junglefowl.primary_color   = "#5A1AD1"
+junglefowl.secondary_color = "#D15A1A"
+junglefowl.save!
+
+junglefowl.create_address!(
+  address_type:   "primary",
+  street_address: "86 Main St",
+  city:           "Sackville",
+  province:       "NB",
+  postal_code:    "E4L 1A0",
+  country:        "CA"
+) unless junglefowl.address
+
+[
+  { platform: :facebook,  slug: "junglefowlbjj" },
+  { platform: :instagram, slug: "junglefowlbjj" }
+].each do |attrs|
+  junglefowl.social_media_accounts.find_or_create_by!(platform: attrs[:platform]) do |a|
+    a.slug = attrs[:slug]
+  end
 end
 
 mudcreek.create_address!(
@@ -33,10 +83,15 @@ mudcreek.create_address!(
   end
 end
 
-unless mudcreek.logo.attached?
-  mudcreek.logo.attach(
-    io: Rails.root.join("spec/fixtures/images/mudcreek_logo.png").open("rb"),
-    filename: "mudcreek_logo.png",
+Tenant.find_each do |tenant|
+  next if tenant.logo.attached?
+
+  logo_path = Rails.root.join("spec/fixtures/images/logos/#{tenant.key}.png")
+  next unless logo_path.exist?
+
+  tenant.logo.attach(
+    io: logo_path.open("rb"),
+    filename: "#{tenant.key}.png",
     content_type: "image/png"
   )
 end
@@ -97,6 +152,32 @@ end
   end
 end
 
+# Chignecto Roles & Permissions
+chignecto_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: chignecto) do |r|
+  r.description = "Full access to everything."
+end
+
+Permission::RESOURCES.each do |resource|
+  Permission::ACTIONS.each do |action|
+    chignecto_super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
+      p.tenant = chignecto
+    end
+  end
+end
+
+# Junglefowl Roles & Permissions
+junglefowl_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: junglefowl) do |r|
+  r.description = "Full access to everything."
+end
+
+Permission::RESOURCES.each do |resource|
+  Permission::ACTIONS.each do |action|
+    junglefowl_super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
+      p.tenant = junglefowl
+    end
+  end
+end
+
 puts "Seeded #{Role.count} roles and #{Permission.count} permissions."
 
 Offer.destroy_all
@@ -113,6 +194,28 @@ User.create!(
   password_confirmation: default_password,
   activated_at: 1.day.ago,
   role: super_admin
+)
+
+User.create!(
+  tenant: chignecto,
+  email_address: "admin@chignecto.com",
+  first_name: "Default",
+  last_name: "Admin",
+  password: default_password,
+  password_confirmation: default_password,
+  activated_at: 1.day.ago,
+  role: chignecto_super_admin
+)
+
+User.create!(
+  tenant: junglefowl,
+  email_address: "admin@junglefowlbjj.ca",
+  first_name: "Default",
+  last_name: "Admin",
+  password: default_password,
+  password_confirmation: default_password,
+  activated_at: 1.day.ago,
+  role: junglefowl_super_admin
 )
 
 # Generate fake users for dev pagination testing

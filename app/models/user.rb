@@ -25,10 +25,12 @@ class User < ApplicationRecord
   has_many :category_interests, class_name: "UserCategoryInterest", dependent: :destroy
   has_many :interested_categories, through: :category_interests, source: :category, class_name: "Listings::Category"
   has_one :address,      -> { where(address_type: "profile") }, class_name: "Address", as: :addressable
-  has_one :cart_address, -> { where(address_type: "cart") },    class_name: "Address", as: :addressable
+  has_one :cart_address,  -> { where(address_type: "cart") },    class_name: "Address", as: :addressable
+  has_one :verification, class_name: "Users::Verification", dependent: :destroy
 
   before_destroy { Address.where(addressable: self).delete_all }
   accepts_nested_attributes_for :address, update_only: true
+  accepts_nested_attributes_for :verification
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

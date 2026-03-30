@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
   create_enum "settlement_line_item_type", ["hammer_price", "buyers_premium", "tax", "seller_commission", "seller_fee"]
   create_enum "social_media_platform", ["facebook", "instagram", "youtube", "twitter", "tiktok", "snapchat", "linkedin", "discord", "patreon", "onlyfans", "twitch"]
   create_enum "transaction_state", ["pending", "succeeded", "failed"]
+  create_enum "user_verification_status", ["not_validated", "validated"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -192,6 +193,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
+    t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
   end
@@ -415,11 +417,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
 
   create_table "locations", force: :cascade do |t|
     t.string "checkin_exit_url"
+    t.string "city"
+    t.string "country", default: "CA"
     t.datetime "created_at", null: false
-    t.string "hashid"
+    t.string "hashid", null: false
     t.string "ical_url"
     t.string "name", null: false
+    t.string "postal_code"
+    t.string "province"
     t.boolean "published", default: false, null: false
+    t.string "street_address"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_locations_on_hashid", unique: true
@@ -878,6 +885,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
     t.index ["tenant_id"], name: "index_users_on_tenant_id"
   end
 
+  create_table "users_verifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.enum "status", default: "not_validated", null: false, enum_type: "user_verification_status"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "validated_by_id"
+    t.index ["tenant_id"], name: "index_users_verifications_on_tenant_id"
+    t.index ["user_id"], name: "index_users_verifications_on_user_id", unique: true
+  end
+
   create_table "watchlist_items", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "listing_id", null: false
@@ -909,7 +927,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "check_ins", "locations"
-  add_foreign_key "check_ins", "tenants", on_delete: :cascade
+  add_foreign_key "check_ins", "tenants"
   add_foreign_key "check_ins", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
@@ -945,7 +963,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"
   add_foreign_key "listings_variants", "tenants", on_delete: :cascade
-  add_foreign_key "locations", "tenants", on_delete: :cascade
+  add_foreign_key "locations", "tenants"
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
   add_foreign_key "oauth_identities", "tenants"
@@ -991,6 +1009,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_130610) do
   add_foreign_key "user_category_interests", "users"
   add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"
+  add_foreign_key "users_verifications", "tenants", on_delete: :cascade
+  add_foreign_key "users_verifications", "users"
+  add_foreign_key "users_verifications", "users", column: "validated_by_id"
   add_foreign_key "watchlist_items", "listings"
   add_foreign_key "watchlist_items", "tenants", on_delete: :cascade
   add_foreign_key "watchlist_items", "users"

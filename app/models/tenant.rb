@@ -34,6 +34,9 @@ class Tenant < ApplicationRecord
   has_many :invoices, dependent: :destroy
   has_many :qr_codes, dependent: :destroy
   has_many :auction_registrations, dependent: :destroy
+  has_many :locations, dependent: :destroy
+  has_many :check_ins, dependent: :destroy
+  has_many :verifications, class_name: "Users::Verification", dependent: :destroy
 
   has_many :social_media_accounts, dependent: :destroy
   has_many :property_sets, class_name: "Listings::PropertySet", dependent: :destroy

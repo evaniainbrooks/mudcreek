@@ -1,5 +1,6 @@
 import { application } from "./application"
 import AddCardController from "./add_card_controller"
+import AsyncContentController from "./async_content_controller"
 import DirectUploadController from "./direct_upload_controller"
 import BidIncrementScheduleController from "./bid_increment_schedule_controller"
 import AddressController from "./address_controller"
@@ -28,6 +29,7 @@ import ClockController from "./clock_controller"
 import QrImageController from "./qr_image_controller"
 
 application.register("add-card", AddCardController)
+application.register("async-content", AsyncContentController)
 application.register("direct-upload", DirectUploadController)
 application.register("address", AddressController)
 application.register("bid-increment-schedule", BidIncrementScheduleController)
