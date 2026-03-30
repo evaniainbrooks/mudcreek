@@ -6,7 +6,7 @@ RSpec.describe LocationCalendarService do
   around { |ex| travel_to(Time.zone.local(2026, 3, 25, 10, 0, 0)) { ex.run } }
 
   let(:location) { build_stubbed(:location) }
-  let(:attachment) { instance_double(ActiveStorage::Attached::One, attached?: true, download: ics_data) }
+  let(:attachment) { double(attached?: true, download: ics_data) }
 
   before { allow(location).to receive(:calendar_file).and_return(attachment) }
 
@@ -181,6 +181,16 @@ RSpec.describe LocationCalendarService do
   # ------------------------------------------------------------------ #
   context "when the ICS data is malformed" do
     let(:ics_data) { "this is not valid icalendar data %%%" }
+
+    it "returns an empty array" do
+      expect(service.today_events).to eq([])
+    end
+  end
+
+  context "when the calendar download raises" do
+    let(:ics_data) { "" }
+
+    before { allow(attachment).to receive(:download).and_raise(StandardError, "network error") }
 
     it "returns an empty array" do
       expect(service.today_events).to eq([])

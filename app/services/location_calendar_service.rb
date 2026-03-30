@@ -11,7 +11,7 @@ class LocationCalendarService
     calendars = Icalendar::Calendar.parse(@location.calendar_file.download)
     calendars.flat_map(&:events)
              .select { |e| occurs_today?(e, now) }
-             .sort_by { |e| e.dtstart.to_time rescue Time.current }
+             .sort_by { |e| [e.dtstart.hour, e.dtstart.min] rescue [0, 0] }
   rescue => e
     Rails.logger.error("Calendar parse error for location #{@location.id}: #{e.message}")
     []
