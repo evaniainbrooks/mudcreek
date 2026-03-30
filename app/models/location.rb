@@ -3,6 +3,7 @@ class Location < ApplicationRecord
   include HasHashid
 
   has_many :check_ins, dependent: :destroy
+  has_one :qr_code, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
   has_one_attached :logo
   has_one_attached :background

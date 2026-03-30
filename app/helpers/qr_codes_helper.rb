@@ -17,13 +17,11 @@ module QrCodesHelper
     table.with_value_column("Scans") { |qr| qr.scan_count }
     table.with_value_column("Last Scanned") { |qr| qr.last_scanned_at }
     table.with_column("", html_class: "text-end") do |qr|
-      safe_join([
-        link_to("Edit", edit_admin_qr_code_path(qr), class: "btn btn-sm btn-outline-secondary"),
-        " ",
+      unless qr.location_qr_code?
         link_to("Delete", admin_qr_code_path(qr),
           data: { turbo_method: :delete, turbo_confirm: "Delete \"#{qr.name}\"?" },
           class: "btn btn-sm btn-outline-danger")
-      ])
+      end
     end
     render(table)
   end

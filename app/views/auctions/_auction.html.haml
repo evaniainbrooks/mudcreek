@@ -38,6 +38,8 @@
         .d-flex.align-items-center.gap-2.text-muted.small.mb-1
           %i.bi.bi-geo-alt.flex-shrink-0
           %span= auction.address.to_fs(:short)
+      .mb-1
+        %span.badge.text-bg-secondary.fw-semibold= pluralize(auction.auction_listings.size, "listing")
       .mt-auto.pt-3
         - if registration&.pending?
           .d-flex.align-items-center.gap-2

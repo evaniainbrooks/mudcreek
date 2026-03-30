@@ -9,15 +9,20 @@ class Admin::QrCodesController < Admin::BaseController
   end
 
   def show
-    @recent_scans = @qr_code.qr_scans.order(created_at: :desc).limit(20)
+    @recent_scans     = @qr_code.qr_scans.order(created_at: :desc).limit(20)
+    @users            = User.order(:first_name, :last_name)
+    @location_qr_code = @qr_code.location_qr_code?
   end
 
   def new
     @qr_code = QrCode.new
     authorize(@qr_code)
+    @users = User.order(:first_name, :last_name)
   end
 
   def edit
+    @users = User.order(:first_name, :last_name)
+    @location_qr_code = @qr_code.location_qr_code?
   end
 
   def create
@@ -33,14 +38,21 @@ class Admin::QrCodesController < Admin::BaseController
   end
 
   def update
-    if @qr_code.update(qr_code_params)
+    permitted = @qr_code.location_qr_code? ? location_qr_code_params : qr_code_params
+    if @qr_code.update(permitted)
       redirect_to admin_qr_codes_path, notice: "QR code was successfully updated."
     else
+      @location_qr_code = @qr_code.location_qr_code?
+      @users = User.order(:first_name, :last_name)
       render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
+    if @qr_code.location_qr_code?
+      redirect_to admin_qr_codes_path, alert: "Location QR codes cannot be deleted."
+      return
+    end
     @qr_code.destroy!
     redirect_to admin_qr_codes_path, notice: "QR code was successfully deleted."
   end
@@ -57,6 +69,10 @@ class Admin::QrCodesController < Admin::BaseController
   end
 
   def qr_code_params
-    params.require(:qr_code).permit(:name, :slug, :destination_url, :inactive_url, :notes, :active, :expires_at)
+    params.require(:qr_code).permit(:name, :slug, :destination_url, :inactive_url, :notes, :active, :expires_at, :notify_user_id)
+  end
+
+  def location_qr_code_params
+    params.require(:qr_code).permit(:notes, :notify_user_id)
   end
 end

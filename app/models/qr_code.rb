@@ -2,6 +2,8 @@ class QrCode < ApplicationRecord
   include MultiTenant
 
   belongs_to :owner, class_name: "User", optional: true
+  belongs_to :notify_user, class_name: "User", optional: true
+  belongs_to :location, optional: true
   has_many :qr_scans, dependent: :destroy
 
   validates :name, presence: true
@@ -15,6 +17,8 @@ class QrCode < ApplicationRecord
   scope :ordered, -> { order(:name) }
 
   def to_param = slug
+
+  def location_qr_code? = location_id.present?
 
   def live?
     active? && (expires_at.nil? || expires_at.future?)
@@ -31,6 +35,7 @@ class QrCode < ApplicationRecord
       ip_address: request.remote_ip,
       user_agent: request.user_agent
     )
+    QrCodeMailer.scan_notification(self).deliver_later if notify_user
   end
 
   private

@@ -7,10 +7,10 @@ class LocationCalendarService
     return [] unless @location.calendar_file.attached?
 
     require "icalendar"
-    today     = Time.zone.today
+    now       = Time.current
     calendars = Icalendar::Calendar.parse(@location.calendar_file.download)
     calendars.flat_map(&:events)
-             .select { |e| occurs_today?(e, today) }
+             .select { |e| occurs_today?(e, now) }
              .sort_by { |e| e.dtstart.to_time rescue Time.current }
   rescue => e
     Rails.logger.error("Calendar parse error for location #{@location.id}: #{e.message}")
@@ -19,12 +19,20 @@ class LocationCalendarService
 
   private
 
-  def occurs_today?(event, today)
+  def event_local_today(dtstart, now)
+    tz_id = dtstart.ical_params["tzid"]&.first.presence
+    tz_id ? now.in_time_zone(tz_id).to_date : now.utc.to_date
+  rescue TZInfo::InvalidTimezoneIdentifier, ActiveSupport::TimeZoneNotFoundError
+    now.utc.to_date
+  end
+
+  def occurs_today?(event, now)
     return false unless event.dtstart
     dtstart_date = event.dtstart.to_date rescue nil
     return false unless dtstart_date
-    return false if dtstart_date > today
 
+    today = event_local_today(event.dtstart, now)
+    return false if dtstart_date > today
     return dtstart_date == today if event.rrule.blank?
 
     event.rrule.any? { |rule| rrule_occurs_on?(rule, dtstart_date, today) }

@@ -88,6 +88,10 @@
                     %i.bi.bi-x-lg.me-1
                     Remove
           .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
+          .mt-3
+            = f.label :background_tint_opacity, "Background tint opacity (0–1)", class: "form-label"
+            = f.number_field :background_tint_opacity, class: "form-control", min: 0, max: 1, step: 0.05
+            .form-text Controls how dark the overlay on the background is. 0 = no tint, 1 = fully black.
 
       = f.fields_for :address do |a|
         %fieldset.card.shadow-sm.border-0

@@ -47,12 +47,13 @@
         - unless @auction_listing.reserve_price_cents.present? || @listing.sold?
           .position-absolute.top-0.end-0.p-2
             %span.badge.text-bg-success No Reserve
+        - if @listing.lot&.show_attribution?
+          .position-absolute.bottom-0.start-0.p-2
+            = lot_number_badge(@listing.lot)
     .col-lg-5{data: { registration_status: registration_status(@registration),
         current_user_token: user_bid_token(Current.user) }}
       .position-sticky{ style: "top: 1.5rem" }
         %h1.fw-bold.mb-1= @listing.name
-        - if @listing.lot&.show_attribution?
-          .mb-2= lot_number_badge(@listing.lot)
 
         .mb-3
           %p.text-muted.small.mb-0 Auction
@@ -84,6 +85,20 @@
             %button.btn.btn-link.p-0.text-muted.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
               %i.bi.bi-geo-alt.me-1
               = addr.to_fs(:short)
+        - if (lot = @listing.lot)&.show_attribution?
+          - other_count = lot.listings.where(published: true).where.not(id: @listing.id).count
+          %hr.mt-4.mb-3
+          = link_to auction_path(@auction, lot_id: lot.hashid),
+              class: "d-flex align-items-center gap-3 text-decoration-none text-body p-2 rounded-3 lot-attribution-btn" do
+            .rounded-circle.bg-secondary-subtle.d-flex.align-items-center.justify-content-center.flex-shrink-0{ style: "width: 48px; height: 48px" }
+              %i.bi.bi-person-fill.text-secondary{ style: "font-size: 1.5rem" }
+            .flex-grow-1
+              .fw-semibold= lot.name
+              .text-muted.small= lot.owner.name
+            .d-flex.align-items-center.gap-1.flex-shrink-0
+              - if other_count > 0
+                %span.small.text-muted See #{other_count} other #{"item".pluralize(other_count)} from this seller
+              %i.bi.bi-chevron-right.text-muted
 
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)

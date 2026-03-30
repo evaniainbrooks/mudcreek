@@ -1,0 +1,10 @@
+<p>Your QR code <strong><%= @qr_code.name %></strong> was just scanned.</p>
+
+<p>
+  <strong>Scanned at:</strong> <%= Time.current.strftime("%B %-d, %Y at %l:%M %p") %><br>
+  <strong>Total scans:</strong> <%= @qr_code.scan_count %>
+</p>
+
+<p>
+  <%= link_to "View QR code", admin_qr_code_url(@qr_code) %>
+</p>

@@ -416,6 +416,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   end
 
   create_table "locations", force: :cascade do |t|
+    t.float "background_tint_opacity", default: 0.5, null: false
     t.string "checkin_exit_url"
     t.string "city"
     t.string "country", default: "CA"
@@ -584,13 +585,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
     t.datetime "expires_at"
     t.text "inactive_url"
     t.datetime "last_scanned_at"
+    t.bigint "location_id"
     t.string "name", null: false
     t.text "notes"
+    t.bigint "notify_user_id"
     t.bigint "owner_id"
     t.integer "scan_count", default: 0, null: false
     t.string "slug", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_qr_codes_on_location_id", unique: true
+    t.index ["notify_user_id"], name: "index_qr_codes_on_notify_user_id"
     t.index ["owner_id"], name: "index_qr_codes_on_owner_id"
     t.index ["tenant_id", "slug"], name: "index_qr_codes_on_tenant_id_and_slug", unique: true
   end
@@ -982,7 +987,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "permissions", "tenants"
   add_foreign_key "proxy_bids", "auction_listings"
   add_foreign_key "proxy_bids", "auction_registrations"
+  add_foreign_key "qr_codes", "locations", validate: false
   add_foreign_key "qr_codes", "tenants"
+  add_foreign_key "qr_codes", "users", column: "notify_user_id", validate: false
   add_foreign_key "qr_codes", "users", column: "owner_id", on_delete: :nullify
   add_foreign_key "qr_scans", "qr_codes"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false

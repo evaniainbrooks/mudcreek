@@ -1,0 +1,6 @@
+Your QR code "<%= @qr_code.name %>" was just scanned.
+
+Scanned at: <%= Time.current.strftime("%B %-d, %Y at %l:%M %p") %>
+Total scans: <%= @qr_code.scan_count %>
+
+View QR code: <%= admin_qr_code_url(@qr_code) %>

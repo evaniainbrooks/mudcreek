@@ -10,7 +10,7 @@ class AuctionsController < ApplicationController
 
     base = Auction.where(published: true)
     @filter_total = base.count
-    scope = base.with_attached_poster.includes(:address)
+    scope = base.with_attached_poster.includes(:address, :auction_listings)
 
     scope = scope.search_name(@search) if @search
 
@@ -44,6 +44,7 @@ class AuctionsController < ApplicationController
     @listing_state   = params[:state].presence_in(%w[on_sale sold cancelled])
     @filter          = params[:filter].presence_in(%w[my_listings my_bids watchlist]) if Current.user
     @category_hashid = params[:category_id].presence
+    @lot_hashid      = params[:lot_id].presence
     @categories      = Listings::Category
       .joins(category_assignments: { listing: :auction_listings })
       .where(auction_listings: { auction_id: @auction.id })
@@ -66,6 +67,11 @@ class AuctionsController < ApplicationController
     if @category_hashid
       category = Listings::Category.find_by(hashid: @category_hashid)
       scope = scope.by_category(category) if category
+    end
+
+    if @lot_hashid
+      lot = Lot.find_by(hashid: @lot_hashid)
+      scope = scope.where(listing_id: lot.listing_ids) if lot
     end
 
     @auction_listings = scope.with_bid_stats.order(:position).to_a

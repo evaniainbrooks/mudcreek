@@ -1,5 +1,6 @@
 :ruby
-  qr = RQRCode::QRCode.new(location_checkin_url(@location, tenant_key: Current.tenant.key))
+  qr_url = @location.qr_code ? qr_redirect_url(@location.qr_code) : location_checkin_url(@location)
+  qr = RQRCode::QRCode.new(qr_url)
   bg_style = if @location.background.attached? && !@location.background.video?
     "background-image: url(#{url_for(@location.background)}); " \
     "background-size: cover; background-position: center;"
@@ -35,7 +36,7 @@
             autoplay: true, loop: true, muted: true, playsinline: true,
             style: "position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"}
 
-  %div{ style: "position: absolute; inset: 0; background: rgba(0,0,0,0.5)" }
+  %div{ style: "position: absolute; inset: 0; background: rgba(0,0,0,#{@location.background_tint_opacity})" }
   %div{ style: "position: relative; display: flex; flex-direction: column; height: 100%" }
 
     %div{ style: top_bar_style }

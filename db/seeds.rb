@@ -6,6 +6,14 @@ mudcreek = Tenant.find_or_create_by!(key: "mudcreek") do |t|
   t.tagline = "Auctions & Consignment"
   t.default = true
 end
+mudcreek.features.tap do |f|
+  f.auctions         = true
+  f.locations        = true
+  f.oauth_login      = true
+  f.sold_listings    = true
+  f.watchlist        = true
+  f.listing_variants = true
+end
 
 chignecto = Tenant.find_or_create_by!(key: "chignecto") do |t|
   t.name    = "Chignecto Mercantile"
@@ -1391,6 +1399,36 @@ end
 
 puts "Attached #{listing_images_attached} listing images (#{listing_images_skipped} skipped due to download errors)."
 
+# Listing videos
+FIXTURES_VIDEO_DIR = Rails.root.join("spec/fixtures/videos")
+
+listing_videos = {
+  "Woodworking Chisel Set"         => { file: "creek.mp4",  poster: true },
+  "Brass Ship's Compass"           => { file: "river.mp4",  poster: true },
+  "Gentleman's Pocket Watch"       => { file: "forest.mp4", poster: false },
+  "Watercolour Landscape Painting" => { file: "farm.mp4",   poster: false }
+}
+
+listing_videos.each do |listing_name, opts|
+  listing = Listing.find_by(name: listing_name)
+  next unless listing
+
+  unless listing.videos.any?
+    path = FIXTURES_VIDEO_DIR.join(opts[:file])
+    next unless path.exist?
+
+    listing.videos.attach(
+      io:           path.open("rb"),
+      filename:     opts[:file],
+      content_type: "video/mp4"
+    )
+  end
+
+  listing.update_columns(show_video_as_poster: opts[:poster]) if opts[:poster]
+end
+
+puts "Attached listing videos."
+
 # Offers
 Current.tenant = mudcreek
 if Rails.env.development? || Rails.env.test?
@@ -1916,3 +1954,87 @@ end
 Current.tenant = nil
 
 puts "Seeded #{Page.count} pages."
+
+# Locations
+Current.tenant = mudcreek
+
+[
+  {
+    name:            "Main Showroom",
+    message:         "<p>Welcome to Mudcreek Auctions &amp; Consignment. Scan the QR code to sign in and get started.</p>",
+    background:      "barn.mp4",
+    background_type: "video/mp4",
+    address: {
+      street_address: "101 River Road",
+      city:           "Kamloops",
+      province:       "BC",
+      postal_code:    "V2C 2A1",
+      country:        "CA"
+    }
+  },
+  {
+    name:            "Auction Floor",
+    message:         "<p>Live auction in progress. Please silence your phone and take a seat — bidding starts soon.</p>",
+    background:      "creek.jpg",
+    background_type: "image/jpeg",
+    address: {
+      street_address: "101 River Road",
+      city:           "Kamloops",
+      province:       "BC",
+      postal_code:    "V2C 2A1",
+      country:        "CA"
+    }
+  },
+  {
+    name:            "Consignment Drop-off",
+    message:         "<p>Dropping off items? Check in here and a staff member will be with you shortly to assist.</p>",
+    background:      "farm.jpg",
+    background_type: "image/jpeg",
+    address: {
+      street_address: "101 River Road",
+      city:           "Kamloops",
+      province:       "BC",
+      postal_code:    "V2C 2A1",
+      country:        "CA"
+    }
+  }
+].each do |attrs|
+  location = Location.find_or_create_by!(name: attrs[:name]) do |l|
+    l.published = true
+    l.message   = attrs[:message]
+    l.build_address(attrs[:address])
+  end
+
+  unless location.logo.attached?
+    location.logo.attach(
+      io:           Rails.root.join("spec/fixtures/images/mudcreek_logo.png").open("rb"),
+      filename:     "mudcreek_logo.png",
+      content_type: "image/png"
+    )
+  end
+
+  unless location.background.attached?
+    fixture_dir = attrs[:background_type].start_with?("video/") ? "spec/fixtures/videos" : "spec/fixtures/images"
+    location.background.attach(
+      io:           Rails.root.join(fixture_dir, attrs[:background]).open("rb"),
+      filename:     attrs[:background],
+      content_type: attrs[:background_type]
+    )
+  end
+
+  unless location.qr_code
+    location.create_qr_code!(
+      name:            "#{location.name} Check-in",
+      destination_url: Rails.application.routes.url_helpers.location_checkin_url(
+        location,
+        tenant_key: Current.tenant.key,
+        **Rails.application.routes.default_url_options
+      ),
+      active:          true
+    )
+  end
+end
+
+Current.tenant = nil
+
+puts "Seeded #{Location.count} locations."
