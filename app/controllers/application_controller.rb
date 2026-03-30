@@ -53,6 +53,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def default_after_authentication_url
+    if Current.tenant.features.user_verifications? && Current.user.verification.nil?
+      profile_verification_url
+    else
+      root_url
+    end
+  end
+
   def set_default_meta_tags
     set_meta_tags(
       site: "Mudcreek",

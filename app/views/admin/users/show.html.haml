@@ -63,6 +63,27 @@
                 - else
                   %span.text-muted —
 
+              %dt.col-sm-3 Verification
+              %dd.col-sm-9
+                - if @user.verification
+                  - if @user.verification.validated?
+                    %span.badge.text-bg-success Validated
+                    - if @user.verification.validated_by
+                      %span.text-muted.ms-2.small= "by #{@user.verification.validated_by.name}"
+                  - else
+                    %span.badge.text-bg-warning Not Validated
+                - else
+                  %span.text-muted —
+
+              %dt.col-sm-3 Verification Document
+              %dd.col-sm-9
+                - if @user.verification&.verification_document&.attached?
+                  = link_to @user.verification.verification_document.filename,
+                      rails_blob_url(@user.verification.verification_document, disposition: "inline"),
+                      target: "_blank", rel: "noopener noreferrer"
+                - else
+                  %span.text-muted —
+
       #edit-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "edit-tab" },
           class: @user.errors.any? ? "show active" : ""}
         = render "edit_pane", user: @user, roles: @roles

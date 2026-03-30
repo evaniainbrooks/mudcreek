@@ -142,6 +142,68 @@ RSpec.describe "Admin::Users", type: :request do
       end
     end
 
+    context "when setting verification status to validated" do
+      context "and the user has no existing verification" do
+        it "creates a verification record" do
+          expect {
+            patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "validated" } }
+          }.to change { Users::Verification.count }.by(1)
+        end
+
+        it "sets the status to validated" do
+          patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "validated" } }
+
+          expect(target.reload.verification.status).to eq("validated")
+        end
+
+        it "records the validating admin as validated_by" do
+          patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "validated" } }
+
+          expect(target.reload.verification.validated_by).to eq(viewer)
+        end
+      end
+
+      context "and the user already has a verification" do
+        before { create(:users_verification, user: target) }
+
+        it "does not create a duplicate verification record" do
+          expect {
+            patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "validated" } }
+          }.not_to change { Users::Verification.count }
+        end
+
+        it "updates the status to validated" do
+          patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "validated" } }
+
+          expect(target.reload.verification.status).to eq("validated")
+        end
+      end
+    end
+
+    context "when setting verification status to not_validated" do
+      before { create(:users_verification, :validated, user: target) }
+
+      it "updates the status to not_validated" do
+        patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "not_validated" } }
+
+        expect(target.reload.verification.status).to eq("not_validated")
+      end
+
+      it "clears validated_by" do
+        patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "not_validated" } }
+
+        expect(target.reload.verification.validated_by).to be_nil
+      end
+    end
+
+    context "when verification_status is blank" do
+      it "does not create a verification record" do
+        expect {
+          patch admin_user_path(target), params: { user: { first_name: target.first_name, last_name: target.last_name, email_address: target.email_address, verification_status: "" } }
+        }.not_to change { Users::Verification.count }
+      end
+    end
+
     context "with an invalid email" do
       it "returns 422" do
         patch admin_user_path(target), params: { user: { email_address: "" } }

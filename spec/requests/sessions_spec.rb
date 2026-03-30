@@ -71,6 +71,29 @@ RSpec.describe "Sessions", type: :request do
           expect(response).to redirect_to(admin_listings_url)
         end
       end
+
+      context "when the user_verifications feature is enabled and the user has no verification" do
+        before { Current.tenant.update!(features: { user_verifications: true }) }
+
+        it "redirects to the verification page" do
+          post session_path, params: { email_address: user.email_address, password: "password" }
+
+          expect(response).to redirect_to(profile_verification_url)
+        end
+      end
+
+      context "when the user_verifications feature is enabled and the user already has a verification" do
+        before do
+          Current.tenant.update!(features: { user_verifications: true })
+          create(:users_verification, user: user)
+        end
+
+        it "redirects to root" do
+          post session_path, params: { email_address: user.email_address, password: "password" }
+
+          expect(response).to redirect_to(root_url)
+        end
+      end
     end
 
     context "with invalid credentials" do

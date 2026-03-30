@@ -21,6 +21,11 @@
     = link_to profile_listings_path, class: "nav-link #{'active' if request.path == profile_listings_path}" do
       %i.bi.bi-tag.me-2
       Listings
+  - if Current.tenant.features.user_verifications?
+    %li.nav-item
+      = link_to profile_verification_path, class: "nav-link #{'active' if request.path == profile_verification_path}" do
+        %i.bi.bi-shield-check.me-2
+        Verification
   - if Current.tenant.features.watchlist?
     %li.nav-item
       = link_to profile_watchlist_path, class: "nav-link #{'active' if request.path == profile_watchlist_path}" do

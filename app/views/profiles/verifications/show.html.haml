@@ -1,0 +1,37 @@
+- set_meta_tags title: "Verification"
+
+%h1.fw-bold.mb-4 My Profile
+
+.page-container
+  = render "profiles/tabs"
+  .p-4
+    .row.justify-content-center
+      .col-12.col-lg-6
+        .card.shadow-sm.border-0
+          .card-body.p-4
+            %h2.card-title.h5.mb-1
+              %i.bi.bi-shield-check.me-2
+              Identity Verification
+            %p.text-muted.mb-4 Upload a government-issued photo ID to verify your identity.
+
+            - if @verification.persisted? && @verification.verification_document.attached?
+              .alert.alert-info.d-flex.align-items-center.gap-2.mb-4
+                - if @verification.validated?
+                  %i.bi.bi-patch-check-fill.text-success
+                  %span Your identity has been verified.
+                - else
+                  %i.bi.bi-hourglass-split
+                  %span Your document is under review.
+
+            = form_with url: profile_verification_path, method: :patch do |f|
+              %div{ data: { controller: "direct-upload" } }
+                .mb-3
+                  = label_tag :verification_verification_document, "Verification document", class: "form-label #{'required' unless @verification.persisted?}"
+                  = file_field_tag "verification[verification_document]",
+                      accept: "image/*,application/pdf",
+                      direct_upload: true,
+                      class: "form-control"
+                  %p.form-text Accepted formats: JPEG, PNG, PDF
+                %div{ data: { "direct-upload-target": "progressContainer" } }
+                .d-flex.justify-content-end.mt-4
+                  = f.submit (@verification.persisted? ? "Replace document" : "Upload document"), class: "btn btn-primary px-4"

@@ -34,6 +34,12 @@
           = f.select :activated, [["Yes", "1"], ["No", "0"]],
               { selected: user.activated? ? "1" : "0" },
               class: "form-select"
+        .col-sm-3
+          %label.form-label{ for: "user_verification_status" } Verification
+          = f.select :verification_status,
+              [["Not Validated", "not_validated"], ["Validated", "validated"]],
+              { include_blank: "— None —", selected: user.verification&.status },
+              class: "form-select"
 
   .d-flex.gap-2
     = f.submit "Save Changes", class: "btn btn-primary"

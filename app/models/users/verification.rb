@@ -11,5 +11,5 @@ class Users::Verification < ApplicationRecord
 
   native_enum :status, %i[not_validated validated]
 
-  validates :verification_document, presence: true
+  validates :user_id, uniqueness: true
 end

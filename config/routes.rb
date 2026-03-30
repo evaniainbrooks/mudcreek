@@ -50,8 +50,10 @@ resource :session
     get "auctions",         to: "auctions#show",         as: :profile_auctions
     get "auctions/:hashid", to: "auctions#bid_detail",   as: :auction_bids_profile
     get "listings",         to: "listings#show",         as: :profile_listings
-    get "watchlist",        to: "watchlist_items#show",  as: :profile_watchlist
-    get "payment-methods",  to: "payment_methods#show",  as: :profile_payment_methods_page
+    get "watchlist",        to: "watchlist_items#show",    as: :profile_watchlist
+    get "payment-methods",  to: "payment_methods#show",    as: :profile_payment_methods_page
+    get "verification",    to: "verifications#show",      as: :profile_verification
+    patch "verification",   to: "verifications#update"
   end
   resources :invoices,     only: [:show], param: :number do
     member { post :pay }
