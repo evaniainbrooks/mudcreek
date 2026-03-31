@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_31_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -193,6 +193,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
+    t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
   end
@@ -328,7 +329,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
     t.datetime "updated_at", null: false
     t.index ["delivery_method_id"], name: "index_listings_deliveries_on_delivery_method_id"
     t.index ["delivery_method_set_id", "delivery_method_id"], name: "index_listings_deliveries_unique", unique: true
-    t.index ["delivery_method_set_id"], name: "index_listings_deliveries_on_delivery_method_set_id"
     t.index ["tenant_id"], name: "index_listings_deliveries_on_tenant_id"
   end
 
@@ -1006,6 +1006,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_100000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
   add_foreign_key "transactions", "orders"
   add_foreign_key "user_category_interests", "listings_categories"
   add_foreign_key "user_category_interests", "tenants", on_delete: :cascade

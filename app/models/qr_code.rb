@@ -11,6 +11,7 @@ class QrCode < ApplicationRecord
     format: { with: /\A[a-z0-9-]+\z/, message: "only lowercase letters, numbers, and hyphens" },
     uniqueness: { scope: :tenant_id }
   validates :destination_url, presence: true
+  validates :location_id, uniqueness: true, allow_nil: true
 
   before_validation :derive_slug, on: :create, if: -> { slug.blank? && name.present? }
 
