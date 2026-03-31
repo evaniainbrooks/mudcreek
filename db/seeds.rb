@@ -112,6 +112,24 @@ unless mudcreek.auction_placeholder.attached?
   )
 end
 
+# Default bid increment schedule
+DEFAULT_BID_INCREMENT_TIERS = [
+  { min_amount_cents:       0, increment_cents:  500 },  # $0–$99.99    → $5
+  { min_amount_cents:  10_000, increment_cents: 1000 },  # $100–$499.99 → $10
+  { min_amount_cents:  50_000, increment_cents: 2500 },  # $500–$999.99 → $25
+  { min_amount_cents: 100_000, increment_cents: 5000 }   # $1000+       → $50
+].freeze
+
+[ mudcreek, chignecto, junglefowl ].each do |tenant|
+  Current.tenant = tenant
+  next if tenant.default_bid_increment_schedule.present?
+
+  schedule = BidIncrementSchedule.create!(auction: nil)
+  DEFAULT_BID_INCREMENT_TIERS.each do |tier|
+    schedule.tiers.create!(tier)
+  end
+end
+
 puts "Seeded #{Tenant.count} tenants."
 
 # Backfill any existing records that predate the tenant column

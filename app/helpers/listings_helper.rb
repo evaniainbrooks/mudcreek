@@ -60,7 +60,11 @@ module ListingsHelper
   end
 
   def listing_categories_badges(listing, css: nil)
-    safe_join(listing.categories.map { |cat| content_tag(:span, cat.name, class: "badge #{css || badge_color_for(cat.name)} me-1") })
+    safe_join(listing.categories.map { |cat|
+      content_tag(:span, class: "badge #{css || badge_color_for(cat.name)} me-1") do
+        content_tag(:i, "", class: "bi bi-tag-fill me-1") + cat.name
+      end
+    })
   end
 
   def render_listings_table(listings:, q:)

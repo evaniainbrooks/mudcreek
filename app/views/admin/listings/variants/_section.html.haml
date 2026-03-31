@@ -18,7 +18,7 @@
               = render "admin/listings/variants/variant_fields",
                   variant_form: variant_form,
                   listing: listing
-    - else
+    - elsif listing.persisted?
       .text-muted.small
         No variants yet. Save options and values above to generate variants, or
         = link_to admin_listing_variants_path(listing),
@@ -26,3 +26,6 @@
             class: "btn btn-sm btn-outline-secondary ms-1" do
           %i.bi.bi-magic.me-1
           Generate from Options
+    - else
+      .text-muted.small
+        Save the listing first to manage variants.

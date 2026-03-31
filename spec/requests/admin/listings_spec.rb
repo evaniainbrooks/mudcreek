@@ -9,11 +9,30 @@ RSpec.describe "Admin::Listings", type: :request do
   let(:role) do
     Role.create!(name: "listings_index", description: "View listings").tap do |r|
       r.permissions.create!(resource: "Listing", action: "index")
+      r.permissions.create!(resource: "Listing", action: "create")
     end
   end
   let(:user) { create(:user, role: role) }
 
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
+
+  describe "GET /admin/listings/new" do
+    it "returns 200" do
+      get new_admin_listing_path
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when the listing_variants feature is enabled" do
+      before { Current.tenant.update!(features: { listing_variants: true }) }
+
+      it "returns 200 without raising a routing error for the unsaved listing" do
+        get new_admin_listing_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
 
   describe "GET /admin/listings — auction_assigned filter" do
     let!(:assigned)   { create(:listing) }
