@@ -132,6 +132,8 @@ end
 
 puts "Seeded #{Tenant.count} tenants."
 
+Current.tenant = mudcreek
+
 # Backfill any existing records that predate the tenant column
 [ Role, Permission, User, Listing, Listings::Category, CartItem ].each do |klass|
   count = klass.where(tenant_id: nil).update_all(tenant_id: mudcreek.id)
@@ -265,6 +267,7 @@ puts "Seeded #{User.count} users."
 user_ids = User.where(tenant: mudcreek).pluck(:id)
 
 # Lots
+Current.tenant = mudcreek
 admin_user = User.find_by!(email_address: "admin@mudcreek.com")
 
 lot_data = [
@@ -1521,38 +1524,42 @@ end
 
 puts "Seeded #{DiscountCode.count} discount codes."
 
-# Delivery Methods
-[
+# Delivery Methods & Sets (all tenants)
+DEFAULT_DELIVERY_METHODS = [
   { name: "Local Pickup",  price_cents: 0,    address_required: false },
   { name: "Standard Mail", price_cents: 1500, address_required: true  },
   { name: "Courier",       price_cents: 2500, address_required: true  }
-].each do |attrs|
-  DeliveryMethod.find_or_create_by!(name: attrs[:name], tenant: mudcreek) do |dm|
-    dm.price_cents      = attrs[:price_cents]
-    dm.address_required = attrs[:address_required]
-    dm.active           = true
+].freeze
+
+DEFAULT_DELIVERY_METHOD_SETS = [
+  { name: "Standard",    methods: [ "Local Pickup", "Standard Mail", "Courier" ] },
+  { name: "No pickup",   methods: [ "Standard Mail", "Courier" ] },
+  { name: "Pickup only", methods: [ "Local Pickup" ] }
+].freeze
+
+[ mudcreek, chignecto, junglefowl ].each do |tenant|
+  Current.tenant = tenant
+
+  DEFAULT_DELIVERY_METHODS.each do |attrs|
+    DeliveryMethod.find_or_create_by!(name: attrs[:name]) do |dm|
+      dm.price_cents      = attrs[:price_cents]
+      dm.address_required = attrs[:address_required]
+      dm.active           = true
+    end
+  end
+
+  DEFAULT_DELIVERY_METHOD_SETS.each do |attrs|
+    set = Listings::DeliveryMethodSet.find_or_create_by!(name: attrs[:name])
+    attrs[:methods].each do |method_name|
+      dm = DeliveryMethod.find_by!(name: method_name)
+      set.deliveries.find_or_create_by!(delivery_method: dm)
+    end
   end
 end
 
-puts "Seeded #{DeliveryMethod.count} delivery methods."
+Current.tenant = mudcreek
 
-# Delivery Method Sets
-pickup  = DeliveryMethod.find_by!(name: "Local Pickup",  tenant: mudcreek)
-mail    = DeliveryMethod.find_by!(name: "Standard Mail", tenant: mudcreek)
-courier = DeliveryMethod.find_by!(name: "Courier",       tenant: mudcreek)
-
-[
-  { name: "Standard",    methods: [ pickup, mail, courier ] },
-  { name: "No pickup",   methods: [ mail, courier ] },
-  { name: "Pickup only", methods: [ pickup ] }
-].each do |attrs|
-  set = Listings::DeliveryMethodSet.find_or_create_by!(name: attrs[:name], tenant: mudcreek)
-  attrs[:methods].each do |dm|
-    set.deliveries.find_or_create_by!(delivery_method: dm, tenant: mudcreek)
-  end
-end
-
-puts "Seeded #{Listings::DeliveryMethodSet.count} delivery method sets."
+puts "Seeded delivery methods and sets for all tenants."
 
 # Default Bid Increment Schedule
 Current.tenant = mudcreek

@@ -195,9 +195,20 @@ thead.thead-secondary {
 :root { --navbar-height: 70px; }
 body  { padding-top: var(--navbar-height); }
 
-// Shrinking fixed navbar
+// Shrinking fixed navbar — hides on scroll down, reappears on scroll up
 .navbar {
-  transition: padding 0.25s ease;
+  // Base gradient using SCSS defaults — overridden per-tenant at runtime via tenant_theme_css
+  background: linear-gradient(135deg, shade-color($secondary, 35%) 0%, $secondary 50%, shade-color($primary, 20%) 100%);
+  border-bottom: 2px solid $tertiary;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  transition: padding 0.25s ease, transform 0.3s ease, opacity 0.3s ease;
+
+  &.navbar-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
 
   .navbar-logo {
     max-width: 48px;

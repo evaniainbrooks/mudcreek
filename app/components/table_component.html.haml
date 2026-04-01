@@ -9,13 +9,17 @@
             - else
               = col.header
     %tbody{id: @tbody_id, data: @tbody_data}
-      - @rows.each do |row|
-        %tr{data: { id: row.id }.merge(@row_data&.call(row) || {})}
-          - @columns.each do |col|
-            - if col.typed
-              = render(TableCellComponent.new(value: col.block.call(row), html_class: col.html_class))
-            - else
-              %td{class: col.html_class}= col.block.call(row)
+      - if @rows.empty?
+        %tr
+          %td.text-center.text-muted.py-4{colspan: @columns.size} No records found.
+      - else
+        - @rows.each do |row|
+          %tr{data: { id: row.id }.merge(@row_data&.call(row) || {})}
+            - @columns.each do |col|
+              - if col.typed
+                = render(TableCellComponent.new(value: col.block.call(row), html_class: col.html_class))
+              - else
+                %td{class: col.html_class}= col.block.call(row)
     - if footer_row
       %tfoot.fw-semibold
         %tr= footer_row.call

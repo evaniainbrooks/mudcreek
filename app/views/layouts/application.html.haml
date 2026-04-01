@@ -17,7 +17,7 @@
     = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
   %body.d-flex.flex-column.min-vh-100
-    %nav.navbar.navbar-expand-lg.bg-secondary.fixed-top{"data-bs-theme": "dark", "data-controller": "navbar"}
+    %nav.navbar.navbar-expand-lg.fixed-top{"data-bs-theme": "dark", "data-controller": "navbar"}
       .container
         - if Current.tenant.logo.attached?
           = image_tag(Current.tenant.logo, class: "navbar-logo", style: "max-width: 48px; margin-right: 0.5rem")
@@ -42,22 +42,23 @@
                     %i{ class: "bi #{page.icon} me-1" }
                   = page.title
           %ul.navbar-nav.ms-auto.mb-2.mb-lg-0.align-items-center
-            - if Current.user && Current.tenant.features.watchlist?
+            - unless @admin
+              - if Current.user && Current.tenant.features.watchlist?
+                %li.nav-item.me-1
+                  .position-relative.d-inline-block
+                    %button.btn.btn-sm.btn-outline-light{type: "button",
+                        data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
+                        aria: { label: "Open watchlist" }}
+                      %i.bi.bi-bookmark.fs-5
+                    - if watchlist_item_count > 0
+                      %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
               %li.nav-item.me-1
                 .position-relative.d-inline-block
                   %button.btn.btn-sm.btn-outline-light{type: "button",
-                      data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
-                      aria: { label: "Open watchlist" }}
-                    %i.bi.bi-bookmark.fs-5
-                  - if watchlist_item_count > 0
-                    %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
-            %li.nav-item.me-1
-              .position-relative.d-inline-block
-                %button.btn.btn-sm.btn-outline-light{type: "button",
-                    data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
-                    aria: { label: "Open cart" }}
-                  %i.bi.bi-cart3.fs-5
-                = render "layouts/cart_badge", count: cart_item_count
+                      data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
+                      aria: { label: "Open cart" }}
+                    %i.bi.bi-cart3.fs-5
+                  = render "layouts/cart_badge", count: cart_item_count
             - if Current.user
               - unless @admin
                 %li.nav-item.dropdown
@@ -93,6 +94,11 @@
               != message
               %button.btn-close{type: "button", "data-bs-dismiss": "alert", "aria-label": "Close"}
         = yield
+        - if @admin && action_name == "index" && controller_path != "admin/dashboard"
+          .mt-4.pt-3.border-top.text-center
+            = link_to admin_root_path, class: "btn btn-outline-secondary" do
+              %i.bi.bi-speedometer2.me-1
+              Back to Dashboard
     = render FooterComponent.new(tenant: Current.tenant)
     = render "carts/offcanvas"
     - if Current.user && Current.tenant.features.watchlist?

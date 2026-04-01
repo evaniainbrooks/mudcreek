@@ -76,8 +76,8 @@ module ApplicationHelper
     content_tag(:ul, class: "nav nav-tabs px-4 pt-3 flex-nowrap overflow-x-auto overflow-y-hidden") do
       safe_join(tabs.map do |tab|
         content_tag(:li, class: "nav-item") do
-          link_to tab[:path], class: "nav-link d-flex flex-column align-items-center #{"active" if tab[:key] == active}" do
-            content_tag(:i, "", class: "bi #{tab[:icon]} mb-1") + content_tag(:span, tab[:label])
+          link_to tab[:path], class: "nav-link #{"active" if tab[:key] == active}" do
+            content_tag(:i, "", class: "bi #{tab[:icon]} me-1 d-none d-sm-inline") + content_tag(:span, tab[:label])
           end
         end
       end)
@@ -228,6 +228,21 @@ module ApplicationHelper
     if tenant.card_color.present?
       rules << ".card { --bs-card-bg: #{tenant.card_color}; }"
     end
+
+    # Navbar gradient — uses tenant secondary + primary with darkened stops
+    sec = tenant.secondary_color.presence || "#6B3A2A"
+    pri = tenant.primary_color.presence   || "#355E3B"
+    ter = tenant.tertiary_color.presence  || "#C8A84B"
+    sec_dark = shade_hex(sec, 35)
+    pri_dark  = shade_hex(pri, 20)
+    rules << ".navbar {\n" \
+             "  background: linear-gradient(135deg, #{sec_dark} 0%, #{sec} 50%, #{pri_dark} 100%) !important;\n" \
+             "  border-bottom-color: #{ter} !important;\n" \
+             "  --bs-navbar-hover-color: #{ter};\n" \
+             "  --bs-navbar-active-color: #{ter};\n" \
+             "  --bs-navbar-brand-hover-color: #{ter};\n" \
+             "  --bs-nav-link-hover-color: #{ter};\n" \
+             "}"
 
     rules.join("\n")
   end
