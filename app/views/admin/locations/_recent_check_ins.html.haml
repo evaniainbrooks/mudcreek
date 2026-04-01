@@ -1,0 +1,23 @@
+- if recent_check_ins.any?
+  .card.shadow-sm.border-0.mt-4
+    .card-header.fw-semibold
+      %i.bi.bi-clock-history.me-1
+      Recent Check-ins
+    .card-body.p-0
+      %table.table.table-sm.mb-0
+        %thead.table-light
+          %tr
+            %th Time
+            %th User
+        %tbody
+          - recent_check_ins.each do |ci|
+            %tr
+              %td= ci.created_at.strftime("%b %-d, %Y %H:%M")
+              %td
+                - if ci.user
+                  = link_to ci.user.name, admin_user_path(ci.user), class: "text-decoration-none"
+                - elsif ci.guest_name.present?
+                  = ci.guest_name
+                  %small.text-muted.ms-1 (guest)
+                - else
+                  %span.text-muted Unknown

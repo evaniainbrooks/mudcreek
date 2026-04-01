@@ -1,0 +1,27 @@
+.card.shadow-sm.border-0
+  .card-header.fw-semibold
+    %i.bi.bi-people.me-1
+    Check-ins by User
+  - if user_stats.any?
+    .card-body.p-0
+      %table.table.table-sm.mb-0
+        %thead.table-light
+          %tr
+            %th User
+            %th.text-center Total
+            %th Last Check-in
+        %tbody
+          - user_stats.each do |stat|
+            %tr
+              %td
+                - if stat[:user]
+                  = link_to stat[:user].name, admin_user_path(stat[:user]), class: "text-decoration-none"
+                  %small.text-muted.d-block= stat[:user].email_address
+                - elsif stat[:guest]
+                  %span.text-muted Guest check-ins
+                - else
+                  %span.text-muted Deleted user
+              %td.text-center= stat[:count]
+              %td= stat[:last_at]&.strftime("%b %-d, %Y %H:%M") || "—"
+  - else
+    .card-body.text-muted No check-ins yet.

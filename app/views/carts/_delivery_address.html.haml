@@ -1,7 +1,4 @@
-:ruby
-  current_country = ISO3166::Country[cart_address[:country]]
-  initial_subdivisions = current_country&.subdivisions&.values&.map(&:name)&.compact&.sort || []
-  all_countries = ISO3166::Country.all.sort_by(&:common_name).map { |c| [c.common_name, c.alpha2] }
+- initial_subdivisions = country_subdivisions(cart_address[:country])
 .card.shadow-sm.border-0
   .card-body
     .d-flex.align-items-center.justify-content-between.mb-0

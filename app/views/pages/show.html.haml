@@ -1,12 +1,4 @@
-:ruby
-  meta_title = @page.meta_title.presence || @page.title
-  meta_desc  = @page.meta_description.presence
-  og_image   = @page.hero_image.attached? ? url_for(@page.hero_image) : nil
-  set_meta_tags title: meta_title,
-    description: meta_desc,
-    og: { title: meta_title, description: meta_desc, image: og_image },
-    twitter: { card: (og_image ? "summary_large_image" : "summary"),
-               title: meta_title, description: meta_desc, image: og_image }
+- set_page_meta_tags(@page)
 
 - if @page.hero_image.attached?
   = image_tag @page.hero_image.variant(resize_to_limit: [1200, 400]),
@@ -19,17 +11,15 @@
       %i{ class: "bi #{@page.icon} me-2" }
     = @page.title
 
-  :ruby
-    left  = @page.left_column_image.attached?
-    right = @page.right_column_image.attached?
-    body_cols = (left && right) ? "col-4" : "col-8"
+  - left  = @page.left_column_image.attached?
+  - right = @page.right_column_image.attached?
 
   - if left || right
     .row.g-4
       - if left
         .col-4
           = image_tag @page.left_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
-      %div{ class: body_cols }
+      %div{ class: page_body_col_class(@page) }
         .page-body= @page.body
       - if right
         .col-4

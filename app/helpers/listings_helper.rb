@@ -1,6 +1,24 @@
 module ListingsHelper
   BADGE_COLORS = %w[text-bg-primary text-bg-success text-bg-danger text-bg-warning text-bg-info text-bg-secondary text-bg-dark].freeze
 
+  def set_listing_meta_tags(listing)
+    description = listing.description.to_plain_text.truncate(200)
+    og_image    = listing.images.attached? ? url_for(listing.images.first) : nil
+    set_meta_tags title: listing.name,
+      description: description,
+      og: { title: listing.name, description: description, image: og_image },
+      twitter: {
+        card: (og_image ? "summary_large_image" : "summary"),
+        title: listing.name, description: description, image: og_image
+      }
+  end
+
+  def rental_booking_events_json(bookings)
+    bookings.map { |b|
+      { title: b.cart_item.user.email_address, start: b.start_at.iso8601, end: b.end_at.iso8601 }
+    }.to_json
+  end
+
   def public_listing_back_button(listing)
     if (auction = listing.auction_listing&.auction)
       link_to(admin_auction_path(auction), class: "btn btn-outline-secondary") do

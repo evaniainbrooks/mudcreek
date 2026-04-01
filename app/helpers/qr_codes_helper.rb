@@ -1,4 +1,16 @@
 module QrCodesHelper
+  # Returns [image_base_url, preview_src] for the QR image card on the admin show page.
+  def qr_image_urls_for(qr_code)
+    if qr_code.live?
+      base    = qr_code_image_path(qr_code.slug)
+      preview = qr_code_image_path(qr_code.slug, format: :svg, size: "md", style: "standard")
+    else
+      base    = qr_image_admin_qr_code_path(qr_code)
+      preview = qr_image_admin_qr_code_path(qr_code, format: :svg, size: "md", style: "standard")
+    end
+    [ base, preview ]
+  end
+
   def render_qr_codes_table(qr_codes:)
     table = ::TableComponent.new(rows: qr_codes)
     table.with_column("Name") { |qr| link_to(qr.name, admin_qr_code_path(qr)) }

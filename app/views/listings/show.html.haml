@@ -1,17 +1,7 @@
-:ruby
-  description = @listing.description.to_plain_text.truncate(200)
-  og_image = @listing.images.attached? ? url_for(@listing.images.first) : nil
-  set_meta_tags title: @listing.name,
-    description: description,
-    og: { title: @listing.name, description: description, image: og_image },
-    twitter: {
-      card: (og_image ? "summary_large_image" : "summary"),
-      title: @listing.name, description: description, image: og_image
-    }
-
-  has_images = @listing.images.attached?
-  has_videos = @listing.videos.attached?
-  media_count = @listing.images.size + @listing.videos.size
+- set_listing_meta_tags(@listing)
+- has_images  = @listing.images.attached?
+- has_videos  = @listing.videos.attached?
+- media_count = @listing.images.size + @listing.videos.size
 
 .d-flex.justify-content-between.align-items-center.mb-4
   = link_to listings_path, class: "btn btn-outline-secondary btn-sm", data: { transition: "backward" } do

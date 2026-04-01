@@ -72,91 +72,7 @@
   .p-4
     .tab-content#listing-tabs-content
       #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
-        .card.shadow-sm.border-0.mb-4
-          .card-header.fw-semibold General
-          .card-body
-            %dl.row.mb-0
-              %dt.col-sm-3 Name
-              %dd.col-sm-9= @listing.name
-
-              %dt.col-sm-3 Type
-              %dd.col-sm-9= listing_type_badge(@listing)
-
-              %dt.col-sm-3 State
-              %dd.col-sm-9= listing_state_badge(@listing)
-
-              %dt.col-sm-3 Owner
-              %dd.col-sm-9= mail_to @listing.owner.email_address
-
-              %dt.col-sm-3 Lot
-              %dd.col-sm-9
-                - if @listing.lot
-                  = lot_number_badge(@listing.lot, link: true)
-                - else
-                  %span.text-muted —
-
-              %dt.col-sm-3 Published
-              %dd.col-sm-9= @listing.published? ? "Yes" : "No"
-
-              %dt.col-sm-3 Tax Exempt
-              %dd.col-sm-9= @listing.tax_exempt? ? "Yes" : "No"
-
-              %dt.col-sm-3 Delivery Method Set
-              %dd.col-sm-9= @listing.delivery_method_set&.name || tag.span("—", class: "text-muted")
-
-        - if @listing.sale?
-          .card.shadow-sm.border-0.mb-4
-            .card-header.fw-semibold Pricing
-            .card-body
-              %dl.row.mb-0
-                %dt.col-sm-3 Price
-                %dd.col-sm-9= humanized_money_with_symbol(@listing.price)
-
-                %dt.col-sm-3 Pricing Type
-                %dd.col-sm-9= listing_pricing_type_badge(@listing)
-
-                %dt.col-sm-3 Acquisition Price
-                %dd.col-sm-9
-                  - if @listing.acquisition_price_cents
-                    = humanized_money_with_symbol(@listing.acquisition_price)
-                  - else
-                    = tag.span("—", class: "text-muted")
-                %dt.col-sm-3 Quantity
-                %dd.col-sm-9= @listing.quantity
-
-        .card.shadow-sm.border-0.mb-4
-          .card-header.fw-semibold Description &amp; Content
-          .card-body
-            %dl.row.mb-0
-              %dt.col-sm-3 Description
-              %dd.col-sm-9= @listing.description
-
-              %dt.col-sm-3 Categories
-              %dd.col-sm-9
-                - if @listing.categories.any?
-                  = listing_categories_badges(@listing)
-                - else
-                  %span.text-muted —
-
-              %dt.col-sm-3 Properties
-              %dd.col-sm-9
-                - if @listing.properties.any?
-                  - @listing.properties.order(:position).each do |p|
-                    .d-flex.gap-2.small
-                      %span.fw-semibold #{p.name}:
-                      %span= p.value
-                - else
-                  %span.text-muted —
-
-        .card.shadow-sm.border-0
-          .card-header.fw-semibold Timestamps
-          .card-body
-            %dl.row.mb-0
-              %dt.col-sm-3 Created At
-              %dd.col-sm-9= @listing.created_at.to_fs(:long)
-
-              %dt.col-sm-3 Updated At
-              %dd.col-sm-9= @listing.updated_at.to_fs(:long)
+        = render "details_pane", listing: @listing
 
       #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
         .pt-3
@@ -179,11 +95,7 @@
           = render "admin/listings/rental_rate_plans/section", listing: @listing
 
         #schedule-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedule-tab" } }
-          :ruby
-            booking_events = @rental_bookings.map do |b|
-              { title: b.cart_item.user.email_address, start: b.start_at.iso8601, end: b.end_at.iso8601 }
-            end
           #booking-calendar{data: { controller: "booking-calendar",
-              "booking-calendar-events-value": booking_events.to_json }}
+              "booking-calendar-events-value": rental_booking_events_json(@rental_bookings) }}
       = render "bids", bids: @bids
     .mt-3= public_listing_back_button(@listing)

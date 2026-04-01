@@ -1,0 +1,73 @@
+.card.shadow-sm.border-0.mb-4{
+    data: { controller: "qr-image",
+            "qr-image-base-url-value": image_base }}
+  .card-header.fw-semibold
+    %i.bi.bi-qr-code.me-1
+    QR Image
+  .card-body.text-center
+    = image_tag preview_src,
+        alt: qr_code.name, style: "width: 200px; height: 200px;",
+        data: { "qr-image-target": "preview" }
+
+    .mt-3
+      .input-group.input-group-sm.justify-content-center
+        %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
+          Size:&nbsp;
+          %span{ data: { "qr-image-target": "sizeLabel" } } Medium
+        %ul.dropdown-menu
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "sm" } } Small
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "md" } } Medium
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "lg" } } Large
+        %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
+          Format:&nbsp;
+          %span{ data: { "qr-image-target": "formatLabel" } } PNG
+        %ul.dropdown-menu
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectFormat", format: "png" } } PNG
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectFormat", format: "svg" } } SVG
+        %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
+          Style:&nbsp;
+          %span{ data: { "qr-image-target": "styleLabel" } } Standard
+        %ul.dropdown-menu
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "standard" } } Standard
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "blue" } } Blue
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "indigo" } } Indigo
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "purple" } } Purple
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "pink" } } Pink
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "red" } } Red
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "orange" } } Orange
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "green" } } Green
+          %li
+            %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "teal" } } Teal
+        = link_to "#", class: "btn btn-primary",
+            data: { "qr-image-target": "downloadBtn" } do
+          %i.bi.bi-download.me-1
+          Download
+        %button.btn.btn-outline-secondary{type: "button",
+            data: { action: "qr-image#copyUrl" }}
+          %i.bi.bi-clipboard.me-1
+          Copy URL
+
+    .mt-3
+      %p.text-muted.small.mb-1 Public redirect URL:
+      %code.small= qr_redirect_url(qr_code.slug)
+
+  .toast-container.position-fixed.bottom-0.end-0.p-3
+    .toast.align-items-center.text-bg-success.border-0{
+        role: "alert", "aria-live": "assertive",
+        data: { "qr-image-target": "toast" }}
+      .d-flex
+        .toast-body URL copied to clipboard.
+        %button.btn-close.btn-close-white.me-2.m-auto{ type: "button", "data-bs-dismiss": "toast" }

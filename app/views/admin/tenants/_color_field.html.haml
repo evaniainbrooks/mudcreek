@@ -1,0 +1,18 @@
+- picker_id = "#{field}_picker"
+- input_id  = "tenant_#{field}"
+.col-sm-6.col-lg-4
+  = form.label field, label, class: "form-label"
+  .form-text.mb-1= description
+  .input-group
+    %span.input-group-text.p-1
+      %input{type: "color", id: picker_id,
+        value: tenant.public_send(field).presence || default,
+        style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
+        oninput: "document.getElementById('#{input_id}').value = this.value"}
+    = form.text_field field,
+      class: "form-control font-monospace #{'is-invalid' if tenant.errors[field].any?}",
+      placeholder: default,
+      pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
+      oninput: "document.getElementById('#{picker_id}').value = this.value"
+    - if tenant.errors[field].any?
+      .invalid-feedback= tenant.errors[field].to_sentence

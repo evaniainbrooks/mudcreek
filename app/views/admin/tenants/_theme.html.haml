@@ -1,3 +1,15 @@
+:ruby
+  color_fields = [
+    { field: :primary_color,    label: "Primary Color",        description: "Buttons, badges, and highlights.",                        default: "#355E3B" },
+    { field: :secondary_color,  label: "Secondary Color",      description: "Navbar background and secondary elements.",               default: "#6B3A2A" },
+    { field: :tertiary_color,   label: "Accent Color",         description: "Highlights and accent elements.",                         default: "#C8A84B" },
+    { field: :background_color, label: "Background Color",     description: "Page background (default: white).",                       default: "#ffffff" },
+    { field: :text_color,       label: "Text Color",           description: "Body text color (default: near-black).",                  default: "#212529" },
+    { field: :link_color,       label: "Link Color",           description: "Hyperlink text color.",                                   default: "#0d6efd" },
+    { field: :footer_color,     label: "Footer Color",         description: "Footer background color.",                                default: "#f8f9fa" },
+    { field: :container_color,  label: "Container Background", description: "Page container (rounded content wrapper) background.",    default: "#ffffff" },
+    { field: :card_color,       label: "Card Background",      description: "Bootstrap card component background color.",              default: "#ffffff" },
+  ]
 %fieldset.card.shadow-sm.border-0.mb-4
   %legend.card-header.fw-semibold
     %i.bi.bi-palette.me-2
@@ -8,158 +20,14 @@
       Changes take effect immediately on save.
 
     .row.g-3
-      .col-sm-6.col-lg-4
-        = form.label :primary_color, "Primary Color", class: "form-label"
-        .form-text.mb-1 Buttons, badges, and highlights.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "primary_color_picker",
-              value: tenant.primary_color.presence || "#355E3B",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_primary_color').value = this.value"}
-          = form.text_field :primary_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:primary_color].any?}",
-            placeholder: "#355E3B",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('primary_color_picker').value = this.value"
-          - if tenant.errors[:primary_color].any?
-            .invalid-feedback= tenant.errors[:primary_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :secondary_color, "Secondary Color", class: "form-label"
-        .form-text.mb-1 Navbar background and secondary elements.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "secondary_color_picker",
-              value: tenant.secondary_color.presence || "#6B3A2A",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_secondary_color').value = this.value"}
-          = form.text_field :secondary_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:secondary_color].any?}",
-            placeholder: "#6B3A2A",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('secondary_color_picker').value = this.value"
-          - if tenant.errors[:secondary_color].any?
-            .invalid-feedback= tenant.errors[:secondary_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :tertiary_color, "Accent Color", class: "form-label"
-        .form-text.mb-1 Highlights and accent elements.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "tertiary_color_picker",
-              value: tenant.tertiary_color.presence || "#C8A84B",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_tertiary_color').value = this.value"}
-          = form.text_field :tertiary_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:tertiary_color].any?}",
-            placeholder: "#C8A84B",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('tertiary_color_picker').value = this.value"
-          - if tenant.errors[:tertiary_color].any?
-            .invalid-feedback= tenant.errors[:tertiary_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :background_color, "Background Color", class: "form-label"
-        .form-text.mb-1 Page background (default: white).
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "background_color_picker",
-              value: tenant.background_color.presence || "#ffffff",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_background_color').value = this.value"}
-          = form.text_field :background_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:background_color].any?}",
-            placeholder: "#ffffff",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('background_color_picker').value = this.value"
-          - if tenant.errors[:background_color].any?
-            .invalid-feedback= tenant.errors[:background_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :text_color, "Text Color", class: "form-label"
-        .form-text.mb-1 Body text color (default: near-black).
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "text_color_picker",
-              value: tenant.text_color.presence || "#212529",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_text_color').value = this.value"}
-          = form.text_field :text_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:text_color].any?}",
-            placeholder: "#212529",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('text_color_picker').value = this.value"
-          - if tenant.errors[:text_color].any?
-            .invalid-feedback= tenant.errors[:text_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :link_color, "Link Color", class: "form-label"
-        .form-text.mb-1 Hyperlink text color.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "link_color_picker",
-              value: tenant.link_color.presence || "#0d6efd",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_link_color').value = this.value"}
-          = form.text_field :link_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:link_color].any?}",
-            placeholder: "#0d6efd",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('link_color_picker').value = this.value"
-          - if tenant.errors[:link_color].any?
-            .invalid-feedback= tenant.errors[:link_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :footer_color, "Footer Color", class: "form-label"
-        .form-text.mb-1 Footer background color.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "footer_color_picker",
-              value: tenant.footer_color.presence || "#f8f9fa",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_footer_color').value = this.value"}
-          = form.text_field :footer_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:footer_color].any?}",
-            placeholder: "#f8f9fa",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('footer_color_picker').value = this.value"
-          - if tenant.errors[:footer_color].any?
-            .invalid-feedback= tenant.errors[:footer_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :container_color, "Container Background", class: "form-label"
-        .form-text.mb-1 Page container (rounded content wrapper) background.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "container_color_picker",
-              value: tenant.container_color.presence || "#ffffff",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_container_color').value = this.value"}
-          = form.text_field :container_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:container_color].any?}",
-            placeholder: "#ffffff",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('container_color_picker').value = this.value"
-          - if tenant.errors[:container_color].any?
-            .invalid-feedback= tenant.errors[:container_color].to_sentence
-
-      .col-sm-6.col-lg-4
-        = form.label :card_color, "Card Background", class: "form-label"
-        .form-text.mb-1 Bootstrap card component background color.
-        .input-group
-          %span.input-group-text.p-1
-            %input{type: "color", id: "card_color_picker",
-              value: tenant.card_color.presence || "#ffffff",
-              style: "width: 2rem; height: 2rem; border: none; padding: 0; cursor: pointer; background: none",
-              oninput: "document.getElementById('tenant_card_color').value = this.value"}
-          = form.text_field :card_color,
-            class: "form-control font-monospace #{'is-invalid' if tenant.errors[:card_color].any?}",
-            placeholder: "#ffffff",
-            pattern: "#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?",
-            oninput: "document.getElementById('card_color_picker').value = this.value"
-          - if tenant.errors[:card_color].any?
-            .invalid-feedback= tenant.errors[:card_color].to_sentence
+      - color_fields.each do |cf|
+        = render "admin/tenants/color_field",
+            form: form,
+            tenant: tenant,
+            field: cf[:field],
+            label: cf[:label],
+            description: cf[:description],
+            default: cf[:default]
 
     .mt-4.pt-3.border-top
       %p.text-muted.small.mb-2 Preview (uses your saved colors):

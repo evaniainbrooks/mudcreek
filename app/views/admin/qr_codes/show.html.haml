@@ -32,6 +32,7 @@
   .p-4
     .tab-content
       #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+        - image_base, preview_src = qr_image_urls_for(@qr_code)
         .row.g-4
           .col-lg-6
             .card.shadow-sm.border-0.mb-4
@@ -66,118 +67,14 @@
                   - if @qr_code.notes.present?
                     %dt.col-sm-4 Notes
                     %dd.col-sm-8= @qr_code.notes
-
           .col-lg-6
-            :ruby
-              image_base =
-                if @qr_code.live?
-                  qr_code_image_path(@qr_code.slug)
-                else
-                  qr_image_admin_qr_code_path(@qr_code)
-                end
-
-              preview_src =
-                if @qr_code.live?
-                  qr_code_image_path(@qr_code.slug, format: :svg, size: "md", style: "standard")
-                else
-                  qr_image_admin_qr_code_path(@qr_code, format: :svg, size: "md", style: "standard")
-                end
-
-            .card.shadow-sm.border-0.mb-4{
-                data: { controller: "qr-image",
-                        "qr-image-base-url-value": image_base }}
-              .card-header.fw-semibold
-                %i.bi.bi-qr-code.me-1
-                QR Image
-              .card-body.text-center
-                = image_tag preview_src,
-                    alt: @qr_code.name, style: "width: 200px; height: 200px;",
-                    data: { "qr-image-target": "preview" }
-
-                .mt-3
-                  .input-group.input-group-sm.justify-content-center
-                    %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
-                      Size:&nbsp;
-                      %span{ data: { "qr-image-target": "sizeLabel" } } Medium
-                    %ul.dropdown-menu
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "sm" } } Small
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "md" } } Medium
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectSize", size: "lg" } } Large
-                    %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
-                      Format:&nbsp;
-                      %span{ data: { "qr-image-target": "formatLabel" } } PNG
-                    %ul.dropdown-menu
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectFormat", format: "png" } } PNG
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectFormat", format: "svg" } } SVG
-                    %button.btn.btn-outline-secondary.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown" }
-                      Style:&nbsp;
-                      %span{ data: { "qr-image-target": "styleLabel" } } Standard
-                    %ul.dropdown-menu
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "standard" } } Standard
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "blue" } } Blue
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "indigo" } } Indigo
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "purple" } } Purple
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "pink" } } Pink
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "red" } } Red
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "orange" } } Orange
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "green" } } Green
-                      %li
-                        %button.dropdown-item{ type: "button", data: { action: "qr-image#selectStyle", "qr-style": "teal" } } Teal
-                    = link_to "#", class: "btn btn-primary",
-                        data: { "qr-image-target": "downloadBtn" } do
-                      %i.bi.bi-download.me-1
-                      Download
-                    %button.btn.btn-outline-secondary{type: "button",
-                        data: { action: "qr-image#copyUrl" }}
-                      %i.bi.bi-clipboard.me-1
-                      Copy URL
-
-                .mt-3
-                  %p.text-muted.small.mb-1 Public redirect URL:
-                  %code.small= qr_redirect_url(@qr_code.slug)
-
-              .toast-container.position-fixed.bottom-0.end-0.p-3
-                .toast.align-items-center.text-bg-success.border-0{
-                    role: "alert", "aria-live": "assertive",
-                    data: { "qr-image-target": "toast" }}
-                  .d-flex
-                    .toast-body URL copied to clipboard.
-                    %button.btn-close.btn-close-white.me-2.m-auto{ type: "button", "data-bs-dismiss": "toast" }
+            = render "qr_image", qr_code: @qr_code, image_base: image_base, preview_src: preview_src
 
       #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
         = render "form", qr_code: @qr_code, location_qr_code: @location_qr_code, users: @users
 
       #scans-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "scans-tab" } }
-        - if @recent_scans.any?
-          .card.shadow-sm.border-0
-            .card-body.p-0
-              %table.table.table-sm.mb-0
-                %thead.table-light
-                  %tr
-                    %th Time
-                    %th IP Address
-                    %th User Agent
-                %tbody
-                  - @recent_scans.each do |scan|
-                    %tr
-                      %td= scan.created_at.strftime("%b %-d, %Y %H:%M")
-                      %td= scan.ip_address || "—"
-                      %td.text-truncate{ style: "max-width: 400px" }= scan.user_agent || "—"
-        - else
-          .text-muted.py-3 No scans recorded yet.
+        = render "scans", recent_scans: @recent_scans
 
     .mt-3
       = link_to admin_qr_codes_path, class: "btn btn-outline-secondary" do
