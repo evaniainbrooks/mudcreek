@@ -1,0 +1,6 @@
+all:
+  hosts:
+    mudcreek_vps:
+      ansible_host: 216.250.116.237
+      ansible_user: root
+      ansible_ssh_common_args: "-o StrictHostKeyChecking=accept-new"

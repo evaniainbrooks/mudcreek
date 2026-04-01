@@ -1,0 +1,138 @@
+---
+- name: Provision mudcreek VPS
+  hosts: all
+  become: true
+
+  vars:
+    docker_compose_version: "2.27.0"
+
+  tasks:
+    # ── System ────────────────────────────────────────────────────────────────
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - curl
+          - git
+          - ufw
+          - ca-certificates
+          - gnupg
+          - lsb-release
+          - htop
+          - unzip
+          - postgresql-client
+        state: present
+
+    # ── Docker ────────────────────────────────────────────────────────────────
+    - name: Create Docker keyring directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Add Docker GPG key
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        chmod a+r /etc/apt/keyrings/docker.gpg
+      args:
+        creates: /etc/apt/keyrings/docker.gpg
+
+    - name: Add Docker apt repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    - name: Install Docker CE
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Add root to docker group
+      user:
+        name: root
+        groups: docker
+        append: true
+
+    # ── Firewall ──────────────────────────────────────────────────────────────
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+
+    - name: Allow HTTP
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+
+    - name: Allow HTTPS
+      ufw:
+        rule: allow
+        port: "443"
+        proto: tcp
+
+    - name: Enable UFW (default deny incoming)
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    # ── Swap (useful for smaller VPS) ─────────────────────────────────────────
+    - name: Check if swap file exists
+      stat:
+        path: /swapfile
+      register: swap_file
+
+    - name: Create 2GB swap file
+      command: fallocate -l 2G /swapfile
+      when: not swap_file.stat.exists
+
+    - name: Set swap file permissions
+      file:
+        path: /swapfile
+        mode: "0600"
+      when: not swap_file.stat.exists
+
+    - name: Format swap file
+      command: mkswap /swapfile
+      when: not swap_file.stat.exists
+
+    - name: Enable swap
+      command: swapon /swapfile
+      when: not swap_file.stat.exists
+
+    - name: Persist swap in fstab
+      lineinfile:
+        path: /etc/fstab
+        line: "/swapfile none swap sw 0 0"
+        state: present
+
+    # ── Sysctl tuning ─────────────────────────────────────────────────────────
+    - name: Set swappiness to 10
+      sysctl:
+        name: vm.swappiness
+        value: "10"
+        state: present
+        reload: true
+
+    - name: Verify Docker is running
+      command: docker info
+      changed_when: false

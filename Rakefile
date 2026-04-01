@@ -3,6 +3,6 @@
 
 require_relative "config/application"
 
-require "traceroute"
+require "traceroute" rescue LoadError
 
 Rails.application.load_tasks

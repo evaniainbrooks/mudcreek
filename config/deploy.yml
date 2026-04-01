@@ -7,10 +7,10 @@ image: mudcreek
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - 216.250.116.237
   # job:
   #   hosts:
-  #     - 192.168.0.1
+  #     - 216.250.116.237
   #   cmd: bin/jobs
 
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
@@ -54,7 +54,7 @@ env:
 
     # Match this to any external database server to configure Active Record correctly
     # Use mudcreek-db for a db accessory server on same machine via local kamal docker network.
-    # DB_HOST: 192.168.0.2
+    DB_HOST: 127.0.0.1
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug
@@ -96,20 +96,23 @@ builder:
 #   user: app
 
 # Use accessory services (secrets come from .kamal/secrets).
-# accessories:
-#   db:
-#     image: postgres:17
-#     host: 192.168.0.2
-#     # Change to 5432 to expose port to the world instead of just local network.
-#     port: "127.0.0.1:5432:5432"
-#     env:
-#       secret:
-#         - POSTGRES_PASSWORD
-#     directories:
-#       - data:/var/lib/postgresql/data
-#   redis:
-#     image: valkey/valkey:8
-#     host: 192.168.0.2
-#     port: 6379
-#     directories:
-#       - data:/data
+accessories:
+  db:
+    image: postgres:17
+    host: 216.250.116.237
+    # Bind only to localhost — not exposed to the internet.
+    port: "127.0.0.1:5432:5432"
+    env:
+      secret:
+        - POSTGRES_PASSWORD
+      clear:
+        POSTGRES_USER: mudcreek
+        POSTGRES_DB: mudcreek_production
+    directories:
+      - data:/var/lib/postgresql/data
+  # redis:
+  #   image: valkey/valkey:8
+  #   host: 216.250.116.237
+  #   port: 6379
+  #   directories:
+  #     - data:/data
