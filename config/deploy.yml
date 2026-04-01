@@ -55,7 +55,6 @@ env:
     # Match this to any external database server to configure Active Record correctly
     # Use mudcreek-db for a db accessory server on same machine via local kamal docker network.
     DB_HOST: mudcreek-db
-    R2_BUCKET: your-bucket-name   # set to use R2; unset to fall back to local disk
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug
