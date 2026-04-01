@@ -81,6 +81,18 @@ class Listing < ApplicationRecord
     variants.loaded? ? variants.any? : variants.exists?
   end
 
+  def has_images?
+    images.attached?
+  end
+
+  def has_videos?
+    videos.attached?
+  end
+
+  def media_count
+    images.size + videos.size
+  end
+
   def effective_address
     return address if address&.any?
     return lot.address if lot&.address&.any?

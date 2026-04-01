@@ -1,6 +1,7 @@
-- styles  = location_showroom_styles(@location)
-- qr_url  = @location.qr_code ? qr_redirect_url(@location.qr_code) : location_checkin_url(@location)
-- qr      = RQRCode::QRCode.new(qr_url)
+:ruby
+  styles  = location_showroom_styles(@location)
+  qr_url  = @location.qr_code ? qr_redirect_url(@location.qr_code) : location_checkin_url(@location)
+  qr      = RQRCode::QRCode.new(qr_url)
 
 %div{data: { controller: "clock" },
      style: "position: fixed; inset: 0; #{styles[:bg]}"}

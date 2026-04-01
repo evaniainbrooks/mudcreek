@@ -1,8 +1,4 @@
 - set_listing_meta_tags(@listing)
-- has_images  = @listing.images.attached?
-- has_videos  = @listing.videos.attached?
-- media_count = @listing.images.size + @listing.videos.size
-
 = turbo_stream_from @auction_listing
 .d-flex.justify-content-between.align-items-center.mb-4
   = link_to auction_path(@auction), class: "btn btn-outline-secondary btn-sm" do
@@ -25,8 +21,8 @@
   .row.g-4.g-lg-5.align-items-start
     .col-lg-7
       .position-relative
-        - if has_images || has_videos
-          = render "listings/carousel", listing: @listing, media_count:
+        - if @listing.has_images? || @listing.has_videos?
+          = render "listings/carousel", listing: @listing, media_count: @listing.media_count
         - elsif @listing.lot&.listing_placeholder&.attached?
           = image_tag @listing.lot.listing_placeholder,
             class: "d-block w-100 rounded-3 object-fit-cover",
