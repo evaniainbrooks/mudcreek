@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_02_100859) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_02_110418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -297,22 +297,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_100859) do
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
-  end
-
-  create_table "listings_acquisitions", force: :cascade do |t|
-    t.date "acquired_on", null: false
-    t.datetime "created_at", null: false
-    t.bigint "listing_id", null: false
-    t.text "notes"
-    t.integer "quantity", null: false
-    t.bigint "tenant_id", null: false
-    t.integer "unit_price_cents"
-    t.datetime "updated_at", null: false
-    t.index ["listing_id"], name: "index_listings_acquisitions_on_listing_id"
-    t.index ["tenant_id"], name: "index_listings_acquisitions_on_tenant_id"
-    t.check_constraint "quantity > 0", name: "listings_acquisitions_quantity_positive"
   end
 
   create_table "listings_categories", force: :cascade do |t|
@@ -409,6 +395,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_100859) do
     t.index ["tenant_id"], name: "index_listings_rental_rate_plans_on_tenant_id"
     t.check_constraint "duration_minutes > 0", name: "listings_rental_rate_plans_duration_minutes_positive"
     t.check_constraint "price_cents >= 0", name: "listings_rental_rate_plans_price_cents_nonneg"
+  end
+
+  create_table "listings_stock_movements", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "kind", default: "in", null: false
+    t.bigint "listing_id", null: false
+    t.text "notes"
+    t.bigint "order_item_id"
+    t.integer "quantity", null: false
+    t.string "reason", default: "acquisition", null: false
+    t.bigint "tenant_id", null: false
+    t.date "transacted_on", null: false
+    t.integer "unit_price_cents"
+    t.datetime "updated_at", null: false
+    t.index ["listing_id"], name: "index_listings_stock_movements_on_listing_id"
+    t.index ["order_item_id"], name: "index_listings_stock_movements_on_order_item_id"
+    t.index ["tenant_id"], name: "index_listings_stock_movements_on_tenant_id"
+    t.check_constraint "quantity > 0", name: "listings_acquisitions_quantity_positive"
   end
 
   create_table "listings_variant_option_values", force: :cascade do |t|
@@ -958,8 +962,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_100859) do
   add_foreign_key "listings", "lots", on_delete: :cascade
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
-  add_foreign_key "listings_acquisitions", "listings"
-  add_foreign_key "listings_acquisitions", "tenants"
   add_foreign_key "listings_categories", "tenants"
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"
@@ -976,6 +978,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_100859) do
   add_foreign_key "listings_property_sets", "tenants"
   add_foreign_key "listings_rental_rate_plans", "listings"
   add_foreign_key "listings_rental_rate_plans", "tenants"
+  add_foreign_key "listings_stock_movements", "listings"
+  add_foreign_key "listings_stock_movements", "order_items"
+  add_foreign_key "listings_stock_movements", "tenants"
   add_foreign_key "listings_variant_option_values", "listings_option_values", column: "option_value_id"
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"

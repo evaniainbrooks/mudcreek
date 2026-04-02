@@ -13,9 +13,19 @@
         .card-body
           %dl.row.mb-0
             %dt.col-sm-3 Name
-            %dd.col-sm-9= link_to @order.user.name, admin_user_path(@order.user)
+            %dd.col-sm-9
+              - if @order.user
+                = link_to @order.user.name, admin_user_path(@order.user)
+              - else
+                = @order.guest_name.presence || tag.span("—", class: "text-muted")
             %dt.col-sm-3 Email
-            %dd.col-sm-9= mail_to @order.user.email_address
+            %dd.col-sm-9
+              - if @order.user
+                = mail_to @order.user.email_address
+              - elsif @order.guest_email&.exclude?("@offline.local")
+                = mail_to @order.guest_email
+              - else
+                = tag.span("—", class: "text-muted")
 
       .card.shadow-sm.border-0.mb-4
         .card-header.fw-semibold Details

@@ -17,7 +17,7 @@ class Listing < ApplicationRecord
   has_many :order_items, dependent: :nullify
   has_many :invoice_items, dependent: :nullify
   has_many :cart_items, dependent: :destroy
-  has_many :acquisitions, class_name: "Listings::Acquisition", dependent: :destroy
+  has_many :stock_movements, class_name: "Listings::StockMovement", dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan",
     dependent: :destroy, foreign_key: :listing_id

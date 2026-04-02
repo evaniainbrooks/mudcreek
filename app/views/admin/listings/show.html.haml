@@ -108,7 +108,7 @@
               "booking-calendar-events-value": rental_booking_events_json(@rental_bookings) }}
       - if @listing.sale? && !@listing.unlimited_quantity?
         #inventory-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "inventory-tab" } }
-          = render "admin/listings/acquisitions/section", listing: @listing, acquisitions: @acquisitions
+          = render "admin/listings/stock_movements/section", listing: @listing, movements: @movements
 
       = render "bids", bids: @bids
     .mt-3= public_listing_back_button(@listing)

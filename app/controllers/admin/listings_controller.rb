@@ -29,7 +29,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def show
     @offers       = @listing.sale? ? @listing.offers.includes(:user).order(created_at: :desc) : []
-    @acquisitions = @listing.sale? ? @listing.acquisitions.order(acquired_on: :desc) : []
+    @movements = @listing.sale? ? @listing.stock_movements.order(transacted_on: :desc, created_at: :desc) : []
     if @listing.rental?
       @rental_rate_plans = @listing.rental_rate_plans.order(:position)
       @rental_bookings   = @listing.rental_bookings

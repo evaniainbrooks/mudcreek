@@ -26,6 +26,7 @@ class Order < ApplicationRecord
   before_validation :assign_guest_token, on: :create
 
   after_update_commit :record_category_interests, if: -> { saved_change_to_status?(to: "paid") }
+  after_update_commit :record_stock_movements,    if: -> { saved_change_to_status?(to: "paid") }
 
   def currency = tenant&.currency
 
@@ -49,6 +50,14 @@ class Order < ApplicationRecord
 
   def user_or_guest_info_present
     errors.add(:base, "must belong to a user or have guest email") if user_id.nil? && guest_email.blank?
+  end
+
+  def record_stock_movements
+    order_items.includes(:listing).each(&:record_stock_movement!)
+  rescue ActiveRecord::StatementInvalid => e
+    raise unless e.message.include?("listings_quantity_non_negative")
+    Rails.logger.warn("Oversell detected on order #{number}: #{e.message}")
+    update_columns(status: "cancelled")
   end
 
   def record_category_interests

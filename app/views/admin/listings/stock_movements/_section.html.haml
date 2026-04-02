@@ -1,0 +1,61 @@
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold
+    %i.bi.bi-box-seam.me-1
+    Inventory
+    %span.badge.text-bg-secondary.ms-2= listing.quantity
+  .card-body.p-0
+    = render_stock_movements_table(listing, movements)
+
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold
+    %i.bi.bi-cash-coin.me-1
+    Record Manual Sale
+  .card-body
+    = form_with url: admin_listing_sales_path(listing), scope: :manual_sale,
+        data: { turbo: false } do |f|
+      .row.g-3
+        .col-md-2
+          = f.label :quantity, "Quantity", class: "form-label"
+          = f.number_field :quantity, min: 1, value: 1, class: "form-control", required: true
+        .col-md-2
+          = f.label :unit_price, "Sale Price", class: "form-label"
+          .input-group
+            %span.input-group-text $
+            = f.text_field :unit_price, value: listing.price&.to_f, class: "form-control", required: true
+        .col-md-3
+          = f.label :buyer_name, "Buyer Name", class: "form-label"
+          = f.text_field :buyer_name, class: "form-control", placeholder: "Required", required: true
+        .col-md-3
+          = f.label :buyer_email, "Buyer Email", class: "form-label"
+          = f.email_field :buyer_email, class: "form-control", placeholder: "Optional"
+        .col-md-2.d-flex.align-items-end
+          = f.button class: "btn btn-success w-100" do
+            %i.bi.bi-bag-check.me-1
+            Record Sale
+
+.card.shadow-sm.border-0
+  .card-header.fw-semibold
+    %i.bi.bi-plus-circle.me-1
+    Record Acquisition
+  .card-body
+    = form_with url: admin_listing_stock_movements_path(listing), model: Listings::StockMovement.new,
+        data: { turbo: false } do |f|
+      .row.g-3
+        .col-md-2
+          = f.label :transacted_on, "Date", class: "form-label"
+          = f.date_field :transacted_on, value: Date.today, class: "form-control", required: true
+        .col-md-2
+          = f.label :quantity, "Quantity", class: "form-label"
+          = f.number_field :quantity, min: 1, class: "form-control", required: true
+        .col-md-2
+          = f.label :unit_price, "Unit Price", class: "form-label"
+          .input-group
+            %span.input-group-text $
+            = f.text_field :unit_price, class: "form-control", placeholder: "Optional"
+        .col-md-4
+          = f.label :notes, "Notes", class: "form-label"
+          = f.text_field :notes, class: "form-control", placeholder: "Supplier, invoice #, etc."
+        .col-md-2.d-flex.align-items-end
+          = f.button class: "btn btn-primary w-100" do
+            %i.bi.bi-plus.me-1
+            Add
