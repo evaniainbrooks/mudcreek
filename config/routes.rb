@@ -100,6 +100,7 @@ resource :session
       resources :attachments,       only: [ :destroy ], module: :listings
       resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
       resources :variants,          only: [ :create ], module: :listings
+      resources :acquisitions,      only: [ :create, :destroy ], module: :listings
     end
     resources :auctions, param: :hashid do
       resources :auction_listings, only: [ :destroy, :update ], module: :auctions do

@@ -41,14 +41,8 @@
         %dt.col-sm-3 Pricing Type
         %dd.col-sm-9= listing_pricing_type_badge(listing)
 
-        %dt.col-sm-3 Acquisition Price
-        %dd.col-sm-9
-          - if listing.acquisition_price_cents
-            = humanized_money_with_symbol(listing.acquisition_price)
-          - else
-            = tag.span("—", class: "text-muted")
         %dt.col-sm-3 Quantity
-        %dd.col-sm-9= listing.quantity
+        %dd.col-sm-9= listing.unlimited_quantity? ? tag.span("Unlimited", class: "badge text-bg-secondary") : listing.quantity
 
 .card.shadow-sm.border-0.mb-4
   .card-header.fw-semibold Description &amp; Content

@@ -17,6 +17,7 @@ class Listing < ApplicationRecord
   has_many :order_items, dependent: :nullify
   has_many :invoice_items, dependent: :nullify
   has_many :cart_items, dependent: :destroy
+  has_many :acquisitions, class_name: "Listings::Acquisition", dependent: :destroy
   has_many :offers, dependent: :destroy
   has_many :rental_rate_plans, class_name: "Listings::RentalRatePlan",
     dependent: :destroy, foreign_key: :listing_id
@@ -38,8 +39,7 @@ class Listing < ApplicationRecord
   has_many_attached :videos
   has_many_attached :documents
 
-  monetize :price_cents,             with_model_currency: :currency
-  monetize :acquisition_price_cents, with_model_currency: :currency, allow_nil: true
+  monetize :price_cents, with_model_currency: :currency
 
   ALLOWED_DOCUMENT_TYPES = %w[
     application/pdf
@@ -143,7 +143,7 @@ class Listing < ApplicationRecord
   def self.ransackable_scopes_skip_sanitize_args(_auth_object = nil) = %w[auction_assigned]
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[name price_cents acquisition_price_cents quantity owner_id published state pricing_type listing_type created_at]
+    %w[name price_cents quantity owner_id published state pricing_type listing_type created_at]
   end
 
   def self.ransackable_associations(_auth_object = nil)

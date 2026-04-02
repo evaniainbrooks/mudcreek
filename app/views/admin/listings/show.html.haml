@@ -57,6 +57,15 @@
           aria: { controls: "schedule-pane", selected: "false" }}
           %i.bi.bi-calendar3.me-1
           Schedule
+    - if @listing.sale? && !@listing.unlimited_quantity?
+      %li.nav-item{ role: "presentation" }
+        %button.nav-link{id: "inventory-tab",
+          data: { bs_toggle: "tab", bs_target: "#inventory-pane" },
+          type: "button",
+          role: "tab",
+          aria: { controls: "inventory-pane", selected: "false" }}
+          %i.bi.bi-box-seam.me-1
+          Inventory
     - if @bids
       %li.nav-item{ role: "presentation" }
         %button.nav-link{id: "bids-tab",
@@ -97,5 +106,9 @@
         #schedule-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedule-tab" } }
           #booking-calendar{data: { controller: "booking-calendar",
               "booking-calendar-events-value": rental_booking_events_json(@rental_bookings) }}
+      - if @listing.sale? && !@listing.unlimited_quantity?
+        #inventory-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "inventory-tab" } }
+          = render "admin/listings/acquisitions/section", listing: @listing, acquisitions: @acquisitions
+
       = render "bids", bids: @bids
     .mt-3= public_listing_back_button(@listing)

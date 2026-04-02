@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_02_094419) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_02_100859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -271,7 +271,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_094419) do
   end
 
   create_table "listings", force: :cascade do |t|
-    t.integer "acquisition_price_cents"
     t.datetime "created_at", null: false
     t.bigint "delivery_method_set_id"
     t.string "hashid", null: false
@@ -296,11 +295,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_094419) do
     t.index ["hashid"], name: "index_listings_on_hashid", unique: true
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
-    t.check_constraint "acquisition_price_cents >= 0", name: "listings_acquisition_price_cents_non_negative"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
     t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
+  end
+
+  create_table "listings_acquisitions", force: :cascade do |t|
+    t.date "acquired_on", null: false
+    t.datetime "created_at", null: false
+    t.bigint "listing_id", null: false
+    t.text "notes"
+    t.integer "quantity", null: false
+    t.bigint "tenant_id", null: false
+    t.integer "unit_price_cents"
+    t.datetime "updated_at", null: false
+    t.index ["listing_id"], name: "index_listings_acquisitions_on_listing_id"
+    t.index ["tenant_id"], name: "index_listings_acquisitions_on_tenant_id"
+    t.check_constraint "quantity > 0", name: "listings_acquisitions_quantity_positive"
   end
 
   create_table "listings_categories", force: :cascade do |t|
@@ -946,6 +958,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_094419) do
   add_foreign_key "listings", "lots", on_delete: :cascade
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
+  add_foreign_key "listings_acquisitions", "listings"
+  add_foreign_key "listings_acquisitions", "tenants"
   add_foreign_key "listings_categories", "tenants"
   add_foreign_key "listings_category_assignments", "listings"
   add_foreign_key "listings_category_assignments", "listings_categories"

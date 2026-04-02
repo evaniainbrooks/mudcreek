@@ -1,0 +1,56 @@
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold
+    %i.bi.bi-box-seam.me-1
+    Inventory
+    %span.badge.text-bg-secondary.ms-2= listing.quantity
+  .card-body.p-0
+    - if acquisitions.any?
+      %table.table.table-sm.mb-0
+        %thead.table-light
+          %tr
+            %th Date
+            %th Qty
+            %th Unit Price
+            %th Notes
+            %th
+        %tbody
+          - acquisitions.each do |acq|
+            %tr
+              %td= acq.acquired_on.to_fs(:long_ordinal)
+              %td= acq.quantity
+              %td= acq.unit_price_cents ? humanized_money_with_symbol(acq.unit_price) : tag.span("—", class: "text-muted")
+              %td= acq.notes.presence || tag.span("—", class: "text-muted")
+              %td.text-end
+                = button_to admin_listing_acquisition_path(listing, acq), method: :delete,
+                    class: "btn btn-outline-danger btn-sm",
+                    form: { data: { turbo_confirm: "Remove this acquisition? The listing quantity will be decremented." } } do
+                  %i.bi.bi-trash
+    - else
+      .px-4.py-3.text-muted No acquisitions recorded yet.
+
+.card.shadow-sm.border-0
+  .card-header.fw-semibold
+    %i.bi.bi-plus-circle.me-1
+    Record Acquisition
+  .card-body
+    = form_with url: admin_listing_acquisitions_path(listing), model: Listings::Acquisition.new,
+        data: { turbo: false } do |f|
+      .row.g-3
+        .col-md-2
+          = f.label :acquired_on, "Date", class: "form-label"
+          = f.date_field :acquired_on, value: Date.today, class: "form-control", required: true
+        .col-md-2
+          = f.label :quantity, "Quantity", class: "form-label"
+          = f.number_field :quantity, min: 1, class: "form-control", required: true
+        .col-md-2
+          = f.label :unit_price, "Unit Price", class: "form-label"
+          .input-group
+            %span.input-group-text $
+            = f.text_field :unit_price, class: "form-control", placeholder: "Optional"
+        .col-md-4
+          = f.label :notes, "Notes", class: "form-label"
+          = f.text_field :notes, class: "form-control", placeholder: "Supplier, invoice #, etc."
+        .col-md-2.d-flex.align-items-end
+          = f.button class: "btn btn-primary w-100" do
+            %i.bi.bi-plus.me-1
+            Add

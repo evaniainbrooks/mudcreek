@@ -28,7 +28,8 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def show
-    @offers = @listing.sale? ? @listing.offers.includes(:user).order(created_at: :desc) : []
+    @offers       = @listing.sale? ? @listing.offers.includes(:user).order(created_at: :desc) : []
+    @acquisitions = @listing.sale? ? @listing.acquisitions.order(acquired_on: :desc) : []
     if @listing.rental?
       @rental_rate_plans = @listing.rental_rate_plans.order(:position)
       @rental_bookings   = @listing.rental_bookings
@@ -108,7 +109,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    base = %i[name description price acquisition_price quantity unlimited_quantity sku tax_exempt delivery_method_set_id owner_id lot_id published pricing_type show_video_as_poster]
+    base = %i[name description price quantity unlimited_quantity sku tax_exempt delivery_method_set_id owner_id lot_id published pricing_type show_video_as_poster]
     base.unshift(:listing_type) if action_name == "create"
     p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [],
       rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],
