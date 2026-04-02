@@ -1,7 +1,11 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins(
-      Rails.env.development? ? /http:\/\/.*\.lvh\.me(:\d+)?/ : Rails.application.routes.default_url_options[:host]
+      if Rails.env.development?
+        /http:\/\/.*\.lvh\.me(:\d+)?/
+      else
+        ENV.fetch("DEFAULT_URL_HOST", "shop.junglefowlbjj.ca")
+      end
     )
     resource "/rails/active_storage/*",
       headers: :any,
