@@ -6,6 +6,12 @@ Rails.application.configure do
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
 
+  # Allow ActionCable connections from lvh.me subdomains on any port.
+  config.action_cable.allowed_request_origins = [ /http:\/\/.*\.lvh\.me(:\d+)?/, /http:\/\/localhost(:\d+)?/ ]
+
+  # Don't enforce Origin/base_url match in development (port mismatch with lvh.me).
+  config.action_controller.forgery_protection_origin_check = false
+
   # Do not eager load code on boot.
   config.eager_load = false
 

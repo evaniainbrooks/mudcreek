@@ -50,6 +50,7 @@ gem "view_component"
 
 # Authorization
 gem "pundit"
+gem "rack-cors"
 
 # Search and filtering
 gem "ransack"
