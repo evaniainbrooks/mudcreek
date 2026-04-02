@@ -65,7 +65,8 @@
                     %dd.col-sm-8
                       %code.text-break= @qr_code.inactive_url
                   %dt.col-sm-4 Scan notification
-                  %dd.col-sm-8= @qr_code.notify_user ? render(TableCellComponent.new(value: @qr_code.notify_user)) : content_tag(:span, "—", class: "text-muted")
+                  %dd.col-sm-8
+                    = @qr_code.notify_user ? render(TableCellComponent.new(value: @qr_code.notify_user)) : content_tag(:span, "—", class: "text-muted")
                   - if @qr_code.notes.present?
                     %dt.col-sm-4 Notes
                     %dd.col-sm-8= @qr_code.notes

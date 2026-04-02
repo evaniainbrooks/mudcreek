@@ -2,12 +2,7 @@
 
 :ruby
   styles  = location_showroom_styles(@location)
-  qr_url  = if @location.qr_code
-              qr_redirect_url(@location.qr_code, tenant_key: Current.tenant.key)
-            else
-              location_checkin_url(@location, tenant_key: Current.tenant.key)
-            end
-
+  qr_url  = qr_redirect_url(@location.qr_code, tenant_key: Current.tenant.key)
   qr      = RQRCode::QRCode.new(qr_url)
 
 %div{data: { controller: "clock" },
