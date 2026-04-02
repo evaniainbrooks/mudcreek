@@ -6,8 +6,10 @@ class Admin::Listings::SalesController < Admin::BaseController
       listing:          @listing,
       quantity:         sale_params[:quantity].to_i,
       unit_price_cents: (sale_params[:unit_price].to_f * 100).round,
+      user_id:          sale_params[:user_id].presence,
       buyer_name:       sale_params[:buyer_name],
       buyer_email:      sale_params[:buyer_email],
+      sold_on:          sale_params[:sold_on].presence&.then { Date.parse(_1) } || Date.today,
       notes:            sale_params[:notes]
     )
 
@@ -26,6 +28,6 @@ class Admin::Listings::SalesController < Admin::BaseController
   end
 
   def sale_params
-    params.require(:manual_sale).permit(:quantity, :unit_price, :buyer_name, :buyer_email, :notes)
+    params.require(:manual_sale).permit(:quantity, :unit_price, :user_id, :buyer_name, :buyer_email, :sold_on, :notes)
   end
 end

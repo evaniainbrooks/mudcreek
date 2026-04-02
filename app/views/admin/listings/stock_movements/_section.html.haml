@@ -13,25 +13,51 @@
   .card-body
     = form_with url: admin_listing_sales_path(listing), scope: :manual_sale,
         data: { turbo: false } do |f|
-      .row.g-3
+      .row.g-3.mb-3
+        .col-md-2
+          = f.label :sold_on, "Date", class: "form-label"
+          = f.date_field :sold_on, value: Date.today, class: "form-control", required: true
         .col-md-2
           = f.label :quantity, "Quantity", class: "form-label"
           = f.number_field :quantity, min: 1, value: 1, class: "form-control", required: true
         .col-md-2
-          = f.label :unit_price, "Sale Price", class: "form-label"
+          = f.label :unit_price, "Unit Price", class: "form-label"
           .input-group
             %span.input-group-text $
             = f.text_field :unit_price, value: listing.price&.to_f, class: "form-control", required: true
-        .col-md-3
-          = f.label :buyer_name, "Buyer Name", class: "form-label"
-          = f.text_field :buyer_name, class: "form-control", placeholder: "Required", required: true
-        .col-md-3
-          = f.label :buyer_email, "Buyer Email", class: "form-label"
-          = f.email_field :buyer_email, class: "form-control", placeholder: "Optional"
+        .col-md-4
+          = f.label :notes, "Notes", class: "form-label"
+          = f.text_field :notes, class: "form-control", placeholder: "Optional"
         .col-md-2.d-flex.align-items-end
           = f.button class: "btn btn-success w-100" do
             %i.bi.bi-bag-check.me-1
             Record Sale
+      .row.g-3#manual-sale-buyer-fields
+        .col-md-4
+          = f.label :user_id, "Member", class: "form-label"
+          = f.collection_select :user_id, User.order(:email_address), :id, :email_address,
+              { include_blank: "— Guest —" },
+              { class: "form-select", id: "manual_sale_user_id" }
+        .col-md-4#manual-sale-guest-fields
+          = f.label :buyer_name, "Guest Name", class: "form-label"
+          = f.text_field :buyer_name, class: "form-control", placeholder: "Required for guests"
+        .col-md-4#manual-sale-guest-email-field
+          = f.label :buyer_email, "Guest Email", class: "form-label"
+          = f.email_field :buyer_email, class: "form-control", placeholder: "Optional"
+
+    :javascript
+      (function() {
+        var sel = document.getElementById('manual_sale_user_id');
+        var gname = document.getElementById('manual-sale-guest-fields');
+        var gemail = document.getElementById('manual-sale-guest-email-field');
+        function toggle() {
+          var isGuest = !sel.value;
+          gname.style.display = isGuest ? '' : 'none';
+          gemail.style.display = isGuest ? '' : 'none';
+        }
+        sel.addEventListener('change', toggle);
+        toggle();
+      })();
 
 .card.shadow-sm.border-0
   .card-header.fw-semibold

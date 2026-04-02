@@ -10,6 +10,7 @@ class Order < ApplicationRecord
 
 
   native_enum :status, %i[pending paid cancelled]
+  enum :source, { online: "online", manual: "manual" }
 
   monetize :subtotal_cents,       with_model_currency: :currency
   monetize :tax_cents,            with_model_currency: :currency
