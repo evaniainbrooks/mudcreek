@@ -8,6 +8,6 @@ class Listings::Acquisition < ApplicationRecord
   validates :quantity,    presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :acquired_on, presence: true
 
-  after_create_commit  { listing.increment!(:quantity, by: quantity) }
-  before_destroy       { listing.decrement!(:quantity, by: quantity) }
+  after_create_commit  { listing.increment!(:quantity, quantity) }
+  before_destroy       { listing.decrement!(:quantity, quantity) }
 end

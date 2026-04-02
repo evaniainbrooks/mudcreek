@@ -4,29 +4,7 @@
     Inventory
     %span.badge.text-bg-secondary.ms-2= listing.quantity
   .card-body.p-0
-    - if acquisitions.any?
-      %table.table.table-sm.mb-0
-        %thead.table-light
-          %tr
-            %th Date
-            %th Qty
-            %th Unit Price
-            %th Notes
-            %th
-        %tbody
-          - acquisitions.each do |acq|
-            %tr
-              %td= acq.acquired_on.to_fs(:long_ordinal)
-              %td= acq.quantity
-              %td= acq.unit_price_cents ? humanized_money_with_symbol(acq.unit_price) : tag.span("—", class: "text-muted")
-              %td= acq.notes.presence || tag.span("—", class: "text-muted")
-              %td.text-end
-                = button_to admin_listing_acquisition_path(listing, acq), method: :delete,
-                    class: "btn btn-outline-danger btn-sm",
-                    form: { data: { turbo_confirm: "Remove this acquisition? The listing quantity will be decremented." } } do
-                  %i.bi.bi-trash
-    - else
-      .px-4.py-3.text-muted No acquisitions recorded yet.
+    = render_acquisitions_table(listing, acquisitions)
 
 .card.shadow-sm.border-0
   .card-header.fw-semibold
