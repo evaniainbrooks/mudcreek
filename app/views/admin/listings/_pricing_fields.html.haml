@@ -31,14 +31,19 @@
       - if listing.errors[:acquisition_price_cents].any?
         .invalid-feedback.d-block= listing.errors[:acquisition_price_cents].to_sentence
     .mb-3
-      = f.label :quantity, class: "form-label #{'required' unless listing.rental?}"
-      = f.number_field :quantity,
-        class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}",
-        min: 0,
-        required: !listing.rental?,
-        data: { required: "true" }
-      - if listing.errors[:quantity].any?
-        .invalid-feedback= listing.errors[:quantity].to_sentence
+      .form-check
+        = f.check_box :unlimited_quantity, class: "form-check-input"
+        = f.label :unlimited_quantity, "Unlimited quantity (digital good)", class: "form-check-label"
+    - unless listing.unlimited_quantity?
+      .mb-3
+        = f.label :quantity, class: "form-label #{'required' unless listing.rental?}"
+        = f.number_field :quantity,
+          class: "form-control #{'is-invalid' if listing.errors[:quantity].any?}",
+          min: 0,
+          required: !listing.rental?,
+          data: { required: "true" }
+        - if listing.errors[:quantity].any?
+          .invalid-feedback= listing.errors[:quantity].to_sentence
     .mb-0
       = f.label :sku, "SKU", class: "form-label"
       = f.text_field :sku, class: "form-control", placeholder: "Optional"

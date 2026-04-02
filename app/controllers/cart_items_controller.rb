@@ -17,7 +17,7 @@ class CartItemsController < ApplicationController
 
   def update
     cart_item = find_cart_item(params[:id])
-    quantity = params[:quantity].to_i.clamp(1, cart_item.listing.quantity)
+    quantity = cart_item.listing.unlimited_quantity? ? 1 : params[:quantity].to_i.clamp(1, cart_item.listing.quantity)
     cart_item.update(quantity:)
     redirect_back fallback_location: cart_path, notice: "Quantity updated."
   end

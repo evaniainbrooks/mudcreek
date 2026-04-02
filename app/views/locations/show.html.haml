@@ -40,6 +40,7 @@
 
         - if @today_events.any?
           %div{ style: styles[:events] }
+            %div{ style: "font-size: clamp(0.7rem, 1.2vw, 1rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem" } Schedule
             - @today_events.each do |event|
               %div{ style: "margin-bottom: 0.75rem" }
                 %div{ style: "font-weight: 600; font-size: clamp(1rem, 1.75vw, 1.5rem)" }= event.summary

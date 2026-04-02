@@ -24,8 +24,12 @@ class AddSaleCartItemService
       return Result.new(cart_item: nil, error: "The selected combination is not available.") unless variant
     end
 
-    max_qty = variant ? variant.quantity : listing.quantity
-    quantity = requested_quantity.to_i.clamp(1, [max_qty, 1].max)
+    quantity = if listing.unlimited_quantity?
+      1
+    else
+      max_qty = variant ? variant.quantity : listing.quantity
+      requested_quantity.to_i.clamp(1, [max_qty, 1].max)
+    end
 
     cart_item = cart_items_scope.create(listing_id: listing.id, variant:, quantity:)
     Result.new(cart_item:, error: nil)

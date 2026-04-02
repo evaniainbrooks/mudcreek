@@ -43,9 +43,9 @@
           %p.fs-2.text-primary.fw-semibold.mb-2= humanized_money_with_symbol(@listing.price)
         - unless @listing.sold?
           %p.text-muted.small.mb-4
-            - if @listing.quantity == 0
+            - if !@listing.unlimited_quantity? && @listing.quantity == 0
               %span.badge.text-bg-secondary.me-1 Out of Stock
-            - else
+            - elsif !@listing.unlimited_quantity?
               %i.bi.bi-box-seam.me-1
               = pluralize(@listing.quantity, "available")
         %hr.mb-4
@@ -89,7 +89,7 @@
                             options_for_select(option.option_values.order(:position).map { |v| [v.value, v.id] }),
                             class: "form-select form-select-sm"
                   .d-flex.gap-2
-                    - if @listing.quantity > 1 && !(@listing.has_variants? && Current.tenant.features.listing_variants?)
+                    - if !@listing.unlimited_quantity? && @listing.quantity > 1 && !(@listing.has_variants? && Current.tenant.features.listing_variants?)
                       = f.number_field :quantity, value: 1, min: 1,
                           max: @listing.quantity, class: "form-control", style: "width: 80px"
                     = f.button class: "btn btn-primary flex-grow-1" do
