@@ -7,6 +7,7 @@ RSpec.describe "Locations", type: :request do
   end
 
   let!(:location) { create(:location, name: "Main Lobby", published: true) }
+  let!(:qr_code) { create(:qr_code, location: location) }
 
   before do
     allow(LocationCalendarService).to receive(:new).and_return(instance_double(LocationCalendarService, today_events: []))
