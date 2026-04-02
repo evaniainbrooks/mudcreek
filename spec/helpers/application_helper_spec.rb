@@ -143,8 +143,10 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#tenant_theme_tag" do
     context "when no custom colors are set" do
-      it "returns nil" do
-        expect(helper.tenant_theme_tag(tenant)).to be_nil
+      it "returns a style tag with navbar defaults" do
+        html = helper.tenant_theme_tag(tenant)
+        expect(html).to include("<style>")
+        expect(html).to include(".navbar")
       end
     end
 

@@ -48,9 +48,10 @@ RSpec.describe Admin::ListingsHelper, type: :helper do
     context "with an empty offers list" do
       subject(:html) { Capybara.string(helper.render_listing_offers_table([]).to_s) }
 
-      it "renders a table with no rows" do
+      it "renders a table with an empty state row" do
         expect(html).to have_css("table")
-        expect(html).to have_css("tbody tr", count: 0)
+        expect(html).to have_css("tbody tr", count: 1)
+        expect(html).to have_text("No records found.")
       end
     end
   end
