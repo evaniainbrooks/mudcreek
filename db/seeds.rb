@@ -2053,6 +2053,7 @@ Current.tenant = mudcreek
       destination_url: Rails.application.routes.url_helpers.location_checkin_url(
         location,
         tenant_key: Current.tenant.key,
+        host: ENV.fetch("DEFAULT_URL_HOST", "shop.junglefowlbjj.ca"),
         **Rails.application.routes.default_url_options
       ),
       active:          true
