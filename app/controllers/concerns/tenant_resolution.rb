@@ -10,9 +10,9 @@ module TenantResolution
   private
 
   def set_current_tenant
-    session[:tenant_key] = params[:tenant_key] if Rails.env.development? && params[:tenant_key].present?
+    session[:tenant_key] = params[:tenant_key] if params[:tenant_key].present?
 
-    Current.tenant = if Rails.env.development? && session[:tenant_key].present?
+    Current.tenant = if session[:tenant_key].present?
       Tenant.find_by!(key: session[:tenant_key])
     elsif request.subdomain.present?
       Tenant.find_by!(key: request.subdomain)
