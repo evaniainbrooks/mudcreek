@@ -16,18 +16,22 @@ localstack:
   force_path_style: true
   public: true
 
+<% if ENV["S3_BUCKET"].present? %>
 amazon:
   service: S3
   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
   region: <%= ENV.fetch("AWS_REGION", "us-east-1") %>
-  bucket: <%= ENV["S3_BUCKET"] || "_unconfigured_" %>
+  bucket: <%= ENV["S3_BUCKET"] %>
+<% end %>
 
+<% if ENV["R2_BUCKET"].present? %>
 r2:
   service: S3
   access_key_id: <%= Rails.application.credentials.dig(:r2, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:r2, :secret_access_key) %>
   region: auto
-  bucket: <%= ENV.fetch("R2_BUCKET") %>
+  bucket: <%= ENV["R2_BUCKET"] %>
   endpoint: https://<%= Rails.application.credentials.dig(:r2, :account_id) %>.r2.cloudflarestorage.com
   force_path_style: false
+<% end %>
