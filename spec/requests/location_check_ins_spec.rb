@@ -170,7 +170,7 @@ RSpec.describe "LocationCheckIns", type: :request do
       it "re-renders the form with an error" do
         post location_checkin_path(location), params: blank_params
 
-        expect(response.body).to include("Check in as a guest below")
+        expect(response.body).to include("Check in as a guest")
       end
     end
 
