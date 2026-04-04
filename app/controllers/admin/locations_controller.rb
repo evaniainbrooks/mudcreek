@@ -13,18 +13,22 @@ class Admin::LocationsController < Admin::BaseController
     @week_check_ins    = @location.check_ins.this_week.count
     @month_check_ins   = @location.check_ins.this_month.count
 
-    counts     = @location.check_ins.group(:user_id).count
-    last_times = @location.check_ins.group(:user_id).maximum(:created_at)
-    user_ids   = counts.keys.compact
-    users      = User.where(id: user_ids).index_by(&:id)
+    user_counts     = @location.check_ins.where.not(user_id: nil).group(:user_id).count
+    user_last_times = @location.check_ins.where.not(user_id: nil).group(:user_id).maximum(:created_at)
+    users           = User.where(id: user_counts.keys).index_by(&:id)
 
-    @user_stats = counts.map do |uid, count|
-      if uid
-        { user: users[uid], count: count, last_at: last_times[uid] }
-      else
-        { user: nil, guest: true, count: count, last_at: last_times[uid] }
-      end
-    end.sort_by { |s| -s[:count] }
+    guest_counts     = @location.check_ins.where(user_id: nil).group(:guest_name).count
+    guest_last_times = @location.check_ins.where(user_id: nil).group(:guest_name).maximum(:created_at)
+
+    user_rows = user_counts.map do |uid, count|
+      { user: users[uid], count: count, last_at: user_last_times[uid] }
+    end
+
+    guest_rows = guest_counts.map do |name, count|
+      { guest_name: name, count: count, last_at: guest_last_times[name] }
+    end
+
+    @user_stats = (user_rows + guest_rows).sort_by { |s| -s[:count] }
 
     @recent_check_ins = @location.check_ins.ordered.includes(:user).limit(20)
   end
@@ -43,7 +47,9 @@ class Admin::LocationsController < Admin::BaseController
     @location = Location.new(location_params)
     authorize(@location)
 
+    new_backgrounds = params.dig(:location, :backgrounds)&.reject(&:blank?)
     if @location.save
+      @location.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       @location.create_qr_code!(
         name:            "#{@location.name} Check-in",
         destination_url: location_checkin_url(@location, tenant_key: Current.tenant.key),
@@ -59,8 +65,13 @@ class Admin::LocationsController < Admin::BaseController
 
   def update
     @location.logo.purge_later if params[:remove_logo].present?
-    @location.background.purge_later if params[:remove_background].present?
+    Array(params[:remove_background_ids]).each do |signed_id|
+      blob = ActiveStorage::Blob.find_signed(signed_id)
+      @location.backgrounds.attachments.find_by(blob_id: blob.id)&.purge_later
+    end
+    new_backgrounds = params.dig(:location, :backgrounds)&.reject(&:blank?)
     if @location.update(location_params)
+      @location.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       @location.create_qr_code!(
         name:            "#{@location.name} Check-in",
         destination_url: location_checkin_url(@location, tenant_key: Current.tenant.key),
@@ -87,6 +98,6 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def location_params
-    params.require(:location).permit(:name, :published, :logo, :background, :ical_url, :message, :checkin_exit_url, :background_tint_opacity, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
+    params.require(:location).permit(:name, :published, :logo, :ical_url, :message, :checkin_exit_url, :background_tint_opacity, :slide_timeout, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
   end
 end

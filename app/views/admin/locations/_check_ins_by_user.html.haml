@@ -17,8 +17,9 @@
                 - if stat[:user]
                   = link_to stat[:user].name, admin_user_path(stat[:user]), class: "text-decoration-none"
                   %small.text-muted.d-block= stat[:user].email_address
-                - elsif stat[:guest]
-                  %span.text-muted Guest check-ins
+                - elsif stat[:guest_name]
+                  = stat[:guest_name]
+                  %small.text-muted.d-block Guest
                 - else
                   %span.text-muted Deleted user
               %td.text-center= stat[:count]

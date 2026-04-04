@@ -46,16 +46,15 @@
                 = image_tag @location.logo.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
               - else
                 %span.text-muted —
-            %dt.col-sm-5 Background
+            %dt.col-sm-5 Backgrounds
             %dd.col-sm-7
-              - if @location.background.attached?
-                - if @location.background.video?
-                  %video{src: url_for(@location.background), width: 80, height: 80,
-                      style: "object-fit: cover; border-radius: 0.25rem", muted: true}
-                - else
-                  = image_tag @location.background.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
+              - count = @location.backgrounds.attachments.size
+              - if count > 0
+                = pluralize(count, "item")
               - else
                 %span.text-muted —
+            %dt.col-sm-5 Slide timeout
+            %dd.col-sm-7= "#{@location.slide_timeout}s"
             - if @location.message.present?
               %dt.col-sm-5 Message
               %dd.col-sm-7= @location.message

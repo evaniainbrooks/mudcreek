@@ -63,8 +63,8 @@ class ApplicationController < ActionController::Base
 
   def set_default_meta_tags
     set_meta_tags(
-      site: "Mudcreek",
-      og: { site_name: "Mudcreek", type: "website" },
+      site: Current.tenant.name,
+      og: { site_name: Current.tenant.name, type: "website" },
       twitter: { card: "summary" }
     )
   end

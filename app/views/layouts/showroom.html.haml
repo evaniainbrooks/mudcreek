@@ -9,8 +9,8 @@
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     :css
       @keyframes showroom-pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.06); }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.35; transform: scale(1.08); }
       }
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
   %body{ style: "background: #000; color: #fff; height: 100vh; overflow: hidden; margin: 0" }

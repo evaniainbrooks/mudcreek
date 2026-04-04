@@ -6,7 +6,7 @@ class Location < ApplicationRecord
   has_one :qr_code, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
   has_one_attached :logo
-  has_one_attached :background
+  has_many_attached :backgrounds
   has_one_attached :calendar_file
   accepts_nested_attributes_for :address, reject_if: :all_blank
 

@@ -201,7 +201,7 @@ body  { padding-top: var(--navbar-height); }
   background: linear-gradient(135deg, shade-color($secondary, 35%) 0%, $secondary 50%, shade-color($primary, 20%) 100%);
   border-bottom: 2px solid $tertiary;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
   transition: padding 0.25s ease, transform 0.3s ease, opacity 0.3s ease;
 
   &.navbar-hidden {
@@ -355,3 +355,5 @@ body  { padding-top: var(--navbar-height); }
 
   &:hover { background: var(--bs-secondary-bg); }
 }
+
+@import 'checkin';

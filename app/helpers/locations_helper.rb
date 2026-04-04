@@ -4,12 +4,8 @@ module LocationsHelper
     accent  = Current.tenant.primary_color.presence || "#4f8ef7"
     accent2 = Current.tenant.secondary_color.presence || accent
     {
-      bg: if location.background.attached? && !location.background.video?
-            "background-image: url(#{url_for(location.background)}); background-size: cover; background-position: center;"
-          else
-            "background: #000;"
-          end,
-      top_bar: "padding: 1.5rem 2rem; display: grid; grid-template-columns: 1fr auto 1fr; " \
+      bg: "background: #000;",
+      top_bar: "padding: 0.5rem 2rem; display: grid; grid-template-columns: 1fr auto 1fr; " \
                "align-items: center; font-size: clamp(1.5rem, 3vw, 2.5rem); " \
                "color: rgba(255,255,255,0.6)",
       clock:   "color: #fff; font-weight: 600; letter-spacing: 0.05em; text-shadow: 0 0 12px #{accent}",
@@ -32,9 +28,9 @@ module LocationsHelper
                "text-align: left; justify-self: start; max-width: 30vw; " \
                "border-left: 3px solid #{accent2}",
       prompt:  "font-size: clamp(1.25rem, 2.5vw, 2rem); color: #fff; font-weight: 500; " \
-               "letter-spacing: 0.02em; margin: 0; " \
+               "letter-spacing: 0.02em; margin: 2rem 0 0; " \
                "text-shadow: 0 0 20px #{accent}, 0 2px 10px rgba(0,0,0,0.9); " \
-               "animation: showroom-pulse 2s ease-in-out infinite"
+               "animation: showroom-pulse 1.6s ease-in-out infinite"
     }
   end
 end

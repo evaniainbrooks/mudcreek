@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_02_113719) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_185657) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -442,6 +442,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_02_113719) do
     t.string "ical_url"
     t.string "name", null: false
     t.boolean "published", default: false, null: false
+    t.integer "slide_timeout", default: 8, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_locations_on_hashid", unique: true

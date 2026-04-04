@@ -71,27 +71,33 @@
                       data: { turbo_method: :patch, turbo_confirm: "Remove logo?" } do
                     %i.bi.bi-x-lg.me-1
                     Remove
-          .mb-0
-            = f.label :background, "Background (image or video)", class: "form-label"
-            = f.file_field :background, direct_upload: true, class: "form-control", accept: "image/*,video/*"
-            - if location.background.attached?
-              .mt-2.d-flex.align-items-center.gap-2
-                - if location.background.video?
-                  %video{src: url_for(location.background), width: 120, height: 80,
-                      style: "object-fit: cover; border-radius: 0.25rem", muted: true}
-                - else
-                  = image_tag location.background.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
-                - if location.persisted?
-                  = link_to admin_location_path(location, remove_background: "1"),
-                      class: "btn btn-sm btn-outline-danger",
-                      data: { turbo_method: :patch, turbo_confirm: "Remove background?" } do
-                    %i.bi.bi-x-lg.me-1
-                    Remove
+          .mb-3
+            = f.label :backgrounds, "Background gallery (images or videos)", class: "form-label"
+            = f.file_field :backgrounds, direct_upload: true, class: "form-control", accept: "image/*,video/*", multiple: true
+            - if location.backgrounds.attached?
+              .mt-2.d-flex.flex-wrap.gap-2
+                - location.backgrounds.each do |bg|
+                  .position-relative
+                    - if bg.video?
+                      %video{src: url_for(bg), width: 120, height: 80,
+                          style: "object-fit: cover; border-radius: 0.25rem; display: block", muted: true}
+                    - else
+                      = image_tag bg.variant(resize_to_fill: [120, 80]), class: "rounded d-block", style: "object-fit: cover"
+                    - if location.persisted?
+                      = link_to admin_location_path(location, remove_background_ids: [bg.signed_id]),
+                          class: "btn btn-danger btn-sm position-absolute top-0 end-0 p-0 lh-1",
+                          style: "width: 1.4rem; height: 1.4rem; border-radius: 0 0.25rem 0 0.25rem",
+                          data: { turbo_method: :patch, turbo_confirm: "Remove this background?" } do
+                        %i.bi.bi-x
           .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
           .mt-3
             = f.label :background_tint_opacity, "Background tint opacity (0–1)", class: "form-label"
             = f.number_field :background_tint_opacity, class: "form-control", min: 0, max: 1, step: 0.05
             .form-text Controls how dark the overlay on the background is. 0 = no tint, 1 = fully black.
+          .mt-3
+            = f.label :slide_timeout, "Slide timeout (seconds)", class: "form-label"
+            = f.number_field :slide_timeout, class: "form-control", min: 1, max: 300
+            .form-text How long each background is shown before advancing to the next.
 
       = f.fields_for :address do |a|
         %fieldset.card.shadow-sm.border-0

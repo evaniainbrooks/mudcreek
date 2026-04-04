@@ -8,10 +8,19 @@
 %div{data: { controller: "clock" },
      style: "position: fixed; inset: 0; #{styles[:bg]}"}
 
-  - if @location.background.attached? && @location.background.video?
-    %video{src: url_for(@location.background),
-            autoplay: true, loop: true, muted: true, playsinline: true,
-            style: "position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"}
+  - if @location.backgrounds.attached?
+    %div{data: { controller: "slideshow",
+                 "slideshow-timeout-value": @location.slide_timeout * 1000 },
+         style: "position: absolute; inset: 0"}
+      - @location.backgrounds.each_with_index do |bg, i|
+        - if bg.video?
+          %video{src: url_for(bg),
+                  autoplay: i == 0, loop: true, muted: true, playsinline: true,
+                  data: { "slideshow-target": "slide" },
+                  style: "position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease-in-out; opacity: #{i == 0 ? 1 : 0}"}
+        - else
+          %div{data: { "slideshow-target": "slide" },
+               style: "position: absolute; inset: 0; background-image: url(#{url_for(bg)}); background-size: cover; background-position: center; transition: opacity 1s ease-in-out; opacity: #{i == 0 ? 1 : 0}"}
 
   %div{ style: "position: absolute; inset: 0; background: rgba(0,0,0,#{@location.background_tint_opacity})" }
   %div{ style: "position: relative; display: flex; flex-direction: column; height: 100%" }

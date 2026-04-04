@@ -1,17 +1,33 @@
-.container.py-5
-  .row.justify-content-center
-    .col-md-6.text-center
-      %h2.mb-4= @location.name
+- content_for :title, "Check In – #{@location.name}"
+
+:ruby
+  first_bg = @location.backgrounds.attachments.first
+  has_image_bg = first_bg && !first_bg.blob.video?
+
+.checkin-page
+  - if has_image_bg
+    .checkin-backdrop{ style: "background-image: url(#{url_for(first_bg)})" }
+  .checkin-overlay
+
+  .checkin-content
+    .checkin-card
+      - if @location.logo.attached?
+        = image_tag @location.logo, class: "checkin-logo", alt: @location.name
+      %h1.checkin-location= @location.name
 
       - if @check_in.persisted? || @checked_in || @guest_checked_in
-        %i.bi.bi-check-circle-fill.text-success{ style: "font-size: 4rem" }
-        %h3.mt-3 Checked in!
-        - if Current.user
-          %p.text-muted Welcome, #{Current.user.first_name}.
-        - elsif @guest_checked_in
-          %p.text-muted Welcome, #{@guest_checked_in}.
-        = link_to "Close", @location.checkin_exit_url.presence || root_path, class: "btn btn-outline-secondary mt-2"
+        .checkin-success
+          %i.bi.bi-check-circle-fill.checkin-success-icon
+          %h2.checkin-success-heading Checked in!
+          %p.checkin-welcome
+            - if Current.user
+              Welcome, #{Current.user.first_name}!
+            - elsif @guest_checked_in
+              Welcome, #{@guest_checked_in}!
+        = link_to @location.checkin_exit_url.presence || root_path,
+            class: "btn btn-lg w-100 checkin-close-btn mt-2" do
+          Done
       - else
         - if @check_in.errors.any?
-          .alert.alert-danger.text-start= @check_in.errors.full_messages.to_sentence
+          .alert.alert-danger.text-start.mb-3= @check_in.errors.full_messages.to_sentence
         = render "form", location: @location, check_in: @check_in
