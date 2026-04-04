@@ -2038,9 +2038,9 @@ Current.tenant = mudcreek
     )
   end
 
-  unless location.background.attached?
+  unless location.backgrounds.attached?
     fixture_dir = attrs[:background_type].start_with?("video/") ? "spec/fixtures/videos" : "spec/fixtures/images"
-    location.background.attach(
+    location.backgrounds.attach(
       io:           Rails.root.join(fixture_dir, attrs[:background]).open("rb"),
       filename:     attrs[:background],
       content_type: attrs[:background_type]
