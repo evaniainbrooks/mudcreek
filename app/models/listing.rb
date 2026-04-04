@@ -58,7 +58,8 @@ class Listing < ApplicationRecord
   validates :name, presence: true
   validates :description, presence: true
   validates :price_cents, presence: true
-  validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, unless: :unlimited_quantity?
+  validates :quantity, presence: true
+  validates :quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, unless: :unlimited_quantity?
   validates :owner_id, absence: true, if: :lot_id?
   validate :owner_or_lot_present
 

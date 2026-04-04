@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_185657) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_222139) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -410,7 +410,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_185657) do
     t.integer "unit_price_cents"
     t.datetime "updated_at", null: false
     t.index ["listing_id"], name: "index_listings_stock_movements_on_listing_id"
-    t.index ["order_item_id"], name: "index_listings_stock_movements_on_order_item_id"
+    t.index ["order_item_id"], name: "index_listings_stock_movements_on_order_item_id", unique: true
     t.index ["tenant_id"], name: "index_listings_stock_movements_on_tenant_id"
     t.check_constraint "quantity > 0", name: "listings_acquisitions_quantity_positive"
   end
@@ -982,7 +982,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_185657) do
   add_foreign_key "listings_rental_rate_plans", "tenants"
   add_foreign_key "listings_stock_movements", "listings"
   add_foreign_key "listings_stock_movements", "order_items"
-  add_foreign_key "listings_stock_movements", "tenants"
+  add_foreign_key "listings_stock_movements", "tenants", on_delete: :cascade
   add_foreign_key "listings_variant_option_values", "listings_option_values", column: "option_value_id"
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"
