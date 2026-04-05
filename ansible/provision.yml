@@ -25,6 +25,9 @@
           - htop
           - unzip
           - postgresql-client
+          - fail2ban
+          - unattended-upgrades
+          - chrony
         state: present
 
     # ── Docker ────────────────────────────────────────────────────────────────
@@ -133,6 +136,72 @@
         state: present
         reload: true
 
+    - name: Tune sysctl for Rails/Postgres workload
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: true
+      loop:
+        - { name: net.core.somaxconn, value: "1024" }
+        - { name: net.ipv4.tcp_fin_timeout, value: "15" }
+        - { name: net.ipv4.tcp_tw_reuse, value: "1" }
+        - { name: vm.overcommit_memory, value: "1" }
+
+    # ── Open file limits ──────────────────────────────────────────────────────
+    - name: Raise open file descriptor limits
+      pam_limits:
+        domain: "*"
+        limit_type: "{{ item.type }}"
+        limit_item: nofile
+        value: "65536"
+      loop:
+        - { type: soft }
+        - { type: hard }
+
+    # ── Docker daemon config ──────────────────────────────────────────────────
+    - name: Configure Docker log rotation
+      copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "10m",
+              "max-file": "3"
+            }
+          }
+        mode: "0644"
+      notify: Restart Docker
+
+    # ── Security ──────────────────────────────────────────────────────────────
+    - name: Enable fail2ban
+      systemd:
+        name: fail2ban
+        enabled: true
+        state: started
+
+    - name: Enable unattended security upgrades
+      copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+        mode: "0644"
+
+    # ── Time sync ─────────────────────────────────────────────────────────────
+    - name: Enable and start chrony
+      systemd:
+        name: chrony
+        enabled: true
+        state: started
+
     - name: Verify Docker is running
       command: docker info
       changed_when: false
+
+  handlers:
+    - name: Restart Docker
+      systemd:
+        name: docker
+        state: restarted
