@@ -47,7 +47,7 @@
               %span.badge.text-bg-secondary.me-1 Out of Stock
             - elsif !@listing.unlimited_quantity?
               %i.bi.bi-box-seam.me-1
-              = pluralize(@listing.quantity, "available")
+              = "#{@listing.quantity} available"
         %hr.mb-4
         - if @listing.rental?
           - if @listing.rental_rate_plans.any?
