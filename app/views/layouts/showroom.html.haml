@@ -7,6 +7,7 @@
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    %meta{ name: "turbo-refresh-method", content: "morph" }
     :css
       @keyframes showroom-pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
@@ -16,4 +17,4 @@
   %body{ style: "background: #000; color: #fff; height: 100vh; overflow: hidden; margin: 0" }
     = yield
     :javascript
-      setTimeout(function() { window.location.reload(); }, 120000);
+      setInterval(function() { Turbo.visit(window.location.href, { action: "replace" }); }, 120000);

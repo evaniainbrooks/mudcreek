@@ -11,6 +11,9 @@ export default class extends Controller {
   private timer: ReturnType<typeof setInterval> | undefined
 
   connect() {
+    const first = this.slideTargets[0]
+    if (first instanceof HTMLVideoElement) first.play().catch(() => {})
+
     if (this.slideTargets.length > 1) {
       this.timer = setInterval(() => this.advance(), this.timeoutValue)
     }
