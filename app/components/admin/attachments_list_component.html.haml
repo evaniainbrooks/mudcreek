@@ -1,0 +1,15 @@
+%ul.list-unstyled.mt-2.mb-0.small.text-muted
+  - @attachments.each do |attachment|
+    - path = delete_path_for(attachment)
+    %li.d-flex.align-items-center.gap-1
+      %i.bi{ class: icon_for(attachment) }
+      = link_to attachment.filename.to_s,
+          rails_blob_path(attachment.blob, disposition: "attachment"),
+          class: "text-reset text-decoration-none text-truncate",
+          target: "_blank"
+      - if path
+        = link_to path,
+            data: { turbo_method: @delete_method, turbo_confirm: "Remove #{attachment.filename}?" },
+            class: "text-danger ms-1",
+            aria: { label: "Remove #{attachment.filename}" } do
+          %i.bi.bi-x-lg

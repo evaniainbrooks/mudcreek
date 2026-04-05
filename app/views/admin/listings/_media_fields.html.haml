@@ -15,17 +15,10 @@
         accept: "image/*"
       - if listing.errors[:images].any?
         .invalid-feedback= listing.errors[:images].to_sentence
-      - if listing.images.attached?
-        %ul.list-unstyled.mt-2.mb-0.small.text-muted
-          - listing.images_attachments.each do |attachment|
-            %li.d-flex.align-items-center.gap-1
-              %i.bi.bi-image
-              = attachment.filename
-              = link_to admin_listing_attachment_path(listing, attachment),
-                data: { turbo_method: :delete, turbo_confirm: "Remove #{attachment.filename}?" },
-                class: "text-danger ms-1",
-                aria: { label: "Remove #{attachment.filename}" } do
-                %i.bi.bi-x-lg
+      = render Admin::AttachmentsListComponent.new(
+          attachments: listing.images_attachments,
+          delete_path: ->(a) { admin_listing_attachment_path(listing, a) }
+        )
     .mb-3
       = f.label :videos, class: "form-label"
       = f.file_field :videos,
@@ -35,17 +28,10 @@
         accept: "video/*"
       - if listing.errors[:videos].any?
         .invalid-feedback= listing.errors[:videos].to_sentence
-      - if listing.videos.attached?
-        %ul.list-unstyled.mt-2.mb-0.small.text-muted
-          - listing.videos_attachments.each do |attachment|
-            %li.d-flex.align-items-center.gap-1
-              %i.bi.bi-camera-video
-              = attachment.filename
-              = link_to admin_listing_attachment_path(listing, attachment),
-                data: { turbo_method: :delete, turbo_confirm: "Remove #{attachment.filename}?" },
-                class: "text-danger ms-1",
-                aria: { label: "Remove #{attachment.filename}" } do
-                %i.bi.bi-x-lg
+      = render Admin::AttachmentsListComponent.new(
+          attachments: listing.videos_attachments,
+          delete_path: ->(a) { admin_listing_attachment_path(listing, a) }
+        )
     .mb-0
       = f.label :documents, class: "form-label"
       = f.file_field :documents,
@@ -55,15 +41,8 @@
         accept: ".pdf,.doc,.docx,.xlsx"
       - if listing.errors[:documents].any?
         .invalid-feedback= listing.errors[:documents].to_sentence
-      - if listing.documents.attached?
-        %ul.list-unstyled.mt-2.mb-0.small.text-muted
-          - listing.documents_attachments.each do |attachment|
-            %li.d-flex.align-items-center.gap-1
-              %i.bi{ class: document_icon_class(attachment.content_type) }
-              = attachment.filename
-              = link_to admin_listing_attachment_path(listing, attachment),
-                data: { turbo_method: :delete, turbo_confirm: "Remove #{attachment.filename}?" },
-                class: "text-danger ms-1",
-                aria: { label: "Remove #{attachment.filename}" } do
-                %i.bi.bi-x-lg
+      = render Admin::AttachmentsListComponent.new(
+          attachments: listing.documents_attachments,
+          delete_path: ->(a) { admin_listing_attachment_path(listing, a) }
+        )
     .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }

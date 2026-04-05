@@ -63,17 +63,11 @@
         accept: ".pdf,.doc,.docx"
       - if tenant.errors[:default_terms_and_conditions].any?
         .invalid-feedback= tenant.errors[:default_terms_and_conditions].to_sentence
-      - if tenant.default_terms_and_conditions.attached?
-        .mt-2.d-flex.align-items-center.gap-2
-          %i.bi.bi-file-earmark-text.text-muted
-          = link_to tenant.default_terms_and_conditions.filename.to_s,
-            rails_blob_path(tenant.default_terms_and_conditions, disposition: "attachment"),
-            class: "text-decoration-none"
-          = link_to admin_tenant_path(remove_default_terms_and_conditions: "1"),
-              class: "btn btn-sm btn-outline-danger",
-              data: { turbo_method: :patch, turbo_confirm: "Remove default terms & conditions?" } do
-            %i.bi.bi-x-lg.me-1
-            Remove
+      = render Admin::AttachmentsListComponent.new(
+          attachments: [tenant.default_terms_and_conditions.attachment].compact,
+          delete_path: ->(_a) { admin_tenant_path(remove_default_terms_and_conditions: "1") },
+          delete_method: :patch
+        )
     .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
 %fieldset.card.shadow-sm.border-0{ data: { controller: "bid-increment-schedule" } }

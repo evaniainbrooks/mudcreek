@@ -155,18 +155,11 @@
               accept: ".pdf,.doc,.docx"
             - if auction.errors[:terms_and_conditions].any?
               .invalid-feedback= auction.errors[:terms_and_conditions].to_sentence
-            - if auction.terms_and_conditions.attached?
-              .mt-2.d-flex.align-items-center.gap-2
-                %i.bi.bi-file-earmark-text.text-muted
-                = link_to auction.terms_and_conditions.filename.to_s,
-                  rails_blob_path(auction.terms_and_conditions, disposition: "attachment"),
-                  class: "text-decoration-none"
-                - if auction.persisted?
-                  = link_to admin_auction_path(auction, remove_terms_and_conditions: "1"),
-                      class: "btn btn-sm btn-outline-danger",
-                      data: { turbo_method: :patch, turbo_confirm: "Remove terms & conditions?" } do
-                    %i.bi.bi-x-lg.me-1
-                    Remove
+            = render Admin::AttachmentsListComponent.new(
+                attachments: [auction.terms_and_conditions.attachment].compact,
+                delete_path: auction.persisted? ? ->(_a) { admin_auction_path(auction, remove_terms_and_conditions: "1") } : nil,
+                delete_method: :patch
+              )
           .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
       %fieldset.card.shadow-sm.border-0

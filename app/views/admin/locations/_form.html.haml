@@ -74,21 +74,11 @@
           .mb-3
             = f.label :backgrounds, "Background gallery (images or videos)", class: "form-label"
             = f.file_field :backgrounds, direct_upload: true, class: "form-control", accept: "image/*,video/*", multiple: true
-            - if location.backgrounds.attached?
-              .mt-2.d-flex.flex-wrap.gap-2
-                - location.backgrounds.each do |bg|
-                  .position-relative
-                    - if bg.video?
-                      %video{src: url_for(bg), width: 120, height: 80,
-                          style: "object-fit: cover; border-radius: 0.25rem; display: block", muted: true}
-                    - else
-                      = image_tag bg.variant(resize_to_fill: [120, 80]), class: "rounded d-block", style: "object-fit: cover"
-                    - if location.persisted?
-                      = link_to admin_location_path(location, remove_background_ids: [bg.signed_id]),
-                          class: "btn btn-danger btn-sm position-absolute top-0 end-0 p-0 lh-1",
-                          style: "width: 1.4rem; height: 1.4rem; border-radius: 0 0.25rem 0 0.25rem",
-                          data: { turbo_method: :patch, turbo_confirm: "Remove this background?" } do
-                        %i.bi.bi-x
+            = render Admin::AttachmentsListComponent.new(
+                attachments: location.backgrounds.attachments,
+                delete_path: location.persisted? ? ->(a) { admin_location_path(location, remove_background_ids: [a.blob.signed_id]) } : nil,
+                delete_method: :patch
+              )
           .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
           .mt-3
             = f.label :background_tint_opacity, "Background tint opacity (0–1)", class: "form-label"
