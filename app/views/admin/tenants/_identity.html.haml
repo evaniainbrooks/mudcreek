@@ -26,12 +26,19 @@
       .form-text Used for generating absolute URLs in emails and broadcasts.
       - if tenant.errors[:custom_domain].any?
         .invalid-feedback= tenant.errors[:custom_domain].to_sentence
-    .mb-0
+    .mb-3
       = form.label :description, class: "form-label"
       = form.rich_text_area :description,
         class: "form-control #{'is-invalid' if tenant.errors[:description].any?}"
       - if tenant.errors[:description].any?
         .invalid-feedback.d-block= tenant.errors[:description].to_sentence
+    .mb-0
+      = form.label :notice, class: "form-label"
+      = form.rich_text_area :notice,
+        class: "form-control #{'is-invalid' if tenant.errors[:notice].any?}"
+      .form-text Shown as a banner above the navigation. Leave blank to hide.
+      - if tenant.errors[:notice].any?
+        .invalid-feedback.d-block= tenant.errors[:notice].to_sentence
 %fieldset.card.shadow-sm.border-0
   %legend.card-header.fw-semibold
     %i.bi.bi-geo-alt.me-2

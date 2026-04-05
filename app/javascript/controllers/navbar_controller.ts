@@ -1,8 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 
-const SHRINK_THRESHOLD = 8    // px — when to apply the compact style
-const HIDE_THRESHOLD   = 60   // px — minimum scroll distance before hiding kicks in
-const DIRECTION_DELTA  = 6    // px — ignore jitter smaller than this
+const SHRINK_ON_THRESHOLD  = 40   // px — scroll past here to apply compact style
+const SHRINK_OFF_THRESHOLD = 8    // px — scroll back to here to remove compact style
+const HIDE_THRESHOLD       = 60   // px — minimum scroll distance before hiding kicks in
+const DIRECTION_DELTA      = 6    // px — ignore jitter smaller than this
 
 export default class NavbarController extends Controller {
   private onScroll!: () => void
@@ -15,40 +16,36 @@ export default class NavbarController extends Controller {
       const current = window.scrollY
       const delta   = current - this.lastScrollY
 
-      // Compact style
-      this.element.classList.toggle("navbar-scrolled", current > SHRINK_THRESHOLD)
+      // Compact style on the navbar itself — hysteresis prevents feedback-loop jitter
+      const isScrolled = this.element.classList.contains("navbar-scrolled")
+      if (!isScrolled && current > SHRINK_ON_THRESHOLD) {
+        this.element.classList.add("navbar-scrolled")
+      } else if (isScrolled && current < SHRINK_OFF_THRESHOLD) {
+        this.element.classList.remove("navbar-scrolled")
+      }
 
-      // Hide/show based on scroll direction — only past the threshold.
-      // lastScrollY is only updated when action is taken, so delta accumulates
-      // across events and small per-frame jitter never crosses the threshold.
+      // Hide/show the entire sticky header (notice + navbar together)
       if (current < HIDE_THRESHOLD) {
-        // Always visible near the top
-        this.element.classList.remove("navbar-hidden")
+        this.header.classList.remove("header-hidden")
         this.lastScrollY = current
       } else if (delta > DIRECTION_DELTA) {
-        // Scrolling down — hide
-        this.element.classList.add("navbar-hidden")
+        this.header.classList.add("header-hidden")
         this.lastScrollY = current
       } else if (delta < -DIRECTION_DELTA) {
-        // Scrolling up — show
-        this.element.classList.remove("navbar-hidden")
+        this.header.classList.remove("header-hidden")
         this.lastScrollY = current
       }
-      // If delta is within the dead zone, don't update lastScrollY so it accumulates
     }
 
     window.addEventListener("scroll", this.onScroll, { passive: true })
-    this.updateOffset()
     this.onScroll()
   }
 
   disconnect() {
     window.removeEventListener("scroll", this.onScroll)
-    document.documentElement.style.removeProperty("--navbar-height")
   }
 
-  private updateOffset() {
-    const height = (this.element as HTMLElement).offsetHeight
-    document.documentElement.style.setProperty("--navbar-height", `${height}px`)
+  private get header(): HTMLElement {
+    return (this.element.closest<HTMLElement>(".sticky-header") ?? this.element) as HTMLElement
   }
 }

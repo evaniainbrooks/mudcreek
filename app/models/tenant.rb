@@ -2,6 +2,7 @@ class Tenant < ApplicationRecord
   include StoreModel::NestedAttributes
 
   has_rich_text :description
+  has_rich_text :notice
 
   attribute :features, Tenant::Features.to_type
 

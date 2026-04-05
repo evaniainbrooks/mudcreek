@@ -191,24 +191,43 @@ thead.thead-secondary {
   }
 }
 
-// Fixed navbar offset — fallback keeps content visible before JS runs
-:root { --navbar-height: 70px; }
-body  { padding-top: var(--navbar-height); }
+// Sticky header — notice bar (optional) + navbar stacked together
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 
-// Shrinking fixed navbar — hides on scroll down, reappears on scroll up
+  &.header-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.notice-bar {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  text-align: center;
+
+  .container { padding-top: 0; padding-bottom: 0; }
+
+  // Action Text wraps content in .trix-content > <p>; keep it inline
+  .trix-content {
+    display: inline;
+    p { display: inline; margin: 0; }
+    a { color: rgba(255, 255, 255, 0.85); text-decoration: underline; }
+  }
+}
+
+// Shrinking navbar — compact style when scrolled
 .navbar {
   // Base gradient using SCSS defaults — overridden per-tenant at runtime via tenant_theme_css
   background: linear-gradient(135deg, shade-color($secondary, 35%) 0%, $secondary 50%, shade-color($primary, 20%) 100%);
   border-bottom: 2px solid $tertiary;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
-  transition: padding 0.25s ease, transform 0.3s ease, opacity 0.3s ease;
-
-  &.navbar-hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-  }
+  transition: padding 0.25s ease;
 
   .navbar-logo {
     max-width: 48px;

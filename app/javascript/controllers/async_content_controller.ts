@@ -1,8 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { renderStreamMessage } from "@hotwired/turbo"
-import { createConsumer, Subscription } from "@rails/actioncable"
-
-const consumer = createConsumer()
+import { Subscription } from "@rails/actioncable"
+import consumer from "../consumer"
 
 export default class extends Controller {
   static targets = ["message"]

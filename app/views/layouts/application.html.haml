@@ -17,75 +17,80 @@
     = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
   %body.d-flex.flex-column.min-vh-100
-    %nav.navbar.navbar-expand-lg.fixed-top{"data-bs-theme": "dark", "data-controller": "navbar"}
-      .container
-        - if Current.tenant.logo.attached?
-          = image_tag(Current.tenant.logo, class: "navbar-logo", style: "max-width: 48px; margin-right: 0.5rem")
-        .lh-sm
-          = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
-          - if Current.tenant.tagline.present?
-            %span.navbar-tagline.text-muted.d-block.small= Current.tenant.tagline
-        %button.navbar-toggler{type: "button",
-          "data-bs-toggle": "collapse",
-          "data-bs-target": "#main-nav",
-          "aria-controls": "main-nav",
-          "aria-expanded": "false",
-          "aria-label": "Toggle navigation"}
-          %span.navbar-toggler-icon
-        #main-nav.collapse.navbar-collapse
-          - nav_pages = @admin ? [] : Page.in_nav
-          %ul.navbar-nav.mx-auto.mb-2.mb-lg-0
-            - nav_pages.each do |page|
-              %li.nav-item
-                = link_to page_path(page), class: "nav-link" do
-                  - if page.icon.present?
-                    %i{ class: "bi #{page.icon} me-1" }
-                  = page.title
-          %ul.navbar-nav.ms-auto.mb-2.mb-lg-0.align-items-center
-            - unless @admin
-              - if Current.user && Current.tenant.features.watchlist?
+    .sticky-header
+      - if Current.tenant.notice.present?
+        .notice-bar.bg-primary.text-white
+          .container
+            != Current.tenant.notice.body
+      %nav.navbar.navbar-expand-lg{"data-bs-theme": "dark", "data-controller": "navbar"}
+        .container
+          - if Current.tenant.logo.attached?
+            = image_tag(Current.tenant.logo, class: "navbar-logo", style: "max-width: 48px; margin-right: 0.5rem")
+          .lh-sm
+            = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
+            - if Current.tenant.tagline.present?
+              %span.navbar-tagline.text-muted.d-block.small= Current.tenant.tagline
+          %button.navbar-toggler{type: "button",
+            "data-bs-toggle": "collapse",
+            "data-bs-target": "#main-nav",
+            "aria-controls": "main-nav",
+            "aria-expanded": "false",
+            "aria-label": "Toggle navigation"}
+            %span.navbar-toggler-icon
+          #main-nav.collapse.navbar-collapse
+            - nav_pages = @admin ? [] : Page.in_nav
+            %ul.navbar-nav.mx-auto.mb-2.mb-lg-0
+              - nav_pages.each do |page|
+                %li.nav-item
+                  = link_to page_path(page), class: "nav-link" do
+                    - if page.icon.present?
+                      %i{ class: "bi #{page.icon} me-1" }
+                    = page.title
+            %ul.navbar-nav.ms-auto.mb-2.mb-lg-0.align-items-center
+              - unless @admin
+                - if Current.user && Current.tenant.features.watchlist?
+                  %li.nav-item.me-1
+                    .position-relative.d-inline-block
+                      %button.btn.btn-sm.btn-outline-light{type: "button",
+                          data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
+                          aria: { label: "Open watchlist" }}
+                        %i.bi.bi-bookmark.fs-5
+                      - if watchlist_item_count > 0
+                        %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
                 %li.nav-item.me-1
                   .position-relative.d-inline-block
                     %button.btn.btn-sm.btn-outline-light{type: "button",
-                        data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
-                        aria: { label: "Open watchlist" }}
-                      %i.bi.bi-bookmark.fs-5
-                    - if watchlist_item_count > 0
-                      %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
-              %li.nav-item.me-1
-                .position-relative.d-inline-block
-                  %button.btn.btn-sm.btn-outline-light{type: "button",
-                      data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
-                      aria: { label: "Open cart" }}
-                    %i.bi.bi-cart3.fs-5
-                  = render "layouts/cart_badge", count: cart_item_count
-            - if Current.user
-              - unless @admin
-                %li.nav-item.dropdown
-                  %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
-                    %i.bi.bi-person-circle.me-1
-                    = Current.user.name
-                  %ul.dropdown-menu.dropdown-menu-end
-                    - if Current.user.role&.permissions&.any?
+                        data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
+                        aria: { label: "Open cart" }}
+                      %i.bi.bi-cart3.fs-5
+                    = render "layouts/cart_badge", count: cart_item_count
+              - if Current.user
+                - unless @admin
+                  %li.nav-item.dropdown
+                    %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
+                      %i.bi.bi-person-circle.me-1
+                      = Current.user.name
+                    %ul.dropdown-menu.dropdown-menu-end
+                      - if Current.user.role&.permissions&.any?
+                        %li
+                          = link_to admin_root_path, class: "dropdown-item" do
+                            %i.bi.bi-gear-fill.me-1
+                            Admin
                       %li
-                        = link_to admin_root_path, class: "dropdown-item" do
-                          %i.bi.bi-gear-fill.me-1
-                          Admin
-                    %li
-                      = link_to edit_profile_path, class: "dropdown-item" do
-                        %i.bi.bi-person-fill.me-1
-                        Profile
-                    %li
-                      %hr.dropdown-divider
-                    %li
-                      = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "dropdown-item"
-              = render "shared/admin_nav" if @admin
-              - if @admin
+                        = link_to edit_profile_path, class: "dropdown-item" do
+                          %i.bi.bi-person-fill.me-1
+                          Profile
+                      %li
+                        %hr.dropdown-divider
+                      %li
+                        = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "dropdown-item"
+                = render "shared/admin_nav" if @admin
+                - if @admin
+                  %li.nav-item
+                    = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
+              - else
                 %li.nav-item
-                  = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
-            - else
-              %li.nav-item
-                = link_to "Sign in", new_session_path, class: "nav-link"
+                  = link_to "Sign in", new_session_path, class: "nav-link"
     %main.flex-grow-1
       .container.py-4
         #flash

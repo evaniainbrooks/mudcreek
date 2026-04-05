@@ -1,5 +1,6 @@
 import "@hotwired/turbo-rails"
 import "./controllers"
+import "./cable_status"
 import * as ActiveStorage from "@rails/activestorage"
 ActiveStorage.start()
 import "bootstrap"

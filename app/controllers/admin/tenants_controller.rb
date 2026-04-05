@@ -47,6 +47,7 @@ module Admin
         :timezone,
         :tagline,
         :description,
+        :notice,
         :currency,
         :custom_domain,
         :primary_color,
