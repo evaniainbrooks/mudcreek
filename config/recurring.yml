@@ -16,3 +16,6 @@ production:
   expire_rental_bookings:
     command: "RentalBookingExpiryJob.perform_later"
     schedule: every 15 minutes
+  sync_all_location_calendars:
+    command: "SyncAllLocationCalendarsJob.perform_later"
+    schedule: every week at 3am on Monday
