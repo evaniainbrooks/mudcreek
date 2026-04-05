@@ -1,0 +1,23 @@
+default: &defaults
+  push_api_key: "<%= Rails.application.credentials.dig(:appsignal, :push_api_key) %>"
+  name: "Mudcreek"
+  revision: "<%= ENV.fetch("RELEASE_VERSION", nil) %>"
+  # Report errors for all job failures. Use "discard" to only report errors
+  # for jobs that exhaust all retries (requires Rails 7.1+).
+  activejob_report_errors: "all"
+
+development:
+  <<: *defaults
+  active: false
+
+test:
+  <<: *defaults
+  active: false
+
+staging:
+  <<: *defaults
+  active: true
+
+production:
+  <<: *defaults
+  active: true

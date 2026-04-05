@@ -163,3 +163,5 @@ gem "aws-sdk-s3", require: false
 
 # ZIP file handling for bulk AI listing import
 gem "rubyzip"
+
+gem "appsignal", "~> 4.8"

@@ -99,6 +99,9 @@ GEM
       faraday-multipart (~> 1.0)
       faraday-net_http_persistent (~> 2.0)
       faraday-retry (~> 2.0)
+    appsignal (4.8.4)
+      logger
+      rack (>= 2.0.0)
     ar_lazy_preload (2.1.1)
     ast (2.4.3)
     aws-eventstream (1.4.0)
@@ -655,6 +658,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_list
+  appsignal (~> 4.8)
   ar_lazy_preload
   aws-sdk-s3
   bcrypt (~> 3.1.7)
@@ -740,6 +744,7 @@ CHECKSUMS
   apimatic_core (0.3.21) sha256=b4d43a43ddbb4f52c5e51b8dc596721ff9e352a2448fb2aa8c658dd556a30cb3
   apimatic_core_interfaces (0.2.3) sha256=01a1cf150c95d674386cfe9958b16ace346c8060d9cfe6fe939b3342d91f4e22
   apimatic_faraday_client_adapter (0.1.6) sha256=9bc1aad6cf6ae7ad0ec4a8c0878026369fd0bf06301cbf1c547c6b14037a28cd
+  appsignal (4.8.4) sha256=5c708a41c2913383d19ae581140da1904dbf642b974220d6c1bc4c7fdb1cf667
   ar_lazy_preload (2.1.1) sha256=47b8240fd1bdceb9a6b66f756cfdda6292bc213edf5a8be5f37299077ae7a734
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   aws-eventstream (1.4.0) sha256=116bf85c436200d1060811e6f5d2d40c88f65448f2125bc77ffce5121e6e183b

@@ -2,7 +2,7 @@ module PauseProsopite
   extend ActiveSupport::Concern
 
   included do
-    around_action :pause_prosopite, if: -> { action_name == "destroy" }
+    around_action :pause_prosopite, if: -> { action_name == "destroy" } if Rails.env.local?
   end
 
   private
