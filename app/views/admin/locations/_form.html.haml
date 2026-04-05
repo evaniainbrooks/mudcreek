@@ -74,11 +74,9 @@
           .mb-3
             = f.label :backgrounds, "Background gallery (images or videos)", class: "form-label"
             = f.file_field :backgrounds, direct_upload: true, class: "form-control", accept: "image/*,video/*", multiple: true
-            = render Admin::AttachmentsListComponent.new(
-                attachments: location.backgrounds.attachments,
+            = render Admin::AttachmentsListComponent.new(attachments: location.backgrounds.attachments,
                 delete_path: location.persisted? ? ->(a) { admin_location_path(location, remove_background_ids: [a.blob.signed_id]) } : nil,
-                delete_method: :patch
-              )
+                delete_method: :patch)
           .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
           .mt-3
             = f.label :background_tint_opacity, "Background tint opacity (0–1)", class: "form-label"

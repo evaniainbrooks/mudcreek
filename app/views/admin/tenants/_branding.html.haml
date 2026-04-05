@@ -63,11 +63,9 @@
         accept: ".pdf,.doc,.docx"
       - if tenant.errors[:default_terms_and_conditions].any?
         .invalid-feedback= tenant.errors[:default_terms_and_conditions].to_sentence
-      = render Admin::AttachmentsListComponent.new(
-          attachments: [tenant.default_terms_and_conditions.attachment].compact,
+      = render Admin::AttachmentsListComponent.new(attachments: [tenant.default_terms_and_conditions.attachment].compact,
           delete_path: ->(_a) { admin_tenant_path(remove_default_terms_and_conditions: "1") },
-          delete_method: :patch
-        )
+          delete_method: :patch)
     .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
 %fieldset.card.shadow-sm.border-0{ data: { controller: "bid-increment-schedule" } }

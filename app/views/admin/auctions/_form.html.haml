@@ -155,11 +155,9 @@
               accept: ".pdf,.doc,.docx"
             - if auction.errors[:terms_and_conditions].any?
               .invalid-feedback= auction.errors[:terms_and_conditions].to_sentence
-            = render Admin::AttachmentsListComponent.new(
-                attachments: [auction.terms_and_conditions.attachment].compact,
+            = render Admin::AttachmentsListComponent.new(attachments: [auction.terms_and_conditions.attachment].compact,
                 delete_path: auction.persisted? ? ->(_a) { admin_auction_path(auction, remove_terms_and_conditions: "1") } : nil,
-                delete_method: :patch
-              )
+                delete_method: :patch)
           .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
 
       %fieldset.card.shadow-sm.border-0
