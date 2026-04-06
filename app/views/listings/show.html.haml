@@ -1,24 +1,23 @@
 - set_listing_meta_tags(@listing)
-.d-flex.justify-content-between.align-items-center.mb-4
-  = link_to listings_path, class: "btn btn-outline-secondary btn-sm", data: { transition: "backward" } do
+.d-flex.flex-wrap.align-items-center.gap-2.mb-4
+  = link_to listings_path, class: "btn btn-outline-secondary btn-sm me-auto", data: { transition: "backward" } do
     %i.bi.bi-arrow-left.me-1
     Back to listings
-  .d-flex.gap-2
-    - if Current.user&.role&.permissions&.any?
-      = link_to admin_listing_path(@listing), class: "btn btn-outline-secondary btn-sm" do
-        %i.bi.bi-gear.me-1
-        Admin View
-    - if @next_listing
-      = link_to listing_path(@next_listing),
-          class: "btn btn-outline-secondary btn-sm", data: { transition: "forward" } do
-        Next listing
-        %i.bi.bi-arrow-right.ms-1
-    - if Current.user && Current.tenant.features.watchlist?
-      = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
-    %button.btn.btn-outline-secondary.btn-sm{type: "button",
-        data: { "bs-toggle": "modal", "bs-target": "#share-modal" }}
-      %i.bi.bi-share.me-1
-      Share
+  - if Current.user&.role&.permissions&.any?
+    = link_to admin_listing_path(@listing), class: "btn btn-outline-secondary btn-sm" do
+      %i.bi.bi-gear.me-1
+      Admin View
+  - if @next_listing
+    = link_to listing_path(@next_listing),
+        class: "btn btn-outline-secondary btn-sm", data: { transition: "forward" } do
+      Next listing
+      %i.bi.bi-arrow-right.ms-1
+  - if Current.user && Current.tenant.features.watchlist?
+    = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
+  %button.btn.btn-outline-secondary.btn-sm{type: "button",
+      data: { "bs-toggle": "modal", "bs-target": "#share-modal" }}
+    %i.bi.bi-share.me-1
+    Share
 
 .page-container.p-4
   .row.g-4.g-lg-5.align-items-start
@@ -28,6 +27,8 @@
           = render "listings/carousel", listing: @listing, media_count: @listing.media_count
         - elsif @listing.lot&.listing_placeholder&.attached?
           .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
+        - elsif Current.tenant.listing_placeholder.attached?
+          .rounded-3.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder, height: 480) }
         - else
           .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
             %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }

@@ -1,4 +1,4 @@
-%span{ id: "watchlist_button_listing_#{listing.id}" }
+%span{ id: "watchlist_button_listing_#{listing.id}", style: "display: contents" }
   - if watchlist_item
     = button_to watchlist_item_path(watchlist_item), method: :delete,
         class: "btn btn-warning btn-sm",
