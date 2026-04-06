@@ -3,7 +3,14 @@ module ListingsHelper
 
   def set_listing_meta_tags(listing)
     description = listing.description.to_plain_text.truncate(200)
-    og_image    = listing.images.attached? ? url_for(listing.images.first) : nil
+    og_image =
+      if listing.images.attached?
+        url_for(listing.images.first)
+      elsif listing.lot&.listing_placeholder&.attached?
+        url_for(listing.lot.listing_placeholder)
+      elsif Current.tenant.listing_placeholder.attached?
+        url_for(Current.tenant.listing_placeholder)
+      end
     set_meta_tags title: listing.name,
       description: description,
       og: { title: listing.name, description: description, image: og_image },

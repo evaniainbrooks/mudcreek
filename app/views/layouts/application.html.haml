@@ -48,7 +48,7 @@
                       %i{ class: "bi #{page.icon} me-1" }
                     = page.title
             / d-flex keeps this row horizontal on mobile; ms-auto pushes it right on desktop
-            .d-flex.align-items-center.gap-2.ms-auto.mt-2.mt-lg-0
+            .navbar-nav.flex-row.align-items-center.gap-2.ms-auto.mt-2.mt-lg-0
               - unless @admin
                 - if Current.user && Current.tenant.features.watchlist?
                   .position-relative
