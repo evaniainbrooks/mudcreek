@@ -31,6 +31,23 @@
             = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
             - if Current.tenant.tagline.present?
               %span.navbar-tagline.text-muted.d-block.small= Current.tenant.tagline
+          / Icon buttons — outside collapse so they're always visible on mobile
+          - unless @admin
+            .d-flex.align-items-center.gap-1.ms-auto.ms-lg-0.me-2
+              - if Current.user && Current.tenant.features.watchlist?
+                .position-relative
+                  %button.btn.btn-sm.btn-outline-light{type: "button",
+                      data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
+                      aria: { label: "Open watchlist" }}
+                    %i.bi.bi-bookmark.fs-5
+                  - if watchlist_item_count > 0
+                    %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
+              .position-relative
+                %button.btn.btn-sm.btn-outline-light{type: "button",
+                    data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
+                    aria: { label: "Open cart" }}
+                  %i.bi.bi-cart3.fs-5
+                = render "layouts/cart_badge", count: cart_item_count
           %button.navbar-toggler{type: "button",
             "data-bs-toggle": "collapse",
             "data-bs-target": "#main-nav",
@@ -47,24 +64,7 @@
                     - if page.icon.present?
                       %i{ class: "bi #{page.icon} me-1" }
                     = page.title
-            %ul.navbar-nav.ms-auto.mb-2.mb-lg-0.align-items-center
-              - unless @admin
-                - if Current.user && Current.tenant.features.watchlist?
-                  %li.nav-item.me-1
-                    .position-relative.d-inline-block
-                      %button.btn.btn-sm.btn-outline-light{type: "button",
-                          data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
-                          aria: { label: "Open watchlist" }}
-                        %i.bi.bi-bookmark.fs-5
-                      - if watchlist_item_count > 0
-                        %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
-                %li.nav-item.me-1
-                  .position-relative.d-inline-block
-                    %button.btn.btn-sm.btn-outline-light{type: "button",
-                        data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
-                        aria: { label: "Open cart" }}
-                      %i.bi.bi-cart3.fs-5
-                    = render "layouts/cart_badge", count: cart_item_count
+            %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
               - if Current.user
                 - unless @admin
                   %li.nav-item.dropdown
