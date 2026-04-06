@@ -31,23 +31,6 @@
             = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
             - if Current.tenant.tagline.present?
               %span.navbar-tagline.text-muted.d-block.small= Current.tenant.tagline
-          / Icon buttons — outside collapse so they're always visible on mobile
-          - unless @admin
-            .d-flex.align-items-center.gap-1.ms-auto.ms-lg-0.me-2
-              - if Current.user && Current.tenant.features.watchlist?
-                .position-relative
-                  %button.btn.btn-sm.btn-outline-light{type: "button",
-                      data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
-                      aria: { label: "Open watchlist" }}
-                    %i.bi.bi-bookmark.fs-5
-                  - if watchlist_item_count > 0
-                    %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
-              .position-relative
-                %button.btn.btn-sm.btn-outline-light{type: "button",
-                    data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
-                    aria: { label: "Open cart" }}
-                  %i.bi.bi-cart3.fs-5
-                = render "layouts/cart_badge", count: cart_item_count
           %button.navbar-toggler{type: "button",
             "data-bs-toggle": "collapse",
             "data-bs-target": "#main-nav",
@@ -64,10 +47,26 @@
                     - if page.icon.present?
                       %i{ class: "bi #{page.icon} me-1" }
                     = page.title
-            %ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+            / d-flex keeps this row horizontal on mobile; ms-auto pushes it right on desktop
+            .d-flex.align-items-center.gap-2.ms-auto.mt-2.mt-lg-0
+              - unless @admin
+                - if Current.user && Current.tenant.features.watchlist?
+                  .position-relative
+                    %button.btn.btn-sm.btn-outline-light{type: "button",
+                        data: { bs_toggle: "offcanvas", bs_target: "#watchlist-offcanvas" },
+                        aria: { label: "Open watchlist" }}
+                      %i.bi.bi-bookmark.fs-5
+                    - if watchlist_item_count > 0
+                      %span#watchlist-badge= render "layouts/cart_badge", count: watchlist_item_count
+                .position-relative
+                  %button.btn.btn-sm.btn-outline-light{type: "button",
+                      data: { bs_toggle: "offcanvas", bs_target: "#cart-offcanvas" },
+                      aria: { label: "Open cart" }}
+                    %i.bi.bi-cart3.fs-5
+                  = render "layouts/cart_badge", count: cart_item_count
               - if Current.user
                 - unless @admin
-                  %li.nav-item.dropdown
+                  .dropdown
                     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
                       %i.bi.bi-person-circle.me-1
                       = Current.user.name
@@ -87,11 +86,9 @@
                         = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "dropdown-item"
                 = render "shared/admin_nav" if @admin
                 - if @admin
-                  %li.nav-item
-                    = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
+                  = link_to "Sign out", session_path, data: { turbo_method: :delete }, class: "nav-link"
               - else
-                %li.nav-item
-                  = link_to "Sign in", new_session_path, class: "nav-link"
+                = link_to "Sign in", new_session_path, class: "nav-link"
     %main.flex-grow-1
       .container.py-4
         #flash
