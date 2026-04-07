@@ -165,3 +165,5 @@ gem "aws-sdk-s3", require: false
 gem "rubyzip"
 
 gem "appsignal", "~> 4.8"
+
+gem "postmark-rails", "~> 0.22.1"

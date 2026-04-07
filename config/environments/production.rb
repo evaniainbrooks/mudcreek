@@ -69,14 +69,11 @@ Rails.application.configure do
     Rails.application.routes.default_url_options = { host: ENV.fetch("DEFAULT_URL_HOST", "shop.junglefowlbjj.ca") }
   end
 
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
-  # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
-  #   address: "smtp.example.com",
-  #   port: 587,
-  #   authentication: :plain
-  # }
+  # Postmark for transactional email delivery.
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {
+    api_token: Rails.application.credentials.dig(:postmark, :api_token)
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

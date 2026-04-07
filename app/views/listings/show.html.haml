@@ -1,5 +1,5 @@
 - set_listing_meta_tags(@listing)
-.d-flex.flex-wrap.align-items-center.gap-2.mb-4
+.d-flex.flex-nowrap.align-items-center.gap-2.mb-4
   = link_to listings_path, class: "btn btn-outline-secondary btn-sm me-auto", data: { transition: "backward" } do
     %i.bi.bi-arrow-left.me-1
     Back to listings
@@ -16,8 +16,8 @@
     = render "shared/watchlist_button", listing: @listing, watchlist_item: @watchlist_item
   %button.btn.btn-outline-secondary.btn-sm{type: "button",
       data: { "bs-toggle": "modal", "bs-target": "#share-modal" }}
-    %i.bi.bi-share.me-1
-    Share
+    %i.bi.bi-share
+    %span.d-none.d-sm-inline.ms-1 Share
 
 .page-container.p-4
   .row.g-4.g-lg-5.align-items-start
