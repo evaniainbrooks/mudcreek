@@ -26,12 +26,12 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 216.250.116.237 >> ~/.ssh/known_hosts
+      - uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Add server to known hosts
+        run: ssh-keyscan -H 216.250.116.237 >> ~/.ssh/known_hosts
 
       - name: Deploy
         run: bin/kamal deploy
