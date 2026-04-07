@@ -36,6 +36,21 @@ module LocationsHelper
     }
   end
 
+  def render_recent_check_ins_table(recent_check_ins)
+    table = TableComponent.new(rows: recent_check_ins)
+    table.with_column("Time") { |ci| ci.created_at.strftime("%b %-d, %Y %H:%M") }
+    table.with_column("User") do |ci|
+      if ci.user
+        link_to(ci.user.name, admin_user_path(ci.user), class: "text-decoration-none")
+      elsif ci.guest_name.present?
+        safe_join([ci.guest_name, content_tag(:small, "(guest)", class: "text-muted ms-1")])
+      else
+        content_tag(:span, "Unknown", class: "text-muted")
+      end
+    end
+    render table
+  end
+
   def render_check_ins_by_user_table(user_stats)
     table = TableComponent.new(rows: user_stats)
     table.with_column("User") do |stat|

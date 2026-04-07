@@ -1,16 +1,5 @@
-- table = TableComponent.new(rows: recent_check_ins)
-- table.with_column("Time") { |ci| ci.created_at.strftime("%b %-d, %Y %H:%M") }
-- table.with_column("User") do |ci|
-  - if ci.user
-    = link_to ci.user.name, admin_user_path(ci.user), class: "text-decoration-none"
-  - elsif ci.guest_name.present?
-    = ci.guest_name
-    %small.text-muted.ms-1 (guest)
-  - else
-    %span.text-muted Unknown
-
 .mt-4
   %h6.fw-semibold.text-muted.text-uppercase.small.mb-2
     %i.bi.bi-clock-history.me-1
     Recent Check-ins
-  = render table
+  = render_recent_check_ins_table(recent_check_ins)
