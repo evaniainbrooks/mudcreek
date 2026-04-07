@@ -30,10 +30,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Add server to known hosts
+      - name: Configure SSH for deployment host
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H 216.250.116.237 > ~/.ssh/known_hosts
+          ssh-keyscan 216.250.116.237 > ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host 216.250.116.237
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+          EOF
 
       - name: Deploy
         run: bin/kamal deploy
