@@ -22,7 +22,9 @@ servers:
 #
 proxy:
   ssl: true
-  host: shop.junglefowlbjj.ca
+  hosts:
+    - shop.junglefowlbjj.ca
+    - mudcreekforest.ca
 
 # Where you keep your container images.
 registry:

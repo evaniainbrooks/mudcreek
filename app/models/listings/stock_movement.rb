@@ -11,6 +11,7 @@ class Listings::StockMovement < ApplicationRecord
 
   validates :quantity,      presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :transacted_on, presence: true
+  validates :order_item_id, uniqueness: true, allow_nil: true
 
   after_create_commit { stock_in? ? listing.increment!(:quantity, quantity) : listing.decrement!(:quantity, quantity) }
   before_destroy      { stock_in? ? listing.decrement!(:quantity, quantity) : listing.increment!(:quantity, quantity) }
