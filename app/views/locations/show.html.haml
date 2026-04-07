@@ -54,10 +54,18 @@
           = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 7)
 
         - if @today_events.any?
-          %div{ style: styles[:events] }
+          %div{ style: styles[:events], data: { controller: "schedule" } }
             %div{ style: schedule_style } Schedule
+            / NOW indicator — JS moves this to the correct position between events
+            %div{ data: { schedule_target: "now" },
+                  style: "display: none; align-items: center; gap: 0.5rem; margin: 0.25rem 0 0.75rem; color: #ff6060" }
+              %div{ style: "flex: 1; height: 2px; background: #ff6060; border-radius: 1px" }
+              %span{ style: "font-size: 0.7em; font-weight: 800; letter-spacing: 0.15em; white-space: nowrap" } NOW
+              %div{ style: "flex: 1; height: 2px; background: #ff6060; border-radius: 1px" }
             - @today_events.each do |event|
-              %div{ style: "margin-bottom: 0.75rem" }
+              - event_minutes = event.dtstart.hour * 60 + event.dtstart.min rescue 0
+              %div{ style: "margin-bottom: 0.75rem",
+                    data: { schedule_target: "event", event_minutes: event_minutes } }
                 %div{ style: "font-weight: 600; font-size: clamp(1rem, 1.75vw, 1.5rem)" }= event.summary
                 %div{ style: "color: rgba(255,255,255,0.7)" }= event.dtstart.strftime("%-I:%M %p")
                 - if event.description.present?

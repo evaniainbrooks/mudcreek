@@ -1,17 +1,5 @@
-- if recent_scans.any?
-  .card.shadow-sm.border-0
-    .card-body.p-0
-      %table.table.table-sm.mb-0
-        %thead.table-light
-          %tr
-            %th Time
-            %th IP Address
-            %th User Agent
-        %tbody
-          - recent_scans.each do |scan|
-            %tr
-              %td= scan.created_at.strftime("%b %-d, %Y %H:%M")
-              %td= scan.ip_address || "—"
-              %td.text-truncate{ style: "max-width: 400px" }= scan.user_agent || "—"
-- else
-  .text-muted.py-3 No scans recorded yet.
+- table = TableComponent.new(rows: recent_scans)
+- table.with_column("Time")       { |s| s.created_at.strftime("%b %-d, %Y %H:%M") }
+- table.with_column("IP Address") { |s| s.ip_address || "—" }
+- table.with_column("User Agent", html_class: "text-truncate" ) { |s| s.user_agent || "—" }
+= render table
