@@ -1,18 +1,5 @@
-- table = TableComponent.new(rows: user_stats)
-- table.with_column("User") do |stat|
-  - if stat[:user]
-    = link_to stat[:user].name, admin_user_path(stat[:user]), class: "text-decoration-none"
-    %small.text-muted.d-block= stat[:user].email_address
-  - elsif stat[:guest_name]
-    = stat[:guest_name]
-    %small.text-muted.d-block Guest
-  - else
-    %span.text-muted Deleted user
-- table.with_column("Total", html_class: "text-center") { |stat| stat[:count] }
-- table.with_column("Last Check-in") { |stat| stat[:last_at]&.strftime("%b %-d, %Y %H:%M") || "—" }
-
 .mb-3
   %h6.fw-semibold.text-muted.text-uppercase.small.mb-2
     %i.bi.bi-people.me-1
     Check-ins by User
-  = render table
+  = render_check_ins_by_user_table(user_stats)

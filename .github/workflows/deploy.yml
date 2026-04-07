@@ -4,9 +4,20 @@ on:
   release:
     types: [published]
 
+# Prevent concurrent deploys; never cancel a deploy already in progress.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+
   deploy:
     name: Kamal Deploy
+    needs: [ci]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -33,4 +44,3 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}

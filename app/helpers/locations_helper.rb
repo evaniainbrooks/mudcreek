@@ -35,4 +35,26 @@ module LocationsHelper
                "animation: showroom-pulse 1.6s ease-in-out infinite"
     }
   end
+
+  def render_check_ins_by_user_table(user_stats)
+    table = TableComponent.new(rows: user_stats)
+    table.with_column("User") do |stat|
+      if stat[:user]
+        safe_join([
+          link_to(stat[:user].name, admin_user_path(stat[:user]), class: "text-decoration-none"),
+          content_tag(:small, stat[:user].email_address, class: "text-muted d-block")
+        ])
+      elsif stat[:guest_name]
+        safe_join([
+          stat[:guest_name],
+          content_tag(:small, "Guest", class: "text-muted d-block")
+        ])
+      else
+        content_tag(:span, "Deleted user", class: "text-muted")
+      end
+    end
+    table.with_column("Total", html_class: "text-center") { |stat| stat[:count] }
+    table.with_column("Last Check-in") { |stat| stat[:last_at]&.strftime("%b %-d, %Y %H:%M") || "—" }
+    render table
+  end
 end
