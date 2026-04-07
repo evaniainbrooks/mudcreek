@@ -31,7 +31,9 @@ jobs:
           ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
       - name: Add server to known hosts
-        run: ssh-keyscan -H 216.250.116.237 >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 216.250.116.237 > ~/.ssh/known_hosts
 
       - name: Deploy
         run: bin/kamal deploy
