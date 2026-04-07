@@ -64,12 +64,10 @@
               %div{ style: "flex: 1; height: 2px; background: #ff6060; border-radius: 1px" }
             - @today_events.each do |event|
               - event_minutes = event.dtstart.hour * 60 + event.dtstart.min rescue 0
-              %div{ style: "margin-bottom: 0.35rem",
+              %div{ style: "display: flex; align-items: baseline; gap: 0.6em; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden",
                     data: { schedule_target: "event", event_minutes: event_minutes } }
-                %div{ style: "font-weight: 600; font-size: clamp(1rem, 1.75vw, 1.5rem); line-height: 1.15" }= event.summary
-                %div{ style: "color: rgba(255,255,255,0.7); line-height: 1.2" }= event.dtstart.strftime("%-I:%M %p")
-                - if event.description.present?
-                  %div{ style: "color: rgba(255,255,255,0.55); font-size: 0.9em; margin-top: 0.15rem" }= event.description
+                %span{ style: "color: rgba(255,255,255,0.65); font-size: 0.85em; flex-shrink: 0" }= event.dtstart.strftime("%-I:%M %p")
+                %span{ style: "font-weight: 600; overflow: hidden; text-overflow: ellipsis" }= event.summary
         - else
           %div
 
