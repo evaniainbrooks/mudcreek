@@ -43,7 +43,7 @@
     %div{ style: styles[:center] }
       %h1{ style: styles[:title] }= @location.name
 
-      %div{ style: "display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 3rem; width: 100%; margin-bottom: -2rem" }
+      %div{ style: "display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 3rem; width: 100%" }
         - if @location.message.present?
           %div{ style: styles[:msg] }
             = @location.message
@@ -64,14 +64,14 @@
               %div{ style: "flex: 1; height: 2px; background: #ff6060; border-radius: 1px" }
             - @today_events.each do |event|
               - event_minutes = event.dtstart.hour * 60 + event.dtstart.min rescue 0
-              %div{ style: "margin-bottom: 0.75rem",
+              %div{ style: "margin-bottom: 0.35rem",
                     data: { schedule_target: "event", event_minutes: event_minutes } }
-                %div{ style: "font-weight: 600; font-size: clamp(1rem, 1.75vw, 1.5rem)" }= event.summary
-                %div{ style: "color: rgba(255,255,255,0.7)" }= event.dtstart.strftime("%-I:%M %p")
+                %div{ style: "font-weight: 600; font-size: clamp(1rem, 1.75vw, 1.5rem); line-height: 1.15" }= event.summary
+                %div{ style: "color: rgba(255,255,255,0.7); line-height: 1.2" }= event.dtstart.strftime("%-I:%M %p")
                 - if event.description.present?
                   %div{ style: "color: rgba(255,255,255,0.55); font-size: 0.9em; margin-top: 0.15rem" }= event.description
         - else
           %div
 
-      %p{ style: styles[:prompt] }
-        Please scan the QR code to sign in
+    %p{ style: styles[:prompt] }
+      Please scan the QR code to sign in

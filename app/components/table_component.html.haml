@@ -14,7 +14,7 @@
           %td.text-center.text-muted.py-4{colspan: @columns.size} No records found.
       - else
         - @rows.each do |row|
-          %tr{data: { id: row.id }.merge(@row_data&.call(row) || {})}
+          %tr{data: { id: row.try(:id) }.merge(@row_data&.call(row) || {}).compact}
             - @columns.each do |col|
               - if col.typed
                 = render(TableCellComponent.new(value: col.block.call(row), html_class: col.html_class))

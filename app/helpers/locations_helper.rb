@@ -11,7 +11,7 @@ module LocationsHelper
       clock:   "color: #fff; font-weight: 600; letter-spacing: 0.05em; text-shadow: 0 0 12px #{accent}",
       center:  "flex: 1; display: flex; flex-direction: column; align-items: center; " \
                "justify-content: center; gap: 2rem; text-align: center; " \
-               "padding: 0 1rem; margin-top: -3rem",
+               "padding: 0 1rem; margin-top: -3rem; overflow: hidden; min-height: 0",
       title:   "font-size: clamp(2rem, 5vw, 4rem); font-weight: bold; margin: 0; " \
                "text-shadow: 0 0 30px #{accent}, 0 0 60px #{accent}80, 0 2px 16px rgba(0,0,0,0.9)",
       msg:     "background: rgba(0,0,0,0.55); backdrop-filter: blur(2px); " \
@@ -26,9 +26,11 @@ module LocationsHelper
                "border-radius: 1rem; padding: 1.25rem 1.5rem; " \
                "font-size: clamp(0.85rem, 1.5vw, 1.25rem); color: #fff; " \
                "text-align: left; justify-self: start; max-width: 30vw; " \
-               "border-left: 3px solid #{accent2}",
+               "border-left: 3px solid #{accent2}; " \
+               "overflow: hidden; max-height: 50vh",
       prompt:  "font-size: clamp(1.25rem, 2.5vw, 2rem); color: #fff; font-weight: 500; " \
-               "letter-spacing: 0.02em; margin: 2rem 0 0; " \
+               "letter-spacing: 0.02em; margin: 0; padding: 0.75rem 2rem 2.5rem; " \
+               "text-align: center; flex-shrink: 0; " \
                "text-shadow: 0 0 20px #{accent}, 0 2px 10px rgba(0,0,0,0.9); " \
                "animation: showroom-pulse 1.6s ease-in-out infinite"
     }
