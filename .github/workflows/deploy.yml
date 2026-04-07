@@ -26,12 +26,6 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Start local Docker registry
-        run: |
-          docker stop registry 2>/dev/null || true
-          docker rm -f registry 2>/dev/null || true
-          docker run -d -p 5555:5000 --name registry registry:2
-
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
