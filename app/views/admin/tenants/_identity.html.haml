@@ -19,6 +19,14 @@
       = form.label :phone_number, "Phone Number", class: "form-label"
       = form.telephone_field :phone_number, class: "form-control"
     .mb-3
+      = form.label :website, "Website", class: "form-label"
+      = form.url_field :website,
+        class: "form-control #{'is-invalid' if tenant.errors[:website].any?}",
+        placeholder: "https://example.com"
+      .form-text Displayed in the footer. Leave blank to hide.
+      - if tenant.errors[:website].any?
+        .invalid-feedback= tenant.errors[:website].to_sentence
+    .mb-3
       = form.label :custom_domain, "Custom Domain", class: "form-label"
       = form.text_field :custom_domain,
         class: "form-control #{'is-invalid' if tenant.errors[:custom_domain].any?}",

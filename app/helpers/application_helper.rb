@@ -119,6 +119,11 @@ module ApplicationHelper
     DOCUMENT_ICON_MAP.fetch(content_type.to_s, "bi-file-earmark")
   end
 
+  def absolute_url_for(attachment)
+    url = url_for(attachment)
+    url.start_with?("http") ? url : "#{request.base_url}#{url}"
+  end
+
   # Injects a <style> tag overriding Bootstrap CSS variables for the current tenant's theme.
   # Returns nil if the tenant has no custom colors set.
   def tenant_theme_tag(tenant)

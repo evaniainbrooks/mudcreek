@@ -49,6 +49,7 @@ module Admin
         :description,
         :notice,
         :currency,
+        :website,
         :custom_domain,
         :primary_color,
         :secondary_color,

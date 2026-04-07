@@ -5,11 +5,11 @@ module ListingsHelper
     description = listing.description.to_plain_text.truncate(200)
     og_image =
       if listing.images.attached?
-        url_for(listing.images.first)
+        absolute_url_for(listing.images.first)
       elsif listing.lot&.listing_placeholder&.attached?
-        url_for(listing.lot.listing_placeholder)
+        absolute_url_for(listing.lot.listing_placeholder)
       elsif Current.tenant.listing_placeholder.attached?
-        url_for(Current.tenant.listing_placeholder)
+        absolute_url_for(Current.tenant.listing_placeholder)
       end
     set_meta_tags title: listing.name,
       description: description,
