@@ -2,7 +2,20 @@ module ListingsHelper
   BADGE_COLORS = %w[text-bg-primary text-bg-success text-bg-danger text-bg-warning text-bg-info text-bg-secondary text-bg-dark].freeze
 
   def set_listing_meta_tags(listing)
-    description = listing.description.to_plain_text.truncate(200)
+    price_prefix =
+      if (al = listing.auction_listing)
+        if al.current_bid
+          "Current bid: #{al.current_bid.amount.format} · "
+        else
+          "Opening bid: #{al.starting_bid.format} · "
+        end
+      elsif listing.rental?
+        nil
+      else
+        "#{listing.price.format} · "
+      end
+    body = listing.description.to_plain_text.presence
+    description = "#{price_prefix}#{body}".truncate(200).presence
     og_image =
       if listing.images.attached?
         absolute_url_for(listing.images.first)
