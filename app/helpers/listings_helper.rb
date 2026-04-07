@@ -159,11 +159,19 @@ module ListingsHelper
             data: { bs_toggle: "dropdown" },
             aria: { expanded: "false" }),
           content_tag(:ul, class: "dropdown-menu dropdown-menu-end") do
-            content_tag(:li) do
-              link_to("Delete", admin_listing_path(listing),
-                class: "dropdown-item text-danger",
-                data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this listing?" })
-            end
+            safe_join([
+              content_tag(:li) do
+                button_to("Create Copy", admin_listing_copies_path(listing),
+                  method: :post,
+                  class: "dropdown-item",
+                  form: { data: { turbo_confirm: "Create an unpublished copy of \"#{listing.name}\"?" } })
+              end,
+              content_tag(:li) do
+                link_to("Delete", admin_listing_path(listing),
+                  class: "dropdown-item text-danger",
+                  data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this listing?" })
+              end
+            ])
           end
         ])
       end

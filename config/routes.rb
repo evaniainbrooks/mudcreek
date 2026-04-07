@@ -102,6 +102,7 @@ resource :session
       resources :variants,          only: [ :create ], module: :listings
       resources :stock_movements,   only: [ :create, :destroy ], module: :listings
       resources :sales,             only: [ :create ],           module: :listings
+      resources :copies,            only: [ :create ],           module: :listings
     end
     resources :auctions, param: :hashid do
       resources :auction_listings, only: [ :destroy, :update ], module: :auctions do
