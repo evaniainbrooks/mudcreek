@@ -26,11 +26,12 @@ export default class extends Controller {
     if (!this.mq.matches) return
     const header = event.currentTarget as HTMLElement
     const col = parseInt(header.dataset.col ?? "-1", 10)
-    if (this.isCollapsed(col)) {
-      this.expand(col)
-    } else {
-      this.collapse(col)
-    }
+    if (!this.isCollapsed(col)) return
+    // Collapse all, then expand only the tapped column
+    this.collapseAll()
+    this.expand(col)
+    this.expandedAll = false
+    this.syncBtn()
   }
 
   toggleAll(): void {
@@ -55,13 +56,13 @@ export default class extends Controller {
 
   private resetToDefault(): void {
     this.colHeaderTargets.forEach((_, i) => {
-      if (i === this.todayColValue) {
-        this.expand(i)
-      } else {
-        this.collapse(i)
-      }
+      i === this.todayColValue ? this.expand(i) : this.collapse(i)
     })
     this.syncBtn()
+  }
+
+  private collapseAll(): void {
+    this.colHeaderTargets.forEach((_, i) => this.collapse(i))
   }
 
   private isCollapsed(col: number): boolean {

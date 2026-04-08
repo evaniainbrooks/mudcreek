@@ -11,7 +11,7 @@
   .table-responsive
     %table.table.table-bordered.table-sm.mb-0{ style: "table-layout: fixed" }
       %colgroup
-        %col{ style: "width: 4.5rem" }
+        %col{ style: "width: 2.5rem" }
         - week_days.each_with_index do |_day, i|
           - if i == today_col_idx
             %col{ style: "border-left: 2px solid #{primary_color}; border-right: 2px solid #{primary_color}",
@@ -20,7 +20,7 @@
             %col{ data: { "schedule-table-target": "col" } }
       %thead
         %tr
-          %th.text-center.align-middle.fw-normal.text-muted{ style: "font-size: 0.75rem" } Time
+          %th.text-center.align-middle.fw-normal.text-muted{ style: "font-size: 0.65rem" } Time
           - week_days.each_with_index do |day, i|
             - is_today = i == today_col_idx
             %th.text-center{ class: (is_today ? nil : "table-light"),
@@ -37,7 +37,7 @@
           - row_style = on_hour ? "" : "border-top: 1px dashed #dee2e6"
           - last_slot = slot_idx == slots.length - 1
           %tr
-            %td.text-end.text-nowrap.pe-2.align-top{ style: "font-size: 0.7rem; color: #9ca3af; #{row_style}" }
+            %td.text-end.text-nowrap.pe-1.align-top{ style: "font-size: 0.62rem; color: #9ca3af; #{row_style}" }
               - if on_hour
                 = slot[:label]
             - grid.each_with_index do |col, col_idx|

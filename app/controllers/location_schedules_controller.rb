@@ -4,6 +4,10 @@ class LocationSchedulesController < ApplicationController
   allow_unauthenticated_access
 
   def show
-    @location = Location.find_by!(hashid: params[:location_hashid], published: true)
+    @location = if params[:location_hashid] == "DEFAULT"
+      Location.find_by!(default: true, published: true)
+    else
+      Location.find_by!(hashid: params[:location_hashid], published: true)
+    end
   end
 end

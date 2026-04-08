@@ -110,4 +110,53 @@ RSpec.describe "LocationSchedules", type: :request do
       end
     end
   end
+
+  # ------------------------------------------------------------------ #
+  describe "GET /schedule" do
+    context "when a default published location exists" do
+      let!(:location) { create(:location, name: "Studio A", published: true, default: true) }
+
+      it "returns 200" do
+        get "/schedule"
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders the location name" do
+        get "/schedule"
+
+        expect(response.body).to include("Studio A")
+      end
+    end
+
+    context "when no default location exists" do
+      it "returns 404" do
+        get "/schedule"
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when the default location is not published" do
+      let!(:location) { create(:location, published: false, default: true) }
+
+      it "returns 404" do
+        get "/schedule"
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when the locations feature is disabled" do
+      let!(:location) { create(:location, published: true, default: true) }
+
+      before { Current.tenant.update!(features: { locations: false }) }
+
+      it "returns 404" do
+        get "/schedule"
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end

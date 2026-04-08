@@ -14,9 +14,19 @@ class Location < ApplicationRecord
 
   validates :name, presence: true
 
-  scope :ordered, -> { order(:name) }
+  validate :only_one_default_per_tenant, if: :default?
+
+  scope :ordered,  -> { order(:name) }
+  scope :default,  -> { find_by(default: true) }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[name]
+  end
+
+  private
+
+  def only_one_default_per_tenant
+    existing = Location.where(default: true).where.not(id: id)
+    errors.add(:base, "Another location is already set as the default") if existing.exists?
   end
 end
