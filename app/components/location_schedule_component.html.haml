@@ -2,7 +2,7 @@
   %h1.h3.mb-0
     %i.bi.bi-calendar3.me-2
     = location.name
-  %span.text-muted.small= "Week of #{week_start.strftime('%B %-d, %Y')}"
+  %span.text-muted.small Week of #{week_start.strftime('%B %-d, %Y')}
 
 .table-responsive
   %table.table.table-bordered.table-sm.mb-0{ style: "table-layout: fixed; min-width: 560px" }
@@ -33,12 +33,13 @@
               - if cell == :empty
                 %td{ style: row_style }
               - else
-                - event   = cell[:event]
-                - rs      = cell[:rowspan]
-                - t_start = event.dtstart.strftime("%-I:%M %p") rescue nil
-                - t_end   = event.dtend.strftime("%-I:%M %p") rescue nil
+                :ruby
+                  event   = cell[:event]
+                  rs      = cell[:rowspan]
+                  t_start = event.dtstart.strftime("%-I:%M %p") rescue nil
+                  t_end   = event.dtend.strftime("%-I:%M %p") rescue nil
                 %td.p-1{ rowspan: rs,
                          style: "vertical-align: top; background: #dbeafe; border-color: #93c5fd" }
-                  %div.fw-semibold.lh-sm{ style: "font-size: 0.8rem" }= event.summary
+                  .fw-semibold.lh-sm{ style: "font-size: 0.8rem" }= event.summary
                   - if t_start && t_end
-                    %div{ style: "font-size: 0.68rem; color: #4b6a9b; margin-top: 2px" }= "#{t_start} – #{t_end}"
+                    %div{ style: "font-size: 0.68rem; color: #4b6a9b; margin-top: 2px" } #{t_start} – #{t_end}
