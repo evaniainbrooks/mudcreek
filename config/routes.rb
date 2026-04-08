@@ -117,6 +117,7 @@ resource :session
     resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
     resources :pages
+    resources :navbar_items, except: [:show]
     resources :qr_codes, param: :slug do
       member { get :qr_image }
     end

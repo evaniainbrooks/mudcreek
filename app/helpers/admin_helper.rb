@@ -17,6 +17,8 @@ module AdminHelper
   end
 
   def admin_settings_nav?
-    policy(User).index? || policy(Role).index? || policy(Tenant).index? || policy(Page).index? || (Current.tenant.features.locations? && policy(Location).index?) || policy(QrCode).index?
+    policy(User).index? || policy(Role).index? || policy(Tenant).index? ||
+      policy(Page).index? || policy(NavbarItem).index? ||
+      (Current.tenant.features.locations? && policy(Location).index?) || policy(QrCode).index?
   end
 end

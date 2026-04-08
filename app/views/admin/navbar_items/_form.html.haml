@@ -1,0 +1,44 @@
+= form_with model: [:admin, navbar_item], class: "needs-validation" do |f|
+  - if navbar_item.errors.any?
+    .alert.alert-danger.mb-4
+      %h5.alert-heading
+        %i.bi.bi-exclamation-triangle-fill.me-2
+        = pluralize(navbar_item.errors.count, "error")
+        prohibited this item from being saved:
+      %ul.mb-0
+        - navbar_item.errors.full_messages.each do |message|
+          %li= message
+
+  %fieldset.card.shadow-sm.border-0
+    %legend.card-header.fw-semibold
+      %i.bi.bi-list-ul.me-1
+      Nav Item
+    .card-body.p-4
+      .mb-3
+        = f.label :title, class: "form-label required"
+        = f.text_field :title, class: "form-control #{'is-invalid' if navbar_item.errors[:title].any?}", required: true
+        - if navbar_item.errors[:title].any?
+          .invalid-feedback= navbar_item.errors[:title].to_sentence
+
+      .mb-3
+        = f.label :path, "Path / URL", class: "form-label required"
+        = f.text_field :path, class: "form-control #{'is-invalid' if navbar_item.errors[:path].any?}",
+            placeholder: "/about or https://...", required: true
+        - if navbar_item.errors[:path].any?
+          .invalid-feedback= navbar_item.errors[:path].to_sentence
+
+      .mb-3
+        = f.label :icon, class: "form-label"
+        = render(IconPickerComponent.new(form: f, field: :icon))
+        - if navbar_item.errors[:icon].any?
+          .invalid-feedback.d-block= navbar_item.errors[:icon].to_sentence
+
+      .mb-0
+        = f.label :position, class: "form-label"
+        = f.number_field :position, class: "form-control #{'is-invalid' if navbar_item.errors[:position].any?}", min: 0
+        - if navbar_item.errors[:position].any?
+          .invalid-feedback= navbar_item.errors[:position].to_sentence
+
+  .d-flex.gap-2.mt-4
+    = f.submit class: "btn btn-primary"
+    = link_to "Cancel", admin_navbar_items_path, class: "btn btn-outline-secondary"

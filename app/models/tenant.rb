@@ -17,6 +17,7 @@ class Tenant < ApplicationRecord
   accepts_nested_attributes_for :address
   accepts_nested_attributes_for :features
 
+  has_many :navbar_items, dependent: :destroy
   has_many :lots, dependent: :restrict_with_error
   has_many :listings, dependent: :restrict_with_error
   has_many :users,            dependent: :restrict_with_error

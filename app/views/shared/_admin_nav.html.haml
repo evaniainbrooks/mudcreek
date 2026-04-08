@@ -91,6 +91,11 @@
           = link_to admin_pages_path, class: "dropdown-item" do
             %i.bi.bi-file-earmark-text.me-1
             Pages
+      - if policy(NavbarItem).index?
+        %li
+          = link_to admin_navbar_items_path, class: "dropdown-item" do
+            %i.bi.bi-list-ul.me-1
+            Navbar
       - if Current.tenant.features.locations? && policy(Location).index?
         %li
           = link_to admin_locations_path, class: "dropdown-item" do

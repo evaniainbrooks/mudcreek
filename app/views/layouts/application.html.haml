@@ -40,14 +40,14 @@
             "aria-label": "Toggle navigation"}
             %span.navbar-toggler-icon
           #main-nav.collapse.navbar-collapse
-            - nav_pages = @admin ? [] : Page.in_nav
+            - nav_items = @admin ? [] : NavbarItem.ordered
             %ul.navbar-nav.mx-auto.mb-2.mb-lg-0
-              - nav_pages.each do |page|
+              - nav_items.each do |item|
                 %li.nav-item
-                  = link_to page_path(page), class: "nav-link" do
-                    - if page.icon.present?
-                      %i{ class: "bi #{page.icon} me-1" }
-                    = page.title
+                  = link_to item.path, class: "nav-link" do
+                    - if item.icon.present?
+                      %i{ class: "bi #{item.icon} me-1" }
+                    = item.title
             / d-flex keeps this row horizontal on mobile; ms-auto pushes it right on desktop
             .navbar-nav.flex-row.align-items-center.gap-2.ms-auto.mt-2.mt-lg-0
               - unless @admin
