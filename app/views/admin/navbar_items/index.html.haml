@@ -33,7 +33,6 @@
               %td.text-end
                 = link_to edit_admin_navbar_item_path(item), class: "btn btn-sm btn-outline-secondary me-1" do
                   %i.bi.bi-pencil
-                = link_to admin_navbar_item_path(item),
-                    class: "btn btn-sm btn-outline-danger",
-                    data: { turbo_method: :delete, turbo_confirm: "Delete "#{item.title}"?" } do
+                = link_to admin_navbar_item_path(item), class: "btn btn-sm btn-outline-danger",
+                    data: { turbo_method: :delete, turbo_confirm: "Delete '#{item.title}'?" } do
                   %i.bi.bi-trash
