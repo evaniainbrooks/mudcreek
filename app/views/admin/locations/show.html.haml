@@ -27,8 +27,14 @@
       month: @month_check_ins
 
   .row.g-4
+    .col-lg-6
+      = render "check_ins_by_user", user_stats: @user_stats
+    .col-lg-6
+      = render "recent_check_ins", recent_check_ins: @recent_check_ins
+
+  .row.g-4.mt-0
     .col-lg-4
-      .card.shadow-sm.border-0.mb-4
+      .card.shadow-sm.border-0
         .card-header.fw-semibold
           %i.bi.bi-info-circle.me-1
           Details
@@ -62,6 +68,7 @@
               %dt.col-sm-5 Message
               %dd.col-sm-7= @location.message
 
+    .col-lg-4
       .card.shadow-sm.border-0
         .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
           %span
@@ -83,11 +90,6 @@
                 %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
         - else
           .card-body.text-muted No QR code — resave this location to generate one.
-
-    .col-lg-8
-      = render "check_ins_by_user", user_stats: @user_stats
-
-  = render "recent_check_ins", recent_check_ins: @recent_check_ins
 
   .mt-3
     = link_to admin_locations_path, class: "btn btn-outline-secondary" do
