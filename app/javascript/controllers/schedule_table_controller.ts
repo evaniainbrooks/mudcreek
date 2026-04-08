@@ -56,7 +56,11 @@ export default class extends Controller {
 
   private resetToDefault(): void {
     this.colHeaderTargets.forEach((_, i) => {
-      i === this.todayColValue ? this.expand(i) : this.collapse(i)
+      if (i === this.todayColValue) {
+        this.expand(i)
+      } else {
+        this.collapse(i)
+      }
     })
     this.syncBtn()
   }

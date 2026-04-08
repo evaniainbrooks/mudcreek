@@ -35,6 +35,18 @@ Offer:
     MissingUniqueIndexChecker:
       enabled: false
 
+Location:
+  # Partial unique index (WHERE default = true) paired with a conditional validator —
+  # database_consistency cannot correlate these, but both the DB constraint and model validation are in place.
+  # The partial index on (tenant_id) WHERE default = true also satisfies the find_by(default:) lookup
+  # under MultiTenant scope, so MissingIndexFindByChecker is suppressed too.
+  index_locations_on_tenant_id_default:
+    UniqueIndexChecker:
+      enabled: false
+  default:
+    MissingIndexFindByChecker:
+      enabled: false
+
 AuctionListing:
   # Partial indexes (WHERE clause) paired with a single uniqueness validator —
   # database_consistency cannot correlate partial indexes with model validators.
