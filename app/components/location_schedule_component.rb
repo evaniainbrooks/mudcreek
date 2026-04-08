@@ -41,7 +41,7 @@ class LocationScheduleComponent < ViewComponent::Base
     { bg: "#f9fafb", border: "#d1d5db", text: "#374151" }, # gray
     { bg: "#fafaf9", border: "#d6d3d1", text: "#44403c" }, # stone
     { bg: "#fef2f2", border: "#fca5a5", text: "#7f1d1d" }  # soft red
-  ].freeze ].freeze
+  ].freeze
 
   def initialize(location:)
     @location      = location
