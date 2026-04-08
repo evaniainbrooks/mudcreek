@@ -9,13 +9,42 @@ class LocationScheduleComponent < ViewComponent::Base
     { hour: hour, min: min, label: min.zero? ? "#{h12} #{ampm}" : nil }
   end.freeze
 
+  EVENT_COLORS = [
+    { bg: "#dbeafe", border: "#93c5fd", text: "#1e40af" },
+    { bg: "#dcfce7", border: "#86efac", text: "#166534" },
+    { bg: "#fef9c3", border: "#fde047", text: "#854d0e" },
+    { bg: "#fce7f3", border: "#f9a8d4", text: "#9d174d" },
+    { bg: "#ede9fe", border: "#c4b5fd", text: "#5b21b6" },
+    { bg: "#ffedd5", border: "#fdba74", text: "#9a3412" },
+    { bg: "#e0f2fe", border: "#7dd3fc", text: "#0c4a6e" },
+    { bg: "#fdf2f8", border: "#e879f9", text: "#701a75" }
+  ].freeze
+
   def initialize(location:)
-    @location   = location
-    @week_start = Date.current.beginning_of_week(:sunday)
-    @week_days  = (0..6).map { |d| @week_start + d.days }
-    @today      = Date.current
-    @slots      = SLOTS
-    @grid       = build_grid
+    @location      = location
+    @week_start    = Date.current.beginning_of_week(:sunday)
+    @week_days     = (0..6).map { |d| @week_start + d.days }
+    @today         = Date.current
+    @slots         = SLOTS
+    @grid          = build_grid
+    @color_index   = {}
+    @color_counter = 0
+  end
+
+  def today_col_idx
+    @week_days.index(@today)
+  end
+
+  def primary_color
+    Current.tenant.primary_color.presence || "#355E3B"
+  end
+
+  def color_for(title)
+    @color_index[title] ||= begin
+      c = EVENT_COLORS[@color_counter % EVENT_COLORS.size]
+      @color_counter += 1
+      c
+    end
   end
 
   private
