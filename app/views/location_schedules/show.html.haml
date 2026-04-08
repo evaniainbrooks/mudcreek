@@ -1,4 +1,6 @@
 - content_for :title, "#{@location.name} — Schedule"
 
 .container-xl.py-4
-  = render LocationScheduleComponent.new(location: @location)
+  .card.shadow-sm
+    .card-body
+      = render LocationScheduleComponent.new(location: @location)
