@@ -10,15 +10,38 @@ class LocationScheduleComponent < ViewComponent::Base
   end.freeze
 
   EVENT_COLORS = [
-    { bg: "#dbeafe", border: "#93c5fd", text: "#1e40af" },
-    { bg: "#dcfce7", border: "#86efac", text: "#166534" },
-    { bg: "#fef9c3", border: "#fde047", text: "#854d0e" },
-    { bg: "#fce7f3", border: "#f9a8d4", text: "#9d174d" },
-    { bg: "#ede9fe", border: "#c4b5fd", text: "#5b21b6" },
-    { bg: "#ffedd5", border: "#fdba74", text: "#9a3412" },
-    { bg: "#e0f2fe", border: "#7dd3fc", text: "#0c4a6e" },
-    { bg: "#fdf2f8", border: "#e879f9", text: "#701a75" }
-  ].freeze
+    # --- Tier 1: Max contrast (use these first) ---
+    { bg: "#dbeafe", border: "#60a5fa", text: "#1e3a8a" }, # blue
+    { bg: "#dcfce7", border: "#4ade80", text: "#14532d" }, # green
+    { bg: "#fef9c3", border: "#facc15", text: "#713f12" }, # yellow
+    { bg: "#fce7f3", border: "#f472b6", text: "#831843" }, # pink
+    { bg: "#ede9fe", border: "#a78bfa", text: "#4c1d95" }, # purple
+    { bg: "#ffedd5", border: "#fb923c", text: "#7c2d12" }, # orange
+    { bg: "#e0f2fe", border: "#38bdf8", text: "#075985" }, # sky
+    { bg: "#ecfeff", border: "#22d3ee", text: "#164e63" }, # cyan
+
+    # --- Tier 2: Strong but slightly softer ---
+    { bg: "#f0fdfa", border: "#2dd4bf", text: "#134e4a" }, # teal
+    { bg: "#ecfdf5", border: "#34d399", text: "#065f46" }, # emerald
+    { bg: "#f7fee7", border: "#a3e635", text: "#365314" }, # lime
+    { bg: "#fff1f2", border: "#fb7185", text: "#881337" }, # rose
+    { bg: "#fdf4ff", border: "#e879f9", text: "#701a75" }, # fuchsia
+    { bg: "#eef2ff", border: "#818cf8", text: "#312e81" }, # indigo
+    { bg: "#eff6ff", border: "#3b82f6", text: "#1d4ed8" }, # alt blue
+    { bg: "#f0f9ff", border: "#0ea5e9", text: "#0c4a6e" }, # deeper sky
+
+    # --- Tier 3: Warmer / less saturated but still useful ---
+    { bg: "#fefce8", border: "#fde68a", text: "#854d0e" }, # soft yellow
+    { bg: "#fff7ed", border: "#fdba74", text: "#9a3412" }, # soft orange
+    { bg: "#fdf2f8", border: "#f9a8d4", text: "#9d174d" }, # soft pink
+    { bg: "#f5f3ff", border: "#c4b5fd", text: "#5b21b6" }, # soft violet
+
+    # --- Tier 4: Neutrals / fallback ---
+    { bg: "#f8fafc", border: "#cbd5f5", text: "#334155" }, # slate
+    { bg: "#f9fafb", border: "#d1d5db", text: "#374151" }, # gray
+    { bg: "#fafaf9", border: "#d6d3d1", text: "#44403c" }, # stone
+    { bg: "#fef2f2", border: "#fca5a5", text: "#7f1d1d" }  # soft red
+  ].freeze ].freeze
 
   def initialize(location:)
     @location      = location
@@ -37,6 +60,15 @@ class LocationScheduleComponent < ViewComponent::Base
 
   def primary_color
     Current.tenant.primary_color.presence || "#355E3B"
+  end
+
+  def primary_color_tint(amount = 0.85)
+    hex = primary_color.delete("#")
+    r, g, b = hex.scan(/../).map { |c| c.to_i(16) }
+    r2 = (r + (255 - r) * amount).round
+    g2 = (g + (255 - g) * amount).round
+    b2 = (b + (255 - b) * amount).round
+    "#%02x%02x%02x" % [r2, g2, b2]
   end
 
   def color_for(title)

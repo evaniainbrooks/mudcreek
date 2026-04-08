@@ -375,4 +375,31 @@ thead.thead-secondary {
   &:hover { background: var(--bs-secondary-bg); }
 }
 
+// Schedule table — collapsible day columns on mobile
+th.sched-col-collapsed {
+  overflow: hidden;
+  padding: 0.25rem 0 !important;
+  cursor: pointer;
+  user-select: none;
+
+  .col-full { display: none; }
+
+  .col-mini {
+    display: block;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    margin: 0 auto;
+  }
+}
+
+th:not(.sched-col-collapsed) .col-mini { display: none; }
+
+td.sched-col-collapsed {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
 @import 'checkin';

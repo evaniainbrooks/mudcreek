@@ -1,49 +1,62 @@
-.d-flex.align-items-center.gap-3.mb-4
-  %h1.h3.mb-0
-    %i.bi.bi-calendar3.me-2
-    = location.name
-  %span.text-muted.small Week of #{week_start.strftime('%B %-d, %Y')}
+.schedule-table{ data: { controller: "schedule-table", "schedule-table-today-col-value": today_col_idx || -1 } }
+  .d-flex.align-items-center.justify-content-between.mb-4
+    %h1.h3.mb-0
+      %i.bi.bi-calendar3.me-2
+      = location.name
+    .d-flex.align-items-center.gap-2
+      %button.btn.btn-sm.btn-outline-secondary.d-md-none{ data: { "schedule-table-target": "expandBtn", action: "click->schedule-table#toggleAll" } }
+        Expand all
+      %span.text-primary Week of #{week_start.strftime('%B %-d, %Y')}
 
-.table-responsive
-  %table.table.table-bordered.table-sm.mb-0{ style: "table-layout: fixed; min-width: 560px" }
-    %colgroup
-      %col{ style: "width: 4.5rem" }
-      - week_days.each_with_index do |_day, i|
-        - if i == today_col_idx
-          %col{ style: "border-left: 2px solid #{primary_color}; border-right: 2px solid #{primary_color}" }
-        - else
-          %col
-    %thead
-      %tr
-        %th.text-center.align-middle.fw-normal.text-muted{ style: "font-size: 0.75rem" } Time
-        - week_days.each_with_index do |day, i|
-          - is_today = i == today_col_idx
-          %th.text-center{ class: (is_today ? "table-primary" : "table-light") }
-            = %w[Sun Mon Tue Wed Thu Fri Sat][i]
-            %br
-            %small{ class: (is_today ? nil : "text-muted") }= day.strftime("%-m/%-d")
-    %tbody
-      - slots.each_with_index do |slot, slot_idx|
-        - on_hour = slot[:label].present?
-        - row_style = on_hour ? "" : "border-top: 1px dashed #dee2e6"
+  .table-responsive
+    %table.table.table-bordered.table-sm.mb-0{ style: "table-layout: fixed" }
+      %colgroup
+        %col{ style: "width: 4.5rem" }
+        - week_days.each_with_index do |_day, i|
+          - if i == today_col_idx
+            %col{ style: "border-left: 2px solid #{primary_color}; border-right: 2px solid #{primary_color}",
+                  data: { "schedule-table-target": "col" } }
+          - else
+            %col{ data: { "schedule-table-target": "col" } }
+      %thead
         %tr
-          %td.text-end.text-nowrap.pe-2.align-top{ style: "font-size: 0.7rem; color: #9ca3af; #{row_style}" }
-            - if on_hour
-              = slot[:label]
-          - grid.each_with_index do |col, col_idx|
-            - cell = col[slot_idx]
-            - unless cell == :covered
-              - if cell == :empty
-                %td{ style: row_style }
-              - else
-                :ruby
-                  event   = cell[:event]
-                  rs      = cell[:rowspan]
-                  t_start = event.dtstart.strftime("%-I:%M %p") rescue nil
-                  t_end   = event.dtend.strftime("%-I:%M %p") rescue nil
-                  colors  = color_for(event.summary)
-                %td.p-1{ rowspan: rs,
-                         style: "vertical-align: top; background: #{colors[:bg]}; border-color: #{colors[:border]}" }
-                  .fw-semibold.lh-sm{ style: "font-size: 0.8rem; color: #{colors[:text]}" }= event.summary
-                  - if t_start && t_end
-                    %div{ style: "font-size: 0.68rem; color: #{colors[:text]}; opacity: 0.8; margin-top: 2px" } #{t_start} – #{t_end}
+          %th.text-center.align-middle.fw-normal.text-muted{ style: "font-size: 0.75rem" } Time
+          - week_days.each_with_index do |day, i|
+            - is_today = i == today_col_idx
+            %th.text-center{ class: (is_today ? nil : "table-light"),
+                             style: (is_today ? "background-color: #{primary_color_tint}; border-top: 2px solid #{primary_color}" : nil),
+                             data: { "schedule-table-target": "colHeader", col: i, action: "click->schedule-table#toggleCol" } }
+              .col-full
+                = %w[Sun Mon Tue Wed Thu Fri Sat][i]
+                %br
+                %small{ class: (is_today ? nil : "text-muted") }= day.strftime("%-m/%-d")
+              .col-mini= %w[Su Mo Tu We Th Fr Sa][i]
+      %tbody
+        - slots.each_with_index do |slot, slot_idx|
+          - on_hour = slot[:label].present?
+          - row_style = on_hour ? "" : "border-top: 1px dashed #dee2e6"
+          - last_slot = slot_idx == slots.length - 1
+          %tr
+            %td.text-end.text-nowrap.pe-2.align-top{ style: "font-size: 0.7rem; color: #9ca3af; #{row_style}" }
+              - if on_hour
+                = slot[:label]
+            - grid.each_with_index do |col, col_idx|
+              - cell = col[slot_idx]
+              - unless cell == :covered
+                - is_today_col = col_idx == today_col_idx
+                - bottom_border = (is_today_col && last_slot) ? "border-bottom: 2px solid #{primary_color};" : ""
+                - if cell == :empty
+                  %td{ style: "#{row_style}; #{bottom_border}", data: { col: col_idx } }
+                - else
+                  :ruby
+                    event   = cell[:event]
+                    rs      = cell[:rowspan]
+                    t_start = event.dtstart.strftime("%-I:%M %p") rescue nil
+                    t_end   = event.dtend.strftime("%-I:%M %p") rescue nil
+                    colors  = color_for(event.summary)
+                  %td.p-1{ rowspan: rs,
+                           style: "vertical-align: top; background: #{colors[:bg]}; border-color: #{colors[:border]}; #{bottom_border}",
+                           data: { col: col_idx } }
+                    .fw-semibold.lh-sm{ style: "font-size: 0.8rem; color: #{colors[:text]}" }= event.summary
+                    - if t_start && t_end
+                      %div{ style: "font-size: 0.68rem; color: #{colors[:text]}; opacity: 0.8; margin-top: 2px" } #{t_start} – #{t_end}
