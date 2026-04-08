@@ -17,6 +17,29 @@ class LocationCalendarService
     []
   end
 
+  def week_events(week_start)
+    return {} unless @location.calendar_file.attached?
+
+    require "icalendar"
+    week_days  = (0..6).map { |d| week_start + d.days }
+    calendars  = Icalendar::Calendar.parse(@location.calendar_file.download)
+    all_events = calendars.flat_map(&:events)
+    result     = week_days.index_with { [] }
+
+    all_events.each do |event|
+      week_days.each do |day|
+        result[day] << event if occurs_on_date?(event, day)
+      end
+    end
+
+    result.transform_values do |events|
+      events.sort_by { |e| [e.dtstart.hour, e.dtstart.min] rescue [0, 0] }
+    end
+  rescue => e
+    Rails.logger.error("Calendar parse error for location #{@location.id}: #{e.message}")
+    {}
+  end
+
   private
 
   def event_local_today(dtstart, now)
@@ -28,14 +51,17 @@ class LocationCalendarService
 
   def occurs_today?(event, now)
     return false unless event.dtstart
+    today = event_local_today(event.dtstart, now)
+    occurs_on_date?(event, today)
+  end
+
+  def occurs_on_date?(event, target)
+    return false unless event.dtstart
     dtstart_date = event.dtstart.to_date rescue nil
     return false unless dtstart_date
-
-    today = event_local_today(event.dtstart, now)
-    return false if dtstart_date > today
-    return dtstart_date == today if event.rrule.blank?
-
-    event.rrule.any? { |rule| rrule_occurs_on?(rule, dtstart_date, today) }
+    return false if dtstart_date > target
+    return dtstart_date == target if event.rrule.blank?
+    event.rrule.any? { |rule| rrule_occurs_on?(rule, dtstart_date, target) }
   end
 
   def rrule_occurs_on?(rule, dtstart_date, today)

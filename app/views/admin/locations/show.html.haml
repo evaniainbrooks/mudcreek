@@ -8,6 +8,9 @@
       = link_to location_path(@location), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
         %i.bi.bi-box-arrow-up-right.me-1
         Public View
+      = link_to location_schedule_path(@location), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
+        %i.bi.bi-box-arrow-up-right.me-1
+        Public Schedule View
     = link_to edit_admin_location_path(@location), class: "btn btn-outline-secondary btn-sm" do
       %i.bi.bi-pencil.me-1
       Edit
