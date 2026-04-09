@@ -35,17 +35,17 @@ export default class ListingPropertyController extends Controller {
       const key  = `${base}${idx}`
       const html = this.rowTemplateTarget.innerHTML.replace(/new_property/g, key)
 
-      const temp = document.createElement("div")
+      const temp = document.createElement("template")
       temp.innerHTML = html
 
-      const nameInput  = temp.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[name]"]`)
-      const valueInput = temp.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[value]"]`)
-      const iconInput  = temp.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[icon]"]`)
+      const nameInput  = temp.content.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[name]"]`)
+      const valueInput = temp.content.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[value]"]`)
+      const iconInput  = temp.content.querySelector<HTMLInputElement>(`[name*="[${key}]"][name$="[icon]"]`)
       if (nameInput)  nameInput.value  = prop.name
       if (valueInput) valueInput.value = prop.value
       if (iconInput)  iconInput.value  = prop.icon ?? ""
 
-      temp.childNodes.forEach(node => this.propertiesContainerTarget.appendChild(node.cloneNode(true)))
+      this.propertiesContainerTarget.appendChild(temp.content.cloneNode(true))
     })
   }
 }

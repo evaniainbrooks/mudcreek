@@ -38,16 +38,8 @@ module LocationsHelper
 
   def render_recent_check_ins_table(recent_check_ins)
     table = TableComponent.new(rows: recent_check_ins)
-    table.with_column("Time") { |ci| ci.created_at.strftime("%b %-d, %Y %H:%M") }
-    table.with_column("User") do |ci|
-      if ci.user
-        link_to(ci.user.name, admin_user_path(ci.user), class: "text-decoration-none")
-      elsif ci.guest_name.present?
-        safe_join([ci.guest_name, content_tag(:small, "(guest)", class: "text-muted ms-1")])
-      else
-        content_tag(:span, "Unknown", class: "text-muted")
-      end
-    end
+    table.with_column("Time") { |ci| ci.created_at.in_time_zone(Current.tenant.timezone).strftime("%b %-d, %Y %H:%M") }
+    table.with_value_column("User") { |ci| ci.user }
     render table
   end
 
@@ -69,7 +61,7 @@ module LocationsHelper
       end
     end
     table.with_column("Total", html_class: "text-center") { |stat| stat[:count] }
-    table.with_column("Last Check-in") { |stat| stat[:last_at]&.strftime("%b %-d, %Y %H:%M") || "—" }
+    table.with_column("Last Check-in") { |stat| stat[:last_at]&.in_time_zone(Current.tenant.timezone)&.strftime("%b %-d, %Y %H:%M") || "—" }
     render table
   end
 end
