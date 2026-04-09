@@ -39,33 +39,35 @@ module LocationsHelper
   def render_recent_check_ins_table(recent_check_ins)
     table = TableComponent.new(rows: recent_check_ins)
     table.with_column("Time") { |ci| localize_time(ci.created_at).strftime("%b %-d, %Y %H:%M") }
-    table.with_value_column("User") { |ci| ci.user }
+    table.with_column("User") { |ci| check_in_user_cell(user: ci.user, guest_name: ci.guest_name) }
     render table
   end
 
   def render_check_ins_by_user_table(user_stats)
     table = TableComponent.new(rows: user_stats)
-    table.with_column("User") do |stat|
-      if stat[:user]
-        safe_join([
-          link_to(stat[:user].name, admin_user_path(stat[:user]), class: "text-decoration-none"),
-          content_tag(:small, stat[:user].email_address, class: "text-muted d-block")
-        ])
-      elsif stat[:guest_name]
-        safe_join([
-          stat[:guest_name],
-          content_tag(:small, "Guest", class: "text-muted d-block")
-        ])
-      else
-        content_tag(:span, "Deleted user", class: "text-muted")
-      end
-    end
+    table.with_column("User") { |stat| check_in_user_cell(user: stat[:user], guest_name: stat[:guest_name]) }
     table.with_column("Total", html_class: "text-center") { |stat| stat[:count] }
     table.with_column("Last Check-in") { |stat| stat[:last_at] ? localize_time(stat[:last_at]).strftime("%b %-d, %Y %H:%M") : "—" }
     render table
   end
 
   private
+
+  def check_in_user_cell(user:, guest_name:)
+    if user
+      content_tag(:div, class: "lh-sm") do
+        safe_join([
+          link_to(user.name, admin_user_path(user), class: "text-decoration-none"),
+          content_tag(:small, user.email_address, class: "text-muted d-block")
+        ])
+      end
+    else
+      safe_join([
+        guest_name,
+        content_tag(:small, "Guest", class: "text-muted d-block")
+      ])
+    end
+  end
 
   def localize_time(time)
     tz = Current.tenant&.timezone.presence
