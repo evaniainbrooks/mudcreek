@@ -10,9 +10,6 @@ class CheckIn < ApplicationRecord
   scope :this_week,  -> { where(created_at: current_tenant_time.beginning_of_week..) }
   scope :this_month, -> { where(created_at: current_tenant_time.beginning_of_month..) }
 
-  def self.current_tenant_time
-    tz = Current.tenant&.timezone.presence
-    tz ? Time.current.in_time_zone(tz) : Time.current
-  end
+  def self.current_tenant_time = Time.current.in_time_zone(Current.tenant.timezone)
   scope :ordered,    -> { order(created_at: :desc) }
 end

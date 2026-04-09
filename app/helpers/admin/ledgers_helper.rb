@@ -18,8 +18,7 @@ module Admin::LedgersHelper
   def render_entries_table(entries:)
     table = TableComponent.new(rows: entries, tbody_id: "ledger-entries-tbody")
     table.with_column("Date") do |e|
-      tz = Current.tenant&.timezone.presence
-      localized = tz ? e.recorded_at.in_time_zone(tz) : e.recorded_at.utc
+      localized = e.recorded_at.in_time_zone(Current.tenant.timezone)
       content_tag(:time, localized.strftime("%b %-d, %Y %H:%M"),
         datetime: e.recorded_at.iso8601, class: "text-muted")
     end

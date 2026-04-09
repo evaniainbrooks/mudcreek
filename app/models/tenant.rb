@@ -69,6 +69,8 @@ class Tenant < ApplicationRecord
     validates attr, format: { with: HEX_COLOR_RE, message: "must be a valid hex color (e.g. #3a7d44)" }, allow_blank: true
   end
 
+  def timezone = read_attribute(:timezone).presence || Time.zone.name
+
   def self.default = find_by!(default: true)
 
   def grant_super_admin_all_permissions! = roles.super_admin.grant_all_permissions!

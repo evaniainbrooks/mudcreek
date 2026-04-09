@@ -25,7 +25,6 @@ module TenantResolution
   end
 
   def set_time_zone
-    tz = Current.tenant&.timezone.presence || "UTC"
-    Time.use_zone(tz) { yield }
+    Time.use_zone(Current.tenant.timezone) { yield }
   end
 end

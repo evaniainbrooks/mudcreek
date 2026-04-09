@@ -69,8 +69,5 @@ module LocationsHelper
     end
   end
 
-  def localize_time(time)
-    tz = Current.tenant&.timezone.presence
-    tz ? time.in_time_zone(tz) : time
-  end
+  def localize_time(time) = time.in_time_zone(Current.tenant.timezone)
 end
