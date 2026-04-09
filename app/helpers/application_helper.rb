@@ -243,11 +243,13 @@ module ApplicationHelper
     rules << ".navbar {\n" \
              "  background: linear-gradient(135deg, #{sec_dark} 0%, #{sec} 50%, #{pri_dark} 100%) !important;\n" \
              "  border-bottom-color: #{ter} !important;\n" \
+             "  --bs-navbar-color: rgba(255, 255, 255, 0.9);\n" \
              "  --bs-navbar-hover-color: #{ter};\n" \
              "  --bs-navbar-active-color: #{ter};\n" \
              "  --bs-navbar-brand-hover-color: #{ter};\n" \
              "  --bs-nav-link-hover-color: #{ter};\n" \
-             "}"
+             "}\n" \
+             ".navbar .nav-link { color: rgba(255, 255, 255, 0.9) !important; }"
 
     rules.join("\n")
   end

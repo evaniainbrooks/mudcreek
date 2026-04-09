@@ -50,7 +50,7 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def page_params
-    params.require(:page).permit(:title, :slug, :icon, :body, :published, :show_in_nav, :show_in_footer, :position,
+    params.require(:page).permit(:title, :slug, :icon, :body, :published, :show_in_footer, :position,
                                  :meta_title, :meta_description,
                                  :hero_image, :left_column_image, :right_column_image)
   end

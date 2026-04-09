@@ -5,7 +5,6 @@ module Admin::PagesHelper
     table.with_column("Title") { |p| link_to p.title, edit_admin_page_path(p) }
     table.with_column("Slug") { |p| content_tag(:code, p.slug) }
     table.with_value_column("Published") { it.published }
-    table.with_value_column("Nav") { it.show_in_nav }
     table.with_value_column("Footer") { it.show_in_footer }
     table.with_value_column("Position") { it.position }
     table.with_column("Actions", html_class: "text-end") do |p|

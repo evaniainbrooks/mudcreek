@@ -14,21 +14,23 @@ export default class extends Controller {
   static targets = ["grid", "select"]
 
   declare gridTarget: HTMLElement
+  declare hasGridTarget: boolean
   declare selectTarget: HTMLSelectElement
 
   connect(): void {
     const saved = (localStorage.getItem(STORAGE_KEY) as ViewMode) || "small"
-    this.applyMode(saved)
     this.selectTarget.value = saved
+    this.applyMode(saved)
   }
 
   change(event: Event): void {
     const mode = (event.target as HTMLSelectElement).value as ViewMode
-    this.applyMode(mode)
     localStorage.setItem(STORAGE_KEY, mode)
+    this.applyMode(mode)
   }
 
   private applyMode(mode: ViewMode): void {
+    if (!this.hasGridTarget) return
     const grid = this.gridTarget
     const allClasses = Object.values(GRID_CLASSES).flatMap(cls => cls.split(" "))
     allClasses.forEach(cls => grid.classList.remove(cls))

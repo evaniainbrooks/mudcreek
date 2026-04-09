@@ -259,6 +259,12 @@ thead.thead-secondary {
   }
 }
 
+.navbar[data-bs-theme="dark"] {
+  --bs-navbar-color: rgba(255, 255, 255, 0.9);
+  --bs-navbar-hover-color: #fff;
+  --bs-navbar-active-color: #fff;
+}
+
 // Lot attribution button on listing show page
 .lot-attribution-btn {
   border: 1px solid var(--bs-border-color);

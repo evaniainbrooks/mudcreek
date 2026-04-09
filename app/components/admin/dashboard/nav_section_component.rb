@@ -25,8 +25,10 @@ class Admin::Dashboard::NavSectionComponent < ViewComponent::Base
     settings_links << { label: "Roles",  icon: "bi-shield-fill",         path: view.admin_roles_path  } if view.policy(Role).index?
     settings_links << { label: "Tenant", icon: "bi-globe",               path: view.admin_tenant_path } if view.policy(Tenant).index?
     settings_links << { label: "Pages",    icon: "bi-file-earmark-text",   path: view.admin_pages_path     } if view.policy(Page).index?
+    settings_links << { label: "Navbar",   icon: "bi-list-ul",              path: view.admin_navbar_items_path } if view.policy(NavbarItem).index?
     settings_links << { label: "Locations", icon: "bi-geo-alt-fill",        path: view.admin_locations_path } if Current.tenant.features.locations? && view.policy(Location).index?
     settings_links << { label: "QR Codes", icon: "bi-qr-code",             path: view.admin_qr_codes_path  } if view.policy(QrCode).index?
+    settings_links << { label: "Ledgers",  icon: "bi-journal-text",         path: view.admin_ledgers_path   } if view.policy(Ledger).index?
 
     sections = []
     sections << { title: "Catalog",  links: catalog_links  } if catalog_links.any?
