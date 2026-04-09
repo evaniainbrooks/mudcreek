@@ -106,3 +106,8 @@
           = link_to admin_qr_codes_path, class: "dropdown-item" do
             %i.bi.bi-qr-code.me-1
             QR Codes
+      - if policy(Ledger).index?
+        %li
+          = link_to admin_ledgers_path, class: "dropdown-item" do
+            %i.bi.bi-journal-text.me-1
+            Ledgers

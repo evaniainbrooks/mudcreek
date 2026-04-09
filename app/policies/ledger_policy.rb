@@ -1,0 +1,2 @@
+class LedgerPolicy < ApplicationPolicy
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_08_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_08_221705) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,6 +18,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_000003) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "discount_code_type", ["fixed", "percentage"]
   create_enum "invoice_status", ["unpaid", "paid"]
+  create_enum "ledger_entry_type", ["credit", "debit"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
   create_enum "listing_state", ["on_sale", "sold", "cancelled"]
   create_enum "listing_type", ["sale", "rental"]
@@ -254,6 +255,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_000003) do
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
+  create_table "ledger_entries", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.enum "entry_type", null: false, enum_type: "ledger_entry_type"
+    t.bigint "ledger_id", null: false
+    t.text "memo"
+    t.datetime "recorded_at", default: -> { "now()" }, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["ledger_id"], name: "index_ledger_entries_on_ledger_id"
+    t.index ["tenant_id"], name: "index_ledger_entries_on_tenant_id"
+    t.index ["user_id"], name: "index_ledger_entries_on_user_id"
+  end
+
+  create_table "ledgers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "hashid", null: false
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hashid"], name: "index_ledgers_on_hashid", unique: true
+    t.index ["tenant_id"], name: "index_ledgers_on_tenant_id"
+  end
+
   create_table "listing_inference_batches", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "error_message"
@@ -297,7 +325,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_000003) do
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -972,6 +1000,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_000003) do
   add_foreign_key "invoices", "offers", on_delete: :nullify
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
+  add_foreign_key "ledger_entries", "ledgers"
+  add_foreign_key "ledger_entries", "tenants"
+  add_foreign_key "ledger_entries", "users"
+  add_foreign_key "ledgers", "tenants"
   add_foreign_key "listing_inference_batches", "lots"
   add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade
   add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify, validate: false

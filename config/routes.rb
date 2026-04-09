@@ -123,6 +123,9 @@ resource :session
     end
     resources :locations, param: :hashid
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
+    resources :ledgers, param: :hashid do
+      resources :entries, only: [ :create, :destroy ], module: :ledgers
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

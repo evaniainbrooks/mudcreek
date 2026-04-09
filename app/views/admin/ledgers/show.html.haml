@@ -1,0 +1,29 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-journal-text.me-2
+    = @ledger.name
+  .d-flex.gap-2
+    = link_to edit_admin_ledger_path(@ledger), class: "btn btn-outline-secondary btn-sm" do
+      %i.bi.bi-pencil.me-1
+      Edit
+    = button_to admin_ledger_path(@ledger), method: :delete,
+        class: "btn btn-outline-danger btn-sm",
+        form: { data: { turbo_confirm: "Delete \"#{@ledger.name}\" and all its entries?" } } do
+      %i.bi.bi-trash.me-1
+      Delete
+
+- if @ledger.description.present?
+  .text-muted.mb-4= @ledger.description
+
+.page-container.p-4
+  = render "entries_section",
+      entries: @entries,
+      total_credits: @total_credits,
+      total_debits: @total_debits,
+      balance: @balance,
+      entry: @entry
+
+.mt-3
+  = link_to admin_ledgers_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Ledgers

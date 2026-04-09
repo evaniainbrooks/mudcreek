@@ -1,0 +1,16 @@
+= form_with model: [:admin, ledger], class: "needs-validation" do |f|
+  - if ledger.errors.any?
+    .alert.alert-danger.mb-3
+      = ledger.errors.full_messages.to_sentence
+
+  .mb-3
+    = f.label :name, class: "form-label required"
+    = f.text_field :name, class: "form-control #{'is-invalid' if ledger.errors[:name].any?}", required: true
+
+  .mb-3
+    = f.label :description, class: "form-label"
+    = f.text_area :description, class: "form-control", rows: 3
+
+  .d-flex.gap-2
+    = f.submit class: "btn btn-primary"
+    = link_to "Cancel", ledger.persisted? ? admin_ledger_path(ledger) : admin_ledgers_path, class: "btn btn-outline-secondary"

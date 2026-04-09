@@ -75,13 +75,13 @@ RSpec.describe "Admin::Locations", type: :request do
       expect(response.body).to include("Alice Smith")
     end
 
-    it "shows guest check-in rows with (guest) label" do
+    it "shows guest check-in rows in the by-user table" do
       create(:check_in, :guest, location: location, guest_name: "Bob Guest")
 
       get admin_location_path(location)
 
       expect(response.body).to include("Bob Guest")
-      expect(response.body).to include("guest")
+      expect(response.body).to include("Guest")
     end
 
     it "renders a QR code for the check-in URL" do

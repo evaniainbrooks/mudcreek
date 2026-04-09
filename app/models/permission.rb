@@ -18,6 +18,8 @@ class Permission < ApplicationRecord
     QrCode
     Location
     NavbarItem
+    Ledger
+    Ledger::Entry
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze
