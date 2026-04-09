@@ -24,9 +24,9 @@
         - if @listing.has_images? || @listing.has_videos?
           = render "listings/carousel", listing: @listing, media_count: @listing.media_count
         - elsif @listing.lot&.listing_placeholder&.attached?
-          = image_tag @listing.lot.listing_placeholder,
-            class: "d-block w-100 rounded-3 object-fit-cover",
-            style: "height: 480px"
+          .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
+        - elsif Current.tenant.listing_placeholder.attached?
+          .rounded-3.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder, height: 480) }
         - else
           .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
             %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
