@@ -5,6 +5,7 @@ module TenantResolution
 
   included do
     prepend_before_action :set_current_tenant
+    around_action :set_time_zone
   end
 
   private
@@ -21,5 +22,10 @@ module TenantResolution
     end
   rescue ActiveRecord::RecordNotFound
     raise ActionController::RoutingError, "Tenant not found: #{request.subdomain}"
+  end
+
+  def set_time_zone
+    tz = Current.tenant&.timezone.presence || "UTC"
+    Time.use_zone(tz) { yield }
   end
 end
