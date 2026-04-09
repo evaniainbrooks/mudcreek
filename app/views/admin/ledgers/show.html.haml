@@ -17,6 +17,7 @@
 
 .page-container.p-4
   = render "entries_section",
+      ledger: @ledger,
       entries: @entries,
       total_credits: @total_credits,
       total_debits: @total_debits,

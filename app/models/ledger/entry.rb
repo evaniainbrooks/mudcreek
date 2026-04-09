@@ -10,6 +10,7 @@ class Ledger::Entry < ApplicationRecord
   native_enum :entry_type, %i[credit debit]
 
   validates :description, presence: true
+  validates :entry_type, presence: true
   validates :amount, numericality: { greater_than: 0 }, allow_nil: true
 
   scope :ordered, -> { order(recorded_at: :desc, id: :desc) }

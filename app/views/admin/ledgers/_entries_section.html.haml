@@ -1,8 +1,10 @@
-- credits = local_assigns[:total_credits] || 0
-- debits  = local_assigns[:total_debits]  || 0
-- balance = local_assigns[:balance]       || 0
-- entries = local_assigns[:entries]       || []
-- entry   = local_assigns[:entry]         || Ledger::Entry.new(entry_type: "credit", recorded_at: Time.current)
+:ruby
+  ledger  = local_assigns[:ledger]
+  credits = local_assigns[:total_credits] || 0
+  debits  = local_assigns[:total_debits]  || 0
+  balance = local_assigns[:balance]       || 0
+  entries = local_assigns[:entries]       || []
+  entry   = local_assigns[:entry]         || Ledger::Entry.new(entry_type: "credit", recorded_at: Time.current)
 
 #entries-section
   .row.g-3.mb-4
@@ -27,7 +29,7 @@
       %i.bi.bi-plus-circle.me-1
       Add Entry
     .card-body
-      = form_with model: [:admin, @ledger, entry], url: admin_ledger_entries_path(@ledger) do |f|
+      = form_with model: [:admin, ledger, entry], url: admin_ledger_entries_path(ledger) do |f|
         - if entry.errors.any?
           .alert.alert-danger.mb-3= entry.errors.full_messages.to_sentence
         .row.g-3
