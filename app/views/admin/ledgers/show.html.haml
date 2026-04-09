@@ -8,7 +8,7 @@
       Edit
     = button_to admin_ledger_path(@ledger), method: :delete,
         class: "btn btn-outline-danger btn-sm",
-        form: { data: { turbo_confirm: "Delete \"#{@ledger.name}\" and all its entries?" } } do
+        form: { class: "d-inline", data: { turbo_confirm: "Delete \"#{@ledger.name}\" and all its entries?" } } do
       %i.bi.bi-trash.me-1
       Delete
 

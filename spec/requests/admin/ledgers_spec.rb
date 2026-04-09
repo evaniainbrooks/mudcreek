@@ -80,6 +80,25 @@ RSpec.describe "Admin::Ledgers", type: :request do
       expect(response.body).to include("$12.50")
     end
 
+    context "when the tenant has no timezone set" do
+      before { Current.tenant.update!(timezone: "") }
+
+      it "returns 200 without raising ArgumentError" do
+        get admin_ledger_path(ledger)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders the entry form with entries present" do
+        create(:ledger_entry, ledger: ledger, description: "Supply run")
+
+        get admin_ledger_path(ledger)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Supply run")
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 

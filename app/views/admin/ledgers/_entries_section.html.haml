@@ -53,7 +53,7 @@
           .col-sm-4
             = f.label :recorded_at, "Date & Time", class: "form-label"
             = f.datetime_local_field :recorded_at,
-                value: entry.recorded_at&.in_time_zone(Current.tenant.timezone)&.strftime("%Y-%m-%dT%H:%M"),
+                value: (tz = Current.tenant&.timezone.presence) ? entry.recorded_at&.in_time_zone(tz)&.strftime("%Y-%m-%dT%H:%M") : entry.recorded_at&.utc&.strftime("%Y-%m-%dT%H:%M"),
                 class: "form-control"
           .col-sm-4
             = f.label :memo, class: "form-label"

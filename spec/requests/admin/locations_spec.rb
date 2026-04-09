@@ -97,6 +97,35 @@ RSpec.describe "Admin::Locations", type: :request do
       expect(response.body).to include(qr_redirect_url(location.qr_code))
     end
 
+    context "when the tenant has no timezone set" do
+      before { Current.tenant.update!(timezone: "") }
+
+      it "returns 200 without raising ArgumentError" do
+        get admin_location_path(location)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders check-in times with member check-ins present" do
+        visitor = create(:user, first_name: "Alice", last_name: "Smith")
+        create(:check_in, location: location, user: visitor)
+
+        get admin_location_path(location)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Alice Smith")
+      end
+
+      it "renders check-in times with guest check-ins present" do
+        create(:check_in, :guest, location: location, guest_name: "Bob Guest")
+
+        get admin_location_path(location)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Bob Guest")
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 
