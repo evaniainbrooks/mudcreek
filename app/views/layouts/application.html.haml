@@ -69,7 +69,11 @@
                 - unless @admin
                   / Desktop: dropdown
                   .dropdown.d-none.d-lg-block
-                    %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false", style: "color: #fff !important"}
+                    %a.nav-link.dropdown-toggle{href: "#",
+                      role: "button",
+                      "data-bs-toggle": "dropdown",
+                      "aria-expanded": "false",
+                      style: "color: #fff !important"}
                       %i.bi.bi-person-circle.me-1
                       = Current.user.name
                     %ul.dropdown-menu.dropdown-menu-end

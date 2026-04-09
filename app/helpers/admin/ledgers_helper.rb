@@ -5,12 +5,14 @@ module Admin::LedgersHelper
     table.with_column("Description") { |l| l.description.presence || content_tag(:span, "—", class: "text-muted") }
     table.with_column("Entries", html_class: "text-center") { |l| l.entries.count }
     table.with_column("Actions", html_class: "text-end") do |l|
-      safe_join([
-        link_to("Edit", edit_admin_ledger_path(l), class: "btn btn-sm btn-outline-primary me-1"),
-        button_to("Delete", admin_ledger_path(l), method: :delete,
-          class: "btn btn-sm btn-outline-danger",
-          form: { data: { turbo_confirm: "Delete \"#{l.name}\" and all its entries?" } })
-      ])
+      content_tag(:div, class: "d-flex gap-1 justify-content-end") do
+        safe_join([
+          link_to("Edit", edit_admin_ledger_path(l), class: "btn btn-sm btn-outline-primary"),
+          button_to("Delete", admin_ledger_path(l), method: :delete,
+            class: "btn btn-sm btn-outline-danger",
+            form: { data: { turbo_confirm: "Delete \"#{l.name}\" and all its entries?" } })
+        ])
+      end
     end
     render(table)
   end
