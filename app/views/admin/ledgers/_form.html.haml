@@ -14,7 +14,7 @@
   .mb-3
     = f.label :location_id, "Location", class: "form-label"
     = f.select :location_id,
-        @locations.map { |l| [l.name, l.id] },
+        locations.map { |l| [l.name, l.id] },
         { include_blank: "— None —" },
         class: "form-select"
     .form-text Tax rate will be taken from the selected location, otherwise the default #{(SALES_TAX_RATE * 100).to_f}% applies.
