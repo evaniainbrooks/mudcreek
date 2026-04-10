@@ -3,8 +3,8 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Raise an error if the master key is missing.
-  config.require_master_key = true
+  # Raise an error if the master key is missing (skip during asset precompilation).
+  config.require_master_key = !ENV["SECRET_KEY_BASE_DUMMY"]
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
