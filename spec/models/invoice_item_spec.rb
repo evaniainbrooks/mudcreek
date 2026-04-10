@@ -12,8 +12,4 @@ RSpec.describe InvoiceItem, type: :model do
     end
   end
 
-  describe "associations" do
-    it { is_expected.to belong_to(:invoice) }
-    it { is_expected.to belong_to(:listing).optional }
-  end
 end

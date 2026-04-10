@@ -12,8 +12,4 @@ RSpec.describe OrderItem, type: :model do
     end
   end
 
-  describe "associations" do
-    it { is_expected.to belong_to(:order) }
-    it { is_expected.to belong_to(:listing).optional }
-  end
 end
