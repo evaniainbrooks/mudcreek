@@ -2,7 +2,11 @@ module SquareClient
   ENVIRONMENT = Rails.env.production? ? "production" : "sandbox"
 
   def self.config
-    Rails.application.credentials.square.public_send(ENVIRONMENT)
+    Rails.application.credentials.square&.public_send(ENVIRONMENT)
+  end
+
+  def self.configured?
+    config.present?
   end
 
   BASE_URLS = {

@@ -78,7 +78,7 @@
                 %td Total
                 %td.text-end= humanized_money_with_symbol(@order.total)
 
-      - if @order.pending?
+      - if @order.pending? && SquareClient.configured?
         #payment-card.card.shadow-sm.border-0.mb-3{data: { controller: "square-payment",
             "square-payment-application-id-value": SquareClient.application_id,
             "square-payment-location-id-value":    SquareClient.location_id,
