@@ -37,48 +37,53 @@
           .fs-4.fw-semibold= number_to_currency(total_tax)
 
   .card.shadow-sm.border-0.mb-4
-    .card-header.fw-semibold
-      %i.bi.bi-plus-circle.me-1
-      Add Entry
-    .card-body
-      = form_with model: [:admin, ledger, entry], url: admin_ledger_entries_path(ledger) do |f|
-        - if entry.errors.any?
-          .alert.alert-danger.mb-3= entry.errors.full_messages.to_sentence
-        .row.g-3
-          .col-sm-4
-            = f.label :entry_type, class: "form-label required"
-            = f.select :entry_type,
-                [["Credit", "credit"], ["Debit", "debit"]],
-                {},
-                class: "form-select #{'is-invalid' if entry.errors[:entry_type].any?}", required: true
-          .col-sm-8
-            = f.label :description, class: "form-label required"
-            = f.text_field :description, class: "form-control #{'is-invalid' if entry.errors[:description].any?}",
-                placeholder: "e.g. Coffee sales", required: true
-          .col-sm-4
-            = f.label :amount, class: "form-label"
-            .input-group
-              %span.input-group-text $
-              = f.number_field :amount, step: "0.01", min: "0.01",
-                  class: "form-control #{'is-invalid' if entry.errors[:amount].any?}",
-                  placeholder: "0.00"
-          .col-sm-4
-            = f.label :recorded_at, "Date & Time", class: "form-label"
-            = f.datetime_local_field :recorded_at,
-                value: entry.recorded_at&.in_time_zone(Current.tenant.timezone)&.strftime("%Y-%m-%dT%H:%M"),
-                class: "form-control"
-          .col-sm-4
-            = f.label :memo, class: "form-label"
-            = f.text_field :memo, class: "form-control", placeholder: "Optional note"
-          .col-sm-4
-            = f.label :receipt, class: "form-label"
-            = f.file_field :receipt, class: "form-control", accept: "image/*,application/pdf"
-          .col-12
-            .form-check
-              = f.check_box :taxed, class: "form-check-input"
-              = f.label :taxed, "Amount includes tax", class: "form-check-label"
-          .col-12
-            = f.submit "Add Entry", class: "btn btn-primary"
+    .card-header.fw-semibold.d-flex.align-items-center.justify-content-between{ style: "cursor: pointer",
+        data: { bs_toggle: "collapse", bs_target: "#add-entry-form" },
+        aria: { expanded: entry.errors.any? ? "true" : "false", controls: "add-entry-form" } }
+      %span
+        %i.bi.bi-plus-circle.me-1
+        Add Entry
+      %i.bi.bi-chevron-down.ms-auto{ style: "transition: transform 0.2s" }
+    #add-entry-form.collapse{ class: entry.errors.any? ? "show" : "" }
+      .card-body
+        = form_with model: [:admin, ledger, entry], url: admin_ledger_entries_path(ledger) do |f|
+          - if entry.errors.any?
+            .alert.alert-danger.mb-3= entry.errors.full_messages.to_sentence
+          .row.g-3
+            .col-sm-4
+              = f.label :entry_type, class: "form-label required"
+              = f.select :entry_type,
+                  [["Credit", "credit"], ["Debit", "debit"]],
+                  {},
+                  class: "form-select #{'is-invalid' if entry.errors[:entry_type].any?}", required: true
+            .col-sm-8
+              = f.label :description, class: "form-label required"
+              = f.text_field :description, class: "form-control #{'is-invalid' if entry.errors[:description].any?}",
+                  placeholder: "e.g. Coffee sales", required: true
+            .col-sm-4
+              = f.label :amount, class: "form-label"
+              .input-group
+                %span.input-group-text $
+                = f.number_field :amount, step: "0.01", min: "0.01",
+                    class: "form-control #{'is-invalid' if entry.errors[:amount].any?}",
+                    placeholder: "0.00"
+            .col-sm-4
+              = f.label :recorded_at, "Date & Time", class: "form-label"
+              = f.datetime_local_field :recorded_at,
+                  value: entry.recorded_at&.in_time_zone(Current.tenant.timezone)&.strftime("%Y-%m-%dT%H:%M"),
+                  class: "form-control"
+            .col-sm-4
+              = f.label :memo, class: "form-label"
+              = f.text_field :memo, class: "form-control", placeholder: "Optional note"
+            .col-sm-4
+              = f.label :receipt, class: "form-label"
+              = f.file_field :receipt, class: "form-control", accept: "image/*,application/pdf"
+            .col-12
+              .form-check
+                = f.check_box :taxed, class: "form-check-input"
+                = f.label :taxed, "Amount includes tax", class: "form-check-label"
+            .col-12
+              = f.submit "Add Entry", class: "btn btn-primary"
 
   .card.shadow-sm.border-0
     .card-header.fw-semibold

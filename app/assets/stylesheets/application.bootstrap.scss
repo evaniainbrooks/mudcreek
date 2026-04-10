@@ -29,6 +29,11 @@ $app-border-color: rgba(0, 0, 0, 0.12);
   box-shadow: $app-shadow;
 }
 
+// Rotate chevron icon when its sibling collapse panel is open
+[data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
 .card {
   --bs-card-border-color: #{$app-border-color};
   box-shadow: $app-shadow;
