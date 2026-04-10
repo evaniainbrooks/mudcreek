@@ -2,6 +2,7 @@ module Admin::LedgersHelper
   def render_ledgers_table(ledgers:)
     table = TableComponent.new(rows: ledgers)
     table.with_column("Name") { |l| link_to l.name, admin_ledger_path(l), class: "fw-medium text-decoration-none" }
+    table.with_column("Location") { |l| l.location&.name || content_tag(:span, "—", class: "text-muted") }
     table.with_column("Description") { |l| l.description.presence || content_tag(:span, "—", class: "text-muted") }
     table.with_column("Entries", html_class: "text-center") { |l| l.entries.count }
     table.with_column("Actions", html_class: "text-end") do |l|

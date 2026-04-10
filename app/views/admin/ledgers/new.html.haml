@@ -3,7 +3,4 @@
     %i.bi.bi-journal-plus.me-2
     New Ledger
 
-.page-container.p-4
-  .card.shadow-sm.border-0{ style: "max-width: 600px" }
-    .card-body
-      = render "form", ledger: @ledger, locations: @locations
+= render "form", ledger: @ledger, locations: @locations

@@ -3,7 +3,7 @@ class Admin::LedgersController < Admin::BaseController
 
   def index
     authorize(Ledger)
-    @pagy, @ledgers = pagy(:keyset, Ledger.ordered)
+    @pagy, @ledgers = pagy(:keyset, Ledger.includes(:location).ordered)
   end
 
   def show

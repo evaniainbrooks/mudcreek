@@ -64,6 +64,10 @@ resource :session
   end
   get "/location",  to: "locations#show",           defaults: { hashid: "DEFAULT" }
   get "/schedule",  to: "location_schedules#show",  defaults: { location_hashid: "DEFAULT" }
+  resources :ledgers, only: [:show], param: :hashid do
+    resources :entries, only: [:create], module: :ledgers
+  end
+
   resources :subdivisions, only: [ :index ]
   resources :pages, only: [ :show ], param: :slug
 
