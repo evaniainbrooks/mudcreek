@@ -27,9 +27,31 @@ module Admin::LedgersHelper
     table.with_column("Description") { |e| h(e.description) }
     table.with_column("Type") { |e| entry_type_badge(e) }
     table.with_column("Amount") do |e|
-      e.amount ? number_to_currency(e.amount) : content_tag(:span, "—", class: "text-muted")
+      if e.amount
+        safe_join([
+          number_to_currency(e.amount),
+          (content_tag(:span, "taxed", class: "badge text-bg-secondary ms-1") if e.taxed?)
+        ].compact)
+      else
+        content_tag(:span, "—", class: "text-muted")
+      end
+    end
+    table.with_column("Subtotal") do |e|
+      if e.taxed? && e.amount
+        content_tag(:span, number_to_currency(e.subtotal), class: "text-muted")
+      else
+        content_tag(:span, "—", class: "text-muted")
+      end
     end
     table.with_column("Memo") { |e| e.memo.presence || content_tag(:span, "—", class: "text-muted") }
+    table.with_column("Receipt") do |e|
+      if e.receipt.attached?
+        link_to content_tag(:i, "", class: "bi bi-paperclip"), rails_blob_path(e.receipt, disposition: "attachment"),
+          title: e.receipt.filename.to_s, target: "_blank", rel: "noopener"
+      else
+        content_tag(:span, "—", class: "text-muted")
+      end
+    end
     table.with_value_column("Recorded by") { |e| e.user }
     table.with_column("", html_class: "text-end") do |e|
       button_to admin_ledger_entry_path(@ledger, e), method: :delete,

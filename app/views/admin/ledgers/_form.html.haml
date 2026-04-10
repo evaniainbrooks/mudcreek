@@ -11,6 +11,14 @@
     = f.label :description, class: "form-label"
     = f.text_area :description, class: "form-control", rows: 3
 
+  .mb-3
+    = f.label :location_id, "Location", class: "form-label"
+    = f.select :location_id,
+        @locations.map { |l| [l.name, l.id] },
+        { include_blank: "— None —" },
+        class: "form-select"
+    .form-text Tax rate will be taken from the selected location, otherwise the default #{(SALES_TAX_RATE * 100).to_f}% applies.
+
   .d-flex.gap-2
     = f.submit class: "btn btn-primary"
     = link_to "Cancel", ledger.persisted? ? admin_ledger_path(ledger) : admin_ledgers_path, class: "btn btn-outline-secondary"

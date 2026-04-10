@@ -13,6 +13,15 @@ class Location < ApplicationRecord
   has_rich_text :message
 
   validates :name, presence: true
+  validates :tax_rate, numericality: { greater_than_or_equal_to: 0, less_than: 1 }
+
+  def tax_rate_percent
+    (tax_rate * 100).round(4)
+  end
+
+  def tax_rate_percent=(value)
+    self.tax_rate = BigDecimal(value.to_s) / 100
+  end
 
   validate :only_one_default_per_tenant, if: :default?
 

@@ -13,7 +13,14 @@
       Delete
 
 - if @ledger.description.present?
-  .text-muted.mb-4= @ledger.description
+  .text-muted.mb-2= @ledger.description
+.text-muted.small.mb-4
+  - if @ledger.location
+    %i.bi.bi-geo-alt.me-1
+    = @ledger.location.name
+    &mdash;
+  Tax rate:
+  = number_to_percentage(@ledger.tax_rate * 100, precision: 4, strip_insignificant_zeros: true)
 
 .page-container.p-4
   = render "entries_section",
@@ -22,6 +29,8 @@
       total_credits: @total_credits,
       total_debits: @total_debits,
       balance: @balance,
+      total_subtotal: @total_subtotal,
+      total_tax: @total_tax,
       entry: @entry
 
 .mt-3

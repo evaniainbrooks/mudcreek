@@ -7,19 +7,24 @@ class Admin::LedgersController < Admin::BaseController
   end
 
   def show
-    @entries       = @ledger.entries.ordered.includes(:user)
-    @total_credits = @ledger.entries.credits.sum(:amount) || 0
-    @total_debits  = @ledger.entries.debits.sum(:amount) || 0
-    @balance       = @total_credits - @total_debits
-    @entry         = Ledger::Entry.new(entry_type: "credit", recorded_at: Time.current)
+    @entries        = @ledger.entries.ordered.includes(:user, receipt_attachment: :blob).load
+    @total_credits  = @ledger.entries.credits.sum(:amount) || 0
+    @total_debits   = @ledger.entries.debits.sum(:amount) || 0
+    @balance        = @total_credits - @total_debits
+    @total_subtotal = @entries.sum { |e| e.credit? ? e.subtotal.to_d : -e.subtotal.to_d }
+    @total_tax      = @entries.sum { |e| e.tax_amount.to_d }
+    @entry          = Ledger::Entry.new(entry_type: "credit", recorded_at: Time.current)
   end
 
   def new
     @ledger = Ledger.new
     authorize(@ledger)
+    @locations = Location.ordered
   end
 
-  def edit; end
+  def edit
+    @locations = Location.ordered
+  end
 
   def create
     @ledger = Ledger.new(ledger_params)
@@ -48,11 +53,11 @@ class Admin::LedgersController < Admin::BaseController
   private
 
   def set_ledger
-    @ledger = Ledger.find_by!(hashid: params[:hashid])
+    @ledger = Ledger.includes(:location).find_by!(hashid: params[:hashid])
     authorize(@ledger)
   end
 
   def ledger_params
-    params.require(:ledger).permit(:name, :description)
+    params.require(:ledger).permit(:name, :description, :location_id)
   end
 end

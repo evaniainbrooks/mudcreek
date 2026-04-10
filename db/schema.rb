@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_08_221706) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_10_011543) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -263,6 +263,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_221706) do
     t.bigint "ledger_id", null: false
     t.text "memo"
     t.datetime "recorded_at", default: -> { "now()" }, null: false
+    t.boolean "taxed", default: false, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -275,10 +276,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_221706) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "hashid", null: false
+    t.bigint "location_id"
     t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_ledgers_on_hashid", unique: true
+    t.index ["location_id"], name: "index_ledgers_on_location_id"
     t.index ["tenant_id"], name: "index_ledgers_on_tenant_id"
   end
 
@@ -472,6 +475,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_221706) do
     t.string "name", null: false
     t.boolean "published", default: false, null: false
     t.integer "slide_timeout", default: 8, null: false
+    t.decimal "tax_rate", precision: 8, scale: 4, default: "0.15", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["hashid"], name: "index_locations_on_hashid", unique: true
@@ -1003,6 +1007,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_221706) do
   add_foreign_key "ledger_entries", "ledgers"
   add_foreign_key "ledger_entries", "tenants", on_delete: :cascade, validate: false
   add_foreign_key "ledger_entries", "users", on_delete: :nullify, validate: false
+  add_foreign_key "ledgers", "locations", validate: false
   add_foreign_key "ledgers", "tenants", on_delete: :cascade, validate: false
   add_foreign_key "listing_inference_batches", "lots"
   add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade

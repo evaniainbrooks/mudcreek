@@ -25,11 +25,21 @@
               = f.check_box :default, class: "form-check-input"
               = f.label :default, "Default location", class: "form-check-label"
               .form-text Checking this will unset any other default location.
-          .mb-0
+          .mb-3
             = f.label :name, class: "form-label required"
             = f.text_field :name, class: "form-control #{'is-invalid' if location.errors[:name].any?}", required: true
             - if location.errors[:name].any?
               .invalid-feedback= location.errors[:name].to_sentence
+          .mb-0
+            = f.label :tax_rate_percent, "Sales Tax Rate", class: "form-label"
+            .input-group
+              = f.number_field :tax_rate_percent, step: "0.0001", min: "0", max: "99.9999",
+                  class: "form-control #{'is-invalid' if location.errors[:tax_rate].any?}"
+              %span.input-group-text %
+            .form-text
+              Default: #{(SALES_TAX_RATE * 100).to_f}%
+            - if location.errors[:tax_rate].any?
+              .text-danger.small= location.errors[:tax_rate].to_sentence
 
       %fieldset.card.shadow-sm.border-0.mb-4
         %legend.card-header.fw-semibold
