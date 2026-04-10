@@ -53,10 +53,10 @@
           = number_to_percentage(@ledger.tax_rate * 100, precision: 4, strip_insignificant_zeros: true)
           tax will be backed out
 
-    %input#ledger_entry_receipt{type: "file", name: "ledger_entry[receipt]",
+    %input#ledger-entry-receipt{type: "file", name: "ledger_entry[receipt]",
         accept: "image/*", capture: "environment", style: "display:none",
         data: { action: "change->ledger-entry#receiptChanged" }}
-    %label.receipt-btn{ for: "ledger_entry_receipt",
+    %label.receipt-btn{ for: "ledger-entry-receipt",
         data: { ledger_entry_target: "receiptBtn" }}
       %i.bi.bi-camera
       %span{ data: { ledger_entry_target: "receiptLabel" }} Add Receipt Photo
