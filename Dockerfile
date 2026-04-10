@@ -69,8 +69,7 @@ ARG COMMIT_SHA
 ENV COMMIT_SHA=$COMMIT_SHA
 
 # Precompiling assets for production
-RUN --mount=type=secret,id=RAILS_MASTER_KEY \
-    RAILS_MASTER_KEY=$(cat /run/secrets/RAILS_MASTER_KEY) \
+RUN --mount=type=secret,id=RAILS_MASTER_KEY,env=RAILS_MASTER_KEY \
     SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
