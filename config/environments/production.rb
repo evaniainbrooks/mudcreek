@@ -73,10 +73,13 @@ Rails.application.configure do
   end
 
   # Postmark for transactional email delivery.
-  config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = {
-    api_token: Rails.application.credentials.dig(:postmark, :api_token)
-  }
+  # Skip credential access during asset precompilation (RAILS_MASTER_KEY not available at build time).
+  unless ENV["SECRET_KEY_BASE_DUMMY"]
+    config.action_mailer.delivery_method = :postmark
+    config.action_mailer.postmark_settings = {
+      api_token: Rails.application.credentials.dig(:postmark, :api_token)
+    }
+  end
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
