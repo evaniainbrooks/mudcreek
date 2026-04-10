@@ -33,6 +33,7 @@ class Admin::LedgersController < Admin::BaseController
     if @ledger.save
       redirect_to admin_ledger_path(@ledger), notice: "Ledger was successfully created."
     else
+      @locations = Location.ordered
       render :new, status: :unprocessable_content
     end
   end
@@ -41,6 +42,7 @@ class Admin::LedgersController < Admin::BaseController
     if @ledger.update(ledger_params)
       redirect_to admin_ledger_path(@ledger), notice: "Ledger was successfully updated."
     else
+      @locations = Location.ordered
       render :edit, status: :unprocessable_content
     end
   end

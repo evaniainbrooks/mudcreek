@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_10_011543) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_10_013506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -1007,7 +1007,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_10_011543) do
   add_foreign_key "ledger_entries", "ledgers"
   add_foreign_key "ledger_entries", "tenants", on_delete: :cascade, validate: false
   add_foreign_key "ledger_entries", "users", on_delete: :nullify, validate: false
-  add_foreign_key "ledgers", "locations", validate: false
+  add_foreign_key "ledgers", "locations", on_delete: :nullify, validate: false
   add_foreign_key "ledgers", "tenants", on_delete: :cascade, validate: false
   add_foreign_key "listing_inference_batches", "lots"
   add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade
