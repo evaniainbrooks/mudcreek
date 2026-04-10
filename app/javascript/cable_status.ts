@@ -37,13 +37,19 @@ function hideToast(): void {
 // Wait 3 seconds before showing the toast. If the page is refreshing or
 // navigating away, the JS context is destroyed before the timeout fires so
 // the toast never appears. It also suppresses brief blips that self-recover.
+//
+// Only show the toast if the cable was previously connected — a disconnect
+// that precedes any successful connection means cable isn't used on this page.
 let disconnectTimer: ReturnType<typeof setTimeout> | null = null
+let everConnected = false
 
 document.addEventListener("cable:disconnected", () => {
+  if (!everConnected) return
   disconnectTimer ??= setTimeout(showToast, 3000)
 })
 
 document.addEventListener("cable:connected", () => {
+  everConnected = true
   if (disconnectTimer) { clearTimeout(disconnectTimer); disconnectTimer = null }
   hideToast()
 })
