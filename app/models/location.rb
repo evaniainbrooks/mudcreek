@@ -2,6 +2,7 @@ class Location < ApplicationRecord
   include MultiTenant
   include HasHashid
 
+  has_many :ledgers, dependent: :nullify
   has_many :check_ins, dependent: :destroy
   has_one :qr_code, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
