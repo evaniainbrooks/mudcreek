@@ -11,5 +11,4 @@ RSpec.describe InvoiceItem, type: :model do
       expect(item.errors[:name]).to be_present
     end
   end
-
 end
