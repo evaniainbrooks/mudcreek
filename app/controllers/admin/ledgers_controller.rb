@@ -60,6 +60,6 @@ class Admin::LedgersController < Admin::BaseController
   end
 
   def ledger_params
-    params.require(:ledger).permit(:name, :description, :location_id)
+    params.require(:ledger).permit(:name, :description, :location_id, :shared)
   end
 end

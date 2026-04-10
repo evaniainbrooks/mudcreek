@@ -18,13 +18,19 @@
         = f.label :description, class: "form-label"
         = f.text_area :description, class: "form-control", rows: 3
 
-      .mb-0
+      .mb-3
         = f.label :location_id, "Location", class: "form-label"
         = f.select :location_id,
             locations.map { |l| [l.name, l.id] },
             { include_blank: "— None —" },
             class: "form-select"
         .form-text Tax rate will be taken from the selected location, otherwise the default #{(SALES_TAX_RATE * 100).to_f}% applies.
+
+      .mb-0
+        .form-check
+          = f.check_box :shared, class: "form-check-input"
+          = f.label :shared, class: "form-check-label"
+          .form-text Allow public access to this ledger's entry form.
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

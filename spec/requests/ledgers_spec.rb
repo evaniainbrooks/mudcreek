@@ -22,12 +22,32 @@ RSpec.describe "Ledgers", type: :request do
 
       expect(response).to have_http_status(:ok)
     end
+
+    context "when the ledger is not shared" do
+      let!(:ledger) { create(:ledger, name: "Private", shared: false) }
+
+      it "returns 404" do
+        get ledger_path(ledger)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
   end
 
   # ------------------------------------------------------------------ #
   describe "POST /ledgers/:id/entries" do
     let(:valid_params) do
       { ledger_entry: { description: "Coffee sales", entry_type: "credit", amount: "25.00" } }
+    end
+
+    context "when the ledger is not shared" do
+      let!(:ledger) { create(:ledger, shared: false) }
+
+      it "returns 404" do
+        post ledger_entries_path(ledger), params: valid_params
+
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
     it "creates an entry and redirects" do

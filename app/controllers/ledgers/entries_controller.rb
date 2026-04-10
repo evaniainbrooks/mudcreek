@@ -19,6 +19,7 @@ class Ledgers::EntriesController < ApplicationController
 
   def set_ledger
     @ledger = Ledger.includes(:location).find_by!(hashid: params[:ledger_hashid])
+    raise ActiveRecord::RecordNotFound unless @ledger.shared?
   end
 
   def entry_params
