@@ -57,15 +57,15 @@
           %div{ style: styles[:events], data: { controller: "schedule" } }
             %div{ style: schedule_style } Schedule
             / NOW indicator — JS moves this to the correct position between events
-            %div{ data: { schedule_target: "now" },
-                  style: "display: none; align-items: center; gap: 0.5rem; margin: 0.25rem 0 0.75rem; color: #ff6060" }
+            %div{data: { schedule_target: "now" },
+                  style: "display: none; align-items: center; gap: 0.5rem; margin: 0.25rem 0 0.75rem; color: #ff6060"}
               %div{ style: "flex: 1; height: 2px; background: #ff6060; border-radius: 1px" }
               %span{ style: "font-size: 0.7em; font-weight: 800; letter-spacing: 0.15em; white-space: nowrap" } NOW
               %div{ style: "flex: 1; height: 2px; background: #ff6060; border-radius: 1px" }
             - @today_events.each do |event|
               - event_minutes = event.dtstart.hour * 60 + event.dtstart.min rescue 0
-              %div{ style: "display: flex; align-items: baseline; gap: 0.6em; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden",
-                    data: { schedule_target: "event", event_minutes: event_minutes } }
+              %div{style: "display: flex; align-items: baseline; gap: 0.6em; margin-bottom: 0.3rem; white-space: nowrap; overflow: hidden",
+                    data: { schedule_target: "event", event_minutes: event_minutes }}
                 %span{ style: "color: rgba(255,255,255,0.65); font-size: 0.85em; flex-shrink: 0" }= event.dtstart.strftime("%-I:%M %p")
                 %span{ style: "font-weight: 600; font-size: 1.15em; overflow: hidden; text-overflow: ellipsis" }= event.summary
         - else

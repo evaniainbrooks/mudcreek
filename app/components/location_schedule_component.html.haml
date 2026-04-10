@@ -14,8 +14,8 @@
         %col{ style: "width: 2.5rem" }
         - week_days.each_with_index do |_day, i|
           - if i == today_col_idx
-            %col{ style: "border-left: 2px solid #{primary_color}; border-right: 2px solid #{primary_color}",
-                  data: { "schedule-table-target": "col" } }
+            %col{style: "border-left: 2px solid #{primary_color}; border-right: 2px solid #{primary_color}",
+                  data: { "schedule-table-target": "col" }}
           - else
             %col{ data: { "schedule-table-target": "col" } }
       %thead
@@ -23,9 +23,9 @@
           %th.text-center.align-middle.fw-normal.text-muted{ style: "font-size: 0.65rem" } Time
           - week_days.each_with_index do |day, i|
             - is_today = i == today_col_idx
-            %th.text-center{ class: (is_today ? nil : "table-light"),
+            %th.text-center{class: (is_today ? nil : "table-light"),
                              style: (is_today ? "background-color: #{primary_color_tint}; border-top: 2px solid #{primary_color}" : nil),
-                             data: { "schedule-table-target": "colHeader", col: i, action: "click->schedule-table#toggleCol" } }
+                             data: { "schedule-table-target": "colHeader", col: i, action: "click->schedule-table#toggleCol" }}
               .col-full
                 = %w[Sun Mon Tue Wed Thu Fri Sat][i]
                 %br
@@ -55,9 +55,9 @@
                     t_start = event.dtstart.strftime("%-I:%M %p") rescue nil
                     t_end   = event.dtend.strftime("%-I:%M %p") rescue nil
                     colors  = color_for(event.summary)
-                  %td.p-1{ rowspan: rs,
+                  %td.p-1{rowspan: rs,
                            style: "vertical-align: top; background: #{colors[:bg]}; border-color: #{colors[:border]}; #{bottom_border}",
-                           data: { col: col_idx } }
+                           data: { col: col_idx }}
                     .fw-semibold.lh-sm{ style: "font-size: 0.8rem; color: #{colors[:text]}" }= event.summary
                     - if t_start && t_end
                       %div{ style: "font-size: 0.68rem; color: #{colors[:text]}; opacity: 0.8; margin-top: 2px" } #{t_start} – #{t_end}

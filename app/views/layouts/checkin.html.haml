@@ -12,7 +12,7 @@
     = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
     = yield :head
-  %body.checkin-body
+  %body{ class: "checkin-body #{content_for?(:body_class) ? yield(:body_class) : ""}".strip }
     #flash
       - flash.each do |type, message|
         .alert.alert-dismissible.fade.show{class: "alert-#{bootstrap_flash_class(type)}", role: "alert"}

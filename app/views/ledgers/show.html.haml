@@ -1,228 +1,4 @@
-:css
-  body {
-    background: #0a0a0a;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .ledger-shell {
-    width: 100%;
-    max-width: 480px;
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 1.25rem 2rem;
-  }
-
-  .ledger-name {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #555;
-    margin-bottom: 0.25rem;
-  }
-
-  .ledger-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #e8e8e8;
-    margin: 0 0 1.75rem;
-    line-height: 1.2;
-  }
-
-  /* Toggle */
-  .type-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .btn-check:checked + .toggle-btn-credit {
-    background: #16a34a;
-    border-color: #16a34a;
-    color: #fff;
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
-  }
-
-  .btn-check:checked + .toggle-btn-debit {
-    background: #dc2626;
-    border-color: #dc2626;
-    color: #fff;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
-  }
-
-  .toggle-btn {
-    padding: 0.85rem;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    border: 1.5px solid #2a2a2a;
-    background: #141414;
-    color: #888;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-align: center;
-  }
-
-  .toggle-btn:hover {
-    border-color: #444;
-    color: #ccc;
-  }
-
-  /* Fields */
-  .field-group {
-    margin-bottom: 1.25rem;
-  }
-
-  .field-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #555;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-
-  .field-input {
-    width: 100%;
-    background: #111;
-    border: 1.5px solid #222;
-    border-radius: 10px;
-    color: #e8e8e8;
-    font-size: 1.05rem;
-    padding: 0.85rem 1rem;
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    -webkit-appearance: none;
-  }
-
-  .field-input::placeholder {
-    color: #3a3a3a;
-  }
-
-  .field-input:focus {
-    border-color: #404040;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
-  }
-
-  .field-input.is-invalid {
-    border-color: #dc2626;
-  }
-
-  .amount-wrap {
-    position: relative;
-  }
-
-  .amount-symbol {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #555;
-    font-size: 1.05rem;
-    pointer-events: none;
-  }
-
-  .amount-input {
-    padding-left: 1.75rem;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
-  }
-
-  /* Tax toggle */
-  .tax-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.9rem 1rem;
-    background: #111;
-    border: 1.5px solid #222;
-    border-radius: 10px;
-    cursor: pointer;
-    margin-bottom: 2rem;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .tax-check {
-    width: 1.15rem;
-    height: 1.15rem;
-    accent-color: #888;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .tax-label-wrap {
-    flex: 1;
-    cursor: pointer;
-  }
-
-  .tax-label-main {
-    font-size: 0.9rem;
-    color: #ccc;
-    font-weight: 500;
-    display: block;
-    line-height: 1.2;
-  }
-
-  .tax-label-hint {
-    font-size: 0.72rem;
-    color: #444;
-    display: block;
-    margin-top: 0.15rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Submit */
-  .submit-btn {
-    width: 100%;
-    padding: 1rem;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    margin-top: auto;
-  }
-
-  .submit-btn:active {
-    transform: scale(0.98);
-    opacity: 0.85;
-  }
-
-  .submit-credit {
-    background: #16a34a;
-    color: #fff;
-  }
-
-  .submit-debit {
-    background: #dc2626;
-    color: #fff;
-  }
-
-  .error-msg {
-    font-size: 0.75rem;
-    color: #f87171;
-    margin-top: 0.4rem;
-  }
-
-  .alert-entry {
-    background: #1a0f0f;
-    border: 1px solid #5a1a1a;
-    border-radius: 10px;
-    color: #f87171;
-    font-size: 0.85rem;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1.5rem;
-  }
+- content_for :body_class, "ledger-body"
 
 .ledger-shell
   .ledger-name= "Ledger"
@@ -235,22 +11,22 @@
     - is_credit = @entry.entry_type != "debit"
 
     .type-toggle
-      %input.btn-check{ type: "radio", name: "ledger_entry[entry_type]", id: "type_credit",
-          value: "credit", autocomplete: "off", checked: is_credit }
+      %input.btn-check{type: "radio", name: "ledger_entry[entry_type]", id: "type_credit",
+          value: "credit", autocomplete: "off", checked: is_credit}
       %label.toggle-btn.toggle-btn-credit{ for: "type_credit" }
         ↑ Credit
 
-      %input.btn-check{ type: "radio", name: "ledger_entry[entry_type]", id: "type_debit",
-          value: "debit", autocomplete: "off", checked: !is_credit }
+      %input.btn-check{type: "radio", name: "ledger_entry[entry_type]", id: "type_debit",
+          value: "debit", autocomplete: "off", checked: !is_credit}
       %label.toggle-btn.toggle-btn-debit{ for: "type_debit" }
         ↓ Debit
 
     .field-group
       %label.field-label{ for: "ledger_entry_description" } Description
-      %input.field-input{ type: "text", name: "ledger_entry[description]", id: "ledger_entry_description",
+      %input.field-input{type: "text", name: "ledger_entry[description]", id: "ledger_entry_description",
           value: @entry.description, placeholder: "What was this for?",
           autocomplete: "off", class: @entry.errors[:description].any? ? "is-invalid" : "",
-          required: true }
+          required: true}
       - if @entry.errors[:description].any?
         .error-msg= @entry.errors[:description].to_sentence
 
@@ -258,25 +34,25 @@
       %label.field-label{ for: "ledger_entry_amount" } Amount
       .amount-wrap
         %span.amount-symbol $
-        %input.field-input.amount-input{ type: "number", name: "ledger_entry[amount]", id: "ledger_entry_amount",
+        %input.field-input.amount-input{type: "number", name: "ledger_entry[amount]", id: "ledger_entry_amount",
             value: @entry.amount, placeholder: "0.00", step: "0.01", min: "0.01",
             class: @entry.errors[:amount].any? ? "is-invalid" : "",
-            inputmode: "decimal" }
+            inputmode: "decimal"}
       - if @entry.errors[:amount].any?
         .error-msg= @entry.errors[:amount].to_sentence
 
     %label.tax-row{ for: "ledger_entry_taxed" }
-      %input.tax-check{ type: "checkbox", name: "ledger_entry[taxed]", id: "ledger_entry_taxed",
-          value: "1", checked: @entry.taxed? }
+      %input.tax-check{type: "checkbox", name: "ledger_entry[taxed]", id: "ledger_entry_taxed",
+          value: "1", checked: @entry.taxed?}
       .tax-label-wrap
         %span.tax-label-main Amount includes tax
         %span.tax-label-hint
           = number_to_percentage(@ledger.tax_rate * 100, precision: 4, strip_insignificant_zeros: true)
           tax will be backed out
 
-    %button.submit-btn{ type: "submit",
+    %button.submit-btn{type: "submit",
         class: is_credit ? "submit-credit" : "submit-debit",
-        id: "submit-btn" }
+        id: "submit-btn"}
       Add Entry
 
 :javascript
