@@ -23,6 +23,6 @@ class Ledgers::EntriesController < ApplicationController
   end
 
   def entry_params
-    params.require(:ledger_entry).permit(:description, :entry_type, :amount, :taxed)
+    params.require(:ledger_entry).permit(:description, :entry_type, :amount, :taxed, :receipt)
   end
 end

@@ -1,25 +1,29 @@
 module AdminHelper
   def admin_catalog_nav?
-    policy(Listing).index? ||
+    policy(Auction).index? ||
+      policy(AuctionRegistration).index? ||
+      policy(Listing).index? ||
       policy(Listings::Category).index? ||
       policy(Listings::PropertySet).index? ||
       policy(Lot).index? ||
-      policy(Auction).index? ||
-      policy(AuctionRegistration).index?
+      (Current.tenant.features.locations? && policy(Location).index?)
   end
 
   def admin_sales_nav?
-    policy(Order).index? ||
+    policy(DiscountCode).index? ||
       policy(Invoice).index? ||
+      policy(Ledger).index? ||
+      policy(Listings::DeliveryMethodSet).index? ||
       policy(Offer).index? ||
-      policy(DiscountCode).index? ||
-      policy(Listings::DeliveryMethodSet).index?
+      policy(Order).index?
   end
 
   def admin_settings_nav?
-    policy(User).index? || policy(Role).index? || policy(Tenant).index? ||
-      policy(Page).index? || policy(NavbarItem).index? ||
-      (Current.tenant.features.locations? && policy(Location).index?) ||
-      policy(QrCode).index? || policy(Ledger).index?
+    policy(NavbarItem).index? ||
+      policy(Page).index? ||
+      policy(QrCode).index? ||
+      policy(Role).index? ||
+      policy(Tenant).index? ||
+      policy(User).index?
   end
 end

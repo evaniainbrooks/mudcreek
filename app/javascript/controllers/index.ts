@@ -29,6 +29,7 @@ import ClockController from "./clock_controller"
 import NavbarController from "./navbar_controller"
 import QrImageController from "./qr_image_controller"
 import SlideshowController from "./slideshow_controller"
+import LedgerEntryController from "./ledger_entry_controller"
 import ScheduleTableController from "./schedule_table_controller"
 
 application.register("add-card", AddCardController)
@@ -61,4 +62,5 @@ application.register("clock", ClockController)
 application.register("navbar", NavbarController)
 application.register("qr-image", QrImageController)
 application.register("slideshow", SlideshowController)
+application.register("ledger-entry", LedgerEntryController)
 application.register("schedule-table", ScheduleTableController)

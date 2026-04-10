@@ -358,6 +358,33 @@ body.checkin-body.ledger-body {
   font-variant-numeric: tabular-nums;
 }
 
+// Receipt photo button
+.receipt-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: #111;
+  border: 1.5px solid #222;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+
+  i { font-size: 1.15rem; flex-shrink: 0; }
+
+  span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  &--selected {
+    border-color: #16a34a;
+    color: #4ade80;
+  }
+}
+
 // Submit
 .submit-btn {
   width: 100%;

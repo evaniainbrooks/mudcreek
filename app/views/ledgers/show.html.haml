@@ -7,17 +7,20 @@
   - if @entry.errors.any?
     .alert-entry= @entry.errors.full_messages.to_sentence
 
-  = form_with url: ledger_entries_path(@ledger), scope: :ledger_entry do |f|
+  = form_with url: ledger_entries_path(@ledger), scope: :ledger_entry, multipart: true,
+      data: { controller: "ledger-entry" } do |f|
     - is_credit = @entry.entry_type != "debit"
 
     .type-toggle
       %input.btn-check{type: "radio", name: "ledger_entry[entry_type]", id: "type_credit",
-          value: "credit", autocomplete: "off", checked: is_credit}
+          value: "credit", autocomplete: "off", checked: is_credit,
+          data: { action: "change->ledger-entry#syncSubmit" }}
       %label.toggle-btn.toggle-btn-credit{ for: "type_credit" }
         ↑ Credit
 
       %input.btn-check{type: "radio", name: "ledger_entry[entry_type]", id: "type_debit",
-          value: "debit", autocomplete: "off", checked: !is_credit}
+          value: "debit", autocomplete: "off", checked: !is_credit,
+          data: { action: "change->ledger-entry#syncSubmit" }}
       %label.toggle-btn.toggle-btn-debit{ for: "type_debit" }
         ↓ Debit
 
@@ -50,22 +53,15 @@
           = number_to_percentage(@ledger.tax_rate * 100, precision: 4, strip_insignificant_zeros: true)
           tax will be backed out
 
+    %input#ledger_entry_receipt{type: "file", name: "ledger_entry[receipt]",
+        accept: "image/*", capture: "environment", style: "display:none",
+        data: { action: "change->ledger-entry#receiptChanged" }}
+    %label.receipt-btn{ for: "ledger_entry_receipt",
+        data: { ledger_entry_target: "receiptBtn" }}
+      %i.bi.bi-camera
+      %span{ data: { ledger_entry_target: "receiptLabel" }} Add Receipt Photo
+
     %button.submit-btn{type: "submit",
         class: is_credit ? "submit-credit" : "submit-debit",
-        id: "submit-btn"}
+        data: { ledger_entry_target: "submitBtn" }}
       Add Entry
-
-:javascript
-  // Sync submit button colour with toggle
-  document.querySelectorAll('.btn-check').forEach(function(radio) {
-    radio.addEventListener('change', function() {
-      var btn = document.getElementById('submit-btn');
-      if (this.value === 'credit') {
-        btn.classList.remove('submit-debit');
-        btn.classList.add('submit-credit');
-      } else {
-        btn.classList.remove('submit-credit');
-        btn.classList.add('submit-debit');
-      }
-    });
-  });
