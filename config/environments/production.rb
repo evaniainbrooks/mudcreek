@@ -3,6 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Raise an error if the master key is missing.
+  config.require_master_key = true
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
@@ -72,7 +75,7 @@ Rails.application.configure do
   # Postmark for transactional email delivery.
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = {
-    api_token: Rails.application.credentials.dig(:postmark, :api_key)
+    api_token: Rails.application.credentials.dig(:postmark, :api_token)
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
