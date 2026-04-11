@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_10_021853) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_10_030002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -223,6 +223,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_10_021853) do
     t.index "tenant_id, lower((key)::text)", name: "index_discount_codes_on_tenant_id_and_lower_key", unique: true
     t.index ["key"], name: "index_discount_codes_on_key"
     t.check_constraint "amount_cents > 0", name: "discount_codes_amount_cents_positive"
+  end
+
+  create_table "inquiries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.bigint "inquiry_form_id", null: false
+    t.text "message", null: false
+    t.string "name", null: false
+    t.string "phone"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["inquiry_form_id", "created_at"], name: "index_inquiries_on_inquiry_form_id_and_created_at"
+    t.index ["inquiry_form_id"], name: "index_inquiries_on_inquiry_form_id"
+    t.index ["tenant_id"], name: "index_inquiries_on_tenant_id"
+    t.index ["user_id"], name: "index_inquiries_on_user_id"
+  end
+
+  create_table "inquiry_forms", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.bigint "notification_recipient_id", null: false
+    t.boolean "published", default: false, null: false
+    t.string "slug", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notification_recipient_id"], name: "index_inquiry_forms_on_notification_recipient_id"
+    t.index ["tenant_id", "slug"], name: "index_inquiry_forms_on_tenant_id_and_slug", unique: true
+    t.index ["tenant_id"], name: "index_inquiry_forms_on_tenant_id"
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -999,6 +1029,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_10_021853) do
   add_foreign_key "check_ins", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
+  add_foreign_key "inquiries", "inquiry_forms"
+  add_foreign_key "inquiries", "tenants"
+  add_foreign_key "inquiries", "users"
+  add_foreign_key "inquiry_forms", "tenants"
+  add_foreign_key "inquiry_forms", "users", column: "notification_recipient_id"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "listings", on_delete: :nullify
   add_foreign_key "invoices", "auctions"

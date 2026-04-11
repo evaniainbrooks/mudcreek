@@ -1,0 +1,9 @@
+New inquiry via <%= @inquiry_form.name %>.
+
+Name: <%= @inquiry.name %>
+Email: <%= @inquiry.email %>
+<% if @inquiry.phone.present? %>Phone: <%= @inquiry.phone %>
+<% end %>Submitted at: <%= @inquiry.created_at.to_fs(:long) %>
+
+Message:
+<%= @inquiry.message %>

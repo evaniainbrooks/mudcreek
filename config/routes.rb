@@ -71,6 +71,10 @@ resource :session
   resources :subdivisions, only: [ :index ]
   resources :pages, only: [ :show ], param: :slug
 
+  resources :forms, only: [ :show ], param: :slug, controller: "inquiry_forms" do
+    resources :inquiries, only: [ :create ]
+  end
+
   get "/q/:slug",       to: "qr_redirects#show",  as: :qr_redirect
   get "/qr/:slug/image", to: "qr_codes#qr_image", as: :qr_code_image
 
@@ -121,6 +125,8 @@ resource :session
     resources :invoices, only: [ :index, :show ], param: :number
     resources :bids, only: [ :update ]
     resources :pages
+    resources :inquiry_forms
+    resources :inquiries, only: [ :index, :show ]
     resources :navbar_items, except: [:show]
     resources :qr_codes, param: :slug do
       member { get :qr_image }

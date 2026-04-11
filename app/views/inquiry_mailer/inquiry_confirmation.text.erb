@@ -1,0 +1,7 @@
+Thank you for reaching out, <%= @inquiry.name %>. We have received your inquiry and will be in touch soon.
+
+Form: <%= @inquiry_form.name %>
+Submitted at: <%= @inquiry.created_at.to_fs(:long) %>
+
+Your message:
+<%= @inquiry.message %>

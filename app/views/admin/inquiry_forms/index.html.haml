@@ -1,0 +1,13 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-ui-checks.me-2
+    Inquiry Forms
+  = link_to new_admin_inquiry_form_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    New Inquiry Form
+
+.page-container.p-4
+  - if @inquiry_forms.empty?
+    = render EmptyStateComponent.new(icon: "ui-checks", message: "No inquiry forms yet.")
+  - else
+    = render_inquiry_forms_table(@inquiry_forms)

@@ -1,0 +1,6 @@
+%tr{data: { id: inquiry.id }}
+  - inquiry_columns.each do |col|
+    - if col.typed
+      = render TableCellComponent.new(value: col.block.call(inquiry), html_class: col.html_class)
+    - else
+      %td{class: col.html_class}= col.block.call(inquiry)

@@ -1,0 +1,2 @@
+class InquiryFormPolicy < ApplicationPolicy
+end

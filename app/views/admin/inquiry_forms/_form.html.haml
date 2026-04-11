@@ -1,0 +1,62 @@
+= form_with model: [:admin, inquiry_form], class: "needs-validation" do |f|
+  - if inquiry_form.errors.any?
+    .alert.alert-danger.mb-4
+      %h5.alert-heading
+        %i.bi.bi-exclamation-triangle-fill.me-2
+        = pluralize(inquiry_form.errors.count, "error")
+        prohibited this form from being saved:
+      %ul.mb-0
+        - inquiry_form.errors.full_messages.each do |message|
+          %li= message
+
+  .row.g-4
+    .col-lg-8
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-info-circle.me-1
+          Form Details
+        .card-body.p-4
+          .mb-3
+            = f.label :name, class: "form-label required"
+            = f.text_field :name,
+                class: "form-control #{'is-invalid' if inquiry_form.errors[:name].any?}",
+                required: true
+            - if inquiry_form.errors[:name].any?
+              .invalid-feedback= inquiry_form.errors[:name].to_sentence
+          .mb-3
+            = f.label :slug, class: "form-label required"
+            = f.text_field :slug,
+                class: "form-control #{'is-invalid' if inquiry_form.errors[:slug].any?}",
+                placeholder: "auto-derived from name on create"
+            - if inquiry_form.errors[:slug].any?
+              .invalid-feedback= inquiry_form.errors[:slug].to_sentence
+            %small.text-muted Lowercase letters, numbers, and hyphens only (e.g. contact-us)
+          .mb-0
+            = f.label :description, class: "form-label"
+            = f.text_area :description, rows: 3,
+                class: "form-control #{'is-invalid' if inquiry_form.errors[:description].any?}"
+            - if inquiry_form.errors[:description].any?
+              .invalid-feedback= inquiry_form.errors[:description].to_sentence
+
+    .col-lg-4
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-toggles.me-1
+          Settings
+        .card-body.p-4
+          .mb-3
+            = f.label :notification_recipient_id, "Notification Recipient", class: "form-label required"
+            = f.collection_select :notification_recipient_id, User.order(:email_address), :id, :email_address,
+                { prompt: "Select a user..." },
+                class: "form-select #{'is-invalid' if inquiry_form.errors[:notification_recipient].any?}",
+                required: true
+            - if inquiry_form.errors[:notification_recipient].any?
+              .invalid-feedback= inquiry_form.errors[:notification_recipient].to_sentence
+            %small.text-muted This user will be emailed when an inquiry is submitted.
+          .mb-0.form-check
+            = f.check_box :published, class: "form-check-input"
+            = f.label :published, class: "form-check-label"
+
+  .d-flex.gap-2.mt-4
+    = f.submit class: "btn btn-primary"
+    = link_to "Cancel", admin_inquiry_forms_path, class: "btn btn-outline-secondary"

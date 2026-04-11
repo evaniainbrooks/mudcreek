@@ -1,0 +1,35 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-envelope-open.me-2
+    Inquiries
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold Filter Records
+    .card-body
+      = search_form_for @q, url: admin_inquiries_path, html: { class: "row g-2 align-items-end" } do |f|
+        .col-md-3
+          = f.label :inquiry_form_name_cont, "Form", class: "form-label form-label-sm"
+          = f.search_field :inquiry_form_name_cont,
+              class: "form-control form-control-sm", placeholder: "Search by form name..."
+        .col-md-3
+          = f.label :name_cont, "Name", class: "form-label form-label-sm"
+          = f.search_field :name_cont,
+              class: "form-control form-control-sm", placeholder: "Search by name..."
+        .col-md-3
+          = f.label :email_cont, "Email", class: "form-label form-label-sm"
+          = f.search_field :email_cont,
+              class: "form-control form-control-sm", placeholder: "Search by email..."
+        .col-auto
+          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+            %i.bi.bi-search.me-1
+            Search
+        .col-auto
+          = link_to "Clear", admin_inquiries_path, class: "btn btn-outline-secondary btn-sm"
+
+  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+      label: "inquiries", clear_url: admin_inquiries_path)
+
+  %div{data: { controller: "infinite-scroll" }}
+    = render_inquiries_table(inquiries: @inquiries, q: @q)
+    = render "admin/inquiries/sentinel", pagy: @pagy, q: params[:q]

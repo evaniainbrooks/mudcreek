@@ -1,0 +1,40 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-envelope-open.me-2
+    Inquiry
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body
+      %dl.row.mb-0
+        %dt.col-sm-3 Form
+        %dd.col-sm-9= link_to @inquiry.inquiry_form.name, admin_inquiry_form_path(@inquiry.inquiry_form)
+
+        %dt.col-sm-3= @inquiry.guest? ? "Guest" : "Submitter"
+        %dd.col-sm-9
+          - if @inquiry.user
+            = link_to @inquiry.user.name, admin_user_path(@inquiry.user)
+          - else
+            = @inquiry.name
+
+        %dt.col-sm-3 Email
+        %dd.col-sm-9= mail_to @inquiry.email
+
+        %dt.col-sm-3 Phone
+        %dd.col-sm-9
+          - if @inquiry.phone.present?
+            = @inquiry.phone
+          - else
+            %span.text-muted —
+
+        %dt.col-sm-3 Message
+        %dd.col-sm-9
+          = simple_format @inquiry.message
+
+        %dt.col-sm-3 Submitted
+        %dd.col-sm-9= @inquiry.created_at.to_fs(:long)
+
+  .mt-3
+    = link_to admin_inquiries_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Inquiries

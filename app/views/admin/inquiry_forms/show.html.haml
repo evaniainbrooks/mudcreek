@@ -1,0 +1,42 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-ui-checks.me-2
+    = @inquiry_form.name
+  .d-flex.gap-2
+    = link_to "View Public Form", form_path(@inquiry_form), class: "btn btn-outline-primary", target: "_blank" do
+      %i.bi.bi-box-arrow-up-right.me-1
+      View Public Form
+    = link_to edit_admin_inquiry_form_path(@inquiry_form), class: "btn btn-outline-secondary" do
+      %i.bi.bi-pencil.me-1
+      Edit
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-body
+      %dl.row.mb-0
+        %dt.col-sm-3 Name
+        %dd.col-sm-9= @inquiry_form.name
+
+        %dt.col-sm-3 Slug
+        %dd.col-sm-9= content_tag(:code, @inquiry_form.slug)
+
+        %dt.col-sm-3 Notification Recipient
+        %dd.col-sm-9= link_to @inquiry_form.notification_recipient.name, admin_user_path(@inquiry_form.notification_recipient)
+
+        %dt.col-sm-3 Published
+        %dd.col-sm-9= @inquiry_form.published? ? "Yes" : "No"
+
+        %dt.col-sm-3 Description
+        %dd.col-sm-9
+          - if @inquiry_form.description.present?
+            = @inquiry_form.description
+          - else
+            %span.text-muted —
+
+        %dt.col-sm-3 Inquiries
+        %dd.col-sm-9= link_to "#{@inquiry_form.inquiries.count} total", admin_inquiries_path(q: { inquiry_form_name_eq: @inquiry_form.name })
+
+  .mt-3
+    = link_to admin_inquiry_forms_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Inquiry Forms

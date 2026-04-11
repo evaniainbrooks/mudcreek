@@ -1,0 +1,11 @@
+<p>Thank you for reaching out, <%= @inquiry.name %>. We have received your inquiry and will be in touch soon.</p>
+
+<p>
+  <strong>Form:</strong> <%= @inquiry_form.name %><br>
+  <strong>Submitted at:</strong> <%= @inquiry.created_at.to_fs(:long) %>
+</p>
+
+<p>
+  <strong>Your message:</strong><br>
+  <%= @inquiry.message %>
+</p>

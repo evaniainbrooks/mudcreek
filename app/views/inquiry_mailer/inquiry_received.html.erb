@@ -1,0 +1,15 @@
+<p>You have received a new inquiry via the <strong><%= @inquiry_form.name %></strong> form.</p>
+
+<p>
+  <strong>Name:</strong> <%= @inquiry.name %><br>
+  <strong>Email:</strong> <%= @inquiry.email %><br>
+  <% if @inquiry.phone.present? %>
+    <strong>Phone:</strong> <%= @inquiry.phone %><br>
+  <% end %>
+  <strong>Submitted at:</strong> <%= @inquiry.created_at.to_fs(:long) %>
+</p>
+
+<p>
+  <strong>Message:</strong><br>
+  <%= @inquiry.message %>
+</p>

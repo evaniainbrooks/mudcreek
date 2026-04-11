@@ -1,0 +1,46 @@
+%h1.fw-bold.mb-2= @inquiry_form.name
+
+- if @inquiry_form.description.present?
+  %p.text-muted.mb-4= @inquiry_form.description
+
+.row.justify-content-center
+  .col-lg-7
+    .card.shadow-sm.border-0
+      .card-body.p-4
+        = form_with model: @inquiry, url: form_inquiries_path(@inquiry_form) do |f|
+          - if @inquiry.errors.any?
+            .alert.alert-danger.mb-4
+              %ul.mb-0
+                - @inquiry.errors.full_messages.each do |message|
+                  %li= message
+
+          .mb-3
+            = f.label :name, class: "form-label required"
+            = f.text_field :name, class: "form-control #{'is-invalid' if @inquiry.errors[:name].any?}",
+                required: true, autocomplete: "name"
+            - if @inquiry.errors[:name].any?
+              .invalid-feedback= @inquiry.errors[:name].to_sentence
+
+          .mb-3
+            = f.label :email, class: "form-label required"
+            = f.email_field :email, class: "form-control #{'is-invalid' if @inquiry.errors[:email].any?}",
+                required: true, autocomplete: "email"
+            - if @inquiry.errors[:email].any?
+              .invalid-feedback= @inquiry.errors[:email].to_sentence
+
+          .mb-3
+            = f.label :phone, class: "form-label"
+            = f.telephone_field :phone, class: "form-control #{'is-invalid' if @inquiry.errors[:phone].any?}",
+                autocomplete: "tel"
+            - if @inquiry.errors[:phone].any?
+              .invalid-feedback= @inquiry.errors[:phone].to_sentence
+
+          .mb-4
+            = f.label :message, class: "form-label required"
+            = f.text_area :message, rows: 5,
+                class: "form-control #{'is-invalid' if @inquiry.errors[:message].any?}",
+                required: true
+            - if @inquiry.errors[:message].any?
+              .invalid-feedback= @inquiry.errors[:message].to_sentence
+
+          = f.submit "Send Inquiry", class: "btn btn-primary"
