@@ -36,8 +36,8 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def user_params
-    params.expect(user: [:first_name, :last_name, :email_address, :birthdate, :role_id,
-                         kids_attributes: [ :id, :name, :birthdate, :_destroy ]])
+    params.require(:user).permit(:first_name, :last_name, :email_address, :birthdate, :role_id,
+                                 kids_attributes: [ :id, :name, :birthdate, :_destroy ])
   end
 
   def update_verification_from_params
