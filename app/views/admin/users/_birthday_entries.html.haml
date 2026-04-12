@@ -12,11 +12,12 @@
           %th Days Until
       %tbody
         - entries.each do |entry|
-          - record = entry[:record]
-          - next_bday = entry[:next_birthday]
-          - days_until = (next_bday - today).to_i
-          - birthdate = record.birthdate
-          - age = next_bday.year - birthdate.year
+          :ruby
+            record = entry[:record]
+            next_bday = entry[:next_birthday]
+            days_until = (next_bday - today).to_i
+            birthdate = record.birthdate
+            age = next_bday.year - birthdate.year
           %tr
             %td
               - if entry[:type] == :user
@@ -39,4 +40,4 @@
               - if days_until == 0
                 %span.badge.text-bg-success Today!
               - else
-                = "#{days_until} day#{"s" unless days_until == 1}"
+                = pluralize(days_until, "day")

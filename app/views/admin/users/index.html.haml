@@ -97,9 +97,10 @@
       - if @birthday_entries.empty?
         = render EmptyStateComponent.new(icon: "cake2", message: "No upcoming birthdays in the next 30 days.")
       - else
-        - today = Date.current
-        - todays = @birthday_entries.select { it[:next_birthday] == today }
-        - upcoming = @birthday_entries.reject { it[:next_birthday] == today }
+        :ruby
+          today = Date.current
+          todays = @birthday_entries.select { it[:next_birthday] == today }
+          upcoming = @birthday_entries.reject { it[:next_birthday] == today }
 
         - if todays.any?
           %h6.fw-semibold.mb-3

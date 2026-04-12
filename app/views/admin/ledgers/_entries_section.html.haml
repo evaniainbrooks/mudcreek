@@ -37,9 +37,9 @@
           .fs-4.fw-semibold= number_to_currency(total_tax)
 
   .card.shadow-sm.border-0.mb-4
-    .card-header.fw-semibold.d-flex.align-items-center.justify-content-between{ style: "cursor: pointer",
+    .card-header.fw-semibold.d-flex.align-items-center.justify-content-between{style: "cursor: pointer",
         data: { bs_toggle: "collapse", bs_target: "#add-entry-form" },
-        aria: { expanded: entry.errors.any? ? "true" : "false", controls: "add-entry-form" } }
+        aria: { expanded: entry.errors.any? ? "true" : "false", controls: "add-entry-form" }}
       %span
         %i.bi.bi-plus-circle.me-1
         Add Entry
