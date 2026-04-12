@@ -1,5 +1,5 @@
 class Admin::InvoicesController < Admin::BaseController
-  before_action :set_invoice, only: [ :show ]
+  before_action :set_invoice, only: [ :show, :update ]
 
   def index
     authorize(Invoice)
@@ -27,10 +27,22 @@ class Admin::InvoicesController < Admin::BaseController
   def show
   end
 
+  def update
+    if @invoice.update(invoice_params)
+      redirect_to admin_invoice_path(@invoice), notice: "Invoice updated."
+    else
+      render :show, status: :unprocessable_content
+    end
+  end
+
   private
 
   def set_invoice
     @invoice = Invoice.includes(:user, :auction, :offer, invoice_items: :listing).find_by!(number: params[:number])
     authorize(@invoice)
+  end
+
+  def invoice_params
+    params.expect(invoice: [ :status, :admin_notes ])
   end
 end

@@ -10,6 +10,7 @@ RSpec.describe "Admin::Invoices", type: :request do
     Role.create!(name: "invoice_manager", description: "Manage invoices").tap do |r|
       r.permissions.create!(resource: "Invoice", action: "index")
       r.permissions.create!(resource: "Invoice", action: "show")
+      r.permissions.create!(resource: "Invoice", action: "update")
     end
   end
 
@@ -275,6 +276,79 @@ RSpec.describe "Admin::Invoices", type: :request do
 
       it "raises Pundit::NotAuthorizedError" do
         expect { get admin_invoice_path(invoice) }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "PATCH /admin/invoices/:number" do
+    context "updating status" do
+      it "changes the invoice status" do
+        patch admin_invoice_path(invoice), params: { invoice: { status: "paid" } }
+
+        expect(invoice.reload.status).to eq("paid")
+      end
+
+      it "redirects back to the invoice with a notice" do
+        patch admin_invoice_path(invoice), params: { invoice: { status: "paid" } }
+
+        expect(response).to redirect_to(admin_invoice_path(invoice))
+        expect(flash[:notice]).to eq("Invoice updated.")
+      end
+
+      it "can mark a paid invoice as unpaid" do
+        invoice.update!(status: :paid)
+
+        patch admin_invoice_path(invoice), params: { invoice: { status: "unpaid" } }
+
+        expect(invoice.reload.status).to eq("unpaid")
+      end
+    end
+
+    context "updating admin notes" do
+      it "persists the notes" do
+        patch admin_invoice_path(invoice), params: { invoice: { admin_notes: "Contact buyer before shipping." } }
+
+        expect(invoice.reload.admin_notes).to eq("Contact buyer before shipping.")
+      end
+
+      it "redirects back to the invoice with a notice" do
+        patch admin_invoice_path(invoice), params: { invoice: { admin_notes: "Some note." } }
+
+        expect(response).to redirect_to(admin_invoice_path(invoice))
+        expect(flash[:notice]).to eq("Invoice updated.")
+      end
+
+      it "clears notes when submitted blank" do
+        invoice.update_columns(admin_notes: "Old note.")
+
+        patch admin_invoice_path(invoice), params: { invoice: { admin_notes: "" } }
+
+        expect(invoice.reload.admin_notes).to be_blank
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        patch admin_invoice_path(invoice), params: { invoice: { status: "paid" } }
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the update permission" do
+      let(:role) do
+        Role.create!(name: "read_only_invoices", description: "Read-only invoice access").tap do |r|
+          r.permissions.create!(resource: "Invoice", action: "index")
+          r.permissions.create!(resource: "Invoice", action: "show")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          patch admin_invoice_path(invoice), params: { invoice: { status: "paid" } }
+        }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end

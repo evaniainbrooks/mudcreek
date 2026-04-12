@@ -122,7 +122,7 @@ resource :session
     end
     resources :auction_listings, only: [ :create ]
     resources :auction_registrations, only: [ :index, :update ]
-    resources :invoices, only: [ :index, :show ], param: :number
+    resources :invoices, only: [ :index, :show, :update ], param: :number
     resources :bids, only: [ :update ]
     resources :pages
     resources :inquiry_forms
