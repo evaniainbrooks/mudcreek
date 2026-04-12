@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_10_030002) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -236,7 +236,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_10_030002) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["inquiry_form_id", "created_at"], name: "index_inquiries_on_inquiry_form_id_and_created_at"
-    t.index ["inquiry_form_id"], name: "index_inquiries_on_inquiry_form_id"
     t.index ["tenant_id"], name: "index_inquiries_on_tenant_id"
     t.index ["user_id"], name: "index_inquiries_on_user_id"
   end
@@ -252,7 +251,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_10_030002) do
     t.datetime "updated_at", null: false
     t.index ["notification_recipient_id"], name: "index_inquiry_forms_on_notification_recipient_id"
     t.index ["tenant_id", "slug"], name: "index_inquiry_forms_on_tenant_id_and_slug", unique: true
-    t.index ["tenant_id"], name: "index_inquiry_forms_on_tenant_id"
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -1031,7 +1029,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_10_030002) do
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "inquiries", "inquiry_forms"
   add_foreign_key "inquiries", "tenants"
-  add_foreign_key "inquiries", "users"
+  add_foreign_key "inquiries", "users", on_delete: :nullify
   add_foreign_key "inquiry_forms", "tenants"
   add_foreign_key "inquiry_forms", "users", column: "notification_recipient_id"
   add_foreign_key "invoice_items", "invoices"
