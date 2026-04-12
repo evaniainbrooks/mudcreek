@@ -1,0 +1,41 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-card-checklist.me-2
+    Subscription Plans
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold New Subscription Plan
+    .card-body
+      = form_with model: @subscription_plan, url: admin_subscription_plans_path do |f|
+        - if @subscription_plan.errors.any?
+          .alert.alert-danger.mb-3
+            = @subscription_plan.errors.full_messages.to_sentence
+        .row.g-3
+          .col-sm-4
+            = f.label :name, class: "form-label form-label-sm required"
+            = f.text_field :name,
+                class: "form-control form-control-sm #{'is-invalid' if @subscription_plan.errors[:name].any?}",
+                required: true
+          .col-sm-2
+            = f.label :amount, class: "form-label form-label-sm required"
+            .input-group.input-group-sm
+              %span.input-group-text $
+              = f.number_field :amount, value: @subscription_plan.amount&.to_f,
+                  class: "form-control form-control-sm #{'is-invalid' if @subscription_plan.errors[:amount_cents].any?}",
+                  required: true, min: "0.01", step: "0.01", placeholder: "0.00"
+          .col-sm-2
+            = f.label :kind, class: "form-label form-label-sm"
+            = f.select :kind, SubscriptionPlan.kinds.keys.map { [it.humanize, it] }, {},
+                class: "form-select form-select-sm"
+          .col-sm-3
+            = f.label :description, class: "form-label form-label-sm"
+            = f.text_field :description,
+                class: "form-control form-control-sm"
+          .col-sm-1.d-flex.align-items-end
+            = f.submit "Add", class: "btn btn-primary btn-sm w-100"
+
+  - if @subscription_plans.empty?
+    = render EmptyStateComponent.new(icon: "card-checklist", message: "No subscription plans yet.")
+  - else
+    = render_subscription_plans_table(@subscription_plans)

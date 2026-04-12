@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_12_012424) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
   create_enum "offer_state", ["pending", "accepted", "declined"]
   create_enum "settlement_line_item_type", ["hammer_price", "buyers_premium", "tax", "seller_commission", "seller_fee"]
   create_enum "social_media_platform", ["facebook", "instagram", "youtube", "twitter", "tiktok", "snapchat", "linkedin", "discord", "patreon", "onlyfans", "twitch"]
+  create_enum "subscription_plan_kind", ["month_to_month"]
+  create_enum "subscription_status", ["active", "lapsed", "cancelled"]
   create_enum "transaction_state", ["pending", "succeeded", "failed"]
   create_enum "user_verification_status", ["not_validated", "validated"]
 
@@ -272,6 +274,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
     t.bigint "offer_id"
     t.string "square_payment_id"
     t.enum "status", default: "unpaid", null: false, enum_type: "invoice_status"
+    t.bigint "subscription_id"
     t.bigint "tenant_id", null: false
     t.integer "total_cents", null: false
     t.datetime "updated_at", null: false
@@ -279,6 +282,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
     t.index ["auction_id"], name: "index_invoices_on_auction_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["offer_id"], name: "index_invoices_on_offer_id_unique", unique: true
+    t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
@@ -357,7 +361,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -908,6 +912,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "subscription_plans", force: :cascade do |t|
+    t.integer "amount_cents", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.enum "kind", default: "month_to_month", null: false, enum_type: "subscription_plan_kind"
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "name"], name: "index_subscription_plans_on_tenant_id_and_name", unique: true
+    t.index ["tenant_id"], name: "index_subscription_plans_on_tenant_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "renews_at", null: false
+    t.enum "status", default: "active", null: false, enum_type: "subscription_status"
+    t.bigint "subscription_plan_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["subscription_plan_id"], name: "index_subscriptions_on_subscription_plan_id"
+    t.index ["tenant_id", "user_id", "subscription_plan_id"], name: "index_subscriptions_on_tenant_user_plan", unique: true
+    t.index ["tenant_id"], name: "index_subscriptions_on_tenant_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "background_color"
     t.string "card_color"
@@ -1036,6 +1066,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
   add_foreign_key "invoice_items", "listings", on_delete: :nullify
   add_foreign_key "invoices", "auctions"
   add_foreign_key "invoices", "offers", on_delete: :nullify
+  add_foreign_key "invoices", "subscriptions"
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
   add_foreign_key "ledger_entries", "ledgers"
@@ -1114,6 +1145,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_003832) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "subscription_plans", "tenants"
+  add_foreign_key "subscriptions", "subscription_plans"
+  add_foreign_key "subscriptions", "tenants"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
   add_foreign_key "transactions", "orders"
   add_foreign_key "user_category_interests", "listings_categories"

@@ -29,6 +29,7 @@ class User < ApplicationRecord
   has_one :verification, class_name: "Users::Verification", dependent: :destroy
   has_many :inquiry_forms, foreign_key: :notification_recipient_id, dependent: :destroy
   has_many :inquiries, dependent: :nullify
+  has_many :subscriptions, dependent: :destroy
 
   before_destroy { Address.where(addressable: self).delete_all }
   accepts_nested_attributes_for :address, update_only: true

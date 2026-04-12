@@ -1,0 +1,53 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-arrow-repeat.me-2
+    Subscription
+  = link_to admin_subscriptions_path, class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    All Subscriptions
+
+.page-container.p-4
+  .row.g-4
+    .col-lg-4
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Details
+        .card-body
+          %dl.mb-0
+            %dt.text-muted.small User
+            %dd= @subscription.user.name
+            %dt.text-muted.small Email
+            %dd= @subscription.user.email_address
+            %dt.text-muted.small Plan
+            %dd= link_to @subscription.subscription_plan.name, admin_subscription_plan_path(@subscription.subscription_plan)
+            %dt.text-muted.small Amount
+            %dd= humanized_money_with_symbol(@subscription.subscription_plan.amount)
+            %dt.text-muted.small Renews
+            %dd= @subscription.renews_at
+            %dt.text-muted.small Status
+            %dd= subscription_status_badge(@subscription)
+
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Manage
+        .card-body
+          = form_with model: [:admin, @subscription], method: :patch do |f|
+            - if @subscription.errors.any?
+              .alert.alert-danger.mb-3
+                = @subscription.errors.full_messages.to_sentence
+            .mb-3
+              = f.label :status, class: "form-label"
+              = f.select :status, Subscription.statuses.keys.map { [it.humanize, it] }, {},
+                  class: "form-select form-select-sm"
+            .mb-3
+              = f.label :renews_at, class: "form-label"
+              = f.date_field :renews_at, class: "form-control form-control-sm"
+            = f.submit "Update", class: "btn btn-primary btn-sm"
+
+    .col-lg-8
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Invoices
+        .card-body.p-0
+          - invoices = @subscription.invoices.order(created_at: :desc)
+          - if invoices.empty?
+            .p-4.text-muted No invoices yet.
+          - else
+            = render_invoices_table(invoices: invoices, q: nil)

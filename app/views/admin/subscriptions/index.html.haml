@@ -1,0 +1,13 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-arrow-repeat.me-2
+    Subscriptions
+  = link_to new_admin_subscription_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    New Subscription
+
+.page-container.p-4
+  - if @subscriptions.empty?
+    = render EmptyStateComponent.new(icon: "arrow-repeat", message: "No subscriptions yet.")
+  - else
+    = render_subscriptions_table(@subscriptions)

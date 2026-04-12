@@ -1,0 +1,38 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-arrow-repeat.me-2
+    New Subscription
+  = link_to admin_subscriptions_path, class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    All Subscriptions
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body.p-4
+      = form_with model: [:admin, @subscription] do |f|
+        - if @subscription.errors.any?
+          .alert.alert-danger.mb-4
+            = @subscription.errors.full_messages.to_sentence
+
+        .row.g-3
+          .col-md-5
+            = f.label :user_id, "User", class: "form-label required"
+            = f.collection_select :user_id, @users, :id, :email_address,
+                { prompt: "Select a user..." },
+                class: "form-select #{'is-invalid' if @subscription.errors[:user].any?}",
+                required: true
+          .col-md-4
+            = f.label :subscription_plan_id, "Plan", class: "form-label required"
+            = f.collection_select :subscription_plan_id, @plans, :id, :name,
+                { prompt: "Select a plan..." },
+                class: "form-select #{'is-invalid' if @subscription.errors[:subscription_plan].any?}",
+                required: true
+          .col-md-3
+            = f.label :renews_at, "First Renewal Date", class: "form-label required"
+            = f.date_field :renews_at,
+                class: "form-control #{'is-invalid' if @subscription.errors[:renews_at].any?}",
+                required: true
+
+        .mt-4.d-flex.gap-2
+          = f.submit "Create Subscription", class: "btn btn-primary"
+          = link_to "Cancel", admin_subscriptions_path, class: "btn btn-outline-secondary"

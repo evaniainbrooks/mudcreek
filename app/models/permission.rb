@@ -31,6 +31,8 @@ class Permission < ApplicationRecord
     QrCode
     Role
     Settlement
+    Subscription
+    SubscriptionPlan
     Tenant
     User
   ].freeze

@@ -42,6 +42,8 @@ class Tenant < ApplicationRecord
 
   has_many :inquiry_forms, dependent: :destroy
   has_many :inquiries, dependent: :destroy
+  has_many :subscription_plans, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
 
   has_many :social_media_accounts, dependent: :destroy
   has_many :property_sets, class_name: "Listings::PropertySet", dependent: :destroy

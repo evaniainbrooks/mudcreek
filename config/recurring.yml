@@ -19,3 +19,6 @@ production:
   sync_all_location_calendars:
     command: "SyncAllLocationCalendarsJob.perform_later"
     schedule: "0 3 * * 1"
+  generate_subscription_invoices:
+    command: "GenerateSubscriptionInvoicesJob.perform_later"
+    schedule: at 6am every day

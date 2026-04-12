@@ -1,0 +1,2 @@
+class SubscriptionPlanPolicy < ApplicationPolicy
+end
