@@ -175,12 +175,12 @@ end
 end
 
 # Chignecto Roles & Permissions
-Role.find_or_create_by!(name: "super_admin", tenant: chignecto) do |r|
+chignecto_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: chignecto) do |r|
   r.description = "Full access to everything."
 end
 
 # Junglefowl Roles & Permissions
-Role.find_or_create_by!(name: "super_admin", tenant: junglefowl) do |r|
+junglefowl_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: junglefowl) do |r|
   r.description = "Full access to everything."
 end
 
