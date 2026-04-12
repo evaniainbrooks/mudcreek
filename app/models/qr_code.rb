@@ -36,7 +36,7 @@ class QrCode < ApplicationRecord
       ip_address: request.remote_ip,
       user_agent: request.user_agent
     )
-    QrCodeMailer.scan_notification(self).deliver_later if notify_user
+    QrCodeNotificationJob.set(wait: notification_debounce_seconds.seconds).perform_later(id) if notify_user
   end
 
   private

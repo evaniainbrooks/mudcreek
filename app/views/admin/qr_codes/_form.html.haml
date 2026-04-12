@@ -63,7 +63,11 @@
                 options_from_collection_for_select(users, :id, :name, qr_code.notify_user_id),
                 { include_blank: "— none —" },
                 class: "form-select"
-            .form-text An email will be sent to this user each time the QR code is scanned.
+            .form-text An email will be sent to this user after the debounce period of inactivity.
+          .mb-3
+            = f.label :notification_debounce_seconds, "Notification debounce (seconds)", class: "form-label"
+            = f.number_field :notification_debounce_seconds, class: "form-control", min: 0, step: 1
+            .form-text Email is sent only after this many seconds with no new scans. Default is 1800 (30 minutes).
           .mb-0
             = f.label :notes, class: "form-label"
             = f.text_area :notes,

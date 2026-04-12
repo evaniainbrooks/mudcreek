@@ -70,10 +70,10 @@ class Admin::QrCodesController < Admin::BaseController
   end
 
   def qr_code_params
-    params.require(:qr_code).permit(:name, :slug, :destination_url, :inactive_url, :notes, :active, :expires_at, :notify_user_id)
+    params.require(:qr_code).permit(:name, :slug, :destination_url, :inactive_url, :notes, :active, :expires_at, :notify_user_id, :notification_debounce_seconds)
   end
 
   def location_qr_code_params
-    params.require(:qr_code).permit(:notes, :notify_user_id)
+    params.require(:qr_code).permit(:notes, :notify_user_id, :notification_debounce_seconds)
   end
 end

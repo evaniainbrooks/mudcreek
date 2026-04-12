@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_12_154301) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_12_154916) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -694,6 +694,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_154301) do
     t.bigint "location_id"
     t.string "name", null: false
     t.text "notes"
+    t.integer "notification_debounce_seconds", default: 1800, null: false
     t.bigint "notify_user_id"
     t.bigint "owner_id"
     t.integer "scan_count", default: 0, null: false
