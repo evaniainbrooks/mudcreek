@@ -154,6 +154,7 @@ jobs:
 
   specs:
     name: RSpec
+    needs: [rubocop, haml_lint, eslint, security, traceroute, database_consistency, seeds]
     runs-on: ubuntu-latest
     services:
       postgres:

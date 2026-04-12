@@ -3,7 +3,7 @@
     %i.bi.bi-ui-checks.me-2
     = @inquiry_form.name
   .d-flex.gap-2
-    = link_to "View Public Form", form_path(@inquiry_form), class: "btn btn-outline-primary", target: "_blank" do
+    = link_to form_path(@inquiry_form), class: "btn btn-outline-primary", target: "_blank" do
       %i.bi.bi-box-arrow-up-right.me-1
       View Public Form
     = link_to edit_admin_inquiry_form_path(@inquiry_form), class: "btn btn-outline-secondary" do

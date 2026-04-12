@@ -10,6 +10,7 @@ RSpec.describe "Admin::Users", type: :request do
     Role.create!(name: "user_manager", description: "Manage users").tap do |r|
       r.permissions.create!(resource: "User", action: "index")
       r.permissions.create!(resource: "User", action: "show")
+      r.permissions.create!(resource: "User", action: "create")
       r.permissions.create!(resource: "User", action: "update")
     end
   end
@@ -105,6 +106,115 @@ RSpec.describe "Admin::Users", type: :request do
 
       it "raises Pundit::NotAuthorizedError" do
         expect { get admin_user_path(target) }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "GET /admin/users/new" do
+    it "returns 200" do
+      get new_admin_user_path
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        get new_admin_user_path
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the create permission" do
+      let(:role) do
+        Role.create!(name: "read_only", description: "Read only").tap do |r|
+          r.permissions.create!(resource: "User", action: "index")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { get new_admin_user_path }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  describe "POST /admin/users" do
+    let(:valid_params) do
+      {
+        user: {
+          first_name: "Jane",
+          last_name: "Doe",
+          email_address: "jane@example.com",
+          password: "secret123",
+          password_confirmation: "secret123"
+        }
+      }
+    end
+
+    it "creates a new user" do
+      expect {
+        post admin_users_path, params: valid_params
+      }.to change(User, :count).by(1)
+    end
+
+    it "redirects to the new user's page with a notice" do
+      post admin_users_path, params: valid_params
+
+      created = User.find_by!(email_address: "jane@example.com")
+      expect(response).to redirect_to(admin_user_path(created))
+      expect(flash[:notice]).to eq("User was successfully created.")
+    end
+
+    it "sets created_by_id to the current admin" do
+      post admin_users_path, params: valid_params
+
+      created = User.find_by!(email_address: "jane@example.com")
+      expect(created.created_by_id).to eq(viewer.id)
+    end
+
+    context "with invalid params" do
+      it "returns 422" do
+        post admin_users_path, params: { user: { first_name: "", last_name: "", email_address: "", password: "x" } }
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+
+      it "does not create a user" do
+        expect {
+          post admin_users_path, params: { user: { email_address: "" } }
+        }.not_to change(User, :count)
+      end
+    end
+
+    context "with a duplicate email address" do
+      it "returns 422" do
+        post admin_users_path, params: { user: valid_params[:user].merge(email_address: target.email_address) }
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the sign-in page" do
+        post admin_users_path, params: valid_params
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the create permission" do
+      let(:role) do
+        Role.create!(name: "read_only", description: "Read only").tap do |r|
+          r.permissions.create!(resource: "User", action: "index")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { post admin_users_path, params: valid_params }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
