@@ -26,7 +26,6 @@ class Admin::Dashboard::NavSectionComponent < ViewComponent::Base
     sales_links << { label: "Subscription Plans", icon: "bi-card-checklist", path: view.admin_subscription_plans_path             } if view.policy(SubscriptionPlan).index?
 
     settings_links = []
-    settings_links << { label: "Kids",      icon: "bi-people-fill",       path: view.admin_kids_path         } if Current.tenant.features.kids? && view.policy(Kid).index?
     settings_links << { label: "Navbar",    icon: "bi-list-ul",           path: view.admin_navbar_items_path } if view.policy(NavbarItem).index?
     settings_links << { label: "Pages",     icon: "bi-file-earmark-text", path: view.admin_pages_path        } if view.policy(Page).index?
     settings_links << { label: "QR Codes",  icon: "bi-qr-code",           path: view.admin_qr_codes_path     } if view.policy(QrCode).index?

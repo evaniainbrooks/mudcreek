@@ -96,11 +96,6 @@
       %i.bi.bi-gear-fill.me-1
       Settings
     %ul.dropdown-menu.dropdown-menu-end
-      - if Current.tenant.features.kids? && policy(Kid).index?
-        %li
-          = link_to admin_kids_path, class: "dropdown-item" do
-            %i.bi.bi-people-fill.me-1
-            Kids
       - if policy(NavbarItem).index?
         %li
           = link_to admin_navbar_items_path, class: "dropdown-item" do

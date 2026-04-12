@@ -22,8 +22,7 @@ module AdminHelper
   end
 
   def admin_settings_nav?
-    (Current.tenant.features.kids? && policy(Kid).index?) ||
-      policy(NavbarItem).index? ||
+    policy(NavbarItem).index? ||
       policy(Page).index? ||
       policy(QrCode).index? ||
       policy(Role).index? ||

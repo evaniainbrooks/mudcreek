@@ -7,36 +7,108 @@
       %i.bi.bi-plus-lg.me-1
       New User
 
-.page-container.p-4
-  .card.shadow-sm.border-0.mb-4
-    .card-header.fw-semibold Filter Records
-    .card-body
-      = search_form_for @q, url: admin_users_path, html: { class: "row g-2 align-items-end" } do |f|
-        .col-md-3
-          = f.label :first_name_or_last_name_cont, "Name", class: "form-label form-label-sm"
-          = f.search_field :first_name_or_last_name_cont,
-              class: "form-control form-control-sm", placeholder: "Search by name..."
-        .col-md-4
-          = f.label :email_address_cont, "Email", class: "form-label form-label-sm"
-          = f.search_field :email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
-        .col-md-3
-          = f.label :role_id_eq, "Role", class: "form-label form-label-sm"
-          = f.select :role_id_eq, @roles.map { [it.name, it.id] },
-              { include_blank: "Any" }, class: "form-select form-select-sm"
-        .col-auto
-          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
-            %i.bi.bi-search.me-1
-            Search
-        .col-auto
-          = link_to "Clear", admin_users_path, class: "btn btn-outline-secondary btn-sm"
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
+    %li.nav-item{ role: "presentation" }
+      = link_to admin_users_path(tab: "users"), role: "tab",
+          class: "nav-link #{"active" if @tab == "users"}" do
+        %i.bi.bi-person.me-1
+        Users
+    - if Current.tenant.features.kids? && policy(Kid).index?
+      %li.nav-item{ role: "presentation" }
+        = link_to admin_users_path(tab: "kids"), role: "tab",
+            class: "nav-link #{"active" if @tab == "kids"}" do
+          %i.bi.bi-people.me-1
+          Kids
+    %li.nav-item{ role: "presentation" }
+      = link_to admin_users_path(tab: "birthdays"), role: "tab",
+          class: "nav-link #{"active" if @tab == "birthdays"}" do
+        %i.bi.bi-cake2.me-1
+        Birthdays
 
-  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
-      label: "users", clear_url: admin_users_path)
+  .p-4
+    - if @tab == "users"
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Filter Records
+        .card-body
+          = search_form_for @q, url: admin_users_path(tab: "users"), html: { class: "row g-2 align-items-end" } do |f|
+            .col-md-3
+              = f.label :first_name_or_last_name_cont, "Name", class: "form-label form-label-sm"
+              = f.search_field :first_name_or_last_name_cont,
+                  class: "form-control form-control-sm", placeholder: "Search by name..."
+            .col-md-4
+              = f.label :email_address_cont, "Email", class: "form-label form-label-sm"
+              = f.search_field :email_address_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+            .col-md-3
+              = f.label :role_id_eq, "Role", class: "form-label form-label-sm"
+              = f.select :role_id_eq, @roles.map { [it.name, it.id] },
+                  { include_blank: "Any" }, class: "form-select form-select-sm"
+            .col-auto
+              %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+                %i.bi.bi-search.me-1
+                Search
+            .col-auto
+              = link_to "Clear", admin_users_path(tab: "users"), class: "btn btn-outline-secondary btn-sm"
 
-  = render_users_table(users: @users, q: @q)
-  - if @pagy.next
-    .d-flex.justify-content-end.mt-3
-      = link_to admin_users_path(q: params[:q]&.to_unsafe_h, page: @pagy.next),
-          class: "btn btn-outline-secondary btn-sm" do
-        Next
-        %i.bi.bi-chevron-right
+      = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+          label: "users", clear_url: admin_users_path(tab: "users"))
+
+      = render_users_table(users: @users, q: @q)
+      - if @pagy.next
+        .d-flex.justify-content-end.mt-3
+          = link_to admin_users_path(tab: "users", q: params[:q]&.to_unsafe_h, page: @pagy.next),
+              class: "btn btn-outline-secondary btn-sm" do
+            Next
+            %i.bi.bi-chevron-right
+
+    - elsif @tab == "kids"
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Filter Records
+        .card-body
+          = search_form_for @q, url: admin_users_path(tab: "kids"), html: { class: "row g-2 align-items-end" } do |f|
+            .col-md-3
+              = f.label :name_cont, "Kid Name", class: "form-label form-label-sm"
+              = f.search_field :name_cont,
+                  class: "form-control form-control-sm", placeholder: "Search by name..."
+            .col-md-3
+              = f.label :user_first_name_or_user_last_name_cont, "Parent Name", class: "form-label form-label-sm"
+              = f.search_field :user_first_name_or_user_last_name_cont,
+                  class: "form-control form-control-sm", placeholder: "Search by parent name..."
+            .col-md-3
+              = f.label :user_email_address_cont, "Parent Email", class: "form-label form-label-sm"
+              = f.search_field :user_email_address_cont,
+                  class: "form-control form-control-sm", placeholder: "Search by email..."
+            .col-auto
+              %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+                %i.bi.bi-search.me-1
+                Search
+            .col-auto
+              = link_to "Clear", admin_users_path(tab: "kids"), class: "btn btn-outline-secondary btn-sm"
+
+      = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+          label: "kids", clear_url: admin_users_path(tab: "kids"))
+
+      - if @kids.empty?
+        = render EmptyStateComponent.new(icon: "people-fill", message: "No kids yet.")
+      - else
+        = render_kids_table(@kids)
+
+    - elsif @tab == "birthdays"
+      - if @birthday_entries.empty?
+        = render EmptyStateComponent.new(icon: "cake2", message: "No upcoming birthdays in the next 30 days.")
+      - else
+        - today = Date.current
+        - todays = @birthday_entries.select { it[:next_birthday] == today }
+        - upcoming = @birthday_entries.reject { it[:next_birthday] == today }
+
+        - if todays.any?
+          %h6.fw-semibold.mb-3
+            %i.bi.bi-cake2.me-1
+            Today
+          = render "admin/users/birthday_entries", entries: todays
+          - if upcoming.any?
+            .mb-4
+
+        - if upcoming.any?
+          %h6.fw-semibold.mb-3 Upcoming (next 30 days)
+          = render "admin/users/birthday_entries", entries: upcoming
