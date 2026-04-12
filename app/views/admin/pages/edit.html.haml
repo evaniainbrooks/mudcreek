@@ -2,6 +2,9 @@
   %h1.h3.mb-0
     %i.bi.bi-pencil.me-2
     Edit Page
+  = link_to page_path(@page), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
+    %i.bi.bi-box-arrow-up-right.me-1
+    Public View
 
 .page-container.p-4
   = render "form", page: @page

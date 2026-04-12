@@ -2,6 +2,7 @@ class Tenant::Features
   include StoreModel::Model
 
   attribute :auctions,         :boolean, default: false
+  attribute :kids,             :boolean, default: false
   attribute :locations,        :boolean, default: false
   attribute :oauth_login,      :boolean, default: false
   attribute :sold_listings,    :boolean, default: false
@@ -11,6 +12,7 @@ class Tenant::Features
 
   DESCRIPTIONS = {
     auctions:         "Enable auction listings, bidding, and registration.",
+    kids:             "Track children/kids associated with user accounts.",
     locations:        "Enable physical locations with QR code check-in and showroom display.",
     watchlist:        "Allow users to save listings to a personal watchlist.",
     sold_listings:    "Show a Sold tab on the public listings page.",

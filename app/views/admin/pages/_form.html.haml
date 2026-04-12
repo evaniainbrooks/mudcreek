@@ -1,4 +1,5 @@
 = form_with model: [:admin, page], class: "needs-validation" do |f|
+  - show_navbar_item_option ||= false
   - if page.errors.any?
     .alert.alert-danger.mb-4
       %h5.alert-heading
@@ -65,9 +66,10 @@
           .mb-3.form-check
             = f.check_box :published, class: "form-check-input"
             = f.label :published, class: "form-check-label"
-          .mb-3.form-check
-            = f.check_box :show_in_footer, class: "form-check-input"
-            = f.label :show_in_footer, "Show in footer", class: "form-check-label"
+          - if show_navbar_item_option
+            .mb-3.form-check
+              = check_box_tag :create_navbar_item, "1", false, class: "form-check-input", id: "create_navbar_item"
+              = label_tag :create_navbar_item, "Create navbar item", class: "form-check-label"
           .mb-0
             = f.label :position, class: "form-label"
             = f.number_field :position, class: "form-control #{'is-invalid' if page.errors[:position].any?}", min: 0

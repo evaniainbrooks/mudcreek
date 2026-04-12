@@ -12,6 +12,7 @@ module AdminHelper
   def admin_sales_nav?
     policy(DiscountCode).index? ||
       policy(Inquiry).index? ||
+      policy(InquiryForm).index? ||
       policy(Invoice).index? ||
       policy(Ledger).index? ||
       policy(Listings::DeliveryMethodSet).index? ||
@@ -21,7 +22,8 @@ module AdminHelper
   end
 
   def admin_settings_nav?
-    policy(NavbarItem).index? ||
+    (Current.tenant.features.kids? && policy(Kid).index?) ||
+      policy(NavbarItem).index? ||
       policy(Page).index? ||
       policy(QrCode).index? ||
       policy(Role).index? ||

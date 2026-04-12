@@ -8,6 +8,8 @@ class Admin::SubscriptionPlansController < Admin::BaseController
   end
 
   def show
+    @subscription = Subscription.new(subscription_plan: @subscription_plan)
+    @users = User.order(:email_address)
   end
 
   def create

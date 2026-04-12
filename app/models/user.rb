@@ -30,10 +30,12 @@ class User < ApplicationRecord
   has_many :inquiry_forms, foreign_key: :notification_recipient_id, dependent: :destroy
   has_many :inquiries, dependent: :nullify
   has_many :subscriptions, dependent: :destroy
+  has_many :kids, dependent: :destroy
 
   before_destroy { Address.where(addressable: self).delete_all }
   accepts_nested_attributes_for :address, update_only: true
   accepts_nested_attributes_for :verification
+  accepts_nested_attributes_for :kids, allow_destroy: true, reject_if: :all_blank
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

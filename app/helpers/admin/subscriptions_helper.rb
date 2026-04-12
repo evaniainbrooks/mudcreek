@@ -8,10 +8,13 @@ module Admin::SubscriptionsHelper
   def render_subscriptions_table(subscriptions)
     table = TableComponent.new(rows: subscriptions)
 
-    table.with_column("User") { |s| link_to s.user.name, admin_subscription_path(s) }
+    table.with_value_column("User") { it.user }
     table.with_value_column("Plan") { it.subscription_plan.name }
     table.with_value_column("Renews") { it.renews_at }
     table.with_column("Status") { |s| subscription_status_badge(s) }
+    table.with_column("", html_class: "text-end") do |s|
+      link_to "View", admin_subscription_path(s), class: "btn btn-sm btn-outline-secondary"
+    end
 
     render(table)
   end

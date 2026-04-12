@@ -17,11 +17,11 @@
             = link_to categories_path, class: "text-decoration-none text-muted small" do
               %i.bi.bi-grid.me-1
               Categories
-          - footer_pages.each do |page|
-            = link_to page_path(page), class: "text-decoration-none text-muted small" do
-              - if page.icon.present?
-                %i{ class: "bi #{page.icon} me-1" }
-              = page.title
+          - footer_navbar_items.each do |item|
+            = link_to item.path, class: "text-decoration-none text-muted small" do
+              - if item.icon.present?
+                %i{ class: "bi #{item.icon} me-1" }
+              = item.title
         %small.text-muted.mt-auto.pt-3
           &copy;
           = Date.current.year

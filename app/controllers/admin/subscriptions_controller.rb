@@ -1,20 +1,7 @@
 class Admin::SubscriptionsController < Admin::BaseController
   before_action :set_subscription, only: %i[show update]
 
-  def index
-    authorize(Subscription)
-    @q = Subscription.ransack(params[:q])
-    @subscriptions = @q.result.includes(:user, :subscription_plan).order(created_at: :desc)
-  end
-
   def show
-  end
-
-  def new
-    @subscription = Subscription.new
-    authorize(@subscription)
-    @users  = User.order(:email_address)
-    @plans  = SubscriptionPlan.order(:name)
   end
 
   def create
@@ -22,11 +9,12 @@ class Admin::SubscriptionsController < Admin::BaseController
     authorize(@subscription)
 
     if @subscription.save
-      redirect_to admin_subscription_path(@subscription), notice: "Subscription was successfully created."
+      redirect_to admin_subscription_plan_path(@subscription.subscription_plan), notice: "Subscription was successfully created."
     else
+      @subscription_plan = @subscription.subscription_plan || SubscriptionPlan.find_by(id: subscription_params[:subscription_plan_id])
       @users = User.order(:email_address)
-      @plans = SubscriptionPlan.order(:name)
-      render :new, status: :unprocessable_content
+      @subscription_plans = SubscriptionPlan.order(:name)
+      render "admin/subscription_plans/show", status: :unprocessable_content
     end
   end
 

@@ -17,14 +17,16 @@ class Admin::Dashboard::NavSectionComponent < ViewComponent::Base
     sales_links = []
     sales_links << { label: "Delivery",  icon: "bi-truck",                  path: view.admin_listings_delivery_method_sets_path } if view.policy(DeliveryMethod).index?
     sales_links << { label: "Discounts", icon: "bi-ticket-perforated-fill", path: view.admin_discount_codes_path                } if view.policy(DiscountCode).index?
-    sales_links << { label: "Inquiries", icon: "bi-chat-dots",              path: view.admin_inquiries_path                     } if view.policy(Inquiry).index?
-    sales_links << { label: "Invoices",  icon: "bi-receipt",                path: view.admin_invoices_path                      } if view.policy(Invoice).index?
+    sales_links << { label: "Inquiries",      icon: "bi-chat-dots",  path: view.admin_inquiries_path       } if view.policy(Inquiry).index?
+    sales_links << { label: "Inquiry Forms",  icon: "bi-ui-checks",  path: view.admin_inquiry_forms_path   } if view.policy(InquiryForm).index?
+    sales_links << { label: "Invoices",       icon: "bi-receipt",    path: view.admin_invoices_path        } if view.policy(Invoice).index?
     sales_links << { label: "Ledgers",   icon: "bi-journal-text",           path: view.admin_ledgers_path                       } if view.policy(Ledger).index?
     sales_links << { label: "Offers",    icon: "bi-tag",                    path: view.admin_offers_path                        } if view.policy(Offer).index?
     sales_links << { label: "Orders",             icon: "bi-bag",            path: view.admin_orders_path                        } if view.policy(Order).index?
     sales_links << { label: "Subscription Plans", icon: "bi-card-checklist", path: view.admin_subscription_plans_path             } if view.policy(SubscriptionPlan).index?
 
     settings_links = []
+    settings_links << { label: "Kids",      icon: "bi-people-fill",       path: view.admin_kids_path         } if Current.tenant.features.kids? && view.policy(Kid).index?
     settings_links << { label: "Navbar",    icon: "bi-list-ul",           path: view.admin_navbar_items_path } if view.policy(NavbarItem).index?
     settings_links << { label: "Pages",     icon: "bi-file-earmark-text", path: view.admin_pages_path        } if view.policy(Page).index?
     settings_links << { label: "QR Codes",  icon: "bi-qr-code",           path: view.admin_qr_codes_path     } if view.policy(QrCode).index?

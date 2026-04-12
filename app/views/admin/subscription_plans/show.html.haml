@@ -21,6 +21,27 @@
               %dt.text-muted.small Description
               %dd= @subscription_plan.description
 
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Add Subscription
+        .card-body
+          - if @subscription.errors.any?
+            .alert.alert-danger.mb-3
+              = @subscription.errors.full_messages.to_sentence
+          = form_with model: [:admin, @subscription] do |f|
+            = f.hidden_field :subscription_plan_id, value: @subscription_plan.id
+            .mb-3
+              = f.label :user_id, "User", class: "form-label required"
+              = f.collection_select :user_id, @users, :id, :email_address,
+                  { prompt: "Select a user..." },
+                  class: "form-select #{'is-invalid' if @subscription.errors[:user].any?}",
+                  required: true
+            .mb-3
+              = f.label :renews_at, "First Renewal Date", class: "form-label required"
+              = f.date_field :renews_at,
+                  class: "form-control #{'is-invalid' if @subscription.errors[:renews_at].any?}",
+                  required: true
+            = f.submit "Add Subscription", class: "btn btn-primary btn-sm"
+
     .col-lg-8
       .card.shadow-sm.border-0
         .card-header.fw-semibold Subscriptions

@@ -127,8 +127,9 @@ resource :session
     resources :pages
     resources :inquiry_forms
     resources :inquiries, only: [ :index, :show ]
+    resources :kids, only: [ :index ]
     resources :subscription_plans, only: [ :index, :create, :show, :destroy ]
-    resources :subscriptions, only: [ :index, :show, :new, :create, :update ]
+    resources :subscriptions, only: [ :show, :create, :update ]
     resources :navbar_items, except: [:show]
     resources :qr_codes, param: :slug do
       member { get :qr_image }

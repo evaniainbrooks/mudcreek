@@ -12,8 +12,8 @@ class FooterComponent < ViewComponent::Base
     @address ||= tenant.address
   end
 
-  def footer_pages
-    @footer_pages ||= Page.in_footer
+  def footer_navbar_items
+    @footer_navbar_items ||= NavbarItem.ordered
   end
 
   def social_media_accounts

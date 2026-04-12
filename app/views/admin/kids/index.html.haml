@@ -1,0 +1,10 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-people-fill.me-2
+    Kids
+
+.page-container.p-4
+  - if @kids.empty?
+    = render EmptyStateComponent.new(icon: "people-fill", message: "No kids yet.")
+  - else
+    = render_kids_table(@kids)

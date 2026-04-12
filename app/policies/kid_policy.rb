@@ -1,0 +1,2 @@
+class KidPolicy < ApplicationPolicy
+end

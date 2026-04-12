@@ -19,6 +19,13 @@ class Admin::PagesController < Admin::BaseController
     authorize(@page)
 
     if @page.save
+      if params[:create_navbar_item] == "1"
+        NavbarItem.create!(
+          title: @page.title,
+          path: "/#{@page.slug}",
+          position: NavbarItem.maximum(:position).to_i + 1
+        )
+      end
       redirect_to admin_pages_path, notice: "Page was successfully created."
     else
       render :new, status: :unprocessable_content
@@ -50,7 +57,7 @@ class Admin::PagesController < Admin::BaseController
   end
 
   def page_params
-    params.require(:page).permit(:title, :slug, :icon, :body, :published, :show_in_footer, :position,
+    params.require(:page).permit(:title, :slug, :icon, :body, :published, :position,
                                  :meta_title, :meta_description,
                                  :hero_image, :left_column_image, :right_column_image)
   end

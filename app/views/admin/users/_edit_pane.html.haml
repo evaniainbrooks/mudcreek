@@ -23,6 +23,9 @@
           - if user.errors[:email_address].any?
             .invalid-feedback= user.errors[:email_address].to_sentence
         .col-sm-2
+          = f.label :birthdate, class: "form-label"
+          = f.date_field :birthdate, class: "form-control"
+        .col-sm-2
           = f.label :role_id, "Role", class: "form-label"
           = f.select :role_id, roles.map { [it.name, it.id] },
               { include_blank: "— No role —" },
@@ -40,6 +43,31 @@
               [["Not Validated", "not_validated"], ["Validated", "validated"]],
               { include_blank: "— None —", selected: user.verification&.status },
               class: "form-select"
+
+  - if Current.tenant.features.kids?
+    %fieldset.card.shadow-sm.border-0.mb-4
+      %legend.card-header.fw-semibold Kids
+      .card-body.p-4
+        = f.fields_for :kids do |k|
+          .row.g-2.mb-2.align-items-end
+            .col-sm-5
+              = k.label :name, class: "form-label"
+              = k.text_field :name, class: "form-control form-control-sm"
+            .col-sm-4
+              = k.label :birthdate, class: "form-label"
+              = k.date_field :birthdate, class: "form-control form-control-sm"
+            .col-sm-3.d-flex.align-items-center.gap-2.pt-4
+              = k.check_box :_destroy, class: "form-check-input"
+              = k.label :_destroy, "Remove", class: "form-check-label small text-danger"
+        = f.fields_for :kids, Kid.new, child_index: user.kids.size do |k|
+          .row.g-2.mb-2.align-items-end
+            .col-sm-5
+              = k.label :name, class: "form-label"
+              = k.text_field :name, class: "form-control form-control-sm", placeholder: "Name"
+            .col-sm-4
+              = k.label :birthdate, class: "form-label"
+              = k.date_field :birthdate, class: "form-control form-control-sm"
+            .col-sm-3
 
   .d-flex.gap-2
     = f.submit "Save Changes", class: "btn btn-primary"
