@@ -11,11 +11,13 @@ module AdminHelper
 
   def admin_sales_nav?
     policy(DiscountCode).index? ||
+      policy(Inquiry).index? ||
       policy(Invoice).index? ||
       policy(Ledger).index? ||
       policy(Listings::DeliveryMethodSet).index? ||
       policy(Offer).index? ||
-      policy(Order).index?
+      policy(Order).index? ||
+      policy(SubscriptionPlan).index?
   end
 
   def admin_settings_nav?

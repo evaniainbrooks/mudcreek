@@ -55,6 +55,11 @@
           = link_to admin_discount_codes_path, class: "dropdown-item" do
             %i.bi.bi-ticket-perforated-fill.me-1
             Discounts
+      - if policy(Inquiry).index?
+        %li
+          = link_to admin_inquiries_path, class: "dropdown-item" do
+            %i.bi.bi-chat-dots.me-1
+            Inquiries
       - if policy(Invoice).index?
         %li
           = link_to admin_invoices_path, class: "dropdown-item" do
@@ -75,6 +80,11 @@
           = link_to admin_orders_path, class: "dropdown-item" do
             %i.bi.bi-bag.me-1
             Orders
+      - if policy(SubscriptionPlan).index?
+        %li
+          = link_to admin_subscription_plans_path, class: "dropdown-item" do
+            %i.bi.bi-card-checklist.me-1
+            Subscription Plans
 - if admin_settings_nav?
   %li.nav-item.dropdown
     %a.nav-link.dropdown-toggle{href: "#", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false"}
