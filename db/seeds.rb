@@ -157,7 +157,9 @@ Role.find_or_create_by!(name: "user") do |r|
 end
 
 Permission::RESOURCES.each do |resource|
+  policy_class = "#{resource}Policy".safe_constantize
   Permission::ACTIONS.each do |action|
+    next unless policy_class&.method_defined?(:"#{action}?")
     super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
       p.tenant = mudcreek
     end
@@ -166,7 +168,9 @@ end
 
 admin_resources = %w[Listing Auction Lot Listings::Category Offer DiscountCode DeliveryMethod Listings::RentalRatePlan AuctionListing AuctionRegistration]
 admin_resources.each do |resource|
+  policy_class = "#{resource}Policy".safe_constantize
   Permission::ACTIONS.each do |action|
+    next unless policy_class&.method_defined?(:"#{action}?")
     admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
       p.tenant = mudcreek
     end
@@ -186,7 +190,9 @@ chignecto_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: chi
 end
 
 Permission::RESOURCES.each do |resource|
+  policy_class = "#{resource}Policy".safe_constantize
   Permission::ACTIONS.each do |action|
+    next unless policy_class&.method_defined?(:"#{action}?")
     chignecto_super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
       p.tenant = chignecto
     end
@@ -199,7 +205,9 @@ junglefowl_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: ju
 end
 
 Permission::RESOURCES.each do |resource|
+  policy_class = "#{resource}Policy".safe_constantize
   Permission::ACTIONS.each do |action|
+    next unless policy_class&.method_defined?(:"#{action}?")
     junglefowl_super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
       p.tenant = junglefowl
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_12_012424) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_12_020748) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -921,7 +921,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_012424) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id", "name"], name: "index_subscription_plans_on_tenant_id_and_name", unique: true
-    t.index ["tenant_id"], name: "index_subscription_plans_on_tenant_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -934,7 +933,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_012424) do
     t.bigint "user_id", null: false
     t.index ["subscription_plan_id"], name: "index_subscriptions_on_subscription_plan_id"
     t.index ["tenant_id", "user_id", "subscription_plan_id"], name: "index_subscriptions_on_tenant_user_plan", unique: true
-    t.index ["tenant_id"], name: "index_subscriptions_on_tenant_id"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
@@ -1066,7 +1064,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_012424) do
   add_foreign_key "invoice_items", "listings", on_delete: :nullify
   add_foreign_key "invoices", "auctions"
   add_foreign_key "invoices", "offers", on_delete: :nullify
-  add_foreign_key "invoices", "subscriptions"
+  add_foreign_key "invoices", "subscriptions", on_delete: :nullify
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
   add_foreign_key "ledger_entries", "ledgers"
