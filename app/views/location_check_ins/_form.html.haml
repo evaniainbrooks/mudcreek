@@ -4,7 +4,10 @@
   .mb-3
     = f.text_field :guest_name, class: "form-control form-control-lg checkin-input",
         required: true, autofocus: true, placeholder: "Your name",
-        autocomplete: "name", inputmode: "text"
+        autocomplete: "off", inputmode: "text", list: "guest-names"
+    %datalist#guest-names
+      - guest_names.each do |name|
+        %option{ value: name }
   = f.submit "Check In", class: "btn btn-lg w-100 checkin-submit-btn"
 
 = link_to new_session_path, class: "checkin-signin-link mt-3 d-block" do

@@ -30,4 +30,4 @@
       - else
         - if @check_in.errors.any?
           .alert.alert-danger.text-start.mb-3= @check_in.errors.full_messages.to_sentence
-        = render "form", location: @location, check_in: @check_in
+        = render "form", location: @location, check_in: @check_in, guest_names: @guest_names.to_a

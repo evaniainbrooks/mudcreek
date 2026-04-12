@@ -14,6 +14,10 @@ class LocationCheckInsController < ApplicationController
     else
       session[:return_to_after_authenticating] = request.url
       @check_in = @location.check_ins.build
+      @guest_names = CheckIn.where.not(guest_name: nil)
+                            .distinct
+                            .order(:guest_name)
+                            .pluck(:guest_name)
     end
   end
 
