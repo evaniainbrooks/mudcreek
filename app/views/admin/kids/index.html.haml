@@ -4,6 +4,32 @@
     Kids
 
 .page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold Filter Records
+    .card-body
+      = search_form_for @q, url: admin_kids_path, html: { class: "row g-2 align-items-end" } do |f|
+        .col-md-3
+          = f.label :name_cont, "Kid Name", class: "form-label form-label-sm"
+          = f.search_field :name_cont,
+              class: "form-control form-control-sm", placeholder: "Search by name..."
+        .col-md-3
+          = f.label :user_first_name_or_user_last_name_cont, "Parent Name", class: "form-label form-label-sm"
+          = f.search_field :user_first_name_or_user_last_name_cont,
+              class: "form-control form-control-sm", placeholder: "Search by parent name..."
+        .col-md-3
+          = f.label :user_email_address_cont, "Parent Email", class: "form-label form-label-sm"
+          = f.search_field :user_email_address_cont,
+              class: "form-control form-control-sm", placeholder: "Search by email..."
+        .col-auto
+          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+            %i.bi.bi-search.me-1
+            Search
+        .col-auto
+          = link_to "Clear", admin_kids_path, class: "btn btn-outline-secondary btn-sm"
+
+  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+      label: "kids", clear_url: admin_kids_path)
+
   - if @kids.empty?
     = render EmptyStateComponent.new(icon: "people-fill", message: "No kids yet.")
   - else

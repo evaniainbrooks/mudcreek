@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_12_120841) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_12_154301) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -244,6 +244,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_120841) do
 
   create_table "inquiry_forms", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "cta_label", default: "Send Message", null: false
     t.text "description"
     t.string "name", null: false
     t.bigint "notification_recipient_id", null: false
@@ -267,7 +268,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_120841) do
   end
 
   create_table "invoices", force: :cascade do |t|
-    t.text "admin_notes"
     t.bigint "auction_id"
     t.text "charge_error"
     t.datetime "created_at", null: false
@@ -1007,6 +1007,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_120841) do
     t.datetime "activated_at"
     t.date "birthdate"
     t.datetime "created_at", null: false
+    t.bigint "created_by_id"
     t.string "default_square_card_id"
     t.string "email_address", null: false
     t.string "first_name", null: false

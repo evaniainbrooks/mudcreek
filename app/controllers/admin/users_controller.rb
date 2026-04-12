@@ -15,6 +15,25 @@ class Admin::UsersController < Admin::BaseController
     @roles = Role.order(:name)
   end
 
+  def new
+    @user = User.new
+    authorize(@user)
+    @roles = Role.order(:name)
+  end
+
+  def create
+    @user = User.new(new_user_params)
+    @user.created_by_id = Current.user.id
+    authorize(@user)
+
+    if @user.save
+      redirect_to admin_user_path(@user), notice: "User was successfully created."
+    else
+      @roles = Role.order(:name)
+      render :new, status: :unprocessable_content
+    end
+  end
+
   def update
     @user.assign_attributes(user_params)
     @user.activated_at = activated_at_from_params
@@ -33,6 +52,10 @@ class Admin::UsersController < Admin::BaseController
   def set_user
     @user = User.find(params[:id])
     authorize(@user)
+  end
+
+  def new_user_params
+    params.require(:user).permit(:first_name, :last_name, :email_address, :birthdate, :password, :password_confirmation, :role_id)
   end
 
   def user_params

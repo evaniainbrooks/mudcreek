@@ -1,0 +1,54 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-person-plus.me-2
+    New User
+  = link_to admin_users_path, class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    All Users
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body.p-4
+      = form_with model: [:admin, @user], class: "needs-validation" do |f|
+        - if @user.errors.any?
+          .alert.alert-danger.mb-4
+            = @user.errors.full_messages.to_sentence
+
+        .row.g-3
+          .col-sm-6
+            = f.label :first_name, class: "form-label required"
+            = f.text_field :first_name, class: "form-control #{'is-invalid' if @user.errors[:first_name].any?}", required: true
+            - if @user.errors[:first_name].any?
+              .invalid-feedback= @user.errors[:first_name].to_sentence
+          .col-sm-6
+            = f.label :last_name, class: "form-label required"
+            = f.text_field :last_name, class: "form-control #{'is-invalid' if @user.errors[:last_name].any?}", required: true
+            - if @user.errors[:last_name].any?
+              .invalid-feedback= @user.errors[:last_name].to_sentence
+          .col-sm-6
+            = f.label :email_address, "Email Address", class: "form-label required"
+            = f.email_field :email_address, class: "form-control #{'is-invalid' if @user.errors[:email_address].any?}", required: true
+            - if @user.errors[:email_address].any?
+              .invalid-feedback= @user.errors[:email_address].to_sentence
+          .col-sm-3
+            = f.label :birthdate, class: "form-label"
+            = f.date_field :birthdate, class: "form-control"
+          .col-sm-3
+            = f.label :role_id, "Role", class: "form-label"
+            = f.select :role_id, @roles.map { [it.name, it.id] },
+                { include_blank: "— No role —" },
+                class: "form-select #{'is-invalid' if @user.errors[:role_id].any?}"
+          .col-sm-6
+            = f.label :password, class: "form-label required"
+            = f.password_field :password, class: "form-control #{'is-invalid' if @user.errors[:password].any?}", required: true
+            - if @user.errors[:password].any?
+              .invalid-feedback= @user.errors[:password].to_sentence
+          .col-sm-6
+            = f.label :password_confirmation, class: "form-label required"
+            = f.password_field :password_confirmation, class: "form-control #{'is-invalid' if @user.errors[:password_confirmation].any?}", required: true
+            - if @user.errors[:password_confirmation].any?
+              .invalid-feedback= @user.errors[:password_confirmation].to_sentence
+
+        .mt-4.d-flex.gap-2
+          = f.submit "Create User", class: "btn btn-primary"
+          = link_to "Cancel", admin_users_path, class: "btn btn-outline-secondary"
