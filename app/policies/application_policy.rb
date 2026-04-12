@@ -47,6 +47,8 @@ class ApplicationPolicy
   private
 
   def permitted?(action)
+    return true if user.role&.name&.super_admin?
+
     resource_name = record.is_a?(Class) ? record.name : record.class.name
     cached_permissions.any? { |p| p.resource == resource_name && p.action == action.to_s }
   end

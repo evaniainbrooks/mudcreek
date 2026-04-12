@@ -156,16 +156,6 @@ Role.find_or_create_by!(name: "user") do |r|
   r.description = "Standard user with no admin permissions."
 end
 
-Permission::RESOURCES.each do |resource|
-  policy_class = "#{resource}Policy".safe_constantize
-  Permission::ACTIONS.each do |action|
-    next unless policy_class&.method_defined?(:"#{action}?")
-    super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
-      p.tenant = mudcreek
-    end
-  end
-end
-
 admin_resources = %w[Listing Auction Lot Listings::Category Offer DiscountCode DeliveryMethod Listings::RentalRatePlan AuctionListing AuctionRegistration]
 admin_resources.each do |resource|
   policy_class = "#{resource}Policy".safe_constantize
@@ -185,33 +175,13 @@ end
 end
 
 # Chignecto Roles & Permissions
-chignecto_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: chignecto) do |r|
+Role.find_or_create_by!(name: "super_admin", tenant: chignecto) do |r|
   r.description = "Full access to everything."
-end
-
-Permission::RESOURCES.each do |resource|
-  policy_class = "#{resource}Policy".safe_constantize
-  Permission::ACTIONS.each do |action|
-    next unless policy_class&.method_defined?(:"#{action}?")
-    chignecto_super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
-      p.tenant = chignecto
-    end
-  end
 end
 
 # Junglefowl Roles & Permissions
-junglefowl_super_admin = Role.find_or_create_by!(name: "super_admin", tenant: junglefowl) do |r|
+Role.find_or_create_by!(name: "super_admin", tenant: junglefowl) do |r|
   r.description = "Full access to everything."
-end
-
-Permission::RESOURCES.each do |resource|
-  policy_class = "#{resource}Policy".safe_constantize
-  Permission::ACTIONS.each do |action|
-    next unless policy_class&.method_defined?(:"#{action}?")
-    junglefowl_super_admin.permissions.find_or_create_by!(resource: resource, action: action) do |p|
-      p.tenant = junglefowl
-    end
-  end
 end
 
 puts "Seeded #{Role.count} roles and #{Permission.count} permissions."

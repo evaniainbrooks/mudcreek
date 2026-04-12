@@ -107,6 +107,18 @@ RSpec.describe ApplicationPolicy do
   end
 
   describe "#permitted?" do
+    context "when the user has the super_admin role" do
+      let(:role) { create(:role, name: "super_admin") }
+
+      it "returns true without any permission records" do
+        expect(policy.send(:permitted?, :show)).to be(true)
+      end
+
+      it "returns true for actions not defined on any policy" do
+        expect(policy.send(:permitted?, :reorder)).to be(true)
+      end
+    end
+
     context "when the user has no role" do
       let(:user) { create(:user) }
 

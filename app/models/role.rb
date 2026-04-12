@@ -21,7 +21,9 @@ class Role < ApplicationRecord
     existing = permissions.pluck(:resource, :action).to_set
 
     missing = Permission::RESOURCES.flat_map do |resource|
+      policy_class = "#{resource}Policy".safe_constantize
       Permission::ACTIONS.filter_map do |action|
+        next unless policy_class&.method_defined?(:"#{action}?")
         next if existing.include?([resource, action])
         { resource:, action:, role_id: id, tenant_id: }
       end

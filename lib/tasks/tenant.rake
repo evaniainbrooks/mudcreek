@@ -30,9 +30,7 @@ namespace :tenant do
     Role.create!(name: "admin",      description: "Full access to listings. No access to users or roles.")
     Role.create!(name: "user",       description: "Standard user with no admin permissions.")
 
-    super_admin_role.grant_all_permissions!
-
-    puts "  Roles created. #{Permission.count} permissions granted to super_admin."
+    puts "  Roles created."
     puts
 
     # --- Super admin user ---

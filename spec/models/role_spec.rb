@@ -8,10 +8,16 @@ RSpec.describe Role, type: :model do
   let(:role) { Role.create!(name: "test_role", description: "A test role") }
 
   describe "#grant_all_permissions!" do
-    it "creates a permission for every resource/action combination" do
+    def valid_actions_for(resource)
+      policy_class = "#{resource}Policy".safe_constantize
+      Permission::ACTIONS.select { |action| policy_class&.method_defined?(:"#{action}?") }
+    end
+
+    it "creates a permission for every valid resource/action combination" do
       role.grant_all_permissions!
 
-      expect(role.permissions.count).to eq(Permission::RESOURCES.size * Permission::ACTIONS.size)
+      expected = Permission::RESOURCES.sum { |r| valid_actions_for(r).size }
+      expect(role.permissions.count).to eq(expected)
     end
 
     it "covers every resource" do
@@ -20,12 +26,12 @@ RSpec.describe Role, type: :model do
       expect(role.permissions.pluck(:resource).uniq).to match_array(Permission::RESOURCES)
     end
 
-    it "covers every action for each resource" do
+    it "covers only policy-defined actions for each resource" do
       role.grant_all_permissions!
 
       permissions_by_resource = role.permissions.pluck(:resource, :action).group_by(&:first)
       Permission::RESOURCES.each do |resource|
-        expect(permissions_by_resource[resource]&.map(&:last)).to match_array(Permission::ACTIONS)
+        expect(permissions_by_resource[resource]&.map(&:last)).to match_array(valid_actions_for(resource))
       end
     end
 

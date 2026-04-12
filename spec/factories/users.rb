@@ -12,10 +12,9 @@ FactoryBot.define do
 
     trait :super_admin do
       after(:create) do |user|
-        role = Role.find_or_create_by!(name: "test_super_admin") do |r|
+        role = Role.find_or_create_by!(name: "super_admin") do |r|
           r.description = "Full access for tests."
         end
-        role.grant_all_permissions!
         user.update_column(:role_id, role.id)
       end
     end
