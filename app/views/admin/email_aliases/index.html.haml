@@ -108,6 +108,6 @@
             %th Forward to
             %th
         %tbody#email-aliases-list
-          = render @aliases, partial: "admin/email_aliases/alias_row", as: :email_alias
+          = render partial: "admin/email_aliases/alias_row", collection: @aliases, as: :email_alias
     - if @aliases.empty?
       %p.text-muted.small.mt-2 No aliases yet.

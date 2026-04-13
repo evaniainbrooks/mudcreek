@@ -50,6 +50,18 @@ RSpec.describe "Admin::EmailAliases", type: :request do
       end
     end
 
+    context "when aliases exist" do
+      before { email_alias }
+
+      it "renders each alias row without error" do
+        get admin_email_aliases_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("hello")
+        expect(response.body).to include("user@example.com")
+      end
+    end
+
     context "when a cached result exists" do
       before do
         allow(Rails.cache).to receive(:read)
