@@ -1,4 +1,5 @@
-= form_with model: [:admin, page], class: "needs-validation" do |f|
+= form_with model: [:admin, page], class: "needs-validation",
+    data: { controller: "page-form" } do |f|
   - show_navbar_item_option ||= false
   - if page.errors.any?
     .alert.alert-danger.mb-4
@@ -41,7 +42,7 @@
             - if page.errors[:body].any?
               .invalid-feedback.d-block= page.errors[:body].to_sentence
 
-      %fieldset.card.shadow-sm.border-0
+      %fieldset.card.shadow-sm.border-0{ data: { "page-form-target": "topLevelOnly" } }
         %legend.card-header.fw-semibold
           %i.bi.bi-search.me-1
           SEO / Metadata
@@ -70,6 +71,19 @@
             .mb-3.form-check
               = check_box_tag :create_navbar_item, "1", false, class: "form-check-input", id: "create_navbar_item"
               = label_tag :create_navbar_item, "Create navbar item", class: "form-check-label"
+          .mb-3
+            = f.label :inquiry_form_id, "Inquiry Form", class: "form-label"
+            = f.collection_select :inquiry_form_id, InquiryForm.order(:name), :id, :name,
+                { include_blank: "— None —" },
+                class: "form-select"
+          .mb-3
+            = f.label :parent_id, "Parent Page", class: "form-label"
+            = f.collection_select :parent_id, Page.where.not(id: page.id).order(:title), :id, :title,
+                { include_blank: "— None (top level) —" },
+                class: "form-select #{'is-invalid' if page.errors[:parent].any?}",
+                data: { "page-form-target": "parentSelect", action: "change->page-form#toggle" }
+            - if page.errors[:parent].any?
+              .invalid-feedback= page.errors[:parent].to_sentence
           .mb-0
             = f.label :position, class: "form-label"
             = f.number_field :position, class: "form-control #{'is-invalid' if page.errors[:position].any?}", min: 0
@@ -81,7 +95,7 @@
           %i.bi.bi-images.me-1
           Images
         .card-body.p-4
-          .mb-3
+          .mb-3{ data: { "page-form-target": "topLevelOnly" } }
             = f.label :hero_image, "Hero image", class: "form-label"
             = f.file_field :hero_image, direct_upload: true, class: "form-control", accept: "image/*"
             - if page.hero_image.attached?

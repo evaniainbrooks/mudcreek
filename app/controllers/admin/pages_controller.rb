@@ -3,11 +3,11 @@ class Admin::PagesController < Admin::BaseController
 
   def index
     authorize(Page)
-    @pages = Page.order(:position, :id)
+    @pages = Page.includes(:parent).order(:position, :id)
   end
 
   def new
-    @page = Page.new
+    @page = Page.new(parent_id: params[:parent_id])
     authorize(@page)
   end
 
@@ -58,7 +58,7 @@ class Admin::PagesController < Admin::BaseController
 
   def page_params
     params.require(:page).permit(:title, :slug, :icon, :body, :published, :position,
-                                 :meta_title, :meta_description,
+                                 :parent_id, :inquiry_form_id, :meta_title, :meta_description,
                                  :hero_image, :left_column_image, :right_column_image)
   end
 end

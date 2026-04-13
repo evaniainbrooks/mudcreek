@@ -26,3 +26,41 @@
           = image_tag @page.right_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
   - else
     .page-body= @page.body
+
+  - if @inquiry_form
+    %section.mt-5
+      %h2.fw-bold.mb-1= @inquiry_form.name
+      - if @inquiry_form.description.present?
+        %p.text-muted.mb-4= @inquiry_form.description
+      .row
+        .col-lg-7
+          .card.shadow-sm.border-0
+            .card-body.p-4
+              = render "inquiry_forms/form", inquiry_form: @inquiry_form, inquiry: @inquiry
+
+  - if @children.any?
+    %nav.mt-5
+      .nav.nav-tabs{ role: "tablist" }
+        - @children.each do |child|
+          - active = child == @active_child
+          %a.nav-link{ href: page_path(@page.slug, tab: child.slug),
+                       class: ("active" if active),
+                       "aria-current": ("page" if active) }
+            - if child.icon.present?
+              %i{ class: "bi #{child.icon} me-1" }
+            = child.title
+
+    .tab-content.border.border-top-0.rounded-bottom.p-4.mb-4
+      - if @active_child
+        - if @active_child.left_column_image.attached? || @active_child.right_column_image.attached?
+          .row.g-4
+            - if @active_child.left_column_image.attached?
+              .col-4
+                = image_tag @active_child.left_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+            %div{ class: page_body_col_class(@active_child) }
+              .page-body= @active_child.body
+            - if @active_child.right_column_image.attached?
+              .col-4
+                = image_tag @active_child.right_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+        - else
+          .page-body= @active_child.body

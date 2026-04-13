@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_12_160040) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_003221) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -651,8 +651,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_160040) do
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "icon"
+    t.bigint "inquiry_form_id"
     t.text "meta_description"
     t.string "meta_title"
+    t.bigint "parent_id"
     t.integer "position", default: 0, null: false
     t.boolean "published", default: false, null: false
     t.boolean "show_in_footer", default: false, null: false
@@ -661,6 +663,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_160040) do
     t.bigint "tenant_id", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["inquiry_form_id"], name: "index_pages_on_inquiry_form_id"
+    t.index ["parent_id"], name: "index_pages_on_parent_id"
     t.index ["tenant_id", "slug"], name: "index_pages_on_tenant_id_and_slug", unique: true
   end
 
@@ -1134,6 +1138,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_12_160040) do
   add_foreign_key "orders", "discount_codes", on_delete: :nullify
   add_foreign_key "orders", "tenants"
   add_foreign_key "orders", "users"
+  add_foreign_key "pages", "inquiry_forms"
+  add_foreign_key "pages", "pages", column: "parent_id"
   add_foreign_key "pages", "tenants", on_delete: :cascade
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
