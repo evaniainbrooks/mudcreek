@@ -37,6 +37,40 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
+      "fingerprint": "47bc04b78f3e047c4e76868df22efe857985fdb7a9e17e3dc3ef0f95af8d6708",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/pages/show.html.haml",
+      "line": 60,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "::Haml::AttributeBuilder.build_class(true, page_body_col_class((Page.published.find_by!(:slug => params[:slug]).children.published.order(:position, :id).with_attached_left_column_image.with_attached_right_column_image.with_attached_hero_image.find do\n (c.slug == params[:tab])\n end or Page.published.find_by!(:slug => params[:slug]).children.published.order(:position, :id).with_attached_left_column_image.with_attached_right_column_image.with_attached_hero_image.first)))",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "PagesController",
+          "method": "show",
+          "line": 13,
+          "file": "app/controllers/pages_controller.rb",
+          "rendered": {
+            "name": "pages/show",
+            "file": "app/views/pages/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "pages/show"
+      },
+      "user_input": "Page.published.find_by!(:slug => params[:slug])",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
       "fingerprint": "54aec348a61292018be402a825906a69bf44b254fbba6cd9e68cf9d39d9ae981",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
@@ -49,7 +83,7 @@
           "type": "controller",
           "class": "PagesController",
           "method": "show",
-          "line": 6,
+          "line": 13,
           "file": "app/controllers/pages_controller.rb",
           "rendered": {
             "name": "pages/show",
@@ -106,7 +140,7 @@
           "type": "controller",
           "class": "PagesController",
           "method": "show",
-          "line": 6,
+          "line": 13,
           "file": "app/controllers/pages_controller.rb",
           "rendered": {
             "name": "pages/show",
@@ -155,7 +189,7 @@
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
       "file": "app/views/layouts/application.html.haml",
-      "line": 25,
+      "line": 26,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
       "code": "Current.tenant.notice.body",
       "render_path": [
