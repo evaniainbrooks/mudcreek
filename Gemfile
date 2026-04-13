@@ -90,6 +90,9 @@ gem "omniauth-rails_csrf_protection", "~> 2.0"
 # Country and subdivision data (ISO 3166)
 gem "countries"
 
+# Parse registrable domains (strips subdomains correctly for all TLDs)
+gem "public_suffix"
+
 # Open Graph / meta tags
 gem "meta-tags"
 

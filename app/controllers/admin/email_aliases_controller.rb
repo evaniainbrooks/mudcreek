@@ -3,6 +3,7 @@ module Admin
     def index
       authorize(EmailAlias, policy_class: EmailAliasPolicy)
       @result = Rails.cache.read("improvmx_domain_check_#{Current.tenant.id}")
+      @root_domain = PublicSuffix.domain(Current.tenant.custom_domain) if Current.tenant.custom_domain.present?
     end
 
     def verify

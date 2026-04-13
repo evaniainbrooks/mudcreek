@@ -18,12 +18,12 @@
         = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-success btn-sm"
 
   - else
-    .alert.alert-danger
-      .d-flex.align-items-start.gap-2.mb-2
-        %i.bi.bi-x-circle-fill.mt-1
+    .alert.alert-danger.d-flex.align-items-start.gap-2
+      %i.bi.bi-x-circle-fill.mt-1
+      %div
         %strong DNS configuration has issues.
-      - if result[:errors].any?
-        %ul.mb-2
-          - result[:errors].each do |err|
-            %li= err
-      = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-danger btn-sm"
+        - if result[:errors].any?
+          %ul.mb-2.mt-1
+            - result[:errors].each do |err|
+              %li= err
+        = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-danger btn-sm"

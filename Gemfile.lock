@@ -700,6 +700,7 @@ DEPENDENCIES
   postmark-rails (~> 0.22.1)
   propshaft
   prosopite
+  public_suffix
   puma (>= 5.0)
   pundit
   rack-cors

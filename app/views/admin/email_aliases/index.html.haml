@@ -13,8 +13,70 @@
       = link_to "Tenant Settings", admin_tenant_path
       first.
   - else
-    .mb-3
-      %span.text-muted Domain:
-      %strong.ms-1= Current.tenant.custom_domain
+    .row.g-4
+      .col-lg-7
+        .card.border-0.shadow-sm.mb-4
+          .card-body
+            %h5.card-title.fw-semibold.mb-1 Setup Instructions
+            %p.text-muted.small.mb-3
+              Add the following DNS records to
+              %strong= @root_domain
+              at your DNS provider, then click Verify below. These records allow ImprovMX to receive email on your behalf.
 
-    = render "status", result: @result, tenant: Current.tenant
+            %p.fw-semibold.mb-2 MX Records
+            .table-responsive.mb-4
+              %table.table.table-sm.table-bordered.mb-0
+                %thead.table-light
+                  %tr
+                    %th Type
+                    %th Name
+                    %th Value
+                    %th Priority
+                %tbody
+                  %tr
+                    %td MX
+                    %td
+                      %code @
+                    %td
+                      %code mx1.improvmx.com
+                    %td 10
+                  %tr
+                    %td MX
+                    %td
+                      %code @
+                    %td
+                      %code mx2.improvmx.com
+                    %td 20
+
+            %p.fw-semibold.mb-2 SPF Record
+            .table-responsive
+              %table.table.table-sm.table-bordered.mb-0
+                %thead.table-light
+                  %tr
+                    %th Type
+                    %th Name
+                    %th Value
+                %tbody
+                  %tr
+                    %td TXT
+                    %td
+                      %code @
+                    %td
+                      %code v=spf1 include:spf.improvmx.com ~all
+
+            .alert.alert-info.small.mb-0.mt-3
+              %i.bi.bi-info-circle.me-1
+              If you already have an SPF record, add
+              %code include:spf.improvmx.com
+              to it rather than creating a second TXT record.
+
+      .col-lg-5
+        %p.text-muted.small.mb-2
+          Domain:
+          %strong= Current.tenant.custom_domain
+          - if @root_domain != Current.tenant.custom_domain
+            %span.text-muted.ms-1
+              (checking as
+              %strong= @root_domain
+              )
+        = render "status", result: @result, tenant: Current.tenant

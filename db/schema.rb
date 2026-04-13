@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_13_150537) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_162353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -225,6 +225,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_150537) do
     t.index "tenant_id, lower((key)::text)", name: "index_discount_codes_on_tenant_id_and_lower_key", unique: true
     t.index ["key"], name: "index_discount_codes_on_key"
     t.check_constraint "amount_cents > 0", name: "discount_codes_amount_cents_positive"
+  end
+
+  create_table "email_aliases", force: :cascade do |t|
+    t.string "alias", null: false
+    t.datetime "created_at", null: false
+    t.bigint "external_id", null: false
+    t.string "forward", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "external_id"], name: "index_email_aliases_on_tenant_id_and_external_id", unique: true
+    t.index ["tenant_id"], name: "index_email_aliases_on_tenant_id"
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -1075,6 +1086,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_150537) do
   add_foreign_key "check_ins", "users"
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
+  add_foreign_key "email_aliases", "tenants", on_delete: :cascade
   add_foreign_key "inquiries", "inquiry_forms"
   add_foreign_key "inquiries", "tenants"
   add_foreign_key "inquiries", "users", on_delete: :nullify

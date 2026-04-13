@@ -2,11 +2,11 @@ require "rails_helper"
 
 RSpec.describe CheckImprovmxDomainJob, type: :job do
   let(:tenant) { Tenant.create!(key: "test", name: "Test", default: true, custom_domain: "example.com") }
-  let(:service) { instance_double(ImprovmxService) }
+  let(:service) { instance_double(ImprovmxClient) }
 
   before do
     Current.tenant = tenant
-    allow(ImprovmxService).to receive(:new).and_return(service)
+    allow(ImprovmxClient).to receive(:new).and_return(service)
     allow(Rails.cache).to receive(:write)
   end
 

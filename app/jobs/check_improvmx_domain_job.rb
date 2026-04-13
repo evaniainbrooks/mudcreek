@@ -7,8 +7,10 @@ class CheckImprovmxDomainJob < ApplicationJob
     tenant = Tenant.find(tenant_id)
     Current.tenant = tenant
 
-    result = ImprovmxService.new.check_domain(tenant.custom_domain)
+    result = ImprovmxClient.new.check_domain(tenant.custom_domain)
     Rails.cache.write(cache_key(tenant), result, expires_in: CACHE_TTL)
+
+    SyncEmailAliasesJob.perform_later(tenant.id) if result[:success]
 
     Turbo::StreamsChannel.broadcast_replace_to(
       "improvmx_check_#{tenant.id}",
