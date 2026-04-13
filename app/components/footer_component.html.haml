@@ -10,13 +10,6 @@
             = link_to auctions_path, class: "text-decoration-none text-muted small" do
               %i.bi.bi-hammer.me-1
               Auctions
-          = link_to listings_path, class: "text-decoration-none text-muted small" do
-            %i.bi.bi-tag.me-1
-            Listings
-          - if Listings::Category.exists?
-            = link_to categories_path, class: "text-decoration-none text-muted small" do
-              %i.bi.bi-grid.me-1
-              Categories
           - footer_navbar_items.each do |item|
             = link_to item.path, class: "text-decoration-none text-muted small" do
               - if item.icon.present?

@@ -8,6 +8,7 @@ class Permission < ApplicationRecord
     Bid
     DeliveryMethod
     DiscountCode
+    EmailAlias
     Inquiry
     InquiryForm
     Invoice

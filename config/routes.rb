@@ -139,6 +139,8 @@ resource :session
     resources :ledgers, param: :hashid do
       resources :entries, only: [ :create, :destroy ], module: :ledgers
     end
+    get  "email_aliases",        to: "email_aliases#index",  as: :email_aliases
+    post "email_aliases/verify", to: "email_aliases#verify", as: :verify_email_aliases
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

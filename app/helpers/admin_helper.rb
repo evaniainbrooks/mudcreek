@@ -24,6 +24,7 @@ module AdminHelper
   def admin_settings_nav?
     policy(NavbarItem).index? ||
       policy(Page).index? ||
+      policy(EmailAlias).index? ||
       policy(QrCode).index? ||
       policy(Role).index? ||
       policy(Tenant).index? ||

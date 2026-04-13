@@ -1,0 +1,29 @@
+#improvmx-status
+  - if result.nil?
+    .d-flex.align-items-center.gap-3
+      %p.text-muted.mb-0 DNS configuration has not been verified yet.
+      = button_to "Verify DNS", admin_verify_email_aliases_path, class: "btn btn-primary btn-sm"
+
+  - elsif result[:checking]
+    .d-flex.align-items-center.gap-2.text-muted
+      .spinner-border.spinner-border-sm{"role": "status"}
+      Checking DNS configuration…
+
+  - elsif result[:success]
+    .alert.alert-success.d-flex.align-items-start.gap-2
+      %i.bi.bi-check-circle-fill.mt-1
+      %div
+        %strong DNS configuration is valid.
+        %p.mb-2.mt-1 All required records are present.
+        = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-success btn-sm"
+
+  - else
+    .alert.alert-danger
+      .d-flex.align-items-start.gap-2.mb-2
+        %i.bi.bi-x-circle-fill.mt-1
+        %strong DNS configuration has issues.
+      - if result[:errors].any?
+        %ul.mb-2
+          - result[:errors].each do |err|
+            %li= err
+      = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-danger btn-sm"
