@@ -17,6 +17,24 @@ class ImprovmxClient < BaseClient
     []
   end
 
+  # Returns a hash: { success:, error: }
+  def delete_alias(domain, alias_name)
+    uri = URI("#{BASE_URL}/domains/#{root_domain(domain)}/aliases/#{alias_name}")
+    body = JSON.parse(delete(uri).body)
+    { success: body["success"], error: body["error"] }
+  rescue => e
+    { success: false, error: e.message }
+  end
+
+  # Returns a hash: { success:, alias: { id:, alias:, forward: }, error: }
+  def create_alias(domain, alias_name, forward)
+    uri = URI("#{BASE_URL}/domains/#{root_domain(domain)}/aliases")
+    body = JSON.parse(post(uri, { alias: alias_name, forward: forward }).body)
+    { success: body["success"], alias: body["alias"], error: body["error"] }
+  rescue => e
+    { success: false, alias: nil, error: e.message }
+  end
+
   # Returns a hash: { success:, records: [...], errors: [...] }
   def check_domain(domain)
     uri = URI("#{BASE_URL}/domains/#{root_domain(domain)}/check")

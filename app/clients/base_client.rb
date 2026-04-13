@@ -12,6 +12,10 @@ class BaseClient
     request(req, uri)
   end
 
+  def delete(uri)
+    request(Net::HTTP::Delete.new(uri), uri)
+  end
+
   private
 
   def request(req, uri)

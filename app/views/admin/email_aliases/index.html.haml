@@ -4,6 +4,7 @@
     Email Aliases
 
 = turbo_stream_from "improvmx_check_#{Current.tenant.id}"
+= turbo_stream_from "email_aliases_#{Current.tenant.id}"
 
 .page-container.p-4
   - if Current.tenant.custom_domain.blank?
@@ -13,7 +14,7 @@
       = link_to "Tenant Settings", admin_tenant_path
       first.
   - else
-    .row.g-4
+    .row.g-4.mb-4
       .col-lg-7
         .card.border-0.shadow-sm.mb-4
           .card-body
@@ -70,6 +71,23 @@
               %code include:spf.improvmx.com
               to it rather than creating a second TXT record.
 
+        - if @result&.dig(:success)
+          .card.border-0.shadow-sm
+            .card-body
+              %h5.card-title.fw-semibold.mb-3 New Alias
+              = form_with url: admin_email_aliases_path, method: :post do |f|
+                .row.g-2.align-items-end
+                  .col-sm
+                    = f.label "email_alias[alias]", "Alias", class: "form-label"
+                    .input-group
+                      = f.text_field "email_alias[alias]", class: "form-control", placeholder: "hello", required: true, autocomplete: "off"
+                      %span.input-group-text @#{@root_domain}
+                  .col-sm
+                    = f.label "email_alias[forward]", "Forward to", class: "form-label"
+                    = f.email_field "email_alias[forward]", class: "form-control", placeholder: "you@example.com", required: true, autocomplete: "off"
+                  .col-auto.align-self-end
+                    = f.submit "Create", class: "btn btn-primary"
+
       .col-lg-5
         %p.text-muted.small.mb-2
           Domain:
@@ -80,3 +98,16 @@
               %strong= @root_domain
               )
         = render "status", result: @result, tenant: Current.tenant
+
+    %h5.fw-semibold.mb-3 Aliases
+    .table-responsive
+      %table.table.table-hover.align-middle
+        %thead.table-light
+          %tr
+            %th Alias
+            %th Forward to
+            %th
+        %tbody#email-aliases-list
+          = render @aliases, partial: "admin/email_aliases/alias_row", as: :email_alias
+    - if @aliases.empty?
+      %p.text-muted.small.mt-2 No aliases yet.

@@ -1,3 +1,3 @@
 class EmailAliasPolicy < ApplicationPolicy
-  actions :index, :create
+  actions :index, :create, :destroy
 end

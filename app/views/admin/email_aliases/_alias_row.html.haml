@@ -1,0 +1,9 @@
+%tr{id: "email_alias_#{email_alias.id}"}
+  %td= email_alias.alias
+  %td= email_alias.forward
+  %td.text-end
+    = button_to admin_email_alias_path(email_alias),
+        method: :delete,
+        class: "btn btn-outline-danger btn-sm",
+        data: { turbo_confirm: "Delete alias #{email_alias.alias}? This cannot be undone." } do
+      %i.bi.bi-trash
