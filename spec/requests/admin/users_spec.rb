@@ -346,4 +346,46 @@ RSpec.describe "Admin::Users", type: :request do
       end
     end
   end
+
+  describe "POST /admin/users/:id/resend_activation" do
+    context "when the target user is not activated" do
+      it "enqueues an activation email" do
+        expect {
+          post resend_activation_admin_user_path(target)
+        }.to have_enqueued_mail(RegistrationsMailer, :activate).with(target)
+      end
+
+      it "redirects to the users index with a notice" do
+        post resend_activation_admin_user_path(target)
+
+        expect(response).to redirect_to(admin_users_path)
+        expect(flash[:notice]).to include(target.email_address)
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to sign in" do
+        post resend_activation_admin_user_path(target)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the update permission" do
+      let(:role) do
+        Role.create!(name: "read_only_resend", description: "Read only").tap do |r|
+          r.permissions.create!(resource: "User", action: "index")
+          r.permissions.create!(resource: "User", action: "show")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          post resend_activation_admin_user_path(target)
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
 end

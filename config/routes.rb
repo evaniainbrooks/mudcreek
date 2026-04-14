@@ -81,7 +81,9 @@ resource :session
   namespace :admin do
     root to: "dashboard#index"
     resource :tenant, only: [ :show, :update ]
-    resources :users, only: [ :index, :show, :new, :create, :update ]
+    resources :users, only: [ :index, :show, :new, :create, :update ] do
+      member { post :resend_activation }
+    end
     resources :lots, only: [ :index, :create, :show, :update, :destroy ], param: :hashid do
       resource :listing_placeholder, only: [ :destroy ], module: :lots
       resource :settlement,          only: [ :show ],    module: :lots do

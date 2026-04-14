@@ -19,6 +19,13 @@ class Admin::UsersController < Admin::BaseController
     @roles = Role.order(:name)
   end
 
+  def resend_activation
+    @user = User.find(params[:id])
+    authorize(@user, :update?)
+    RegistrationsMailer.activate(@user).deliver_later
+    redirect_to admin_users_path, notice: "Activation email queued for #{@user.email_address}."
+  end
+
   def new
     @user = User.new
     authorize(@user)

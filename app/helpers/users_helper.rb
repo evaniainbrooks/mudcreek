@@ -5,7 +5,19 @@ module UsersHelper
     table.with_column("Email", sort_attr: :email_address) { mail_to(it.email_address) }
     table.with_value_column("Role") { it.role }
     table.with_value_column("Created At", sort_attr: :created_at) { it.created_at }
-    table.with_column("", html_class: "text-end") { |u| link_to("View", admin_user_path(u), class: "btn btn-sm btn-outline-primary") }
+    table.with_column("", html_class: "text-end") do |u|
+      buttons = [ link_to("View", admin_user_path(u), class: "btn btn-sm btn-outline-primary") ]
+      unless u.activated?
+        buttons << button_to(
+          "Resend Activation",
+          resend_activation_admin_user_path(u),
+          method: :post,
+          class: "btn btn-sm btn-outline-secondary d-inline",
+          data: { turbo_confirm: "Resend activation email to #{u.email_address}?" }
+        )
+      end
+      safe_join(buttons, " ")
+    end
     render(table)
   end
 end
