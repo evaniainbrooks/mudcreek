@@ -3,6 +3,36 @@ class PostmarkClient
     @client = Postmark::AccountApiClient.new(account_token)
   end
 
+  # Returns a normalized domain hash, or nil if not found
+  def find_domain_by_name(name)
+    existing = @client.get_domains.find { |d| d[:name] == name }
+    return nil unless existing
+
+    @client.get_domain(existing[:id]).stringify_keys
+  rescue => e
+    Rails.logger.error("PostmarkClient#find_domain_by_name failed: #{e.message}")
+    nil
+  end
+
+  # Returns { success:, domain: {...}, error: }
+  def create_domain(name)
+    result = @client.create_domain(name: name).stringify_keys
+    { success: true, domain: result, error: nil }
+  rescue => e
+    { success: false, domain: nil, error: e.message }
+  end
+
+  # Triggers DKIM + return-path verification, then fetches updated domain state.
+  # Returns { success:, domain: {...}, error: }
+  def verify_domain(id)
+    @client.verify_domain_dkim(id)
+    @client.verify_domain_return_path(id)
+    domain = @client.get_domain(id).stringify_keys
+    { success: domain["dkim_verified"] == true, domain: domain, error: nil }
+  rescue => e
+    { success: false, domain: nil, error: e.message }
+  end
+
   # Returns an array of normalized signature hashes
   def list_signatures
     @client.get_senders.map { |s| normalize(s) }

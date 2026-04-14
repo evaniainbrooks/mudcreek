@@ -1,52 +1,79 @@
 .d-flex.justify-content-between.align-items-center.mb-4
   %h1.h3.mb-0
     %i.bi.bi-envelope-check.me-2
-    Sender Signatures
+    Sender Domain
 
-= turbo_stream_from "sender_signatures_#{Current.tenant.id}"
+= turbo_stream_from "postmark_domain_#{Current.tenant.id}"
 
 .page-container.p-4
-  .row.g-4.mb-4
-    .col-lg-7
-      .card.border-0.shadow-sm.mb-4
-        .card-body
-          %h5.card-title.fw-semibold.mb-1 Add Sender Signature
-          %p.text-muted.small.mb-3
-            Add an email address you want to send from. Postmark will send a confirmation email to that address.
-            Once confirmed, add the DKIM and SPF records shown by Postmark to enable authenticated sending.
+  - if Current.tenant.custom_domain.blank?
+    .alert.alert-warning
+      %i.bi.bi-exclamation-triangle.me-1
+      No custom domain configured. Set one under
+      = link_to "Tenant Settings", admin_tenant_path
+      first.
+  - elsif @postmark_domain.nil?
+    .alert.alert-info.d-flex.align-items-center.gap-3
+      .flex-grow-1
+        %i.bi.bi-cloud-slash.me-1
+        This domain has not been registered with Postmark yet.
+      = button_to "Register Domain", admin_postmark_domains_path, method: :post, class: "btn btn-sm btn-primary flex-shrink-0"
+  - else
+    .row.g-4
+      .col-lg-7
+        .card.border-0.shadow-sm
+          .card-body
+            %h5.card-title.fw-semibold.mb-1 DNS Setup
+            %p.text-muted.small.mb-3
+              Add the following DNS records to
+              %strong= @root_domain
+              to enable authenticated sending via Postmark.
 
-          = form_with url: admin_sender_signatures_path, method: :post do |f|
-            .row.g-2.align-items-end
-              .col-sm
-                = f.label "sender_signature[name]", "From Name", class: "form-label"
-                = f.text_field "sender_signature[name]", class: "form-control", placeholder: "Example Co.", required: true, autocomplete: "off"
-              .col-sm
-                = f.label "sender_signature[email_address]", "Email Address", class: "form-label"
-                = f.email_field "sender_signature[email_address]", class: "form-control", placeholder: "hello@example.com", required: true, autocomplete: "off"
-              .col-auto.align-self-end
-                = f.submit "Add", class: "btn btn-primary"
+            - dkim_host    = @postmark_domain.api_response["dkim_pending_host"].presence || @postmark_domain.api_response["dkim_host"]
+            - dkim_value   = @postmark_domain.api_response["dkim_pending_text_value"].presence || @postmark_domain.api_response["dkim_text_value"]
+            - return_path  = @postmark_domain.api_response["return_path_domain"]
 
-    .col-lg-5
-      .card.border-0.shadow-sm
-        .card-body
-          %h5.card-title.fw-semibold.mb-1 About Sender Signatures
-          %p.text-muted.small.mb-0
-            Sender signatures verify that you own the email addresses you send from.
-            Each signature must be confirmed by clicking the link in the confirmation email.
-            For best deliverability, also configure the DKIM and SPF records provided by Postmark.
+            - if dkim_host.present?
+              %p.fw-semibold.mb-2 DKIM Record
+              .table-responsive.mb-4
+                %table.table.table-sm.table-bordered.mb-0
+                  %thead.table-light
+                    %tr
+                      %th Type
+                      %th Name
+                      %th Value
+                  %tbody
+                    %tr
+                      %td TXT
+                      %td
+                        %code= dkim_host
+                      %td
+                        %code.text-break= dkim_value
 
-  %h5.fw-semibold.mb-3 Signatures
-  .table-responsive
-    %table.table.table-hover.align-middle
-      %thead.table-light
-        %tr
-          %th From
-          %th Name
-          %th.text-center Confirmed
-          %th.text-center DKIM
-          %th.text-center SPF
-          %th
-      %tbody#sender-signatures-list
-        = render partial: "admin/sender_signatures/signature_row", collection: @signatures, as: :sender_signature
-  - if @signatures.empty?
-    %p.text-muted.small.mt-2 No sender signatures yet.
+            - if return_path.present?
+              %p.fw-semibold.mb-2 Return Path Record
+              .table-responsive
+                %table.table.table-sm.table-bordered.mb-0
+                  %thead.table-light
+                    %tr
+                      %th Type
+                      %th Name
+                      %th Value
+                  %tbody
+                    %tr
+                      %td CNAME
+                      %td
+                        %code= return_path
+                      %td
+                        %code pm.mtasv.net
+
+      .col-lg-5
+        %p.text-muted.small.mb-2
+          Domain:
+          %strong= Current.tenant.custom_domain
+          - if @root_domain != Current.tenant.custom_domain
+            %span.text-muted.ms-1
+              (registered as
+              %strong= @root_domain
+              )
+        = render "domain_status", domain: @postmark_domain, checking: false

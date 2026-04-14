@@ -1,0 +1,26 @@
+#postmark-domain-status
+  - if checking
+    .d-flex.align-items-center.gap-2.text-muted
+      .spinner-border.spinner-border-sm{"role": "status"}
+      Checking DNS configuration…
+
+  - elsif domain.nil? || domain.unchecked?
+    .d-flex.align-items-center.gap-3
+      %p.text-muted.mb-0 DNS records have not been verified yet.
+      = button_to "Verify DNS", verify_admin_postmark_domains_path, class: "btn btn-primary btn-sm"
+
+  - elsif domain.verified?
+    .alert.alert-success.d-flex.align-items-start.gap-2
+      %i.bi.bi-check-circle-fill.mt-1
+      %div
+        %strong DNS configuration is valid.
+        %p.mb-2.mt-1 DKIM is verified. Authenticated sending is enabled.
+        = button_to "Re-verify", verify_admin_postmark_domains_path, class: "btn btn-outline-success btn-sm"
+
+  - else
+    .alert.alert-danger.d-flex.align-items-start.gap-2
+      %i.bi.bi-x-circle-fill.mt-1
+      %div
+        %strong DNS configuration has issues.
+        %p.mb-2.mt-1 DKIM could not be verified. Ensure the DNS records below are in place, then re-verify.
+        = button_to "Re-verify", verify_admin_postmark_domains_path, class: "btn btn-outline-danger btn-sm"

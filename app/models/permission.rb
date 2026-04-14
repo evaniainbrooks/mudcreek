@@ -31,9 +31,9 @@ class Permission < ApplicationRecord
     Order
     Page
     Permission
+    Postmark::Domain
     QrCode
     Role
-    SenderSignature
     Settlement
     Subscription
     SubscriptionPlan

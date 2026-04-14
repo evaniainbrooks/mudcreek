@@ -25,7 +25,7 @@ module AdminHelper
     policy(NavbarItem).index? ||
       policy(Page).index? ||
       policy(EmailAlias).index? ||
-      policy(SenderSignature).index? ||
+      policy(Postmark::Domain).index? ||
       policy(QrCode).index? ||
       policy(Role).index? ||
       policy(Tenant).index? ||

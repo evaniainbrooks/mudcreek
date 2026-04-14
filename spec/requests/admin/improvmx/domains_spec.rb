@@ -50,4 +50,43 @@ RSpec.describe "Admin::Improvmx::Domains", type: :request do
       end
     end
   end
+
+  describe "POST /admin/improvmx/domains/verify" do
+    before { Improvmx::Domain.create!(tenant: Current.tenant, api_response: {}) }
+
+    it "enqueues a CheckImprovmxDomainJob" do
+      expect {
+        post verify_admin_improvmx_domains_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      }.to have_enqueued_job(CheckImprovmxDomainJob).with(Current.tenant.id)
+    end
+
+    it "returns a turbo stream response with the checking spinner" do
+      post verify_admin_improvmx_domains_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("improvmx-status")
+      expect(response.body).to include("spinner-border")
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to sign in" do
+        post verify_admin_improvmx_domains_path
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the create permission" do
+      let(:role) { Role.create!(name: "no_improvmx_verify", description: "No ImprovMX verify access") }
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          post verify_admin_improvmx_domains_path
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
 end

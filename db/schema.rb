@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_221040) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
   create_enum "listing_type", ["sale", "rental"]
   create_enum "lot_state", ["submitted", "received", "auctioned", "settled", "paid"]
   create_enum "offer_state", ["pending", "accepted", "declined"]
+  create_enum "postmark_domain_status", ["unchecked", "verified", "failed"]
   create_enum "settlement_line_item_type", ["hammer_price", "buyers_premium", "tax", "seller_commission", "seller_fee"]
   create_enum "social_media_platform", ["facebook", "instagram", "youtube", "twitter", "tiktok", "snapchat", "linkedin", "discord", "patreon", "onlyfans", "twitch"]
   create_enum "subscription_plan_kind", ["month_to_month"]
@@ -700,6 +701,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
     t.index ["tenant_id"], name: "index_permissions_on_tenant_id"
   end
 
+  create_table "postmark_domains", force: :cascade do |t|
+    t.jsonb "api_response", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.bigint "external_id", null: false
+    t.enum "status", default: "unchecked", null: false, enum_type: "postmark_domain_status"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_postmark_domains_on_external_id", unique: true
+    t.index ["tenant_id"], name: "index_postmark_domains_on_tenant_id"
+  end
+
   create_table "proxy_bids", force: :cascade do |t|
     t.bigint "auction_listing_id", null: false
     t.bigint "auction_registration_id", null: false
@@ -764,21 +776,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index "tenant_id, lower((name)::text)", name: "index_roles_on_tenant_id_and_lower_name", unique: true
-  end
-
-  create_table "sender_signatures", force: :cascade do |t|
-    t.boolean "confirmed", default: false, null: false
-    t.datetime "created_at", null: false
-    t.boolean "dkim_verified", default: false, null: false
-    t.string "email_address", null: false
-    t.bigint "external_id", null: false
-    t.string "name", null: false
-    t.boolean "return_path_domain_verified", default: false, null: false
-    t.boolean "spf_verified", default: false, null: false
-    t.bigint "tenant_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tenant_id", "external_id"], name: "index_sender_signatures_on_tenant_id_and_external_id", unique: true
-    t.index ["tenant_id"], name: "index_sender_signatures_on_tenant_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -1181,6 +1178,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
   add_foreign_key "pages", "tenants", on_delete: :cascade
   add_foreign_key "permissions", "roles"
   add_foreign_key "permissions", "tenants"
+  add_foreign_key "postmark_domains", "tenants", on_delete: :cascade
   add_foreign_key "proxy_bids", "auction_listings"
   add_foreign_key "proxy_bids", "auction_registrations"
   add_foreign_key "qr_codes", "locations", validate: false
@@ -1192,7 +1190,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
-  add_foreign_key "sender_signatures", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "settlement_line_items", "listings", on_delete: :nullify
   add_foreign_key "settlement_line_items", "settlements", on_delete: :cascade

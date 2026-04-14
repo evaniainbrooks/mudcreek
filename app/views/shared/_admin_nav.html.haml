@@ -111,11 +111,11 @@
           = link_to admin_email_aliases_path, class: "dropdown-item" do
             %i.bi.bi-envelope-at.me-1
             Email Aliases
-      - if policy(SenderSignature).index?
+      - if policy(Postmark::Domain).index?
         %li
           = link_to admin_sender_signatures_path, class: "dropdown-item" do
             %i.bi.bi-envelope-check.me-1
-            Sender Signatures
+            Sender Domain
       - if policy(QrCode).index?
         %li
           = link_to admin_qr_codes_path, class: "dropdown-item" do

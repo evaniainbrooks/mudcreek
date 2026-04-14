@@ -20,15 +20,5 @@ module Admin
       redirect_to admin_email_aliases_path, notice: "Your request to delete the alias is being processed."
     end
 
-    def verify
-      authorize(EmailAlias, :create?, policy_class: EmailAliasPolicy)
-      CheckImprovmxDomainJob.perform_later(Current.tenant.id)
-
-      render turbo_stream: turbo_stream.replace(
-        "improvmx-status",
-        partial: "admin/email_aliases/status",
-        locals: { domain: ::Improvmx::Domain.find_by(tenant: Current.tenant), checking: true }
-      )
-    end
   end
 end

@@ -7,7 +7,7 @@
   - elsif domain.nil? || domain.unchecked?
     .d-flex.align-items-center.gap-3
       %p.text-muted.mb-0 DNS configuration has not been verified yet.
-      = button_to "Verify DNS", admin_verify_email_aliases_path, class: "btn btn-primary btn-sm"
+      = button_to "Verify DNS", verify_admin_improvmx_domains_path, class: "btn btn-primary btn-sm"
 
   - elsif domain.verified?
     .alert.alert-success.d-flex.align-items-start.gap-2
@@ -15,7 +15,7 @@
       %div
         %strong DNS configuration is valid.
         %p.mb-2.mt-1 All required records are present.
-        = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-success btn-sm"
+        = button_to "Re-verify", verify_admin_improvmx_domains_path, class: "btn btn-outline-success btn-sm"
 
   - else
     .alert.alert-danger.d-flex.align-items-start.gap-2
@@ -27,4 +27,4 @@
           %ul.mb-2.mt-1
             - errors.each do |err|
               %li= err
-        = button_to "Re-verify", admin_verify_email_aliases_path, class: "btn btn-outline-danger btn-sm"
+        = button_to "Re-verify", verify_admin_improvmx_domains_path, class: "btn btn-outline-danger btn-sm"
