@@ -35,6 +35,24 @@ class ImprovmxClient < BaseClient
     { success: false, alias: nil, error: e.message }
   end
 
+  # Returns a hash: { success:, domain: {...} }
+  def get_domain(domain)
+    uri = URI("#{BASE_URL}/domains/#{root_domain(domain)}")
+    body = JSON.parse(get(uri).body)
+    { success: body["success"], domain: body["domain"] }
+  rescue => e
+    { success: false, domain: nil }
+  end
+
+  # Returns a hash: { success:, domain: {...}, error: }
+  def create_domain(domain)
+    uri = URI("#{BASE_URL}/domains")
+    body = JSON.parse(post(uri, { domain: root_domain(domain) }).body)
+    { success: body["success"], domain: body["domain"], error: body["error"] }
+  rescue => e
+    { success: false, domain: nil, error: e.message }
+  end
+
   # Returns a hash: { success:, records: [...], errors: [...] }
   def check_domain(domain)
     uri = URI("#{BASE_URL}/domains/#{root_domain(domain)}/check")

@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_012049) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_214827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "discount_code_type", ["fixed", "percentage"]
+  create_enum "improvmx_domain_status", ["unchecked", "verified", "failed"]
   create_enum "invoice_status", ["unpaid", "paid"]
   create_enum "ledger_entry_type", ["credit", "debit"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
@@ -235,6 +236,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_012049) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id", "external_id"], name: "index_email_aliases_on_tenant_id_and_external_id", unique: true
+  end
+
+  create_table "improvmx_domains", force: :cascade do |t|
+    t.jsonb "api_response", default: {}, null: false
+    t.jsonb "check_data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.enum "status", default: "unchecked", null: false, enum_type: "improvmx_domain_status"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_improvmx_domains_on_tenant_id"
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -1101,6 +1112,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_012049) do
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "email_aliases", "tenants", on_delete: :cascade
+  add_foreign_key "improvmx_domains", "tenants", on_delete: :cascade
   add_foreign_key "inquiries", "inquiry_forms"
   add_foreign_key "inquiries", "tenants"
   add_foreign_key "inquiries", "users", on_delete: :nullify

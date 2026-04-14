@@ -9,6 +9,7 @@ class Permission < ApplicationRecord
     DeliveryMethod
     DiscountCode
     EmailAlias
+    Improvmx::Domain
     Inquiry
     InquiryForm
     Invoice

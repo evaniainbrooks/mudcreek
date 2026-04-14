@@ -1,14 +1,17 @@
 class CheckImprovmxDomainJob < ApplicationJob
   queue_as :default
 
-  CACHE_TTL = 1.hour
-
   def perform(tenant_id)
     tenant = Tenant.find(tenant_id)
     Current.tenant = tenant
 
     result = ImprovmxClient.new.check_domain(tenant.custom_domain)
-    Rails.cache.write(cache_key(tenant), result, expires_in: CACHE_TTL)
+
+    domain = Improvmx::Domain.find_by!(tenant: tenant)
+    domain.update!(
+      status: result[:success] ? :verified : :failed,
+      check_data: result
+    )
 
     SyncEmailAliasesJob.perform_later(tenant.id) if result[:success]
 
@@ -16,11 +19,7 @@ class CheckImprovmxDomainJob < ApplicationJob
       "improvmx_check_#{tenant.id}",
       target: "improvmx-status",
       partial: "admin/email_aliases/status",
-      locals: { result:, tenant: }
+      locals: { domain:, checking: false }
     )
   end
-
-  private
-
-  def cache_key(tenant) = "improvmx_domain_check_#{tenant.id}"
 end

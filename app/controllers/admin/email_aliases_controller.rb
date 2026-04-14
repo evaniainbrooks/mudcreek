@@ -2,8 +2,8 @@ module Admin
   class EmailAliasesController < Admin::BaseController
     def index
       authorize(EmailAlias, policy_class: EmailAliasPolicy)
-      @result = Rails.cache.read("improvmx_domain_check_#{Current.tenant.id}")
       @root_domain = PublicSuffix.domain(Current.tenant.custom_domain) if Current.tenant.custom_domain.present?
+      @improvmx_domain = ::Improvmx::Domain.find_by(tenant: Current.tenant)
       @aliases = EmailAlias.order(:alias)
     end
 
@@ -27,7 +27,7 @@ module Admin
       render turbo_stream: turbo_stream.replace(
         "improvmx-status",
         partial: "admin/email_aliases/status",
-        locals: { result: { checking: true }, tenant: Current.tenant }
+        locals: { domain: ::Improvmx::Domain.find_by(tenant: Current.tenant), checking: true }
       )
     end
   end

@@ -13,6 +13,12 @@
       No custom domain configured. Set one under
       = link_to "Tenant Settings", admin_tenant_path
       first.
+  - elsif @improvmx_domain.nil?
+    .alert.alert-info.d-flex.align-items-center.gap-3
+      .flex-grow-1
+        %i.bi.bi-cloud-slash.me-1
+        This domain has not been registered with ImprovMX yet.
+      = button_to "Register Domain", admin_improvmx_domains_path, method: :post, class: "btn btn-sm btn-primary flex-shrink-0"
   - else
     .row.g-4.mb-4
       .col-lg-7
@@ -71,7 +77,7 @@
               %code include:spf.improvmx.com
               to it rather than creating a second TXT record.
 
-        - if @result&.dig(:success)
+        - if @improvmx_domain&.verified?
           .card.border-0.shadow-sm
             .card-body
               %h5.card-title.fw-semibold.mb-3 New Alias
@@ -97,7 +103,7 @@
               (checking as
               %strong= @root_domain
               )
-        = render "status", result: @result, tenant: Current.tenant
+        = render "status", domain: @improvmx_domain, checking: false
 
     %h5.fw-semibold.mb-3 Aliases
     .table-responsive

@@ -28,9 +28,7 @@ RSpec.describe "Admin::EmailAliases", type: :request do
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
 
   describe "GET /admin/email_aliases" do
-    context "when no check has been run" do
-      before { Rails.cache.delete("improvmx_domain_check_#{Current.tenant.id}") }
-
+    context "when no Improvmx::Domain record exists" do
       it "returns 200" do
         get admin_email_aliases_path
 
@@ -43,6 +41,16 @@ RSpec.describe "Admin::EmailAliases", type: :request do
         expect(response.body).to include("example.com")
       end
 
+      it "shows the register domain button" do
+        get admin_email_aliases_path
+
+        expect(response.body).to include("Register Domain")
+      end
+    end
+
+    context "when an Improvmx::Domain record exists with status unchecked" do
+      before { Improvmx::Domain.create!(tenant: Current.tenant, api_response: {}) }
+
       it "shows the verify button" do
         get admin_email_aliases_path
 
@@ -50,8 +58,32 @@ RSpec.describe "Admin::EmailAliases", type: :request do
       end
     end
 
+    context "when the domain status is verified" do
+      before { Improvmx::Domain.create!(tenant: Current.tenant, api_response: {}, status: :verified, check_data: { "success" => true, "errors" => [] }) }
+
+      it "shows the valid status" do
+        get admin_email_aliases_path
+
+        expect(response.body).to include("DNS configuration is valid")
+      end
+    end
+
+    context "when the domain status is failed" do
+      before { Improvmx::Domain.create!(tenant: Current.tenant, api_response: {}, status: :failed, check_data: { "success" => false, "errors" => ["MX record missing"] }) }
+
+      it "shows the DNS issues message" do
+        get admin_email_aliases_path
+
+        expect(response.body).to include("DNS configuration has issues")
+        expect(response.body).to include("MX record missing")
+      end
+    end
+
     context "when aliases exist" do
-      before { email_alias }
+      before do
+        Improvmx::Domain.create!(tenant: Current.tenant, api_response: {})
+        email_alias
+      end
 
       it "renders each alias row without error" do
         get admin_email_aliases_path
@@ -59,20 +91,6 @@ RSpec.describe "Admin::EmailAliases", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("hello")
         expect(response.body).to include("user@example.com")
-      end
-    end
-
-    context "when a cached result exists" do
-      before do
-        allow(Rails.cache).to receive(:read)
-          .with("improvmx_domain_check_#{Current.tenant.id}")
-          .and_return({ success: true, records: [], errors: [] })
-      end
-
-      it "shows the valid status" do
-        get admin_email_aliases_path
-
-        expect(response.body).to include("DNS configuration is valid")
       end
     end
 
@@ -187,6 +205,8 @@ RSpec.describe "Admin::EmailAliases", type: :request do
   end
 
   describe "POST /admin/email_aliases/verify" do
+    before { Improvmx::Domain.create!(tenant: Current.tenant, api_response: {}) }
+
     it "enqueues a CheckImprovmxDomainJob" do
       expect {
         post admin_verify_email_aliases_path, headers: { "Accept" => "text/vnd.turbo-stream.html" }
