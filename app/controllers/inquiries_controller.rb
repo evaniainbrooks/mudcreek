@@ -10,7 +10,7 @@ class InquiriesController < ApplicationController
     if @inquiry.save
       InquiryMailer.inquiry_received(@inquiry).deliver_later
       InquiryMailer.inquiry_confirmation(@inquiry).deliver_later
-      redirect_to form_path(@inquiry_form), notice: "Your inquiry has been submitted. We'll be in touch soon."
+      redirect_to @inquiry_form.redirect_path, notice: "Your inquiry has been submitted. We'll be in touch soon."
     else
       render "inquiry_forms/show", status: :unprocessable_content
     end

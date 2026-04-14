@@ -3,9 +3,6 @@
     %i.bi.bi-ui-checks.me-2
     = @inquiry_form.name
   .d-flex.gap-2
-    = link_to form_path(@inquiry_form), class: "btn btn-outline-primary", target: "_blank" do
-      %i.bi.bi-box-arrow-up-right.me-1
-      View Public Form
     = link_to edit_admin_inquiry_form_path(@inquiry_form), class: "btn btn-outline-secondary" do
       %i.bi.bi-pencil.me-1
       Edit
@@ -32,6 +29,9 @@
             = @inquiry_form.description
           - else
             %span.text-muted —
+
+        %dt.col-sm-3 Redirect Path
+        %dd.col-sm-9= content_tag(:code, @inquiry_form.redirect_path)
 
         %dt.col-sm-3 Inquiries
         %dd.col-sm-9= link_to "#{@inquiry_form.inquiries.count} total", admin_inquiries_path(q: { inquiry_form_name_eq: @inquiry_form.name })

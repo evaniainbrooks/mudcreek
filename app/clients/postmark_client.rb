@@ -1,5 +1,5 @@
 class PostmarkClient
-  def initialize(account_token = Rails.application.credentials.postmark.account_token)
+  def initialize(account_token = Rails.application.credentials.dig(:postmark, :account_token))
     @client = Postmark::AccountApiClient.new(account_token)
   end
 

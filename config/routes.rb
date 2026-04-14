@@ -71,7 +71,7 @@ resource :session
   resources :subdivisions, only: [ :index ]
   resources :pages, only: [ :show ], param: :slug
 
-  resources :forms, only: [ :show ], param: :slug, controller: "inquiry_forms" do
+  resources :forms, only: [], param: :slug, controller: "inquiry_forms" do
     resources :inquiries, only: [ :create ]
   end
 

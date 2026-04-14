@@ -49,6 +49,6 @@ class Admin::InquiryFormsController < Admin::BaseController
   end
 
   def inquiry_form_params
-    params.require(:inquiry_form).permit(:name, :slug, :description, :cta_label, :notification_recipient_id, :published)
+    params.require(:inquiry_form).permit(:name, :slug, :description, :cta_label, :redirect_path, :notification_recipient_id, :published)
   end
 end

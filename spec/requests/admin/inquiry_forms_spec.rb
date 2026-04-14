@@ -199,6 +199,12 @@ RSpec.describe "Admin::InquiryForms", type: :request do
       expect(form.reload.cta_label).to eq("Submit Request")
     end
 
+    it "persists the redirect_path" do
+      patch admin_inquiry_form_path(form), params: { inquiry_form: { redirect_path: "/thank-you" } }
+
+      expect(form.reload.redirect_path).to eq("/thank-you")
+    end
+
     context "with invalid params" do
       it "returns 422" do
         patch admin_inquiry_form_path(form), params: { inquiry_form: { name: "" } }
