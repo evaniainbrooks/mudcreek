@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_13_164422) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_012049) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -755,6 +755,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_164422) do
     t.index "tenant_id, lower((name)::text)", name: "index_roles_on_tenant_id_and_lower_name", unique: true
   end
 
+  create_table "sender_signatures", force: :cascade do |t|
+    t.boolean "confirmed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.boolean "dkim_verified", default: false, null: false
+    t.string "email_address", null: false
+    t.bigint "external_id", null: false
+    t.string "name", null: false
+    t.boolean "return_path_domain_verified", default: false, null: false
+    t.boolean "spf_verified", default: false, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "external_id"], name: "index_sender_signatures_on_tenant_id_and_external_id", unique: true
+    t.index ["tenant_id"], name: "index_sender_signatures_on_tenant_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -1165,6 +1180,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_164422) do
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
+  add_foreign_key "sender_signatures", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "settlement_line_items", "listings", on_delete: :nullify
   add_foreign_key "settlement_line_items", "settlements", on_delete: :cascade

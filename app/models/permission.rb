@@ -32,6 +32,7 @@ class Permission < ApplicationRecord
     Permission
     QrCode
     Role
+    SenderSignature
     Settlement
     Subscription
     SubscriptionPlan

@@ -145,6 +145,7 @@ resource :session
     post   "email_aliases",        to: "email_aliases#create"
     delete "email_aliases/:id",    to: "email_aliases#destroy", as: :email_alias
     post   "email_aliases/verify", to: "email_aliases#verify",  as: :verify_email_aliases
+    resources :sender_signatures, only: [ :index, :create, :destroy ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
