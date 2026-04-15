@@ -1,13 +1,20 @@
 class Admin::NavbarItemsController < Admin::BaseController
   before_action :set_navbar_item, only: %i[edit update destroy]
 
+  def reorder
+    authorize(NavbarItem)
+    navbar_item = NavbarItem.find(params[:id])
+    navbar_item.insert_at(params[:position].to_i)
+    head :ok
+  end
+
   def index
     authorize(NavbarItem)
     @navbar_items = NavbarItem.ordered
   end
 
   def new
-    @navbar_item = NavbarItem.new(position: NavbarItem.maximum(:position).to_i + 1)
+    @navbar_item = NavbarItem.new
     authorize(@navbar_item)
   end
 
@@ -46,6 +53,6 @@ class Admin::NavbarItemsController < Admin::BaseController
   end
 
   def navbar_item_params
-    params.require(:navbar_item).permit(:icon, :title, :path, :position)
+    params.require(:navbar_item).permit(:icon, :title, :path)
   end
 end

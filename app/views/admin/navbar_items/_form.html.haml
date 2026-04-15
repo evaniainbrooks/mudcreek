@@ -27,17 +27,11 @@
         - if navbar_item.errors[:path].any?
           .invalid-feedback= navbar_item.errors[:path].to_sentence
 
-      .mb-3
+      .mb-0
         = f.label :icon, class: "form-label"
         = render(IconPickerComponent.new(form: f, field: :icon))
         - if navbar_item.errors[:icon].any?
           .invalid-feedback.d-block= navbar_item.errors[:icon].to_sentence
-
-      .mb-0
-        = f.label :position, class: "form-label"
-        = f.number_field :position, class: "form-control #{'is-invalid' if navbar_item.errors[:position].any?}", min: 0
-        - if navbar_item.errors[:position].any?
-          .invalid-feedback= navbar_item.errors[:position].to_sentence
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"

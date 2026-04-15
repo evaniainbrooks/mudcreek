@@ -16,15 +16,16 @@
       %table.table.table-hover.align-middle.mb-0
         %thead.table-light
           %tr
-            %th Pos
+            %th.pe-0{style: "width: 1%"}
             %th Icon
             %th Title
             %th Path
             %th
-        %tbody
+        %tbody{data: { controller: "sortable", sortable_url_value: reorder_admin_navbar_items_path }}
           - @navbar_items.each do |item|
-            %tr
-              %td.text-muted.small= item.position
+            %tr{data: { id: item.id }}
+              %td.pe-0
+                %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab"}
               %td
                 - if item.icon.present?
                   %i{ class: "bi #{item.icon} fs-5" }

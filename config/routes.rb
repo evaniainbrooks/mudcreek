@@ -132,7 +132,9 @@ resource :session
     resources :kids, only: [ :index ]
     resources :subscription_plans, only: [ :index, :create, :show, :destroy ]
     resources :subscriptions, only: [ :show, :create, :update ]
-    resources :navbar_items, except: [:show]
+    resources :navbar_items, except: [:show] do
+      collection { patch :reorder }
+    end
     resources :qr_codes, param: :slug do
       member { get :qr_image }
     end

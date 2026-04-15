@@ -1,9 +1,10 @@
 class NavbarItem < ApplicationRecord
   include MultiTenant
 
+  acts_as_list scope: :tenant
+
   validates :title, presence: true
   validates :path, presence: true
-  validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   scope :ordered, -> { order(:position, :id) }
 end
