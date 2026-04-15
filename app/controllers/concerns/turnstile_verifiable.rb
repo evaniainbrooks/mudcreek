@@ -15,11 +15,16 @@ module TurnstileVerifiable
     return unless @turnstile_widget
 
     token = params["cf-turnstile-response"]
+
+    Rails.logger.info("[Turnstile] token present=#{token.present?}, secret present=#{@turnstile_widget.secret.present?}")
+
     result = token.present? && CloudflareClient.new.verify_token(
       secret: @turnstile_widget.secret,
       token: token,
       remote_ip: request.remote_ip
     )
+
+    Rails.logger.info("[Turnstile] result=#{result.inspect}")
 
     unless result && result[:success]
       redirect_to new_session_path, alert: "Please complete the security challenge.", status: :see_other
