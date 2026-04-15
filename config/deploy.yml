@@ -44,7 +44,6 @@ env:
     - RAILS_MASTER_KEY
     - DATABASE_URL
     - SECRET_KEY_BASE
-  secret:
     - IMGPROXY_KEY
     - IMGPROXY_SALT
   clear:
