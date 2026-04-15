@@ -52,6 +52,7 @@ env:
     SOLID_QUEUE_IN_PUMA: true
     DEFAULT_URL_HOST: shop.junglefowlbjj.ca
     IMGPROXY_URL: http://mudcreek-imgproxy:8080
+    IMGPROXY_ENDPOINT: https://images.mudcreekforest.ca
 
     # Set number of processes dedicated to Solid Queue (default: 1)
     # JOB_CONCURRENCY: 3
@@ -122,7 +123,10 @@ accessories:
   imgproxy:
     image: darthsim/imgproxy:latest
     host: 216.250.116.237
-    port: "127.0.0.1:8080:8080"
+    proxy:
+      ssl: true
+      host: images.mudcreekforest.ca
+      app_port: 8080
     env:
       secret:
         - IMGPROXY_KEY
