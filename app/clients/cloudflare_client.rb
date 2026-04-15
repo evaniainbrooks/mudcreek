@@ -1,6 +1,6 @@
 class CloudflareClient < BaseClient
   BASE_URL = "https://api.cloudflare.com/client/v4"
-  SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v1/siteverify"
+  SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
   def initialize(
     api_token: Rails.application.credentials.dig(:cloudflare, :api_token),
