@@ -6,7 +6,13 @@
 = turbo_stream_from "postmark_domain_#{Current.tenant.id}"
 
 .page-container.p-4
-  - if Current.tenant.custom_domain.blank?
+  - if Rails.application.credentials.dig(:postmark, :account_token).blank?
+    .alert.alert-danger
+      %i.bi.bi-exclamation-triangle-fill.me-1
+      Postmark credentials are not configured. Add
+      %code postmark.account_token
+      to your Rails credentials.
+  - elsif Current.tenant.custom_domain.blank?
     .alert.alert-warning
       %i.bi.bi-exclamation-triangle.me-1
       No custom domain configured. Set one under

@@ -8,7 +8,15 @@
 = turbo_stream_from "cloudflare_turnstile_#{Current.tenant.id}"
 
 .page-container.p-4
-  - if Current.tenant.custom_domain.blank?
+  - if Rails.application.credentials.dig(:cloudflare, :api_token).blank? || Rails.application.credentials.dig(:cloudflare, :account_id).blank?
+    .alert.alert-danger
+      %i.bi.bi-exclamation-triangle-fill.me-1
+      Cloudflare credentials are not configured. Add
+      %code cloudflare.api_token
+      and
+      %code cloudflare.account_id
+      to your Rails credentials.
+  - elsif Current.tenant.custom_domain.blank?
     .alert.alert-warning
       %i.bi.bi-exclamation-triangle.me-1
       No custom domain configured. Set one under

@@ -7,7 +7,13 @@
 = turbo_stream_from "email_aliases_#{Current.tenant.id}"
 
 .page-container.p-4
-  - if Current.tenant.custom_domain.blank?
+  - if Rails.application.credentials.dig(:improvmx, :api_key).blank?
+    .alert.alert-danger
+      %i.bi.bi-exclamation-triangle-fill.me-1
+      ImprovMX credentials are not configured. Add
+      %code improvmx.api_key
+      to your Rails credentials.
+  - elsif Current.tenant.custom_domain.blank?
     .alert.alert-warning
       %i.bi.bi-exclamation-triangle.me-1
       No custom domain configured. Set one under

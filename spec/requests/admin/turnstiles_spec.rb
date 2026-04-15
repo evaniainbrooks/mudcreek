@@ -17,61 +17,82 @@ RSpec.describe "Admin::Turnstiles", type: :request do
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
 
   describe "GET /admin/turnstiles" do
-    it "returns 200" do
-      get admin_turnstiles_path
-
-      expect(response).to have_http_status(:ok)
-    end
-
-    context "when no widget is attached" do
-      it "shows the provision button" do
-        get admin_turnstiles_path
-
-        expect(response.body).to include("Provision Widget")
-      end
-    end
-
-    context "when a widget is attached" do
+    context "when Cloudflare credentials are not configured" do
       before do
-        Cloudflare::TurnstileWidget.create!(
-          tenant: Current.tenant,
-          external_id: "0x4AAAAAAAxyz",
-          api_response: {
-            "sitekey" => "0x4AAAAAAAxyz",
-            "secret" => "0x4AAAAAAAsecret",
-            "name" => "Test Turnstile",
-            "domains" => [ "example.com" ],
-            "mode" => "managed"
-          }
-        )
+        allow(Rails.application.credentials).to receive(:dig).and_call_original
+        allow(Rails.application.credentials).to receive(:dig).with(:cloudflare, :api_token).and_return(nil)
       end
 
-      it "shows the sitekey" do
+      it "shows the missing credentials error" do
         get admin_turnstiles_path
 
-        expect(response.body).to include("0x4AAAAAAAxyz")
-      end
-
-      it "shows the mode" do
-        get admin_turnstiles_path
-
-        expect(response.body).to include("Managed")
-      end
-
-      it "shows the registered domain" do
-        get admin_turnstiles_path
-
-        expect(response.body).to include("example.com")
+        expect(response.body).to include("Cloudflare credentials are not configured")
       end
     end
 
-    context "when the tenant has no custom domain" do
-      before { Current.tenant.update!(custom_domain: nil) }
+    context "when Cloudflare credentials are present" do
+      before do
+        allow(Rails.application.credentials).to receive(:dig).and_call_original
+        allow(Rails.application.credentials).to receive(:dig).with(:cloudflare, :api_token).and_return("test_token")
+        allow(Rails.application.credentials).to receive(:dig).with(:cloudflare, :account_id).and_return("test_account_id")
+      end
 
-      it "shows the missing domain warning" do
+      it "returns 200" do
         get admin_turnstiles_path
 
-        expect(response.body).to include("No custom domain configured")
+        expect(response).to have_http_status(:ok)
+      end
+
+      context "when no widget is attached" do
+        it "shows the provision button" do
+          get admin_turnstiles_path
+
+          expect(response.body).to include("Provision Widget")
+        end
+      end
+
+      context "when a widget is attached" do
+        before do
+          Cloudflare::TurnstileWidget.create!(
+            tenant: Current.tenant,
+            external_id: "0x4AAAAAAAxyz",
+            api_response: {
+              "sitekey" => "0x4AAAAAAAxyz",
+              "secret" => "0x4AAAAAAAsecret",
+              "name" => "Test Turnstile",
+              "domains" => [ "example.com" ],
+              "mode" => "managed"
+            }
+          )
+        end
+
+        it "shows the sitekey" do
+          get admin_turnstiles_path
+
+          expect(response.body).to include("0x4AAAAAAAxyz")
+        end
+
+        it "shows the mode" do
+          get admin_turnstiles_path
+
+          expect(response.body).to include("Managed")
+        end
+
+        it "shows the registered domain" do
+          get admin_turnstiles_path
+
+          expect(response.body).to include("example.com")
+        end
+      end
+
+      context "when the tenant has no custom domain" do
+        before { Current.tenant.update!(custom_domain: nil) }
+
+        it "shows the missing domain warning" do
+          get admin_turnstiles_path
+
+          expect(response.body).to include("No custom domain configured")
+        end
       end
     end
 
