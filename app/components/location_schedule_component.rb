@@ -79,6 +79,16 @@ class LocationScheduleComponent < ViewComponent::Base
     end
   end
 
+  def described_events
+    @described_events ||= begin
+      week_events = LocationCalendarService.new(@location).week_events(@week_start)
+      week_events.values.flatten
+                 .select { |e| e.description.to_s.strip.present? }
+                 .uniq { |e| e.summary.to_s.strip.downcase }
+                 .sort_by { |e| e.summary.to_s }
+    end
+  end
+
   private
 
   def build_grid
