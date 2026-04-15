@@ -15,7 +15,8 @@
               %td.ps-3
                 .d-flex.align-items-center.gap-3
                   - if item.listing.images.attached?
-                    = image_tag item.listing.images.first,
+                    = optimized_image_tag item.listing.images.first,
+                        preset: :carousel_thumb,
                         class: "rounded-2 object-fit-cover flex-shrink-0",
                         style: "width: 52px; height: 52px"
                   - else

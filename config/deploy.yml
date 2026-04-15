@@ -44,11 +44,15 @@ env:
     - RAILS_MASTER_KEY
     - DATABASE_URL
     - SECRET_KEY_BASE
+  secret:
+    - IMGPROXY_KEY
+    - IMGPROXY_SALT
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
     SOLID_QUEUE_IN_PUMA: true
     DEFAULT_URL_HOST: shop.junglefowlbjj.ca
+    IMGPROXY_URL: http://mudcreek-imgproxy:8080
 
     # Set number of processes dedicated to Solid Queue (default: 1)
     # JOB_CONCURRENCY: 3
@@ -116,6 +120,16 @@ accessories:
         POSTGRES_DB: mudcreek_production
     directories:
       - data:/var/lib/postgresql/data
+  imgproxy:
+    image: darthsim/imgproxy:latest
+    host: 216.250.116.237
+    port: "127.0.0.1:8080:8080"
+    env:
+      secret:
+        - IMGPROXY_KEY
+        - IMGPROXY_SALT
+      clear:
+        IMGPROXY_BIND: "0.0.0.0:8080"
   # redis:
   #   image: valkey/valkey:8
   #   host: 216.250.116.237
