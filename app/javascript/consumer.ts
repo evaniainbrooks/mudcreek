@@ -19,8 +19,11 @@ conn.events.close = function(this: unknown, event: CloseEvent) {
   document.dispatchEvent(new CustomEvent("cable:disconnected"))
 }
 
-// Eagerly open the WebSocket so disconnect events are monitored on every page,
-// not just those with explicit channel subscriptions.
-consumer.connect()
+// Eagerly open the WebSocket so disconnect events are monitored on every
+// authenticated page. Skipped for unauthenticated pages (e.g. sign-in) to
+// avoid the rejected-connection → toast loop.
+if (document.body.dataset.cable === "true") {
+  consumer.connect()
+}
 
 export default consumer
