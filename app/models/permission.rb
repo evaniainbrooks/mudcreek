@@ -6,6 +6,7 @@ class Permission < ApplicationRecord
     AuctionListing
     AuctionRegistration
     Bid
+    Cloudflare::TurnstileWidget
     DeliveryMethod
     DiscountCode
     EmailAlias

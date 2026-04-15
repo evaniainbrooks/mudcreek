@@ -157,6 +157,10 @@ resource :session
         collection { post :verify }
       end
     end
+    resources :turnstiles, only: [ :index ]
+    namespace :cloudflare do
+      resources :turnstile_widgets, only: [ :create ]
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

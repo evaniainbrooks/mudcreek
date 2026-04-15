@@ -12,6 +12,13 @@ class BaseClient
     request(req, uri)
   end
 
+  def put(uri, body = nil)
+    req = Net::HTTP::Put.new(uri)
+    req.body = body.to_json if body
+    req["Content-Type"] = "application/json"
+    request(req, uri)
+  end
+
   def delete(uri)
     request(Net::HTTP::Delete.new(uri), uri)
   end

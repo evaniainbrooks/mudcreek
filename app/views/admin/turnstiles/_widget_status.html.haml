@@ -1,0 +1,14 @@
+#turnstile-widget-status
+  - if widget.nil?
+    .alert.alert-secondary.d-flex.align-items-center.gap-2
+      .spinner-border.spinner-border-sm{"role" => "status"}
+      Provisioning in progress…
+  - else
+    .alert.alert-success.d-flex.align-items-start.gap-2
+      %i.bi.bi-check-circle-fill.mt-1
+      %div
+        %strong Widget is active.
+        %p.mb-2.mt-1
+          Sitekey:
+          %code= widget.sitekey
+        = button_to "Re-provision", admin_cloudflare_turnstile_widgets_path, method: :post, class: "btn btn-outline-success btn-sm"

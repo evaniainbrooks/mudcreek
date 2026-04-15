@@ -116,6 +116,11 @@
           = link_to admin_sender_signatures_path, class: "dropdown-item" do
             %i.bi.bi-envelope-check.me-1
             Sender Domain
+      - if policy(Cloudflare::TurnstileWidget).index?
+        %li
+          = link_to admin_turnstiles_path, class: "dropdown-item" do
+            %i.bi.bi-shield-check.me-1
+            Turnstile
       - if policy(QrCode).index?
         %li
           = link_to admin_qr_codes_path, class: "dropdown-item" do

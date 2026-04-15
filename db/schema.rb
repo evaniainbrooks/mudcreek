@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_232205) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_233000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -201,6 +201,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_232205) do
     t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
+  end
+
+  create_table "cloudflare_turnstile_widgets", force: :cascade do |t|
+    t.jsonb "api_response", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "external_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_cloudflare_turnstile_widgets_on_external_id", unique: true
+    t.index ["tenant_id"], name: "index_cloudflare_turnstile_widgets_on_tenant_id", unique: true
   end
 
   create_table "delivery_methods", force: :cascade do |t|
@@ -1107,6 +1117,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_232205) do
   add_foreign_key "check_ins", "locations"
   add_foreign_key "check_ins", "tenants", on_delete: :cascade
   add_foreign_key "check_ins", "users"
+  add_foreign_key "cloudflare_turnstile_widgets", "tenants", on_delete: :cascade
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "email_aliases", "tenants", on_delete: :cascade
