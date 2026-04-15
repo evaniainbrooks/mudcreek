@@ -127,6 +127,8 @@ accessories:
       ssl: true
       host: images.mudcreekforest.ca
       app_port: 8080
+      healthcheck:
+        path: /health
     env:
       secret:
         - IMGPROXY_KEY
