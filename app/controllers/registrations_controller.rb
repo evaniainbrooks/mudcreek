@@ -1,6 +1,9 @@
 class RegistrationsController < ApplicationController
+  include TurnstileVerifiable
+
   allow_unauthenticated_access only: :create
   rate_limit to: 5, within: 1.minute, only: :create, with: -> { redirect_to new_session_path, alert: "Too many registration attempts. Try again later." }
+  before_action :verify_turnstile!, only: :create
 
   def create
     user = User.new(registration_params)

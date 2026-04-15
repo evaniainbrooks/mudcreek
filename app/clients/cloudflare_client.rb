@@ -1,5 +1,6 @@
 class CloudflareClient < BaseClient
   BASE_URL = "https://api.cloudflare.com/client/v4"
+  SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v1/siteverify"
 
   def initialize(
     api_token: Rails.application.credentials.dig(:cloudflare, :api_token),
@@ -70,6 +71,26 @@ class CloudflareClient < BaseClient
     { success: body["success"], widget: body["result"], errors: body["errors"] || [] }
   rescue => e
     { success: false, widget: nil, errors: [ e.message ] }
+  end
+
+  # Verifies a Turnstile challenge token against Cloudflare's siteverify endpoint.
+  # Does not use the account API credentials — the widget secret authenticates the request.
+  # Returns { success: bool }
+  def verify_token(secret:, token:, remote_ip: nil)
+    uri = URI(SITEVERIFY_URL)
+    body = { secret: secret, response: token }
+    body[:remoteip] = remote_ip if remote_ip.present?
+
+    req = Net::HTTP::Post.new(uri)
+    req["Content-Type"] = "application/json"
+    req.body = body.to_json
+
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |h| h.request(req) }
+    parsed = JSON.parse(response.body)
+    { success: parsed["success"] == true }
+  rescue => e
+    Rails.logger.error("CloudflareClient#verify_token failed: #{e.message}")
+    { success: false }
   end
 
   private

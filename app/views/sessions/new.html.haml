@@ -1,3 +1,7 @@
+- if @turnstile_widget
+  - content_for :head do
+    %script{src: "https://challenges.cloudflare.com/turnstile/v1/api.js", async: true, defer: true}
+
 .page-container.p-4
   .text-center.pt-3.mb-0
     .d-flex.justify-content-center.align-items-start.gap-3.gap-md-5.flex-nowrap
@@ -43,6 +47,9 @@
               = f.password_field :password,
                   required: true, autocomplete: "current-password",
                   placeholder: "Password", maxlength: 72, class: "form-control"
+            - if @turnstile_widget
+              .mb-3
+                .cf-turnstile{"data-sitekey": @turnstile_widget.sitekey}
             .d-grid.mt-4
               = f.submit "Sign in", class: "btn btn-primary"
           .text-center.mt-3
@@ -88,6 +95,9 @@
                 placeholder: "Confirm password",
                 maxlength: 72,
                 class: "form-control"
+            - if @turnstile_widget
+              .mb-3
+                .cf-turnstile{"data-sitekey": @turnstile_widget.sitekey}
             .d-grid.mt-4
               = f.submit "Create account", class: "btn btn-outline-primary"
           = render "sessions/oauth_buttons"
