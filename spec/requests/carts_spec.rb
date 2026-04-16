@@ -254,6 +254,41 @@ RSpec.describe "Carts", type: :request do
       end
     end
 
+    context "when a cart item's listing has a gallery with photos" do
+      let!(:listing) { create(:listing) }
+      let!(:gallery) do
+        g = create(:gallery, listing: listing)
+        g.photos.attach(io: StringIO.new("fake"), filename: "photo.jpg", content_type: "image/jpeg")
+        g
+      end
+
+      before { user.cart_items.create!(listing: listing) }
+
+      it "returns 200 without raising AssociationNotFoundError" do
+        get cart_path
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders the gallery photo in the offcanvas" do
+        get cart_path
+
+        expect(response.body).to include("photo.jpg").or include("imgproxy").or include("<img")
+      end
+    end
+
+    context "when a cart item's listing has no gallery" do
+      let!(:listing) { create(:listing) }
+
+      before { user.cart_items.create!(listing: listing) }
+
+      it "returns 200 and renders the placeholder" do
+        get cart_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 

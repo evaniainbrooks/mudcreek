@@ -68,6 +68,34 @@ RSpec.describe "WatchlistItems", type: :request do
     end
   end
 
+  describe "offcanvas rendering" do
+    context "when a watchlisted listing has a gallery with photos" do
+      let!(:gallery) do
+        g = create(:gallery, listing: listing)
+        g.photos.attach(io: StringIO.new("fake"), filename: "watch.jpg", content_type: "image/jpeg")
+        g
+      end
+
+      before { user.watchlist_items.create!(listing: listing) }
+
+      it "renders the page without raising AssociationNotFoundError" do
+        get cart_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when a watchlisted listing has no gallery" do
+      before { user.watchlist_items.create!(listing: listing) }
+
+      it "returns 200" do
+        get cart_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
   describe "DELETE /watchlist_items/:id" do
     let!(:watchlist_item) { user.watchlist_items.create!(listing: listing) }
 

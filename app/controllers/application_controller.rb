@@ -30,9 +30,9 @@ class ApplicationController < ActionController::Base
 
   def offcanvas_cart_items
     @offcanvas_cart_items ||= if Current.user
-      Current.user.cart_items.includes(listing: { images_attachments: :blob }).order(:created_at)
+      Current.user.cart_items.includes(listing: { gallery: { photos_attachments: :blob } }).order(:created_at)
     elsif session[:guest_cart_token]
-      CartItem.where(guest_cart_token: session[:guest_cart_token]).includes(listing: { images_attachments: :blob }).order(:created_at)
+      CartItem.where(guest_cart_token: session[:guest_cart_token]).includes(listing: { gallery: { photos_attachments: :blob } }).order(:created_at)
     else
       CartItem.none
     end
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
 
   def offcanvas_watchlist_items
     @offcanvas_watchlist_items ||= if Current.user
-      Current.user.watchlist_items.includes(listing: [:auction_listing, { images_attachments: :blob }]).order(:created_at)
+      Current.user.watchlist_items.includes(listing: [:auction_listing, { gallery: { photos_attachments: :blob } }]).order(:created_at)
     else
       WatchlistItem.none
     end
