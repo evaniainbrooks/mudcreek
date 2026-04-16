@@ -1,0 +1,84 @@
+= form_with model: [:admin, gallery], class: "needs-validation" do |f|
+  - if gallery.errors.any?
+    .alert.alert-danger.mb-4
+      %h5.alert-heading
+        %i.bi.bi-exclamation-triangle-fill.me-2
+        = pluralize(gallery.errors.count, "error")
+        prohibited this gallery from being saved:
+      %ul.mb-0
+        - gallery.errors.full_messages.each do |message|
+          %li= message
+
+  .row.g-4
+    .col-lg-8
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-info-circle.me-1
+          Details
+        .card-body.p-4
+          .mb-3
+            = f.label :name, class: "form-label required"
+            = f.text_field :name,
+                class: "form-control #{'is-invalid' if gallery.errors[:name].any?}",
+                required: true
+            - if gallery.errors[:name].any?
+              .invalid-feedback= gallery.errors[:name].to_sentence
+          .mb-0
+            = f.label :description, class: "form-label"
+            = f.rich_text_area :description, class: "trix-content"
+
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-images.me-1
+          Photos
+        .card-body.p-4
+          - if gallery.photos.attached?
+            .mb-3
+              .row.g-2
+                - gallery.photos.each do |photo|
+                  .col-auto
+                    .border.rounded.p-1.text-center.small.text-muted{ style: "max-width: 140px" }
+                      %i.bi.bi-file-image.d-block.fs-4
+                      = photo.filename
+          .mb-0
+            = f.label :photos, "Add photos", class: "form-label"
+            = f.file_field :photos, multiple: true, accept: "image/*", class: "form-control"
+            .form-text Select one or more image files to add to this gallery.
+
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-camera-video.me-1
+          Videos
+        .card-body.p-4
+          - if gallery.videos.attached?
+            .mb-3
+              %ul.list-unstyled.mb-0
+                - gallery.videos.each do |video|
+                  %li.text-muted.small
+                    %i.bi.bi-file-play.me-1
+                    = video.filename
+          .mb-0
+            = f.label :videos, "Add videos", class: "form-label"
+            = f.file_field :videos, multiple: true, accept: "video/*", class: "form-control"
+            .form-text Select one or more video files to add to this gallery.
+
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
+          %i.bi.bi-file-earmark.me-1
+          Documents
+        .card-body.p-4
+          - if gallery.documents.attached?
+            .mb-3
+              %ul.list-unstyled.mb-0
+                - gallery.documents.each do |doc|
+                  %li.text-muted.small
+                    %i.bi.bi-file-earmark-text.me-1
+                    = doc.filename
+          .mb-0
+            = f.label :documents, "Add documents", class: "form-label"
+            = f.file_field :documents, multiple: true, class: "form-control"
+            .form-text Select one or more documents to add to this gallery.
+
+  .d-flex.gap-2.mt-4
+    = f.submit class: "btn btn-primary"
+    = link_to "Cancel", admin_galleries_path, class: "btn btn-outline-secondary"

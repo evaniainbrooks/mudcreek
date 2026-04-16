@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_120015) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_120018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -255,7 +255,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120015) do
     t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["listing_id"], name: "index_galleries_on_listing_id"
+    t.index ["listing_id"], name: "index_galleries_on_listing_id", unique: true
     t.index ["tenant_id"], name: "index_galleries_on_tenant_id"
   end
 
@@ -266,7 +266,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120015) do
     t.enum "status", default: "unchecked", null: false, enum_type: "improvmx_domain_status"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["tenant_id"], name: "index_improvmx_domains_on_tenant_id"
+    t.index ["tenant_id"], name: "index_improvmx_domains_on_tenant_id", unique: true
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -728,7 +728,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120015) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["external_id"], name: "index_postmark_domains_on_external_id", unique: true
-    t.index ["tenant_id"], name: "index_postmark_domains_on_tenant_id"
+    t.index ["tenant_id"], name: "index_postmark_domains_on_tenant_id", unique: true
   end
 
   create_table "proxy_bids", force: :cascade do |t|

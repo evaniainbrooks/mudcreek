@@ -3,6 +3,7 @@ class Widget < ApplicationRecord
 
   belongs_to :page
 
+  validates :type,     presence: true
   validates :position, presence: true
 
   default_scope { order(:position) }

@@ -203,5 +203,4 @@ RSpec.describe "Admin::EmailAliases", type: :request do
       end
     end
   end
-
 end

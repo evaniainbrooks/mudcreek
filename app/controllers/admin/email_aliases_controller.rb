@@ -19,6 +19,5 @@ module Admin
       DeleteEmailAliasJob.perform_later(@alias.id)
       redirect_to admin_email_aliases_path, notice: "Your request to delete the alias is being processed."
     end
-
   end
 end

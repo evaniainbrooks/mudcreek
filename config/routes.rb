@@ -126,7 +126,7 @@ resource :session
     resources :auction_registrations, only: [ :index, :update ]
     resources :invoices, only: [ :index, :show, :update ], param: :number
     resources :bids, only: [ :update ]
-    resources :galleries, only: [ :index, :destroy ]
+    resources :galleries, only: [ :index, :new, :create, :edit, :update, :destroy ]
     resources :pages
     resources :inquiry_forms
     resources :inquiries, only: [ :index, :show ]

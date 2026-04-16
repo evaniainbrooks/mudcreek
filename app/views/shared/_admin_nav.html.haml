@@ -39,6 +39,11 @@
           = link_to admin_listings_property_sets_path, class: "dropdown-item" do
             %i.bi.bi-list-columns.me-1
             Property Sets
+      - if policy(QrCode).index?
+        %li
+          = link_to admin_qr_codes_path, class: "dropdown-item" do
+            %i.bi.bi-qr-code.me-1
+            QR Codes
       - if policy(AuctionRegistration).index?
         %li
           = link_to admin_auction_registrations_path, class: "dropdown-item" do
@@ -126,11 +131,6 @@
           = link_to admin_turnstiles_path, class: "dropdown-item" do
             %i.bi.bi-shield-check.me-1
             Turnstile
-      - if policy(QrCode).index?
-        %li
-          = link_to admin_qr_codes_path, class: "dropdown-item" do
-            %i.bi.bi-qr-code.me-1
-            QR Codes
       - if policy(Role).index?
         %li
           = link_to admin_roles_path, class: "dropdown-item" do

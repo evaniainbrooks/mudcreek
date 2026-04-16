@@ -64,5 +64,4 @@ class Admin::PagesController < Admin::BaseController
                                                        :location_id, :inquiry_form_id,
                                                        :qr_code_id, :listing_id, :_destroy ])
   end
-
 end

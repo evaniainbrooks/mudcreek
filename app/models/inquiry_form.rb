@@ -3,7 +3,6 @@ class InquiryForm < ApplicationRecord
 
   belongs_to :notification_recipient, class_name: "User"
   has_many :inquiries, dependent: :destroy
-  has_many :pages, dependent: :nullify
 
   validates :name,                    presence: true
   validates :notification_recipient,  presence: true

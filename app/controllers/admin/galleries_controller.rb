@@ -1,5 +1,5 @@
 class Admin::GalleriesController < Admin::BaseController
-  before_action :set_gallery, only: [:destroy]
+  before_action :set_gallery, only: %i[edit update destroy]
 
   def index
     authorize(Gallery)
@@ -16,6 +16,33 @@ class Admin::GalleriesController < Admin::BaseController
     @galleries = scope
   end
 
+  def new
+    @gallery = Gallery.new
+    authorize(@gallery)
+  end
+
+  def create
+    @gallery = Gallery.new(gallery_params)
+    authorize(@gallery)
+
+    if @gallery.save
+      redirect_to admin_galleries_path, notice: "Gallery was successfully created."
+    else
+      render :new, status: :unprocessable_content
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @gallery.update(gallery_params)
+      redirect_to admin_galleries_path, notice: "Gallery was successfully updated."
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   def destroy
     @gallery.destroy!
     redirect_to admin_galleries_path, notice: "Gallery was successfully deleted."
@@ -26,5 +53,9 @@ class Admin::GalleriesController < Admin::BaseController
   def set_gallery
     @gallery = Gallery.find(params[:id])
     authorize(@gallery)
+  end
+
+  def gallery_params
+    params.require(:gallery).permit(:name, :description, photos: [], videos: [], documents: [])
   end
 end

@@ -7,6 +7,7 @@ module AdminHelper
       policy(Listings::Category).index? ||
       policy(Listings::PropertySet).index? ||
       policy(Lot).index? ||
+      policy(QrCode).index? ||
       (Current.tenant.features.locations? && policy(Location).index?)
   end
 
@@ -27,7 +28,6 @@ module AdminHelper
       policy(Page).index? ||
       policy(EmailAlias).index? ||
       policy(Postmark::Domain).index? ||
-      policy(QrCode).index? ||
       policy(Role).index? ||
       policy(Tenant).index? ||
       policy(User).index?

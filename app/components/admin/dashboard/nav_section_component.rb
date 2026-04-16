@@ -12,6 +12,7 @@ class Admin::Dashboard::NavSectionComponent < ViewComponent::Base
     catalog_links << { label: "Locations",     icon: "bi-geo-alt-fill",   path: view.admin_locations_path             } if Current.tenant.features.locations? && view.policy(Location).index?
     catalog_links << { label: "Lots",          icon: "bi-map-fill",       path: view.admin_lots_path                  } if view.policy(Lot).index?
     catalog_links << { label: "Property Sets", icon: "bi-list-columns",   path: view.admin_listings_property_sets_path } if view.policy(Listings::PropertySet).index?
+    catalog_links << { label: "QR Codes",      icon: "bi-qr-code",        path: view.admin_qr_codes_path               } if view.policy(QrCode).index?
     catalog_links << { label: "Registrations", icon: "bi-person-check",   path: view.admin_auction_registrations_path } if view.policy(AuctionRegistration).index?
 
     sales_links = []
@@ -31,7 +32,6 @@ class Admin::Dashboard::NavSectionComponent < ViewComponent::Base
     settings_links << { label: "Turnstile",      icon: "bi-shield-check",   path: view.admin_turnstiles_path        } if view.policy(Cloudflare::TurnstileWidget).index?
     settings_links << { label: "Navbar",             icon: "bi-list-ul",        path: view.admin_navbar_items_path       } if view.policy(NavbarItem).index?
     settings_links << { label: "Pages",         icon: "bi-file-earmark-text", path: view.admin_pages_path         } if view.policy(Page).index?
-    settings_links << { label: "QR Codes",      icon: "bi-qr-code",           path: view.admin_qr_codes_path      } if view.policy(QrCode).index?
     settings_links << { label: "Roles",     icon: "bi-shield-fill",       path: view.admin_roles_path        } if view.policy(Role).index?
     settings_links << { label: "Tenant",    icon: "bi-globe",             path: view.admin_tenant_path       } if view.policy(Tenant).index?
     settings_links << { label: "Users",     icon: "bi-people-fill",       path: view.admin_users_path        } if view.policy(User).index?
