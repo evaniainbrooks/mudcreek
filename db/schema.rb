@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_120009) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_120012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -1107,6 +1107,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120009) do
     t.datetime "created_at", null: false
     t.bigint "gallery_id"
     t.bigint "inquiry_form_id"
+    t.bigint "listing_id"
     t.bigint "location_id"
     t.bigint "page_id", null: false
     t.integer "position", default: 0, null: false
@@ -1116,6 +1117,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120009) do
     t.datetime "updated_at", null: false
     t.index ["gallery_id"], name: "index_widgets_on_gallery_id"
     t.index ["inquiry_form_id"], name: "index_widgets_on_inquiry_form_id"
+    t.index ["listing_id"], name: "index_widgets_on_listing_id"
     t.index ["location_id"], name: "index_widgets_on_location_id"
     t.index ["page_id"], name: "index_widgets_on_page_id"
     t.index ["qr_code_id"], name: "index_widgets_on_qr_code_id"
@@ -1262,6 +1264,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120009) do
   add_foreign_key "watchlist_items", "users"
   add_foreign_key "widgets", "galleries", on_delete: :cascade
   add_foreign_key "widgets", "inquiry_forms", on_delete: :cascade
+  add_foreign_key "widgets", "listings", on_delete: :cascade
   add_foreign_key "widgets", "locations", on_delete: :cascade
   add_foreign_key "widgets", "pages", on_delete: :cascade
   add_foreign_key "widgets", "qr_codes", on_delete: :cascade

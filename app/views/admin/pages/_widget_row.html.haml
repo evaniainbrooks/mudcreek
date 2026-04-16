@@ -7,9 +7,9 @@
   = widget_form.hidden_field :_destroy, value: "0"
 
   = widget_form.select :type,
-      [["Gallery", "GalleryWidget"], ["Location", "LocationWidget"],
-       ["Schedule", "ScheduleWidget"], ["Contact Form", "ContactFormWidget"],
-       ["QR Code", "QrCodeWidget"]],
+      [["Gallery", "GalleryWidget"], ["Listing", "ListingWidget"],
+       ["Location", "LocationWidget"], ["Schedule", "ScheduleWidget"],
+       ["Contact Form", "ContactFormWidget"], ["QR Code", "QrCodeWidget"]],
       {},
       class: "form-select form-select-sm flex-shrink-0", style: "width: auto",
       data: { widget_type_select: "", action: "change->page-widgets#onTypeChange" }
@@ -35,6 +35,11 @@
     %div{ data: { widget_type_fields: "ContactFormWidget" }, hidden: current_type != "ContactFormWidget" }
       = widget_form.collection_select :inquiry_form_id, inquiry_forms, :id, :name,
           { include_blank: "— Select form —" },
+          class: "form-select form-select-sm"
+
+    %div{ data: { widget_type_fields: "ListingWidget" }, hidden: current_type != "ListingWidget" }
+      = widget_form.collection_select :listing_id, listings, :id, :name,
+          { include_blank: "— Select listing —" },
           class: "form-select form-select-sm"
 
     %div{ data: { widget_type_fields: "QrCodeWidget" }, hidden: current_type != "QrCodeWidget" }

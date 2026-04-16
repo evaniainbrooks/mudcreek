@@ -34,6 +34,12 @@ RSpec.describe Widget, type: :model do
       expect(widget).not_to be_valid
       expect(widget.errors[:qr_code_id]).to be_present
     end
+
+    it "ListingWidget requires listing_id" do
+      widget = ListingWidget.new(page: create(:page), position: 0)
+      expect(widget).not_to be_valid
+      expect(widget.errors[:listing_id]).to be_present
+    end
   end
 
   describe "multi-tenancy" do

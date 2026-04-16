@@ -1,0 +1,67 @@
+:ruby
+  listing = widget.listing
+  gallery_media_count = listing.gallery&.photos&.size.to_i + listing.gallery&.videos&.size.to_i
+  carousel_id = ActionView::RecordIdentifier.dom_id(listing, :widget_carousel)
+%section
+  .page-container.p-4
+    .row.g-4.g-lg-5.align-items-start
+      .col-lg-7
+        .position-relative
+          - if gallery_media_count > 0
+            = render "listings/carousel", listing: listing, media_count: gallery_media_count, carousel_id: carousel_id
+          - elsif listing.lot&.listing_placeholder&.attached?
+            .rounded-3.bg-secondary-subtle{ style: background_image_style(listing.lot.listing_placeholder, height: 480) }
+          - elsif Current.tenant.listing_placeholder.attached?
+            .rounded-3.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder, height: 480) }
+          - else
+            .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
+              %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
+          - if listing.lot&.show_attribution?
+            .position-absolute.bottom-0.start-0.p-2
+              = lot_number_badge(listing.lot)
+      .col-lg-5
+        .position-sticky{ style: "top: 1.5rem" }
+          %h2.fw-bold.mb-1= listing.name
+          - if listing.rental?
+            %span.badge.text-bg-info.mb-2 Rental
+            - if listing.rental_rate_plans.any?
+              %p.fw-semibold.mb-1.mt-2 Rate Plans
+              %table.table.table-sm.mb-3
+                %tbody
+                  - listing.rental_rate_plans.order(:position).each do |plan|
+                    %tr
+                      %td= plan.label
+                      %td.text-end= humanized_money_with_symbol(plan.price)
+          - else
+            %p.fs-2.text-primary.fw-semibold.mb-2= humanized_money_with_symbol(listing.price)
+            - unless listing.sold?
+              %p.text-muted.small.mb-2
+                - if !listing.unlimited_quantity? && listing.quantity == 0
+                  %span.badge.text-bg-secondary Out of Stock
+                - elsif !listing.unlimited_quantity?
+                  %i.bi.bi-box-seam.me-1
+                  #{listing.quantity} available
+          %hr.mb-3
+          .listing-description.mb-3= listing.description
+          - if listing.categories.any?
+            = listing_categories_badges(listing, css: "text-bg-dark")
+          - if (addr = listing.effective_address)&.any?
+            .mt-3
+              %a.text-muted.small.text-decoration-none{
+                  href: "https://maps.google.com/maps?q=#{ERB::Util.url_encode(addr.to_geocode_string)}",
+                  target: "_blank", rel: "noopener noreferrer"}
+                %i.bi.bi-geo-alt.me-1
+                = addr.to_fs(:short)
+          .mt-3
+            = link_to public_listing_path(listing), class: "btn btn-primary" do
+              - if listing.sold?
+                View Listing
+              - elsif listing.rental?
+                %i.bi.bi-calendar-check.me-2
+                Check Availability
+              - else
+                %i.bi.bi-cart-plus.me-2
+                View &amp; Purchase
+
+    = render "listings/properties", listing: listing
+    = render "listings/documents", listing: listing

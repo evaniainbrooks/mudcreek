@@ -5,7 +5,8 @@
   .card-body.p-4
     %p.text-muted.small.mb-3 Widgets appear below the page body in the order listed.
     - collections = { galleries: Gallery.order(:name), locations: Location.order(:name),
-                      inquiry_forms: InquiryForm.order(:name), qr_codes: QrCode.order(:name) }
+                      inquiry_forms: InquiryForm.order(:name), qr_codes: QrCode.order(:name),
+                      listings: Listing.where(published: true).order(:name) }
     .mb-3{ data: { page_widgets_target: "container" } }
       = f.fields_for :widgets do |wf|
         = render "admin/pages/widget_row", widget_form: wf, **collections

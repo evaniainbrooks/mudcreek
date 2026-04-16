@@ -8,6 +8,6 @@ class PagesController < ApplicationController
                      .with_attached_right_column_image
                      .with_attached_hero_image
     @active_child = @children.find { |c| c.slug == params[:tab] } || @children.first
-    @widgets = @page.widgets.includes(:gallery, :location, :inquiry_form, :qr_code)
+    @widgets = @page.widgets.includes(:gallery, :location, :inquiry_form, :qr_code, listing: [ :gallery, :properties, :categories, :rental_rate_plans, { lot: :listing_placeholder_attachment } ])
   end
 end
