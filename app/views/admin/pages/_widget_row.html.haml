@@ -1,0 +1,47 @@
+- widget = widget_form.object
+.d-flex.align-items-center.gap-2.p-2.border.rounded.mb-2{ data: { widget_row: "" } }
+  %i.bi.bi-grip-vertical.text-muted.flex-shrink-0{ style: "cursor: grab; font-size: 1.1rem" }
+
+  = widget_form.hidden_field :id
+  = widget_form.hidden_field :position, value: 0
+  = widget_form.hidden_field :_destroy, value: "0"
+
+  = widget_form.select :type,
+      [["Gallery", "GalleryWidget"], ["Location", "LocationWidget"],
+       ["Schedule", "ScheduleWidget"], ["Contact Form", "ContactFormWidget"],
+       ["QR Code", "QrCodeWidget"]],
+      {},
+      class: "form-select form-select-sm flex-shrink-0", style: "width: auto",
+      data: { widget_type_select: "", action: "change->page-widgets#onTypeChange" }
+
+  .flex-grow-1
+    - current_type = widget.type.presence || "GalleryWidget"
+
+    %div{ data: { widget_type_fields: "GalleryWidget" }, hidden: current_type != "GalleryWidget" }
+      = widget_form.collection_select :gallery_id, galleries, :id, :name,
+          { include_blank: "— Select gallery —" },
+          class: "form-select form-select-sm"
+
+    %div{ data: { widget_type_fields: "LocationWidget" }, hidden: current_type != "LocationWidget" }
+      = widget_form.collection_select :location_id, locations, :id, :name,
+          { include_blank: "— Select location —" },
+          class: "form-select form-select-sm"
+
+    %div{ data: { widget_type_fields: "ScheduleWidget" }, hidden: current_type != "ScheduleWidget" }
+      = widget_form.collection_select :location_id, locations, :id, :name,
+          { include_blank: "— Select location —" },
+          class: "form-select form-select-sm"
+
+    %div{ data: { widget_type_fields: "ContactFormWidget" }, hidden: current_type != "ContactFormWidget" }
+      = widget_form.collection_select :inquiry_form_id, inquiry_forms, :id, :name,
+          { include_blank: "— Select form —" },
+          class: "form-select form-select-sm"
+
+    %div{ data: { widget_type_fields: "QrCodeWidget" }, hidden: current_type != "QrCodeWidget" }
+      = widget_form.collection_select :qr_code_id, qr_codes, :id, :name,
+          { include_blank: "— Select QR code —" },
+          class: "form-select form-select-sm"
+
+  %button.btn.btn-sm.btn-outline-danger.flex-shrink-0{ type: "button",
+      data: { action: "page-widgets#removeWidget" } }
+    %i.bi.bi-trash3

@@ -8,7 +8,6 @@ class PagesController < ApplicationController
                      .with_attached_right_column_image
                      .with_attached_hero_image
     @active_child = @children.find { |c| c.slug == params[:tab] } || @children.first
-    @inquiry_form = @page.inquiry_form
-    @inquiry = Inquiry.new if @inquiry_form
+    @widgets = @page.widgets.includes(:gallery, :location, :inquiry_form, :qr_code)
   end
 end

@@ -1,0 +1,4 @@
+- qr_code = widget.qr_code
+%section.text-center
+  = image_tag qr_code_image_path(qr_code.slug), alt: qr_code.name, style: "width: 200px; height: 200px"
+  %p.mt-2.fw-semibold= qr_code.name

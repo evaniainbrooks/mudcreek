@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_120009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -694,7 +694,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "icon"
-    t.bigint "inquiry_form_id"
     t.text "meta_description"
     t.string "meta_title"
     t.bigint "parent_id"
@@ -706,7 +705,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
     t.bigint "tenant_id", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
-    t.index ["inquiry_form_id"], name: "index_pages_on_inquiry_form_id"
     t.index ["parent_id"], name: "index_pages_on_parent_id"
     t.index ["tenant_id", "slug"], name: "index_pages_on_tenant_id_and_slug", unique: true
   end
@@ -1105,6 +1103,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
     t.index ["user_id", "listing_id"], name: "index_watchlist_items_on_user_id_and_listing_id", unique: true
   end
 
+  create_table "widgets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "gallery_id"
+    t.bigint "inquiry_form_id"
+    t.bigint "location_id"
+    t.bigint "page_id", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "qr_code_id"
+    t.bigint "tenant_id", null: false
+    t.string "type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gallery_id"], name: "index_widgets_on_gallery_id"
+    t.index ["inquiry_form_id"], name: "index_widgets_on_inquiry_form_id"
+    t.index ["location_id"], name: "index_widgets_on_location_id"
+    t.index ["page_id"], name: "index_widgets_on_page_id"
+    t.index ["qr_code_id"], name: "index_widgets_on_qr_code_id"
+    t.index ["tenant_id"], name: "index_widgets_on_tenant_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "auction_listings", "auctions"
@@ -1197,7 +1214,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
   add_foreign_key "orders", "discount_codes", on_delete: :nullify
   add_foreign_key "orders", "tenants"
   add_foreign_key "orders", "users"
-  add_foreign_key "pages", "inquiry_forms", on_delete: :nullify
   add_foreign_key "pages", "pages", column: "parent_id", on_delete: :nullify
   add_foreign_key "pages", "tenants", on_delete: :cascade
   add_foreign_key "permissions", "roles"
@@ -1244,6 +1260,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
   add_foreign_key "watchlist_items", "listings"
   add_foreign_key "watchlist_items", "tenants", on_delete: :cascade
   add_foreign_key "watchlist_items", "users"
+  add_foreign_key "widgets", "galleries", on_delete: :cascade
+  add_foreign_key "widgets", "inquiry_forms", on_delete: :cascade
+  add_foreign_key "widgets", "locations", on_delete: :cascade
+  add_foreign_key "widgets", "pages", on_delete: :cascade
+  add_foreign_key "widgets", "qr_codes", on_delete: :cascade
+  add_foreign_key "widgets", "tenants", on_delete: :cascade
 
   create_function :notify_bid_event, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.notify_bid_event()

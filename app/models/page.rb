@@ -10,7 +10,8 @@ class Page < ApplicationRecord
   belongs_to :parent, class_name: "Page", optional: true
   has_many :children, class_name: "Page", foreign_key: :parent_id, dependent: :nullify, inverse_of: :parent
 
-  belongs_to :inquiry_form, optional: true
+  has_many :widgets, dependent: :destroy, inverse_of: :page
+  accepts_nested_attributes_for :widgets, allow_destroy: true, reject_if: :all_blank
 
   validates :title, presence: true
   validates :slug, presence: true,

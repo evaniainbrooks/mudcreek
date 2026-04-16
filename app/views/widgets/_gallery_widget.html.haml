@@ -1,0 +1,11 @@
+- gallery = widget.gallery
+%section
+  - if gallery.name.present?
+    %h2.h4.fw-semibold.mb-3= gallery.name
+  - if gallery.description.present?
+    .mb-4= gallery.description
+  - if gallery.photos.attached?
+    .row.row-cols-2.row-cols-md-3.row-cols-lg-4.g-3
+      - gallery.photos.each do |photo|
+        .col
+          = optimized_image_tag photo, preset: :card, class: "img-fluid rounded w-100", style: "object-fit: cover; aspect-ratio: 2/1"

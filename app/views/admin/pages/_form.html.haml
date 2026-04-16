@@ -72,11 +72,6 @@
               = check_box_tag :create_navbar_item, "1", false, class: "form-check-input", id: "create_navbar_item"
               = label_tag :create_navbar_item, "Create navbar item", class: "form-check-label"
           .mb-3
-            = f.label :inquiry_form_id, "Inquiry Form", class: "form-label"
-            = f.collection_select :inquiry_form_id, InquiryForm.order(:name), :id, :name,
-                { include_blank: "— None —" },
-                class: "form-select"
-          .mb-3
             = f.label :parent_id, "Parent Page", class: "form-label"
             = f.collection_select :parent_id, Page.where.not(id: page.id).order(:title), :id, :title,
                 { include_blank: "— None (top level) —" },
@@ -89,6 +84,8 @@
             = f.number_field :position, class: "form-control #{'is-invalid' if page.errors[:position].any?}", min: 0
             - if page.errors[:position].any?
               .invalid-feedback= page.errors[:position].to_sentence
+
+      = render "admin/pages/widget_fields", f: f
 
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold

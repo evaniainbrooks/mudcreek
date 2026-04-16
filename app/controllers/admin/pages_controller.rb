@@ -58,7 +58,11 @@ class Admin::PagesController < Admin::BaseController
 
   def page_params
     params.require(:page).permit(:title, :slug, :icon, :body, :published, :position,
-                                 :parent_id, :inquiry_form_id, :meta_title, :meta_description,
-                                 :hero_image, :left_column_image, :right_column_image)
+                                 :parent_id, :meta_title, :meta_description,
+                                 :hero_image, :left_column_image, :right_column_image,
+                                 widgets_attributes: [ :id, :type, :position, :gallery_id,
+                                                       :location_id, :inquiry_form_id,
+                                                       :qr_code_id, :_destroy ])
   end
+
 end

@@ -1,0 +1,11 @@
+- inquiry_form = widget.inquiry_form
+- inquiry = Inquiry.new
+%section
+  %h2.h4.fw-semibold.mb-1= inquiry_form.name
+  - if inquiry_form.description.present?
+    %p.text-muted.mb-4= inquiry_form.description
+  .row
+    .col-lg-7
+      .card.shadow-sm.border-0
+        .card-body.p-4
+          = render "inquiry_forms/form", inquiry_form: inquiry_form, inquiry: inquiry
