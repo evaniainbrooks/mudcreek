@@ -1,12 +1,19 @@
 - location = widget.location
+- addr = location.address
 %section
-  .d-flex.align-items-start.gap-4
+  .d-flex.align-items-start.gap-4.mb-3
     - if location.logo.attached?
       = optimized_image_tag location.logo, preset: :logo,
           class: "rounded flex-shrink-0", style: "width: 80px; height: 80px; object-fit: contain"
     .flex-grow-1
       %h2.h4.fw-semibold.mb-1= location.name
-      - if (addr = location.address)&.any?
+      - if addr&.any?
         %p.text-muted.mb-0= addr.to_fs(:short)
       - if location.message.present?
         .mt-3= location.message
+  - if addr&.any?
+    %iframe{src: google_maps_embed_url(addr),
+            width: "100%", height: "350",
+            style: "border: 0; border-radius: 0.5rem",
+            allowfullscreen: true, loading: "lazy",
+            referrerpolicy: "no-referrer-when-downgrade"}
