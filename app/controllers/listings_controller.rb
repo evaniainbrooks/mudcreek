@@ -4,11 +4,9 @@ class ListingsController < ApplicationController
   def show
     @listing = Listing.where(published: true)
                       .with_rich_text_description
-                      .with_attached_images
-                      .with_attached_videos
-                      .with_attached_documents
                       .includes(lot: [ :owner, :address, { listing_placeholder_attachment: :blob } ],
-                                auction_listing: :auction)
+                                auction_listing: :auction,
+                                gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob })
                       .find_by!(hashid: params[:hashid])
 
     if (al = @listing.auction_listing)
@@ -43,7 +41,7 @@ class ListingsController < ApplicationController
 
     base = Listing.where(published: true, state: @tab).not_in_auction
     @filter_total = base.count
-    scope = base.with_rich_text_description.with_attached_images.with_attached_videos.includes(:rental_rate_plans, :categories, lot: [ :owner, :address, { listing_placeholder_attachment: :blob } ]).order(position: :asc, id: :asc)
+    scope = base.with_rich_text_description.includes(:rental_rate_plans, :categories, lot: [ :owner, :address, { listing_placeholder_attachment: :blob } ], gallery: { photos_attachments: :blob, videos_attachments: :blob }).order(position: :asc, id: :asc)
     scope = scope.where(id: Listings::CategoryAssignment.where(listings_category_id: category.id).select(:listing_id)) if category
     scope = scope.where(Listing.arel_table[:name].matches("%#{Listing.sanitize_sql_like(@search)}%")) if @search
     scope = scope.where(lot_id: lot.id) if lot

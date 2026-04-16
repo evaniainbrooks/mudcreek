@@ -30,8 +30,8 @@
             .card.h-100.shadow-sm.border-0
               .position-relative
                 = link_to public_listing_path(listing) do
-                  - if listing.images.attached?
-                    = optimized_image_tag listing.images.first,
+                  - if listing.gallery&.photos&.attached?
+                    = optimized_image_tag listing.gallery.photos.first,
                         preset: :card, class: "card-img-top object-fit-cover", style: "height: 200px"
                   - elsif listing.lot&.listing_placeholder&.attached?
                     = optimized_image_tag listing.lot.listing_placeholder,

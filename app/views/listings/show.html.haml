@@ -23,8 +23,9 @@
   .row.g-4.g-lg-5.align-items-start
     .col-lg-7
       .position-relative
-        - if @listing.has_images? || @listing.has_videos?
-          = render "listings/carousel", listing: @listing, media_count: @listing.media_count
+        - gallery_media_count = @listing.gallery&.photos&.size.to_i + @listing.gallery&.videos&.size.to_i
+        - if gallery_media_count > 0
+          = render "listings/carousel", listing: @listing, media_count: gallery_media_count
         - elsif @listing.lot&.listing_placeholder&.attached?
           .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
         - elsif Current.tenant.listing_placeholder.attached?

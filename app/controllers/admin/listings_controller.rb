@@ -47,6 +47,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def new
     @listing = Listing.new(delivery_method_set_id: Current.tenant.default_delivery_method_set_id)
+    @listing.build_gallery
     authorize(@listing)
     load_form_collections
     if params[:property_set_id].present?
@@ -58,6 +59,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def edit
+    @listing.build_gallery unless @listing.gallery
     load_form_collections
   end
 
@@ -104,21 +106,28 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def set_listing
-    @listing = Listing.includes(:categories, :properties, auction_listing: :auction).with_attached_images.with_attached_videos.with_attached_documents.find_by!(hashid: params[:hashid])
+    @listing = Listing.includes(
+      :categories, :properties,
+      auction_listing: :auction,
+      gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob }
+    ).find_by!(hashid: params[:hashid])
     authorize(@listing)
   end
 
   def listing_params
     base = %i[name description price quantity unlimited_quantity sku tax_exempt delivery_method_set_id owner_id lot_id published pricing_type show_video_as_poster]
     base.unshift(:listing_type) if action_name == "create"
-    p = params.require(:listing).permit(*base, images: [], videos: [], documents: [], category_ids: [],
+    p = params.require(:listing).permit(*base, category_ids: [],
+      gallery_attributes: [ :id, :name, photos: [], videos: [], documents: [] ],
       rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],
       properties_attributes: [:id, :name, :value, :icon, :position, :_destroy],
       address_attributes: [:id, :street_address, :city, :province, :postal_code, :country, :address_type],
       options_attributes: [:id, :name, :position, :_destroy,
         option_values_attributes: [:id, :value, :position, :_destroy]],
       variants_attributes: [:id, :quantity, :price_cents, :sku, :_destroy])
-    %i[images videos documents].each { |key| p.delete(key) if Array(p[key]).all?(&:blank?) }
+    if (ga = p[:gallery_attributes])
+      %i[photos videos documents].each { |key| ga.delete(key) if Array(ga[key]).all?(&:blank?) }
+    end
     p
   end
 end

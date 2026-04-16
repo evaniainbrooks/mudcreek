@@ -6,37 +6,41 @@
     .mb-3.form-check
       = f.check_box :show_video_as_poster, class: "form-check-input"
       = f.label :show_video_as_poster, "Show video as poster (prefer video over image on cards)", class: "form-check-label"
-    .mb-3
-      = f.label :images, class: "form-label"
-      = f.file_field :images,
-        multiple: true,
-        direct_upload: true,
-        class: "form-control #{'is-invalid' if listing.errors[:images].any?}",
-        accept: "image/*"
-      - if listing.errors[:images].any?
-        .invalid-feedback= listing.errors[:images].to_sentence
-      = render Admin::AttachmentsListComponent.new(attachments: listing.images_attachments,
-          delete_path: ->(a) { admin_listing_attachment_path(listing, a) })
-    .mb-3
-      = f.label :videos, class: "form-label"
-      = f.file_field :videos,
-        multiple: true,
-        direct_upload: true,
-        class: "form-control #{'is-invalid' if listing.errors[:videos].any?}",
-        accept: "video/*"
-      - if listing.errors[:videos].any?
-        .invalid-feedback= listing.errors[:videos].to_sentence
-      = render Admin::AttachmentsListComponent.new(attachments: listing.videos_attachments,
-          delete_path: ->(a) { admin_listing_attachment_path(listing, a) })
-    .mb-0
-      = f.label :documents, class: "form-label"
-      = f.file_field :documents,
-        multiple: true,
-        direct_upload: true,
-        class: "form-control #{'is-invalid' if listing.errors[:documents].any?}",
-        accept: ".pdf,.doc,.docx,.xlsx"
-      - if listing.errors[:documents].any?
-        .invalid-feedback= listing.errors[:documents].to_sentence
-      = render Admin::AttachmentsListComponent.new(attachments: listing.documents_attachments,
-          delete_path: ->(a) { admin_listing_attachment_path(listing, a) })
+    = f.fields_for :gallery do |gf|
+      .mb-3
+        = gf.label :photos, class: "form-label"
+        = gf.file_field :photos,
+          multiple: true,
+          direct_upload: true,
+          class: "form-control #{'is-invalid' if listing.gallery&.errors[:photos].any?}",
+          accept: "image/*"
+        - if listing.gallery&.errors[:photos].any?
+          .invalid-feedback= listing.gallery.errors[:photos].to_sentence
+        = render Admin::AttachmentsListComponent.new(
+            attachments: listing.gallery&.photos_attachments || [],
+            delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
+      .mb-3
+        = gf.label :videos, class: "form-label"
+        = gf.file_field :videos,
+          multiple: true,
+          direct_upload: true,
+          class: "form-control #{'is-invalid' if listing.gallery&.errors[:videos].any?}",
+          accept: "video/*"
+        - if listing.gallery&.errors[:videos].any?
+          .invalid-feedback= listing.gallery.errors[:videos].to_sentence
+        = render Admin::AttachmentsListComponent.new(
+            attachments: listing.gallery&.videos_attachments || [],
+            delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
+      .mb-0
+        = gf.label :documents, class: "form-label"
+        = gf.file_field :documents,
+          multiple: true,
+          direct_upload: true,
+          class: "form-control #{'is-invalid' if listing.gallery&.errors[:documents].any?}",
+          accept: ".pdf,.doc,.docx,.xlsx"
+        - if listing.gallery&.errors[:documents].any?
+          .invalid-feedback= listing.gallery.errors[:documents].to_sentence
+        = render Admin::AttachmentsListComponent.new(
+            attachments: listing.gallery&.documents_attachments || [],
+            delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
     .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }

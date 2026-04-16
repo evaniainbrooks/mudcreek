@@ -110,7 +110,7 @@ resource :session
     resources :delivery_methods,  only: [ :index, :create, :update, :destroy ]
     resources :listings, param: :hashid do
       collection { patch :reorder }
-      resources :attachments,       only: [ :destroy ], module: :listings
+      resources :gallery_attachments, only: [ :destroy ], module: :listings
       resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
       resources :variants,          only: [ :create ], module: :listings
       resources :stock_movements,   only: [ :create, :destroy ], module: :listings
@@ -126,6 +126,7 @@ resource :session
     resources :auction_registrations, only: [ :index, :update ]
     resources :invoices, only: [ :index, :show, :update ], param: :number
     resources :bids, only: [ :update ]
+    resources :galleries, only: [ :index, :destroy ]
     resources :pages
     resources :inquiry_forms
     resources :inquiries, only: [ :index, :show ]

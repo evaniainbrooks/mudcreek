@@ -1,4 +1,4 @@
-class Admin::Listings::AttachmentsController < Admin::BaseController
+class Admin::Listings::GalleryAttachmentsController < Admin::BaseController
   before_action :set_listing
   before_action :set_attachment
 
@@ -15,6 +15,6 @@ class Admin::Listings::AttachmentsController < Admin::BaseController
   end
 
   def set_attachment
-    @attachment = ActiveStorage::Attachment.find_by!(record: @listing, id: params[:id])
+    @attachment = ActiveStorage::Attachment.find_by!(record: @listing.gallery, id: params[:id])
   end
 end

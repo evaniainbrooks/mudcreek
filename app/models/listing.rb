@@ -32,21 +32,13 @@ class Listing < ApplicationRecord
   has_many :options,  class_name: "Listings::Option",  dependent: :destroy
   has_many :variants, class_name: "Listings::Variant", dependent: :destroy
 
+  has_one :gallery, dependent: :destroy
+  accepts_nested_attributes_for :gallery
   has_many :watchlist_items, dependent: :destroy
 
   has_rich_text :description
-  has_many_attached :images
-  has_many_attached :videos
-  has_many_attached :documents
 
   monetize :price_cents, with_model_currency: :currency
-
-  ALLOWED_DOCUMENT_TYPES = %w[
-    application/pdf
-    application/msword
-    application/vnd.openxmlformats-officedocument.wordprocessingml.document
-    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-  ].freeze
 
   before_validation :set_default_position, on: :create
   before_validation :set_rental_price_default
@@ -70,8 +62,6 @@ class Listing < ApplicationRecord
   def owner
     super || lot&.owner
   end
-  validate :documents_content_type
-
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :properties, allow_destroy: true, reject_if: :all_blank
@@ -80,18 +70,6 @@ class Listing < ApplicationRecord
 
   def has_variants?
     variants.loaded? ? variants.any? : variants.exists?
-  end
-
-  def has_images?
-    images.attached?
-  end
-
-  def has_videos?
-    videos.attached?
-  end
-
-  def media_count
-    images.size + videos.size
   end
 
   def effective_address
@@ -121,13 +99,6 @@ class Listing < ApplicationRecord
 
   def set_rental_price_default
     self.price_cents = 0 if rental? && price_cents.nil?
-  end
-
-  def documents_content_type
-    documents.each do |doc|
-      next if ALLOWED_DOCUMENT_TYPES.include?(doc.content_type)
-      errors.add(:documents, "#{doc.filename} must be a PDF, DOC, DOCX, or XLSX file")
-    end
   end
 
   scope :not_in_auction, -> { where.not(id: AuctionListing.select(:listing_id)) }

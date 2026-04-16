@@ -17,12 +17,12 @@ module ListingsHelper
     body = listing.description.to_plain_text.presence
     description = "#{price_prefix}#{body}".truncate(200).presence
     og_image =
-      if listing.images.attached?
-        absolute_url_for(listing.images.first)
+      if listing.gallery&.photos&.attached?
+        absolute_optimized_image_url(listing.gallery.photos.first)
       elsif listing.lot&.listing_placeholder&.attached?
-        absolute_url_for(listing.lot.listing_placeholder)
+        absolute_optimized_image_url(listing.lot.listing_placeholder)
       elsif Current.tenant.listing_placeholder.attached?
-        absolute_url_for(Current.tenant.listing_placeholder)
+        absolute_optimized_image_url(Current.tenant.listing_placeholder)
       end
     set_meta_tags title: listing.name,
       description: description,

@@ -21,8 +21,7 @@ class Profiles::ListingsController < Profiles::BaseController
     Listing
       .joins(order_items: :order)
       .where(orders: { user: Current.user, status: :paid })
-      .with_attached_images
-      .includes(:lot)
+      .includes(:lot, gallery: { photos_attachments: :blob })
       .distinct
       .order(id: :desc)
   end

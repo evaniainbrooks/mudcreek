@@ -17,9 +17,12 @@ class Admin::Listings::CopiesController < Admin::BaseController
       if (addr = @listing.address)
         copy.create_address(addr.attributes.except("id", "addressable_id", "addressable_type", "created_at", "updated_at"))
       end
-      @listing.images.each    { |img| copy.images.attach(img.blob) }
-      @listing.videos.each    { |vid| copy.videos.attach(vid.blob) }
-      @listing.documents.each { |doc| copy.documents.attach(doc.blob) }
+      if (src = @listing.gallery)
+        gallery = copy.create_gallery!(name: copy.name)
+        gallery.photos.attach(src.photos.map(&:blob))       if src.photos.attached?
+        gallery.videos.attach(src.videos.map(&:blob))       if src.videos.attached?
+        gallery.documents.attach(src.documents.map(&:blob)) if src.documents.attached?
+      end
     end
 
     redirect_to edit_admin_listing_path(copy), notice: "Listing copied. Review and publish when ready."
@@ -28,8 +31,9 @@ class Admin::Listings::CopiesController < Admin::BaseController
   private
 
   def set_listing
-    @listing = Listing.with_attached_images.with_attached_videos.with_attached_documents
-      .includes(:category_assignments, :properties, :rental_rate_plans, :address)
+    @listing = Listing
+      .includes(:category_assignments, :properties, :rental_rate_plans, :address,
+                gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob })
       .find_by!(hashid: params[:listing_hashid])
     authorize(@listing, :update?)
   end

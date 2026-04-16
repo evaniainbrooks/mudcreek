@@ -27,7 +27,7 @@
       %nav.navbar.navbar-expand-lg{"data-bs-theme": "dark", "data-controller": "navbar"}
         .container
           - if Current.tenant.logo.attached?
-            = image_tag(Current.tenant.logo, class: "navbar-logo", style: "max-width: 48px; margin-right: 0.5rem")
+            = optimized_image_tag(Current.tenant.logo, preset: :logo, class: "navbar-logo", style: "max-width: 48px; margin-right: 0.5rem")
           .lh-sm
             = link_to Current.tenant.name, "/", class: "navbar-brand fw-bold"
             - if Current.tenant.tagline.present?

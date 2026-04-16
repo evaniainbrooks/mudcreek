@@ -3,7 +3,10 @@ module ImageHelper
     card:           { width: 800,  height: 400, resizing_type: "fit",  format: "webp" },
     carousel_slide: { width: 1200, height: 480, resizing_type: "fit",  format: "webp" },
     carousel_thumb: { width: 152,  height: 152, resizing_type: "fill", format: "webp" },
-    poster:         { width: 800,  height: 600, resizing_type: "fit",  format: "webp" }
+    poster:         { width: 800,  height: 600, resizing_type: "fit",  format: "webp" },
+    hero:           { width: 1200, height: 400, resizing_type: "fit",  format: "webp" },
+    column:         { width: 600,  height: 800, resizing_type: "fit",  format: "webp" },
+    logo:           { width: 96,   height: 96,  resizing_type: "fit",  format: "webp" }
   }.freeze
 
   # Returns a URL string for an attachment, optionally via imgproxy.
@@ -13,6 +16,13 @@ module ImageHelper
     else
       url_for(attachment)
     end
+  end
+
+  # Returns an absolute URL suitable for OG/Twitter meta tags. Routes through
+  # imgproxy when configured so crawlers never hit Active Storage directly.
+  def absolute_optimized_image_url(attachment, preset: :card)
+    url = optimized_image_url(attachment, preset:)
+    url.start_with?("http") ? url : "#{request.base_url}#{url}"
   end
 
   # Returns an inline style string for a CSS background-image container.

@@ -1,0 +1,61 @@
+- set_meta_tags title: "Galleries"
+
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-images.me-2
+    Galleries
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold Filter Records
+    .card-body
+      = search_form_for @q, url: admin_galleries_path, html: { class: "row g-2 align-items-end" } do |f|
+        .col-md-5
+          = f.label :name_cont, "Name", class: "form-label form-label-sm"
+          = f.search_field :name_cont, class: "form-control form-control-sm", placeholder: "Search by name..."
+        .col-md-3
+          = f.label :listing_id_null, "Listing", class: "form-label form-label-sm"
+          = f.select :listing_id_null, [["Unattached", "1"], ["Attached", "0"]],
+              { include_blank: "Any" }, class: "form-select form-select-sm"
+        .col-auto
+          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+            %i.bi.bi-search.me-1
+            Search
+        .col-auto
+          = link_to "Clear", admin_galleries_path, class: "btn btn-outline-secondary btn-sm"
+
+  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+      label: "galleries", clear_url: admin_galleries_path)
+
+  - if @galleries.empty?
+    = render EmptyStateComponent.new(icon: "images", message: "No galleries found.")
+  - else
+    .table-responsive
+      %table.table.table-hover.align-middle.mb-0
+        %thead.table-light
+          %tr
+            %th Name
+            %th Description
+            %th Listing
+            %th.text-center Media
+            %th
+        %tbody
+          - @galleries.each do |gallery|
+            :ruby
+              media_count = gallery.photos.size + gallery.videos.size + gallery.documents.size
+            %tr
+              %td.fw-semibold= gallery.name
+              %td.text-muted
+                - if gallery.description.present?
+                  = gallery.description.to_plain_text.truncate(120)
+              %td
+                - if gallery.listing
+                  = link_to gallery.listing.name, admin_listing_path(gallery.listing), class: "text-decoration-none"
+                - else
+                  %span.text-muted —
+              %td.text-center
+                %span.badge.bg-secondary= media_count
+              %td.text-end
+                = link_to admin_gallery_path(gallery), class: "btn btn-sm btn-outline-danger",
+                    data: { turbo_method: :delete, turbo_confirm: "Delete '#{gallery.name}'?" } do
+                  %i.bi.bi-trash

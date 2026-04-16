@@ -12,7 +12,7 @@
           = link_to listings_path(category_id: category.hashid), class: "text-decoration-none" do
             .position-relative.overflow-hidden.rounded.shadow-sm{ style: "height: 200px; background: #dee2e6" }
               - if category.hero_image.attached?
-                = image_tag category.hero_image.variant(resize_to_fill: [800, 400]),
+                = optimized_image_tag category.hero_image, preset: :card,
                     class: "w-100 h-100",
                     style: "object-fit: cover",
                     alt: category.name

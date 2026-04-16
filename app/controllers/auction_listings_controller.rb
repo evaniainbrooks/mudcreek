@@ -35,10 +35,8 @@ class AuctionListingsController < ApplicationController
 
     @listing = Listing.where(published: true)
       .with_rich_text_description
-      .with_attached_images
-      .with_attached_videos
-      .with_attached_documents
-      .includes(:categories, lot: { listing_placeholder_attachment: :blob })
+      .includes(:categories, lot: { listing_placeholder_attachment: :blob },
+                gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob })
       .find(@auction_listing.listing_id)
   end
 end

@@ -5,13 +5,13 @@ class Admin::AttachmentsListComponent < ViewComponent::Base
   # attachments   – collection of ActiveStorage::Attachment objects
   # delete_path   – optional proc/lambda receiving each attachment, returning the
   #                 path for the delete action, e.g.:
-  #                   ->(a) { admin_listing_attachment_path(listing, a) }
+  #                   ->(a) { admin_listing_gallery_attachment_path(listing, a) }
   # delete_method – Turbo method for the delete link (default :delete)
   #
   # Example:
   #   render Admin::AttachmentsListComponent.new(
-  #     attachments:   listing.images_attachments,
-  #     delete_path:   ->(a) { admin_listing_attachment_path(listing, a) }
+  #     attachments:   listing.gallery.photos_attachments,
+  #     delete_path:   ->(a) { admin_listing_gallery_attachment_path(listing, a) }
   #   )
 
   def initialize(attachments:, delete_path: nil, delete_method: :delete)

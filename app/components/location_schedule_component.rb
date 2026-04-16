@@ -1,5 +1,5 @@
 class LocationScheduleComponent < ViewComponent::Base
-  attr_reader :location, :week_start, :week_days, :today, :slots, :grid
+  attr_reader :location, :week_start, :week_days, :today, :slots, :grid, :view
 
   SLOTS = (0..31).map do |i|
     hour = 6 + i / 2
@@ -43,15 +43,28 @@ class LocationScheduleComponent < ViewComponent::Base
     { bg: "#fef2f2", border: "#fca5a5", text: "#7f1d1d" }  # soft red
   ].freeze
 
-  def initialize(location:)
+  def initialize(location:, view: "weekly")
+    @view          = view
     @location      = location
     @week_start    = Date.current.beginning_of_week(:sunday)
     @week_days     = (0..6).map { |d| @week_start + d.days }
     @today         = Date.current
     @slots         = SLOTS
-    @grid          = build_grid
+    @grid          = build_grid if weekly?
     @color_index   = {}
     @color_counter = 0
+  end
+
+  def daily?
+    @view == "daily"
+  end
+
+  def weekly?
+    @view == "weekly"
+  end
+
+  def today_events
+    @today_events ||= LocationCalendarService.new(@location).today_events
   end
 
   def today_col_idx
@@ -81,11 +94,14 @@ class LocationScheduleComponent < ViewComponent::Base
 
   def described_events
     @described_events ||= begin
-      week_events = LocationCalendarService.new(@location).week_events(@week_start)
-      week_events.values.flatten
-                 .select { |e| e.description.to_s.strip.present? }
-                 .uniq { |e| e.summary.to_s.strip.downcase }
-                 .sort_by { |e| e.summary.to_s }
+      events = if daily?
+        today_events
+      else
+        LocationCalendarService.new(@location).week_events(@week_start).values.flatten
+      end
+      events.select { |e| e.description.to_s.strip.present? }
+            .uniq { |e| e.summary.to_s.strip.downcase }
+            .sort_by { |e| e.summary.to_s }
     end
   end
 

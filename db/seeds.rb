@@ -1370,7 +1370,8 @@ LISTING_IMAGE_KEYWORDS.each do |listing_name, keywords|
   listing = Listing.find_by(name: listing_name)
   next unless listing
 
-  existing_count = listing.images.count
+  gallery        = listing.gallery || listing.create_gallery!(name: listing.name)
+  existing_count = gallery.photos.count
   keywords.each_with_index do |keyword, idx|
     next if idx < existing_count  # skip already-attached slots
 
@@ -1382,7 +1383,7 @@ LISTING_IMAGE_KEYWORDS.each do |listing_name, keywords|
     path = fetch_listing_image(keyword, filename)
 
     if path
-      listing.images.attach(
+      gallery.photos.attach(
         io:           path.open("rb"),
         filename:     filename,
         content_type: "image/jpeg"
@@ -1412,11 +1413,13 @@ listing_videos.each do |listing_name, opts|
   listing = Listing.find_by(name: listing_name)
   next unless listing
 
-  unless listing.videos.any?
+  gallery = listing.gallery || listing.create_gallery!(name: listing.name)
+
+  unless gallery.videos.attached?
     path = FIXTURES_VIDEO_DIR.join(opts[:file])
     next unless path.exist?
 
-    listing.videos.attach(
+    gallery.videos.attach(
       io:           path.open("rb"),
       filename:     opts[:file],
       content_type: "video/mp4"

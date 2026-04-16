@@ -14,6 +14,11 @@
           = link_to admin_listings_categories_path, class: "dropdown-item" do
             %i.bi.bi-tags-fill.me-1
             Categories
+      - if policy(Gallery).index?
+        %li
+          = link_to admin_galleries_path, class: "dropdown-item" do
+            %i.bi.bi-images.me-1
+            Galleries
       - if policy(Listing).index?
         %li
           = link_to admin_listings_path, class: "dropdown-item" do

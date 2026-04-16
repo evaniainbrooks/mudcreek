@@ -1,4 +1,4 @@
 - content_for :title, "#{@location.name} — Schedule"
 
 .container-xl.py-4
-  = render LocationScheduleComponent.new(location: @location)
+  = render LocationScheduleComponent.new(location: @location, view: @schedule_view)

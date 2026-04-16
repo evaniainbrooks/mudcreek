@@ -48,9 +48,7 @@ class BidBroadcastService
     return nil unless auction_listing
 
     auction_listing.listing = Listing
-      .with_attached_images
-      .with_attached_videos
-      .includes(:categories, lot: { listing_placeholder_attachment: :blob })
+      .includes(:categories, lot: { listing_placeholder_attachment: :blob }, gallery: { photos_attachments: :blob, videos_attachments: :blob })
       .find(auction_listing.listing_id)
 
     auction_listing

@@ -9,5 +9,6 @@ class LocationSchedulesController < ApplicationController
     else
       Location.find_by!(hashid: params[:location_hashid], published: true)
     end
+    @schedule_view = params[:view].presence_in(%w[daily weekly]) || "weekly"
   end
 end

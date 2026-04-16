@@ -1,16 +1,16 @@
 .col
   .card.h-100.shadow-sm.border.border-secondary-subtle
     .position-relative
-      - if listing.show_video_as_poster && listing.videos.attached?
+      - if listing.show_video_as_poster && listing.gallery&.videos&.attached?
         %video.card-img-top.w-100.bg-secondary-subtle{style: "height: 200px; object-fit: contain",
             autoplay: true, muted: true, loop: true, playsinline: true}
-          %source{ src: url_for(listing.videos.first) }
-      - elsif listing.images.attached?
-        .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.images.first) }
-      - elsif listing.videos.attached?
+          %source{ src: url_for(listing.gallery.videos.first) }
+      - elsif listing.gallery&.photos&.attached?
+        .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.gallery.photos.first) }
+      - elsif listing.gallery&.videos&.attached?
         %video.card-img-top.w-100.bg-secondary-subtle{style: "height: 200px; object-fit: contain",
             muted: true, playsinline: true, preload: "metadata"}
-          %source{ src: url_for(listing.videos.first) }
+          %source{ src: url_for(listing.gallery.videos.first) }
       - elsif listing.lot&.listing_placeholder&.attached?
         .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.lot.listing_placeholder) }
       - elsif Current.tenant.listing_placeholder.attached?

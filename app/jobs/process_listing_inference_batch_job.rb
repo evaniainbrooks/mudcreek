@@ -68,10 +68,11 @@ class ProcessListingInferenceBatchJob < ApplicationJob
     listing = build_listing(result.data, batch)
     listing.save!
 
+    gallery = listing.create_gallery!(name: listing.name)
     if original_blob
-      listing.images.attach(original_blob)
+      gallery.photos.attach(original_blob)
     else
-      listing.images.attach(io: StringIO.new(binary), filename: filename, content_type: content_type)
+      gallery.photos.attach(io: StringIO.new(binary), filename: filename, content_type: content_type)
     end
 
     batch.increment!(:processed_count)

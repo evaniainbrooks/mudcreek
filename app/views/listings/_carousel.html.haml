@@ -8,8 +8,10 @@
   #listing-carousel.carousel.slide{ data: { bs_ride: "false", "listing-carousel-target": "carousel" } }
     .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
       - slide = 0
+      - photos = listing.gallery&.photos || []
+      - videos = listing.gallery&.videos || []
       - images_first = !listing.show_video_as_poster
-      - (images_first ? listing.images : listing.videos).each do |item|
+      - (images_first ? photos : videos).each do |item|
         .carousel-item{ class: slide.zero? ? "active" : "" }
           - if images_first
             = optimized_image_tag item, preset: :carousel_slide,
@@ -19,7 +21,7 @@
                 style: "height: 480px; object-fit: contain"}
               %source{ src: url_for(item) }
         - slide += 1
-      - (images_first ? listing.videos : listing.images).each do |item|
+      - (images_first ? videos : photos).each do |item|
         .carousel-item{ class: slide.zero? ? "active" : "" }
           - if images_first
             %video.d-block.w-100.rounded-3.bg-secondary-subtle{controls: true,
@@ -50,8 +52,10 @@
 - if media_count > 1
   .d-flex.flex-wrap.gap-2.mt-3
     - thumb_index = 0
+    - thumb_photos = listing.gallery&.photos || []
+    - thumb_videos = listing.gallery&.videos || []
     - thumb_images_first = !listing.show_video_as_poster
-    - (thumb_images_first ? listing.images : listing.videos).each do |item|
+    - (thumb_images_first ? thumb_photos : thumb_videos).each do |item|
       - if thumb_images_first
         = optimized_image_tag item,
           preset: :carousel_thumb,
@@ -64,7 +68,7 @@
           data: { bs_target: "#listing-carousel", bs_slide_to: thumb_index }}
           %i.bi.bi-play-circle-fill.text-white.fs-3
       - thumb_index += 1
-    - (thumb_images_first ? listing.videos : listing.images).each do |item|
+    - (thumb_images_first ? thumb_videos : thumb_photos).each do |item|
       - if thumb_images_first
         .rounded-2.bg-dark.d-flex.align-items-center.justify-content-center.flex-shrink-0{
           style: "width: 76px; height: 76px; cursor: pointer",

@@ -2,6 +2,7 @@ module AdminHelper
   def admin_catalog_nav?
     policy(Auction).index? ||
       policy(AuctionRegistration).index? ||
+      policy(Gallery).index? ||
       policy(Listing).index? ||
       policy(Listings::Category).index? ||
       policy(Listings::PropertySet).index? ||

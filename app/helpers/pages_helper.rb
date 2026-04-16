@@ -2,7 +2,7 @@ module PagesHelper
   def set_page_meta_tags(page)
     meta_title = page.meta_title.presence || page.title
     meta_desc  = page.meta_description.presence
-    og_image   = page.hero_image.attached? ? absolute_url_for(page.hero_image) : nil
+    og_image   = page.hero_image.attached? ? absolute_optimized_image_url(page.hero_image) : nil
     set_meta_tags title: meta_title,
       description: meta_desc,
       og: { title: meta_title, description: meta_desc, image: og_image },

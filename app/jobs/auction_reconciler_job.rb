@@ -19,13 +19,11 @@ class AuctionReconcilerJob < ApplicationJob
   def perform(auction)
     Current.tenant = auction.tenant
 
-    # Preload documents_attachments so the documents_content_type validation
-    # on listing.update! doesn't issue a query per listing.
     ended_listings = auction.auction_listings
       .joins(:listing)
       .where("auction_listings.ends_at <= ?", Time.current)
       .where(listings: { state: "on_sale" })
-      .includes(:current_bid, listing: [ :tenant, :rich_text_description, { documents_attachments: :blob }, { watchlist_items: :user } ])
+      .includes(:current_bid, listing: [ :tenant, :rich_text_description, { watchlist_items: :user } ])
 
     ended_listings.each do |al|
       new_state = reserve_met?(al) ? :sold : :cancelled
@@ -79,10 +77,8 @@ class AuctionReconcilerJob < ApplicationJob
     # Batch-load listings with all associations needed by the listing card partial
     listing_ids = fresh_records.map(&:listing_id)
     listings_by_id = Listing
-      .with_attached_images
-      .with_attached_videos
       .with_rich_text_description
-      .includes(:categories, lot: { listing_placeholder_attachment: :blob })
+      .includes(:categories, lot: { listing_placeholder_attachment: :blob }, gallery: { photos_attachments: :blob, videos_attachments: :blob })
       .where(id: listing_ids)
       .index_by(&:id)
 

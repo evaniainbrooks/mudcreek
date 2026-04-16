@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_233000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_120005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -249,6 +249,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_233000) do
     t.index ["tenant_id", "external_id"], name: "index_email_aliases_on_tenant_id_and_external_id", unique: true
   end
 
+  create_table "galleries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "listing_id"
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["listing_id"], name: "index_galleries_on_listing_id"
+    t.index ["tenant_id"], name: "index_galleries_on_tenant_id"
+  end
+
   create_table "improvmx_domains", force: :cascade do |t|
     t.jsonb "api_response", default: {}, null: false
     t.jsonb "check_data", default: {}, null: false
@@ -407,7 +417,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_233000) do
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -1121,6 +1131,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_233000) do
   add_foreign_key "delivery_methods", "tenants"
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "email_aliases", "tenants", on_delete: :cascade
+  add_foreign_key "galleries", "listings", on_delete: :cascade
+  add_foreign_key "galleries", "tenants", on_delete: :cascade
   add_foreign_key "improvmx_domains", "tenants", on_delete: :cascade
   add_foreign_key "inquiries", "inquiry_forms"
   add_foreign_key "inquiries", "tenants"

@@ -1,7 +1,7 @@
 - set_page_meta_tags(@page)
 
 - if @page.hero_image.attached?
-  = image_tag @page.hero_image.variant(resize_to_limit: [1200, 400]),
+  = optimized_image_tag @page.hero_image, preset: :hero,
       class: "img-fluid w-100 rounded-3 mb-4",
       style: "object-fit: cover; max-height: 400px"
 
@@ -18,12 +18,12 @@
     .row.g-4
       - if left
         .col-4
-          = image_tag @page.left_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+          = optimized_image_tag @page.left_column_image, preset: :column, class: "img-fluid rounded w-100"
       %div{ class: page_body_col_class(@page) }
         .page-body= @page.body
       - if right
         .col-4
-          = image_tag @page.right_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+          = optimized_image_tag @page.right_column_image, preset: :column, class: "img-fluid rounded w-100"
   - else
     .page-body= @page.body
 
@@ -56,11 +56,11 @@
           .row.g-4
             - if @active_child.left_column_image.attached?
               .col-4
-                = image_tag @active_child.left_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+                = optimized_image_tag @active_child.left_column_image, preset: :column, class: "img-fluid rounded w-100"
             %div{ class: page_body_col_class(@active_child) }
               .page-body= @active_child.body
             - if @active_child.right_column_image.attached?
               .col-4
-                = image_tag @active_child.right_column_image.variant(resize_to_limit: [600, 800]), class: "img-fluid rounded w-100"
+                = optimized_image_tag @active_child.right_column_image, preset: :column, class: "img-fluid rounded w-100"
         - else
           .page-body= @active_child.body
