@@ -8,9 +8,11 @@ class LocationCheckInsController < ApplicationController
 
   def show
     @guest_checked_in = session.delete(:guest_checked_in)
-    if Current.user
+    if Current.user && !bot_request?
       @check_in = @location.check_ins.build(user: Current.user)
       @check_in.save
+    elsif Current.user
+      @check_in = @location.check_ins.build(user: Current.user)
     else
       session[:return_to_after_authenticating] = request.url
       @check_in = @location.check_ins.build
@@ -22,6 +24,8 @@ class LocationCheckInsController < ApplicationController
   end
 
   def create
+    return head :ok if bot_request?
+
     @check_in = @location.check_ins.build(guest_name: check_in_params[:guest_name])
     if @check_in.save
       session[:guest_checked_in] = @check_in.guest_name

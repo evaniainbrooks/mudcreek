@@ -12,7 +12,14 @@ class ApplicationController < ActionController::Base
 
   helper_method :cart_item_count, :offcanvas_cart_items, :offcanvas_watchlist_items, :watchlist_item_count
 
+  BOT_USER_AGENT_PATTERN = /bot|crawl|slurp|spider|mediapartners|facebookexternalhit|ia_archiver|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|bytespider|meta-externalagent/i
+
   private
+
+  def bot_request?
+    ua = request.user_agent.to_s
+    ua.empty? || BOT_USER_AGENT_PATTERN.match?(ua)
+  end
 
   def scan_for_n_plus_one
     Prosopite.scan
