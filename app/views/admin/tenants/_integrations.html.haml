@@ -1,0 +1,51 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-plug.me-2
+    Integrations
+  .card-body.p-4
+    .row.g-4
+      .col-lg-6
+        %h6.fw-semibold.mb-3
+          %i.bi.bi-google.me-2
+          Google
+        .mb-3
+          = form.label :ga4_measurement_id, "Analytics 4 Measurement ID", class: "form-label"
+          = form.text_field :ga4_measurement_id,
+              class: "form-control #{'is-invalid' if tenant.errors[:ga4_measurement_id].any?}",
+              placeholder: "G-XXXXXXXXXX"
+          .form-text
+            Found in GA4 under Admin → Data Streams → Web stream details.
+            Leave blank to disable.
+          - if tenant.errors[:ga4_measurement_id].any?
+            .invalid-feedback= tenant.errors[:ga4_measurement_id].to_sentence
+        .mb-0
+          = form.label :google_site_verification, "Search Console Verification", class: "form-label"
+          = form.text_field :google_site_verification,
+              class: "form-control",
+              placeholder: "abcdefghijklmnop1234567890ABCDEF"
+          .form-text
+            Found in Search Console → Settings → Ownership verification → HTML tag → content value.
+            Leave blank to omit.
+
+      .col-lg-6
+        %h6.fw-semibold.mb-3
+          %i.bi.bi-meta.me-2
+          Meta / Facebook
+        .mb-3
+          = form.label :facebook_pixel_id, "Pixel ID", class: "form-label"
+          = form.text_field :facebook_pixel_id,
+              class: "form-control #{'is-invalid' if tenant.errors[:facebook_pixel_id].any?}",
+              placeholder: "123456789012345"
+          .form-text
+            Found in Meta Events Manager → your pixel → Settings.
+            Leave blank to disable.
+          - if tenant.errors[:facebook_pixel_id].any?
+            .invalid-feedback= tenant.errors[:facebook_pixel_id].to_sentence
+        .mb-0
+          = form.label :facebook_domain_verification, "Domain Verification Code", class: "form-label"
+          = form.text_field :facebook_domain_verification,
+              class: "form-control",
+              placeholder: "abcdef1234567890abcdef1234567890"
+          .form-text
+            Found in Meta Business Settings → Brand Safety → Domains → Verify.
+            Leave blank to omit the verification tag.

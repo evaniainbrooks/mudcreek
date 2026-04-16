@@ -70,6 +70,8 @@ class Tenant < ApplicationRecord
   validates :default, inclusion: { in: [ true, false ] }
   validates :default, uniqueness: { if: :default? }
   validates :custom_domain, format: { with: /\A[a-z0-9\-\.]+\z/, message: "can only contain lowercase letters, numbers, hyphens, and dots" }, allow_blank: true
+  validates :ga4_measurement_id, format: { with: /\AG-[A-Z0-9]+\z/, message: "must be a valid GA4 Measurement ID (e.g. G-XXXXXXXXXX)" }, allow_blank: true
+  validates :facebook_pixel_id, format: { with: /\A\d+\z/, message: "must be a numeric Pixel ID" }, allow_blank: true
 
   HEX_COLOR_RE = /\A#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/
   %i[primary_color secondary_color tertiary_color background_color text_color link_color footer_color card_color container_color].each do |attr|

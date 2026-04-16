@@ -20,6 +20,7 @@
       .col-12= render("admin/tenants/social_media", form:, tenant: @tenant)
       .col-lg-6= render("admin/tenants/defaults", form:, delivery_method_sets: @delivery_method_sets)
       .col-lg-6= render("admin/tenants/features", form:)
+      .col-12= render("admin/tenants/integrations", form:, tenant: @tenant)
 
       .col-12.d-flex.justify-content-end.gap-2
         = link_to "Cancel", admin_auctions_path, class: "btn btn-outline-secondary"

@@ -3,7 +3,30 @@
 %html{lang: "en"}
   %head
     = display_meta_tags separator: "–"
-    %meta{name: "facebook-domain-verification", content: "fifoz2tqjqazqtosfsqyse94lsxlix"}
+    - unless @admin
+      - if Current.tenant.ga4_measurement_id.present?
+        %script{async: true, src: "https://www.googletagmanager.com/gtag/js?id=#{Current.tenant.ga4_measurement_id}"}
+        :javascript
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '#{Current.tenant.ga4_measurement_id}');
+      - if Current.tenant.facebook_pixel_id.present?
+        :javascript
+          !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+          n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+          document,'script','https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '#{Current.tenant.facebook_pixel_id}');
+          fbq('track', 'PageView');
+        %noscript
+          %img{src: "https://www.facebook.com/tr?id=#{Current.tenant.facebook_pixel_id}&ev=PageView&noscript=1",
+               height: "1", width: "1", style: "display:none"}
+    - if Current.tenant.facebook_domain_verification.present?
+      %meta{name: "facebook-domain-verification", content: Current.tenant.facebook_domain_verification}
+    - if Current.tenant.google_site_verification.present?
+      %meta{name: "google-site-verification", content: Current.tenant.google_site_verification}
     %meta{name: "viewport", content: "width=device-width,initial-scale=1"}
     %meta{name: "apple-mobile-web-app-capable", content: "yes"}
     %meta{name: "application-name", content: Current.tenant.name}
