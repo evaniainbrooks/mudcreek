@@ -1,4 +1,3 @@
-
 # Migrates Active Storage attachments that were previously attached directly to
 # Listing records (names: images, videos, documents) to the listing's Gallery.
 #
@@ -16,6 +15,8 @@
 #   puts result.summary
 #
 # Safe to re-run: attachments already belonging to Gallery are left untouched.
+# Iterates over every tenant automatically; does not require Current.tenant to
+# be set by the caller.
 class MigrateListingAttachmentsToGalleriesService
   ATTACHMENT_NAME_MAP = {
     "images"    => "photos",
@@ -38,19 +39,40 @@ class MigrateListingAttachmentsToGalleriesService
     galleries_created   = 0
     attachments_migrated = 0
 
-    listings = listings_with_attachments
-    listings.each do |listing|
-      gallery, created = find_or_create_gallery(listing)
-      galleries_created += 1 if created
+    # Query orphaned listing IDs once globally — active_storage_attachments has
+    # no tenant_id, so a single cross-tenant query is correct here.
+    orphaned_listing_ids = ActiveStorage::Attachment
+      .where(record_type: "Listing", name: ATTACHMENT_NAME_MAP.keys)
+      .distinct
+      .pluck(:record_id)
 
-      count = reassign_attachments(listing.id, gallery.id)
-      attachments_migrated += count
-      listings_processed   += 1
+    return Result.new(listings_processed: 0, galleries_created: 0, attachments_migrated: 0) if orphaned_listing_ids.empty?
 
-      Rails.logger.info(
-        "[MigrateListingAttachments] listing=#{listing.id} gallery=#{gallery.id} " \
-        "created=#{created} attachments=#{count}"
-      )
+    # Use unscoped to bypass the MultiTenant default_scope — we need listings
+    # across all tenants in a single query, not filtered by Current.tenant.
+    listings_by_tenant = Listing.unscoped
+      .where(id: orphaned_listing_ids)
+      .includes(:gallery, :tenant)
+      .group_by(&:tenant_id)
+
+    listings_by_tenant.each do |_tenant_id, listings|
+      Current.tenant = listings.first.tenant
+
+      listings.each do |listing|
+        gallery, created = find_or_create_gallery(listing)
+        galleries_created += 1 if created
+
+        count = reassign_attachments(listing.id, gallery.id)
+        attachments_migrated += count
+        listings_processed   += 1
+
+        Rails.logger.info(
+          "[MigrateListingAttachments] tenant=#{Current.tenant.id} listing=#{listing.id} " \
+          "gallery=#{gallery.id} created=#{created} attachments=#{count}"
+        )
+      end
+    ensure
+      Current.tenant = nil
     end
 
     Result.new(
@@ -61,17 +83,6 @@ class MigrateListingAttachmentsToGalleriesService
   end
 
   private
-
-  def listings_with_attachments
-    listing_ids = ActiveStorage::Attachment
-      .where(record_type: "Listing", name: ATTACHMENT_NAME_MAP.keys)
-      .distinct
-      .pluck(:record_id)
-
-    return Listing.none if listing_ids.empty?
-
-    Listing.where(id: listing_ids).includes(:gallery)
-  end
 
   def find_or_create_gallery(listing)
     if listing.gallery
@@ -86,14 +97,9 @@ class MigrateListingAttachmentsToGalleriesService
     total = 0
 
     ATTACHMENT_NAME_MAP.each do |old_name, new_name|
-      rows = ActiveStorage::Attachment
+      count = ActiveStorage::Attachment
         .where(record_type: "Listing", record_id: listing_id, name: old_name)
-
-      count = rows.update_all(
-        record_type: "Gallery",
-        record_id:   gallery_id,
-        name:        new_name
-      )
+        .update_all(record_type: "Gallery", record_id: gallery_id, name: new_name)
 
       total += count
     end

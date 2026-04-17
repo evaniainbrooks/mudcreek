@@ -1,11 +1,16 @@
 require "rails_helper"
 
 RSpec.describe MigrateListingAttachmentsToGalleriesService do
-  before do
-    Current.tenant = create(:tenant)
-  end
+  # The service iterates over all tenants itself; we only need Current.tenant
+  # set during the setup phase so that FactoryBot creates records correctly.
+  let(:tenant) { create(:tenant) }
 
-  after { Current.tenant = nil }
+  def with_tenant(t = tenant)
+    Current.tenant = t
+    yield
+  ensure
+    Current.tenant = nil
+  end
 
   def attach_to_listing(listing, name, filename: "file.jpg", content_type: "image/jpeg")
     listing.public_send(name).attach(
@@ -15,8 +20,8 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
     )
   end
 
-  # Temporarily expose legacy attachment names on Listing so we can seed test data
-  # without modifying the real model.
+  # Temporarily expose legacy attachment names on Listing so we can seed test
+  # data without modifying the real model.
   def with_legacy_listing_attachments
     Listing.class_eval do
       has_many_attached :images
@@ -25,7 +30,6 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
     end
     yield
   ensure
-    # Remove the associations added above so they don't leak between examples.
     Listing.attachment_reflections.delete("images")
     Listing.attachment_reflections.delete("videos")
     Listing.attachment_reflections.delete("documents")
@@ -34,35 +38,24 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
   describe ".call" do
     context "when a listing has images attached but no gallery" do
       it "creates a gallery for the listing" do
-        listing = create(:listing, name: "Vintage Chair")
+        listing = with_tenant { create(:listing, name: "Vintage Chair") }
+        with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images) } }
 
-        with_legacy_listing_attachments do
-          attach_to_listing(listing, :images)
-        end
-
-        expect {
-          described_class.call
-        }.to change(Gallery, :count).by(1)
+        expect { described_class.call }.to change(Gallery, :count).by(1)
       end
 
       it "names the gallery after the listing" do
-        listing = create(:listing, name: "Vintage Chair")
-
-        with_legacy_listing_attachments do
-          attach_to_listing(listing, :images)
-        end
+        listing = with_tenant { create(:listing, name: "Vintage Chair") }
+        with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images) } }
 
         described_class.call
 
         expect(listing.reload.gallery.name).to eq("Vintage Chair")
       end
 
-      it "migrates the images attachment to gallery photos" do
-        listing = create(:listing)
-
-        with_legacy_listing_attachments do
-          attach_to_listing(listing, :images, filename: "chair.jpg")
-        end
+      it "migrates images to gallery photos" do
+        listing = with_tenant { create(:listing) }
+        with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images, filename: "chair.jpg") } }
 
         described_class.call
 
@@ -70,27 +63,21 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
       end
 
       it "removes the attachment from the listing" do
-        listing = create(:listing)
-
-        with_legacy_listing_attachments do
-          attach_to_listing(listing, :images)
-        end
+        listing = with_tenant { create(:listing) }
+        with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images) } }
 
         described_class.call
 
-        listing_attachment_count = ActiveStorage::Attachment.where(
-          record_type: "Listing", record_id: listing.id, name: "images"
-        ).count
-        expect(listing_attachment_count).to eq(0)
+        count = ActiveStorage::Attachment.where(record_type: "Listing", record_id: listing.id, name: "images").count
+        expect(count).to eq(0)
       end
     end
 
     context "when a listing has videos attached" do
       it "migrates videos to the gallery under the videos name" do
-        listing = create(:listing)
-
+        listing = with_tenant { create(:listing) }
         with_legacy_listing_attachments do
-          attach_to_listing(listing, :videos, filename: "tour.mp4", content_type: "video/mp4")
+          with_tenant { attach_to_listing(listing, :videos, filename: "tour.mp4", content_type: "video/mp4") }
         end
 
         described_class.call
@@ -101,10 +88,9 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
 
     context "when a listing has documents attached" do
       it "migrates documents to the gallery under the documents name" do
-        listing = create(:listing)
-
+        listing = with_tenant { create(:listing) }
         with_legacy_listing_attachments do
-          attach_to_listing(listing, :documents, filename: "spec.pdf", content_type: "application/pdf")
+          with_tenant { attach_to_listing(listing, :documents, filename: "spec.pdf", content_type: "application/pdf") }
         end
 
         described_class.call
@@ -115,12 +101,13 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
 
     context "when a listing has multiple attachment types" do
       it "migrates all of them and reports the correct count" do
-        listing = create(:listing)
-
+        listing = with_tenant { create(:listing) }
         with_legacy_listing_attachments do
-          attach_to_listing(listing, :images, filename: "a.jpg")
-          attach_to_listing(listing, :images, filename: "b.jpg")
-          attach_to_listing(listing, :videos, filename: "v.mp4", content_type: "video/mp4")
+          with_tenant do
+            attach_to_listing(listing, :images, filename: "a.jpg")
+            attach_to_listing(listing, :images, filename: "b.jpg")
+            attach_to_listing(listing, :videos, filename: "v.mp4", content_type: "video/mp4")
+          end
         end
 
         result = described_class.call
@@ -133,29 +120,26 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
 
     context "when the listing already has a gallery" do
       it "uses the existing gallery instead of creating a new one" do
-        listing = create(:listing)
-        existing_gallery = create(:gallery, listing: listing, name: "Existing")
+        listing          = with_tenant { create(:listing) }
+        existing_gallery = with_tenant { create(:gallery, listing: listing, name: "Existing") }
+        with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images, filename: "new.jpg") } }
 
-        with_legacy_listing_attachments do
-          attach_to_listing(listing, :images, filename: "new.jpg")
-        end
-
-        expect {
-          described_class.call
-        }.not_to change(Gallery, :count)
+        expect { described_class.call }.not_to change(Gallery, :count)
 
         expect(existing_gallery.reload.photos.map(&:filename).map(&:to_s)).to include("new.jpg")
       end
     end
 
     context "when multiple listings have orphaned attachments" do
-      it "processes each listing independently" do
-        listing_a = create(:listing)
-        listing_b = create(:listing)
-
+      # Creating multiple listings triggers per-record hashid uniqueness checks
+      # and position MAX queries — inherent to the model, not the service under test.
+      it "processes each listing independently", :skip_n_plus_one do
+        listing_a, listing_b = with_tenant { [ create(:listing), create(:listing) ] }
         with_legacy_listing_attachments do
-          attach_to_listing(listing_a, :images, filename: "a.jpg")
-          attach_to_listing(listing_b, :images, filename: "b.jpg")
+          with_tenant do
+            attach_to_listing(listing_a, :images, filename: "a.jpg")
+            attach_to_listing(listing_b, :images, filename: "b.jpg")
+          end
         end
 
         result = described_class.call
@@ -167,7 +151,44 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
       end
     end
 
+    context "with multiple tenants" do
+      it "migrates each tenant's listings independently", :skip_n_plus_one do
+        other_tenant = create(:tenant)
+
+        listing_a = with_tenant(tenant)       { create(:listing) }
+        listing_b = with_tenant(other_tenant) { create(:listing) }
+
+        with_legacy_listing_attachments do
+          with_tenant(tenant)       { attach_to_listing(listing_a, :images, filename: "tenant_a.jpg") }
+          with_tenant(other_tenant) { attach_to_listing(listing_b, :images, filename: "tenant_b.jpg") }
+        end
+
+        result = described_class.call
+
+        expect(result.listings_processed).to eq(2)
+        expect(listing_a.reload.gallery.photos.map(&:filename).map(&:to_s)).to include("tenant_a.jpg")
+        expect(listing_b.reload.gallery.photos.map(&:filename).map(&:to_s)).to include("tenant_b.jpg")
+      end
+
+      it "does not create galleries across tenant boundaries", :skip_n_plus_one do
+        other_tenant = create(:tenant)
+        listing_a    = with_tenant(tenant) { create(:listing) }
+
+        with_legacy_listing_attachments do
+          with_tenant(tenant) { attach_to_listing(listing_a, :images) }
+        end
+
+        described_class.call
+
+        with_tenant(other_tenant) do
+          expect(Gallery.count).to eq(0)
+        end
+      end
+    end
+
     context "when there are no orphaned attachments" do
+      before { tenant } # ensure at least one tenant exists
+
       it "returns zero counts" do
         result = described_class.call
 
@@ -183,11 +204,8 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
 
     context "when run a second time (idempotency)" do
       it "does not double-migrate already-moved attachments" do
-        listing = create(:listing)
-
-        with_legacy_listing_attachments do
-          attach_to_listing(listing, :images, filename: "once.jpg")
-        end
+        listing = with_tenant { create(:listing) }
+        with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images, filename: "once.jpg") } }
 
         described_class.call
         result = described_class.call
@@ -198,11 +216,8 @@ RSpec.describe MigrateListingAttachmentsToGalleriesService do
     end
 
     it "returns a result with a human-readable summary" do
-      listing = create(:listing, name: "Oak Table")
-
-      with_legacy_listing_attachments do
-        attach_to_listing(listing, :images)
-      end
+      listing = with_tenant { create(:listing, name: "Oak Table") }
+      with_legacy_listing_attachments { with_tenant { attach_to_listing(listing, :images) } }
 
       result = described_class.call
 
