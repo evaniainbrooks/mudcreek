@@ -1,6 +1,7 @@
 - set_meta_tags title: "Podium"
 
 .py-5.text-center
+  = image_tag "/podium.png", alt: "Podium", style: "height: 4rem; width: auto; object-fit: contain", class: "mb-4"
   %h1.display-5.fw-bold.mb-3 Podium
   %p.lead.text-muted.mb-5.mx-auto{ style: "max-width: 600px" }
     The white-label commerce platform for auctions, listings, rentals, and more.
@@ -66,7 +67,20 @@
           Real-time bid updates, background jobs, and optimised image delivery
           all come standard.
 
-.text-center.py-4.border-top
-  %p.lead.mb-1.fw-semibold Interested in Podium for your business?
-  %p.text-muted.mb-4 Get in touch and we'll have you up and running in no time.
-  = mail_to "hello@podium.software", "Contact us", class: "btn btn-primary btn-lg"
+.row.justify-content-center.py-4
+  .col-lg-6
+    - if notice.present?
+      .alert.alert-success= notice
+    %h2.fw-semibold.mb-1 Interested in Podium?
+    %p.text-muted.mb-4 Get in touch and we'll have you up and running in no time.
+    = form_with url: podium_path, method: :post, class: "needs-validation", novalidate: true do |f|
+      .mb-3
+        = f.label :name, "Your name", class: "form-label"
+        = f.text_field :name, class: "form-control", placeholder: "Jane Smith"
+      .mb-3
+        = f.label :email, "Email address", class: "form-label required"
+        = f.email_field :email, class: "form-control", placeholder: "jane@example.com", required: true
+      .mb-3
+        = f.label :message, "Message", class: "form-label required"
+        = f.text_area :message, class: "form-control", rows: 5, placeholder: "Tell us a bit about your business and what you're looking for.", required: true
+      = f.submit "Send message", class: "btn btn-primary"

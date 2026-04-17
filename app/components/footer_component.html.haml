@@ -64,6 +64,7 @@
                 %i{ class: account.icon, style: "font-size: 2rem" }
           - unless tenant.features.hide_powered_by?
             .mt-auto.pt-3.text-center
-              = link_to podium_path, class: "text-decoration-none text-reset" do
-                %p.fw-semibold.mb-0 Powered by Podium
+              = link_to podium_path, class: "text-decoration-none text-reset d-inline-flex flex-column align-items-center gap-1" do
+                %small.text-muted Powered by
+                = image_tag "/podium.png", alt: "Podium", style: "height: 2rem; width: auto; object-fit: contain"
                 %small.text-muted Platform your business.

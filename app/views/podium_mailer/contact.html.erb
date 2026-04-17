@@ -1,0 +1,24 @@
+<p>A new contact request was submitted via the Podium marketing page.</p>
+
+<p>
+  <strong>Name:</strong> <%= @name.presence || "—" %><br>
+  <strong>Email:</strong> <%= @email.presence || "—" %><br>
+  <strong>Submitted at:</strong> <%= @submitted_at %>
+</p>
+
+<p>
+  <strong>Message:</strong><br>
+  <%= @message %>
+</p>
+
+<hr>
+
+<p style="color:#666;font-size:0.875em;">
+  <strong>Tenant:</strong> <%= @tenant_name.presence || "—" %><br>
+  <% if @user_id.present? %>
+    <strong>Logged-in user:</strong> <%= @user_name.presence || "—" %> (ID <%= @user_id %>)<br>
+  <% else %>
+    <strong>Logged-in user:</strong> not signed in<br>
+  <% end %>
+  <strong>User agent:</strong> <%= @user_agent %>
+</p>

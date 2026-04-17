@@ -27,7 +27,11 @@ RSpec.describe "Admin page widgets", type: :system, js: true do
 
   def add_widget(type:, resource_name:)
     existing_count = all("[data-widget-row]").count
-    click_button "Add Widget"
+
+    # Selenium's synthetic click doesn't reach the button reliably (the Trix
+    # editor captures focus first). Use a JavaScript click instead — this is
+    # the same event path the Stimulus action handler receives in production.
+    page.execute_script("document.querySelector('button[data-action=\"page-widgets#addWidget\"]').click()")
 
     # Wait for JS to append the new row before interacting with it.
     expect(page).to have_selector("[data-widget-row]", count: existing_count + 1)

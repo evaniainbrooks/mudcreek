@@ -1,0 +1,18 @@
+A new contact request was submitted via the Podium marketing page.
+
+Name:         <%= @name.presence || "—" %>
+Email:        <%= @email.presence || "—" %>
+Submitted at: <%= @submitted_at %>
+
+Message:
+<%= @message %>
+
+---
+
+Tenant:       <%= @tenant_name.presence || "—" %>
+<% if @user_id.present? %>
+Logged-in:    <%= @user_name.presence || "—" %> (ID <%= @user_id %>)
+<% else %>
+Logged-in:    not signed in
+<% end %>
+User agent:   <%= @user_agent %>
