@@ -15,10 +15,6 @@
               - if item.icon.present?
                 %i{ class: "bi #{item.icon} me-1" }
               = item.title
-        %small.text-muted.mt-auto.pt-3
-          &copy;
-          = Date.current.year
-          = tenant.name
 
       .col-lg-4.px-4.py-2.border-start.d-flex.flex-column.align-items-center.text-center
         %p.h5.fw-bold.mb-3 Contact
@@ -51,8 +47,8 @@
               %i.bi.bi-telephone.flex-shrink-0
               = link_to tenant.phone_number, "tel:#{tenant.phone_number}", class: "text-decoration-none text-muted"
 
-      - if social_media_accounts.any?
-        .col-lg-4.px-4.py-2.border-start.d-flex.flex-column.align-items-center.text-center
+      .col-lg-4.px-4.py-2.border-start.d-flex.flex-column.align-items-center.text-center
+        - if social_media_accounts.any?
           %p.h5.fw-bold.mb-3 Follow Us
           .d-flex.flex-wrap.justify-content-center.gap-3
             - social_media_accounts.each do |account|
@@ -62,9 +58,13 @@
                   rel: "noopener",
                   title: "#{account.platform.humanize}: @#{account.slug}" do
                 %i{ class: account.icon, style: "font-size: 2rem" }
-          - unless tenant.features.hide_powered_by?
-            .mt-auto.pt-3.text-center
-              = link_to podium_path, class: "text-decoration-none text-reset d-inline-flex flex-column align-items-center gap-1" do
-                %small.text-muted Powered by
-                = image_tag "/podium.png", alt: "Podium", style: "height: 2rem; width: auto; object-fit: contain"
-                %small.text-muted Platform your business.
+        - unless tenant.features.hide_powered_by?
+          .mt-2.pt-1.text-center
+            = link_to podium_path, class: "text-decoration-none text-reset d-inline-flex flex-column align-items-center gap-1" do
+              %small.text-muted Powered by
+              = image_tag "/podium.png", alt: "Podium", style: "height: 3rem; width: auto; object-fit: contain"
+              %small.text-muted Platform your business.
+        %small.text-muted.mt-2
+          &copy;
+          = Date.current.year
+          = tenant.name

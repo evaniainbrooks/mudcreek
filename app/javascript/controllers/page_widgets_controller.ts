@@ -16,20 +16,7 @@ export default class PageWidgetsController extends Controller {
     if (typeSelect) this.syncTypeFields(lastRow, typeSelect.value)
   }
 
-  removeWidget(event: Event) {
-    event.preventDefault()
-    const row = (event.target as HTMLElement).closest<HTMLElement>("[data-widget-row]")
-    if (!row) return
-    const destroyInput = row.querySelector<HTMLInputElement>("input[name*='[_destroy]']")
-    if (destroyInput) {
-      destroyInput.value = "1"
-      row.style.display = "none"
-    } else {
-      row.remove()
-    }
-  }
-
-  onTypeChange(event: Event) {
+onTypeChange(event: Event) {
     const select = event.target as HTMLSelectElement
     const row = select.closest<HTMLElement>("[data-widget-row]")
     if (!row) return

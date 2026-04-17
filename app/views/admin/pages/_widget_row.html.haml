@@ -4,7 +4,6 @@
 
   = widget_form.hidden_field :id
   = widget_form.hidden_field :position, value: 0
-  = widget_form.hidden_field :_destroy, value: "0"
 
   = widget_form.select :type,
       [["Gallery", "GalleryWidget"], ["Listing", "ListingWidget"],
@@ -22,12 +21,7 @@
           { include_blank: "— Select gallery —" },
           class: "form-select form-select-sm"
 
-    %div{ data: { widget_type_fields: "LocationWidget" }, hidden: current_type != "LocationWidget" }
-      = widget_form.collection_select :location_id, locations, :id, :name,
-          { include_blank: "— Select location —" },
-          class: "form-select form-select-sm"
-
-    %div{ data: { widget_type_fields: "ScheduleWidget" }, hidden: current_type != "ScheduleWidget" }
+    %div{ data: { widget_type_fields: "LocationWidget ScheduleWidget" }, hidden: !%w[LocationWidget ScheduleWidget].include?(current_type) }
       = widget_form.collection_select :location_id, locations, :id, :name,
           { include_blank: "— Select location —" },
           class: "form-select form-select-sm"
@@ -47,6 +41,6 @@
           { include_blank: "— Select QR code —" },
           class: "form-select form-select-sm"
 
-  %button.btn.btn-sm.btn-outline-danger.flex-shrink-0{ type: "button",
-      data: { action: "page-widgets#removeWidget" } }
-    %i.bi.bi-trash3
+  .form-check.flex-shrink-0.mb-0
+    = widget_form.check_box :_destroy, { class: "form-check-input" }, "1", "0"
+    = widget_form.label :_destroy, "Remove", class: "form-check-label text-danger small"
