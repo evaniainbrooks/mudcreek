@@ -62,6 +62,8 @@
                   rel: "noopener",
                   title: "#{account.platform.humanize}: @#{account.slug}" do
                 %i{ class: account.icon, style: "font-size: 2rem" }
-          .mt-auto.pt-3.text-center
-            %p.fw-semibold.mb-0 Powered by Podium
-            %small.text-muted Platform your business.
+          - unless tenant.features.hide_powered_by?
+            .mt-auto.pt-3.text-center
+              = link_to podium_path, class: "text-decoration-none text-reset" do
+                %p.fw-semibold.mb-0 Powered by Podium
+                %small.text-muted Platform your business.

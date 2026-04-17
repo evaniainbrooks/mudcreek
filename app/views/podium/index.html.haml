@@ -1,0 +1,72 @@
+- set_meta_tags title: "Podium"
+
+.py-5.text-center
+  %h1.display-5.fw-bold.mb-3 Podium
+  %p.lead.text-muted.mb-5.mx-auto{ style: "max-width: 600px" }
+    The white-label commerce platform for auctions, listings, rentals, and more.
+    Give your brand a full-featured online storefront — without building it from scratch.
+
+.row.g-4.mb-5
+  .col-md-4
+    .card.h-100.border-0.shadow-sm
+      .card-body.p-4
+        %i.bi.bi-hammer.fs-2.text-primary.mb-3.d-block
+        %h5.card-title.fw-semibold Auctions
+        %p.card-text.text-muted
+          Run live and timed auctions with proxy bidding, real-time updates, buyer
+          registration, and automated invoicing. Everything you need from listing
+          to final payment.
+
+  .col-md-4
+    .card.h-100.border-0.shadow-sm
+      .card-body.p-4
+        %i.bi.bi-tag-fill.fs-2.text-primary.mb-3.d-block
+        %h5.card-title.fw-semibold Listings & Rentals
+        %p.card-text.text-muted
+          Sell products, accept offers, and rent items — all from one platform.
+          Variants, stock tracking, discount codes, and flexible delivery options
+          are built in.
+
+  .col-md-4
+    .card.h-100.border-0.shadow-sm
+      .card-body.p-4
+        %i.bi.bi-palette-fill.fs-2.text-primary.mb-3.d-block
+        %h5.card-title.fw-semibold Fully White-Label
+        %p.card-text.text-muted
+          Custom domain, your logo, your colours, your brand. Podium stays in the
+          background so your customers only ever see you.
+
+.row.g-4.mb-5
+  .col-md-4
+    .card.h-100.border-0.shadow-sm
+      .card-body.p-4
+        %i.bi.bi-people-fill.fs-2.text-primary.mb-3.d-block
+        %h5.card-title.fw-semibold Multi-Tenant
+        %p.card-text.text-muted
+          Run multiple independent storefronts from a single installation. Each
+          tenant gets its own data, users, and settings — fully isolated.
+
+  .col-md-4
+    .card.h-100.border-0.shadow-sm
+      .card-body.p-4
+        %i.bi.bi-layout-text-window-reverse.fs-2.text-primary.mb-3.d-block
+        %h5.card-title.fw-semibold Pages & Widgets
+        %p.card-text.text-muted
+          Build content pages with galleries, location maps, schedules, contact
+          forms, and QR codes using a flexible widget system — no developer
+          required.
+
+  .col-md-4
+    .card.h-100.border-0.shadow-sm
+      .card-body.p-4
+        %i.bi.bi-bar-chart-fill.fs-2.text-primary.mb-3.d-block
+        %h5.card-title.fw-semibold Built to Scale
+        %p.card-text.text-muted
+          Backed by PostgreSQL, Solid Queue, Action Cable, and imgproxy.
+          Real-time bid updates, background jobs, and optimised image delivery
+          all come standard.
+
+.text-center.py-4.border-top
+  %p.lead.mb-1.fw-semibold Interested in Podium for your business?
+  %p.text-muted.mb-4 Get in touch and we'll have you up and running in no time.
+  = mail_to "hello@podium.software", "Contact us", class: "btn btn-primary btn-lg"
