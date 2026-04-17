@@ -7,6 +7,7 @@ class Tenant < ApplicationRecord
   attribute :features, Tenant::Features.to_type
 
   has_one_attached :logo
+  has_one_attached :favicon
   has_one_attached :listing_placeholder
   has_one_attached :auction_placeholder
 

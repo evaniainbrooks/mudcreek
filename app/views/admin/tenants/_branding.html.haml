@@ -20,6 +20,23 @@
             %i.bi.bi-x-lg.me-1
             Remove
     .mb-3
+      = form.label :favicon, class: "form-label"
+      .form-text.mb-1 Shown as the browser tab icon. Use a square PNG or ICO, ideally 32×32 or 64×64 px.
+      = form.file_field :favicon,
+        direct_upload: true,
+        class: "form-control #{'is-invalid' if tenant.errors[:favicon].any?}",
+        accept: "image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml"
+      - if tenant.errors[:favicon].any?
+        .invalid-feedback= tenant.errors[:favicon].to_sentence
+      - if tenant.favicon.attached?
+        .mt-2.d-flex.align-items-center.gap-2
+          = image_tag tenant.favicon.url, alt: "Favicon preview", style: "width: 32px; height: 32px; object-fit: contain; image-rendering: pixelated"
+          = link_to admin_tenant_path(remove_favicon: "1"),
+              class: "btn btn-sm btn-outline-danger",
+              data: { turbo_method: :patch, turbo_confirm: "Remove favicon?" } do
+            %i.bi.bi-x-lg.me-1
+            Remove
+    .mb-3
       = form.label :listing_placeholder, "Listing Placeholder Image", class: "form-label"
       .form-text.mb-1 Shown on listing cards when a listing has no images and no lot placeholder.
       = form.file_field :listing_placeholder,

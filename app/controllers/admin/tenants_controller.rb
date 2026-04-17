@@ -8,7 +8,7 @@ module Admin
       @tenant.default_bid_increment_schedule.tiers.build if @tenant.default_bid_increment_schedule.tiers.none?
     end
 
-    ATTACHMENTS = %i[logo listing_placeholder auction_placeholder default_terms_and_conditions].freeze
+    ATTACHMENTS = %i[logo favicon listing_placeholder auction_placeholder default_terms_and_conditions].freeze
 
     def update
       @tenant = Current.tenant

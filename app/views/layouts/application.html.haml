@@ -35,9 +35,13 @@
     = csp_meta_tag
     %meta{name: "view-transition", content: "same-origin"}
     = yield :head
-    %link{rel: "icon", href: "/icon.png", type: "image/png"}
-    %link{rel: "icon", href: "/icon.svg", type: "image/svg+xml"}
-    %link{rel: "apple-touch-icon", href: "/icon.png"}
+    - if Current.tenant.favicon.attached?
+      %link{rel: "icon", href: Current.tenant.favicon.url, type: Current.tenant.favicon.content_type}
+      %link{rel: "apple-touch-icon", href: Current.tenant.favicon.url}
+    - else
+      %link{rel: "icon", href: "/icon.png", type: "image/png"}
+      %link{rel: "icon", href: "/icon.svg", type: "image/svg+xml"}
+      %link{rel: "apple-touch-icon", href: "/icon.png"}
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
