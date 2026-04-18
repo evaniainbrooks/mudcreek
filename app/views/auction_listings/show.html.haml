@@ -89,6 +89,7 @@
 
   = render("listings/properties", listing: @listing)
   = render("listings/documents", listing: @listing)
+  = render "shared/recently_viewed", exclude_type: "auction_listing", exclude_hashid: @auction_listing.hashid
 
 - if (addr = @listing.effective_address)&.any?
   = render "shared/map_modal", address: addr

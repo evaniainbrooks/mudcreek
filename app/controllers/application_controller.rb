@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include Authentication
   include Pagy::Method
   include TenantResolution
+  include RecentlyViewed
 
   around_action :scan_for_n_plus_one if Rails.env.local?
   include PauseProsopite
@@ -10,7 +11,7 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  helper_method :cart_item_count, :offcanvas_cart_items, :offcanvas_watchlist_items, :watchlist_item_count
+  helper_method :cart_item_count, :offcanvas_cart_items, :offcanvas_watchlist_items, :watchlist_item_count, :recently_viewed_items
 
   BOT_USER_AGENT_PATTERN = /bot|crawl|slurp|spider|mediapartners|facebookexternalhit|ia_archiver|ahrefsbot|semrushbot|mj12bot|dotbot|petalbot|bytespider|meta-externalagent/i
 

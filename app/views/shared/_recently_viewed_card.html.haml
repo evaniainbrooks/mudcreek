@@ -1,0 +1,36 @@
+- if item[:type] == :listing
+  - listing = item[:record]
+  - url = listing_path(listing)
+  - auction_listing = nil
+- else
+  - auction_listing = item[:record]
+  - listing = auction_listing.listing
+  - url = auction_auction_listing_path(auction_listing.auction, auction_listing)
+
+.col
+  .card.h-100.shadow-sm.border.border-secondary-subtle
+    = link_to url, class: "text-decoration-none text-body" do
+      .position-relative
+        - if listing.gallery&.photos&.attached?
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.gallery.photos.first, height: 140) }
+        - elsif listing.lot&.listing_placeholder&.attached?
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(listing.lot.listing_placeholder, height: 140) }
+        - elsif Current.tenant.listing_placeholder.attached?
+          .card-img-top.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder, height: 140) }
+        - else
+          .card-img-top.d-flex.align-items-center.justify-content-center.bg-secondary-subtle{ style: "height: 140px" }
+            %i.bi.bi-image.text-secondary{ style: "font-size: 2rem" }
+        - if listing.sold?
+          .position-absolute.top-0.start-0.p-1
+            %span.badge.text-bg-danger Sold
+        - if auction_listing
+          .position-absolute.top-0.end-0.p-1
+            %span.badge.text-bg-secondary Auction
+      .card-body.p-2
+        %p.card-title.fw-semibold.small.mb-1.text-truncate= listing.name
+        - if auction_listing
+          = render "auction_listings/current_bid", auction_listing: auction_listing
+        - elsif listing.rental?
+          %span.small.text-muted Rental
+        - else
+          %span.small.text-primary.fw-bold= humanized_money_with_symbol(listing.price)

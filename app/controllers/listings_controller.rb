@@ -12,6 +12,9 @@ class ListingsController < ApplicationController
     if (al = @listing.auction_listing)
       return redirect_to auction_auction_listing_path(al.auction, al)
     end
+
+    record_recently_viewed(type: :listing, hashid: @listing.hashid)
+
     @next_listing = Listing.where(published: true).not_in_auction
                            .where("position > ?", @listing.position)
                            .order(position: :asc, id: :asc)

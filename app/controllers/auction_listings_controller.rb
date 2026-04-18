@@ -15,6 +15,8 @@ class AuctionListingsController < ApplicationController
       SQL
       .find_by!(hashid: params[:hashid])
 
+    record_recently_viewed(type: :auction_listing, hashid: @auction_listing.hashid, auction_hashid: @auction.hashid)
+
     @next_auction_listing = @auction.auction_listings
       .where("position > ?", @auction_listing.position)
       .order(position: :asc)

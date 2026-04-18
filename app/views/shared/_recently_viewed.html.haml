@@ -1,0 +1,9 @@
+- items = recently_viewed_items(exclude_type: exclude_type, exclude_hashid: exclude_hashid)
+- if items.any?
+  %hr.mt-5
+  %h2.h5.fw-semibold.mb-3
+    %i.bi.bi-clock-history.me-2
+    Recently Viewed
+  .row.row-cols-2.row-cols-sm-3.row-cols-md-4.row-cols-lg-5.g-3
+    - items.each do |item|
+      = render "shared/recently_viewed_card", item: item
