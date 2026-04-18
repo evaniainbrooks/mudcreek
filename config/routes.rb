@@ -126,13 +126,17 @@ resource :session
     resources :auction_registrations, only: [ :index, :update ]
     resources :invoices, only: [ :index, :show, :update ], param: :number
     resources :bids, only: [ :update ]
-    resources :galleries, only: [ :index, :new, :create, :edit, :update, :destroy ]
+    resources :galleries, only: [ :index, :new, :create, :edit, :update, :destroy ] do
+      resources :attachments, only: [ :destroy ], module: :galleries
+    end
     resources :pages
     resources :inquiry_forms
     resources :inquiries, only: [ :index, :show ]
     resources :kids, only: [ :index ]
     resources :subscription_plans, only: [ :index, :create, :show, :destroy ]
-    resources :subscriptions, only: [ :show, :create, :update ]
+    resources :subscriptions, only: [ :show, :create, :update ] do
+      resources :subscription_users, only: [ :create, :destroy ]
+    end
     resources :navbar_items, except: [:show] do
       collection { patch :reorder }
     end

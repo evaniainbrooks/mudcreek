@@ -28,7 +28,10 @@ class Admin::InvoicesController < Admin::BaseController
   end
 
   def update
-    if @invoice.update(invoice_params)
+    attrs = invoice_params
+    @invoice.receipt.purge if attrs.delete(:remove_receipt) == "1"
+
+    if @invoice.update(attrs)
       redirect_to admin_invoice_path(@invoice), notice: "Invoice updated."
     else
       render :show, status: :unprocessable_content
@@ -43,6 +46,6 @@ class Admin::InvoicesController < Admin::BaseController
   end
 
   def invoice_params
-    params.expect(invoice: [ :status, :admin_notes ])
+    params.expect(invoice: [ :status, :admin_notes, :receipt, :remove_receipt ])
   end
 end

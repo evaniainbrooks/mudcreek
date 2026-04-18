@@ -79,12 +79,39 @@
               = f.submit "Save", class: "btn btn-primary btn-sm"
 
       - if policy(@invoice).update?
-        .card.shadow-sm.border-0
+        .card.shadow-sm.border-0.mb-4
           .card-header.fw-semibold Admin Notes
           .card-body
             = form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch do |f|
               = f.text_area :admin_notes, class: "form-control form-control-sm mb-2", rows: 4, placeholder: "Internal notes…"
               = f.submit "Save notes", class: "btn btn-primary btn-sm w-100"
+
+        .card.shadow-sm.border-0
+          .card-header.fw-semibold Receipt
+          .card-body
+            - if @invoice.receipt.attached?
+              .mb-3
+                - blob = @invoice.receipt.blob
+                - if blob.content_type.start_with?("image/")
+                  = image_tag rails_blob_path(@invoice.receipt, disposition: "inline"),
+                      class: "img-fluid rounded mb-2", style: "max-height: 200px"
+                  %br
+                - = link_to blob.filename.to_s, rails_blob_path(@invoice.receipt, disposition: "attachment"),
+                    class: "text-decoration-none small"
+                  %i.bi.bi-download.ms-1
+              = form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch do |f|
+                = f.hidden_field :remove_receipt, value: "1"
+                %button.btn.btn-sm.btn-outline-danger.w-100{ type: "submit",
+                    data: { turbo_confirm: "Remove the receipt attachment?" } }
+                  %i.bi.bi-trash.me-1
+                  Remove receipt
+            = form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch,
+                html: { multipart: true, class: "mt-3" } do |f|
+              = f.label :receipt, @invoice.receipt.attached? ? "Replace receipt" : "Attach receipt",
+                  class: "form-label form-label-sm"
+              = f.file_field :receipt, class: "form-control form-control-sm mb-2",
+                  accept: "image/*,application/pdf"
+              = f.submit "Upload", class: "btn btn-primary btn-sm w-100"
 
   .mt-3
     = link_to admin_invoices_path, class: "btn btn-outline-secondary" do

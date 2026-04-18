@@ -8,8 +8,9 @@ module Admin::SubscriptionsHelper
   def render_subscriptions_table(subscriptions)
     table = TableComponent.new(rows: subscriptions)
 
-    table.with_value_column("User") { it.user }
+    table.with_value_column("Primary Contact") { it.primary_user&.name || "—" }
     table.with_value_column("Plan") { it.subscription_plan.name }
+    table.with_column("Amount") { |s| humanized_money_with_symbol(s.amount) }
     table.with_value_column("Renews") { it.renews_at }
     table.with_column("Status") { |s| subscription_status_badge(s) }
     table.with_column("", html_class: "text-end") do |s|

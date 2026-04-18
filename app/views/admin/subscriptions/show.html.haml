@@ -13,20 +13,21 @@
         .card-header.fw-semibold Details
         .card-body
           %dl.mb-0
-            %dt.text-muted.small User
-            %dd= @subscription.user.name
-            %dt.text-muted.small Email
-            %dd= @subscription.user.email_address
+            - if (primary = @subscription.primary_user)
+              %dt.text-muted.small Primary Contact
+              %dd= primary.name
+              %dt.text-muted.small Email
+              %dd= primary.email_address
             %dt.text-muted.small Plan
             %dd= link_to @subscription.subscription_plan.name, admin_subscription_plan_path(@subscription.subscription_plan)
             %dt.text-muted.small Amount
-            %dd= humanized_money_with_symbol(@subscription.subscription_plan.amount)
+            %dd= humanized_money_with_symbol(@subscription.amount)
             %dt.text-muted.small Renews
             %dd= @subscription.renews_at
             %dt.text-muted.small Status
             %dd= subscription_status_badge(@subscription)
 
-      .card.shadow-sm.border-0
+      .card.shadow-sm.border-0.mb-4
         .card-header.fw-semibold Manage
         .card-body
           = form_with model: [:admin, @subscription], method: :patch do |f|
@@ -40,7 +41,41 @@
             .mb-3
               = f.label :renews_at, class: "form-label"
               = f.date_field :renews_at, class: "form-control form-control-sm"
+            .mb-3
+              = f.label :amount_cents, "Amount (cents)", class: "form-label"
+              = f.number_field :amount_cents, class: "form-control form-control-sm", min: 1
             = f.submit "Update", class: "btn btn-primary btn-sm"
+
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Members
+        .card-body.p-0
+          %ul.list-group.list-group-flush
+            - @subscription.subscription_users.includes(:user).each do |su|
+              %li.list-group-item.d-flex.justify-content-between.align-items-center
+                .lh-sm
+                  .fw-semibold.small= su.user.name
+                  .text-muted.small= su.user.email_address
+                .d-flex.align-items-center.gap-2
+                  - if su.primary_contact?
+                    %span.badge.bg-primary Primary
+                  - else
+                    = button_to admin_subscription_subscription_user_path(@subscription, su),
+                        method: :delete,
+                        class: "btn btn-sm btn-outline-danger",
+                        form: { data: { turbo_confirm: "Remove #{su.user.name} from this subscription?" } } do
+                      %i.bi.bi-x-lg
+          .card-footer.bg-transparent
+            = form_with url: admin_subscription_subscription_users_path(@subscription), method: :post do |f|
+              - if @available_users.any?
+                .d-flex.gap-2
+                  = select_tag "subscription_user[user_id]",
+                      options_from_collection_for_select(@available_users, :id, :email_address),
+                      prompt: "Add a user...",
+                      class: "form-select form-select-sm"
+                  %button.btn.btn-sm.btn-outline-primary{ type: "submit" }
+                    %i.bi.bi-plus-lg
+              - else
+                .text-muted.small All users are already members.
 
     .col-lg-8
       .card.shadow-sm.border-0

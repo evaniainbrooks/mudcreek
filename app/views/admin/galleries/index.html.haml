@@ -19,7 +19,7 @@
         .col-md-3
           = f.label :listing_id_null, "Listing", class: "form-label form-label-sm"
           = f.select :listing_id_null, [["Unattached", "1"], ["Attached", "0"]],
-              { include_blank: "Any" }, class: "form-select form-select-sm"
+              { include_blank: "Any", selected: @listing_id_null }, class: "form-select form-select-sm"
         .col-auto
           %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
             %i.bi.bi-search.me-1
@@ -33,34 +33,4 @@
   - if @galleries.empty?
     = render EmptyStateComponent.new(icon: "images", message: "No galleries found.")
   - else
-    .table-responsive
-      %table.table.table-hover.align-middle.mb-0
-        %thead.table-light
-          %tr
-            %th Name
-            %th Description
-            %th Listing
-            %th.text-center Media
-            %th
-        %tbody
-          - @galleries.each do |gallery|
-            :ruby
-              media_count = gallery.photos.size + gallery.videos.size + gallery.documents.size
-            %tr
-              %td.fw-semibold= gallery.name
-              %td.text-muted
-                - if gallery.description.present?
-                  = gallery.description.to_plain_text.truncate(120)
-              %td
-                - if gallery.listing
-                  = link_to gallery.listing.name, admin_listing_path(gallery.listing), class: "text-decoration-none"
-                - else
-                  %span.text-muted —
-              %td.text-center
-                %span.badge.bg-secondary= media_count
-              %td.text-end
-                = link_to edit_admin_gallery_path(gallery), class: "btn btn-sm btn-outline-secondary me-1" do
-                  %i.bi.bi-pencil
-                = link_to admin_gallery_path(gallery), class: "btn btn-sm btn-outline-danger",
-                    data: { turbo_method: :delete, turbo_confirm: "Delete '#{gallery.name}'?" } do
-                  %i.bi.bi-trash
+    = render_galleries_table(@galleries)

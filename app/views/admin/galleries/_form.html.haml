@@ -32,14 +32,9 @@
           %i.bi.bi-images.me-1
           Photos
         .card-body.p-4
-          - if gallery.photos.attached?
-            .mb-3
-              .row.g-2
-                - gallery.photos.each do |photo|
-                  .col-auto
-                    .border.rounded.p-1.text-center.small.text-muted{ style: "max-width: 140px" }
-                      %i.bi.bi-file-image.d-block.fs-4
-                      = photo.filename
+          = render Admin::AttachmentsListComponent.new(
+              attachments: gallery.photos_attachments,
+              delete_path: gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil)
           .mb-0
             = f.label :photos, "Add photos", class: "form-label"
             = f.file_field :photos, multiple: true, accept: "image/*", class: "form-control"
@@ -50,13 +45,9 @@
           %i.bi.bi-camera-video.me-1
           Videos
         .card-body.p-4
-          - if gallery.videos.attached?
-            .mb-3
-              %ul.list-unstyled.mb-0
-                - gallery.videos.each do |video|
-                  %li.text-muted.small
-                    %i.bi.bi-file-play.me-1
-                    = video.filename
+          = render Admin::AttachmentsListComponent.new(
+              attachments: gallery.videos_attachments,
+              delete_path: gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil)
           .mb-0
             = f.label :videos, "Add videos", class: "form-label"
             = f.file_field :videos, multiple: true, accept: "video/*", class: "form-control"
@@ -67,13 +58,9 @@
           %i.bi.bi-file-earmark.me-1
           Documents
         .card-body.p-4
-          - if gallery.documents.attached?
-            .mb-3
-              %ul.list-unstyled.mb-0
-                - gallery.documents.each do |doc|
-                  %li.text-muted.small
-                    %i.bi.bi-file-earmark-text.me-1
-                    = doc.filename
+          = render Admin::AttachmentsListComponent.new(
+              attachments: gallery.documents_attachments,
+              delete_path: gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil)
           .mb-0
             = f.label :documents, "Add documents", class: "form-label"
             = f.file_field :documents, multiple: true, class: "form-control"

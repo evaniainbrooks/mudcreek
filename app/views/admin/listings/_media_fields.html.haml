@@ -17,8 +17,8 @@
         - if listing.gallery&.errors[:photos].any?
           .invalid-feedback= listing.gallery.errors[:photos].to_sentence
         = render Admin::AttachmentsListComponent.new(
-            attachments: listing.gallery&.photos_attachments || [],
-            delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
+          attachments: listing.gallery&.photos_attachments || [],
+          delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
       .mb-3
         = gf.label :videos, class: "form-label"
         = gf.file_field :videos,
@@ -29,8 +29,8 @@
         - if listing.gallery&.errors[:videos].any?
           .invalid-feedback= listing.gallery.errors[:videos].to_sentence
         = render Admin::AttachmentsListComponent.new(
-            attachments: listing.gallery&.videos_attachments || [],
-            delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
+          attachments: listing.gallery&.videos_attachments || [],
+          delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
       .mb-0
         = gf.label :documents, class: "form-label"
         = gf.file_field :documents,
@@ -41,6 +41,6 @@
         - if listing.gallery&.errors[:documents].any?
           .invalid-feedback= listing.gallery.errors[:documents].to_sentence
         = render Admin::AttachmentsListComponent.new(
-            attachments: listing.gallery&.documents_attachments || [],
-            delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
+          attachments: listing.gallery&.documents_attachments || [],
+          delete_path: listing.gallery&.persisted? ? ->(a) { admin_listing_gallery_attachment_path(listing, a) } : nil)
     .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }

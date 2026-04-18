@@ -304,6 +304,57 @@ RSpec.describe "Admin::Invoices", type: :request do
       end
     end
 
+    context "attaching a receipt" do
+      let(:file) { fixture_file_upload(Rails.root.join("spec/fixtures/files/receipt.pdf"), "application/pdf") }
+
+      it "attaches the receipt to the invoice" do
+        patch admin_invoice_path(invoice), params: { invoice: { receipt: file } }
+
+        expect(invoice.reload.receipt).to be_attached
+      end
+
+      it "redirects back to the invoice with a notice" do
+        patch admin_invoice_path(invoice), params: { invoice: { receipt: file } }
+
+        expect(response).to redirect_to(admin_invoice_path(invoice))
+        expect(flash[:notice]).to eq("Invoice updated.")
+      end
+
+      it "replaces an existing receipt" do
+        invoice.receipt.attach(io: StringIO.new("old"), filename: "old.pdf", content_type: "application/pdf")
+        new_file = fixture_file_upload(Rails.root.join("spec/fixtures/files/receipt.pdf"), "application/pdf")
+
+        patch admin_invoice_path(invoice), params: { invoice: { receipt: new_file } }
+
+        expect(invoice.reload.receipt.filename.to_s).to eq("receipt.pdf")
+      end
+    end
+
+    context "removing a receipt" do
+      before do
+        invoice.receipt.attach(io: StringIO.new("data"), filename: "receipt.pdf", content_type: "application/pdf")
+      end
+
+      it "purges the receipt" do
+        patch admin_invoice_path(invoice), params: { invoice: { remove_receipt: "1" } }
+
+        expect(invoice.reload.receipt).not_to be_attached
+      end
+
+      it "redirects back to the invoice with a notice" do
+        patch admin_invoice_path(invoice), params: { invoice: { remove_receipt: "1" } }
+
+        expect(response).to redirect_to(admin_invoice_path(invoice))
+        expect(flash[:notice]).to eq("Invoice updated.")
+      end
+
+      it "does nothing when remove_receipt is not set" do
+        patch admin_invoice_path(invoice), params: { invoice: { status: "paid" } }
+
+        expect(invoice.reload.receipt).to be_attached
+      end
+    end
+
     context "updating admin notes" do
       it "persists the notes" do
         patch admin_invoice_path(invoice), params: { invoice: { admin_notes: "Contact buyer before shipping." } }

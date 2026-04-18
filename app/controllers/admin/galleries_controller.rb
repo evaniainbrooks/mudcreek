@@ -4,6 +4,7 @@ class Admin::GalleriesController < Admin::BaseController
   def index
     authorize(Gallery)
     q_params = params[:q].present? ? params[:q] : { listing_id_null: "1" }
+    @listing_id_null = q_params[:listing_id_null]
     @q = Gallery.ransack(q_params)
     scope = @q.result
       .with_attached_photos

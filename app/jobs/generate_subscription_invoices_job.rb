@@ -5,22 +5,27 @@ class GenerateSubscriptionInvoicesJob < ApplicationJob
     Tenant.find_each do |tenant|
       Current.tenant = tenant
 
-      Subscription.due.includes(:user, :subscription_plan).find_each do |subscription|
+      Subscription.due
+                  .includes(subscription_users: :user, :subscription_plan)
+                  .find_each do |subscription|
         next if Invoice.where(subscription: subscription, status: :unpaid).exists?
+
+        user = subscription.primary_user
+        next unless user
 
         plan = subscription.subscription_plan
         invoice = Invoice.create!(
-          user: subscription.user,
+          user: user,
           subscription: subscription,
-          total_cents: plan.amount_cents
+          total_cents: subscription.amount_cents
         )
 
         invoice.invoice_items.create!(
           name: plan.name,
-          amount_cents: plan.amount_cents
+          amount_cents: subscription.amount_cents
         )
 
-        if subscription.user.default_square_card_id.present?
+        if user.default_square_card_id.present?
           ChargeInvoiceJob.perform_later(invoice.id)
         else
           SubscriptionMailer.invoice_generated(invoice).deliver_later

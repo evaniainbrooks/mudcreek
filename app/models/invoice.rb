@@ -8,6 +8,7 @@ class Invoice < ApplicationRecord
   belongs_to :subscription, optional: true
 
   has_many :invoice_items, dependent: :destroy
+  has_one_attached :receipt
 
   native_enum :status, %i[unpaid paid]
 

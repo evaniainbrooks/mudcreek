@@ -30,10 +30,10 @@
           = form_with model: [:admin, @subscription] do |f|
             = f.hidden_field :subscription_plan_id, value: @subscription_plan.id
             .mb-3
-              = f.label :user_id, "User", class: "form-label required"
-              = f.collection_select :user_id, @users, :id, :email_address,
-                  { prompt: "Select a user..." },
-                  class: "form-select #{'is-invalid' if @subscription.errors[:user].any?}",
+              = f.label :primary_user_id, "Primary Contact", class: "form-label required"
+              = select_tag "subscription[primary_user_id]", options_from_collection_for_select(@users, :id, :email_address),
+                  prompt: "Select a user...",
+                  class: "form-select",
                   required: true
             .mb-3
               = f.label :renews_at, "First Renewal Date", class: "form-label required"
@@ -46,7 +46,7 @@
       .card.shadow-sm.border-0
         .card-header.fw-semibold Subscriptions
         .card-body.p-0
-          - subscriptions = @subscription_plan.subscriptions.includes(:user).order(:status)
+          - subscriptions = @subscription_plan.subscriptions.includes(subscription_users: :user, :subscription_plan).order(:status)
           - if subscriptions.empty?
             .p-4.text-muted No subscriptions yet.
           - else
