@@ -6,7 +6,8 @@ class GenerateSubscriptionInvoicesJob < ApplicationJob
       Current.tenant = tenant
 
       Subscription.due
-                  .includes(subscription_users: :user, :subscription_plan)
+                  .includes(subscription_users: :user)
+                  .includes(:subscription_plan)
                   .find_each do |subscription|
         next if Invoice.where(subscription: subscription, status: :unpaid).exists?
 
