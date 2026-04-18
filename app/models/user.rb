@@ -38,6 +38,8 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :verification
   accepts_nested_attributes_for :kids, allow_destroy: true, reject_if: :all_blank
 
+  scope :activated, -> { where.not(activated_at: nil) }
+
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   validates :first_name, presence: true

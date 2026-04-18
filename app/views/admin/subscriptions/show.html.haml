@@ -42,11 +42,18 @@
               = f.label :renews_at, class: "form-label"
               = f.date_field :renews_at, class: "form-control form-control-sm"
             .mb-3
-              = f.label :amount_cents, "Amount (cents)", class: "form-label"
-              = f.number_field :amount_cents, class: "form-control form-control-sm", min: 1
+              = f.label :amount, "Amount", class: "form-label"
+              .input-group.input-group-sm
+                %span.input-group-text= Money::Currency.find(Current.tenant.currency).symbol
+                = f.text_field :amount, value: @subscription.amount&.to_f,
+                    class: "form-control #{'is-invalid' if @subscription.errors[:amount_cents].any?}",
+                    step: "0.01", min: "0.01"
+              - if @subscription.errors[:amount_cents].any?
+                .invalid-feedback.d-block= @subscription.errors[:amount_cents].to_sentence
             = f.submit "Update", class: "btn btn-primary btn-sm"
 
-      .card.shadow-sm.border-0
+    .col-lg-8
+      .card.shadow-sm.border-0.mb-4
         .card-header.fw-semibold Members
         .card-body.p-0
           %ul.list-group.list-group-flush
@@ -77,11 +84,5 @@
               - else
                 .text-muted.small All users are already members.
 
-    .col-lg-8
-      .card.shadow-sm.border-0
-        .card-header.fw-semibold Invoices
-        .card-body.p-0
-          - if @invoices.empty?
-            .p-4.text-muted No invoices yet.
-          - else
-            = render_invoices_table(invoices: @invoices, q: nil)
+      - if @invoices.any?
+        = render_invoices_table(invoices: @invoices, q: nil)

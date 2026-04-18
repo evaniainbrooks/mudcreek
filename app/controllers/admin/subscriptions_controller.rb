@@ -3,9 +3,12 @@ class Admin::SubscriptionsController < Admin::BaseController
 
   def show
     @subscription_user = @subscription.subscription_users.build
-    @available_users = User.order(:email_address)
+    @available_users = User.activated.order(:email_address)
                            .where.not(id: @subscription.users.select(:id))
-    @subscription_users = @subscription.subscription_users.includes(:user)
+    @subscription_users = @subscription.subscription_users
+                                        .joins(:user)
+                                        .where.not(users: { activated_at: nil })
+                                        .includes(:user)
     @invoices = @subscription.invoices.order(created_at: :desc)
   end
 
@@ -55,6 +58,6 @@ class Admin::SubscriptionsController < Admin::BaseController
   end
 
   def subscription_update_params
-    params.expect(subscription: [ :status, :renews_at, :amount_cents ])
+    params.expect(subscription: [ :status, :renews_at, :amount ])
   end
 end

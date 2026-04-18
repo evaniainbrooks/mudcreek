@@ -18,7 +18,7 @@
         .invalid-feedback= listing.errors[:name].to_sentence
     .mb-3
       = f.label :owner_id, "Owner", class: "form-label"
-      = f.collection_select :owner_id, User.order(:email_address), :id, :email_address,
+      = f.collection_select :owner_id, User.activated.order(:email_address), :id, :email_address,
         { include_blank: "- No owner -" },
         { class: "form-select #{'is-invalid' if listing.errors[:owner].any?}" }
       - if listing.errors[:owner].any?

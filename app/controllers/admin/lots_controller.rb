@@ -4,7 +4,7 @@ class Admin::LotsController < Admin::BaseController
   def index
     authorize(Lot)
     @lot = Lot.new
-    @users = User.order(:email_address)
+    @users = User.activated.order(:email_address)
     @filter_total = Lot.count
     @q = Lot.ransack(params[:q])
     @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
@@ -13,7 +13,7 @@ class Admin::LotsController < Admin::BaseController
 
   def show
     @lot.build_address unless @lot.address
-    @users = User.order(:email_address)
+    @users = User.activated.order(:email_address)
     @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
     @settlement = @lot.settlement
     @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
@@ -25,7 +25,7 @@ class Admin::LotsController < Admin::BaseController
     if @lot.save
       redirect_to admin_lot_path(@lot), notice: "Lot \"#{@lot.name}\" was successfully created."
     else
-      @users = User.order(:email_address)
+      @users = User.activated.order(:email_address)
       @q = Lot.ransack(nil)
       @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
       @filter_total = Lot.count
@@ -39,7 +39,7 @@ class Admin::LotsController < Admin::BaseController
       redirect_to admin_lot_path(@lot), notice: "Lot updated."
     else
       @lot.build_address unless @lot.address
-      @users = User.order(:email_address)
+      @users = User.activated.order(:email_address)
       @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
       @settlement = @lot.settlement
       @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
