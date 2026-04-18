@@ -10,6 +10,10 @@ class Admin::SubscriptionPlansController < Admin::BaseController
   def show
     @subscription = Subscription.new(subscription_plan: @subscription_plan)
     @users = User.order(:email_address)
+    @subscriptions = @subscription_plan.subscriptions
+                                       .includes(subscription_users: :user)
+                                       .includes(:subscription_plan)
+                                       .order(:status)
   end
 
   def create

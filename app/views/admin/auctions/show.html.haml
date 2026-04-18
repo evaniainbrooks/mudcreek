@@ -106,11 +106,10 @@
             = render "sentinel", pagy: @pagy, auction: @auction
 
       #registrations-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "registrations-tab" } }
-        - registrations = @auction.auction_registrations.includes(:user).order(:created_at)
-        - if registrations.empty?
+        - if @registrations.empty?
           .text-muted.py-3 No registrations for this auction yet.
         - else
-          = render_auction_registrations_table(registrations: registrations)
+          = render_auction_registrations_table(registrations: @registrations)
 
       - if @auction.reconciled?
         #report-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "report-tab" } }

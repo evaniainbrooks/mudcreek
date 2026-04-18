@@ -16,6 +16,7 @@ class Admin::LotsController < Admin::BaseController
     @users = User.order(:email_address)
     @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
     @settlement = @lot.settlement
+    @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
   end
 
   def create
@@ -41,6 +42,7 @@ class Admin::LotsController < Admin::BaseController
       @users = User.order(:email_address)
       @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
       @settlement = @lot.settlement
+      @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
       render :show, status: :unprocessable_content
     end
   end

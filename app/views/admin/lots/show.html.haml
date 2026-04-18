@@ -109,7 +109,7 @@
                     %th Type
                     %th.text-end Amount
                 %tbody
-                  - @settlement.settlement_line_items.order(:created_at).each do |item|
+                  - @settlement_line_items.each do |item|
                     - deduction = %w[seller_commission seller_fee].include?(item.line_item_type)
                     %tr
                       %td= item.description

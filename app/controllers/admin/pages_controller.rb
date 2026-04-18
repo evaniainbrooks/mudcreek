@@ -9,9 +9,11 @@ class Admin::PagesController < Admin::BaseController
   def new
     @page = Page.new(parent_id: params[:parent_id])
     authorize(@page)
+    @widget_collections = build_widget_collections
   end
 
   def edit
+    @widget_collections = build_widget_collections
   end
 
   def create
@@ -28,6 +30,7 @@ class Admin::PagesController < Admin::BaseController
       end
       redirect_to admin_pages_path, notice: "Page was successfully created."
     else
+      @widget_collections = build_widget_collections
       render :new, status: :unprocessable_content
     end
   end
@@ -40,6 +43,7 @@ class Admin::PagesController < Admin::BaseController
     if @page.update(page_params)
       redirect_to admin_pages_path, notice: "Page was successfully updated."
     else
+      @widget_collections = build_widget_collections
       render :edit, status: :unprocessable_content
     end
   end
@@ -54,6 +58,16 @@ class Admin::PagesController < Admin::BaseController
   def set_page
     @page = Page.find_by!(slug: params[:id])
     authorize(@page)
+  end
+
+  def build_widget_collections
+    {
+      galleries:      Gallery.order(:name),
+      locations:      Location.order(:name),
+      inquiry_forms:  InquiryForm.order(:name),
+      qr_codes:       QrCode.order(:name),
+      listings:       Listing.where(published: true).order(:name)
+    }
   end
 
   def page_params

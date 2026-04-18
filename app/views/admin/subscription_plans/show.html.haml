@@ -46,8 +46,7 @@
       .card.shadow-sm.border-0
         .card-header.fw-semibold Subscriptions
         .card-body.p-0
-          - subscriptions = @subscription_plan.subscriptions.includes(subscription_users: :user, :subscription_plan).order(:status)
-          - if subscriptions.empty?
+          - if @subscriptions.empty?
             .p-4.text-muted No subscriptions yet.
           - else
-            = render_subscriptions_table(subscriptions)
+            = render_subscriptions_table(@subscriptions)

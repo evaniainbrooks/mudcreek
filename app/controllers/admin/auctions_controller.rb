@@ -15,6 +15,7 @@ class Admin::AuctionsController < Admin::BaseController
     @auction_registrations_count = @auction.auction_registrations.count
     scope = @auction.auction_listings.includes(:listing).order(:position, :id)
     @pagy, @auction_listings = pagy(:keyset, scope)
+    @registrations = @auction.auction_registrations.includes(:user).order(:created_at)
 
     if @auction.reconciled?
       @report_listings = @auction.auction_listings

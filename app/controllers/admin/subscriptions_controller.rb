@@ -5,6 +5,8 @@ class Admin::SubscriptionsController < Admin::BaseController
     @subscription_user = @subscription.subscription_users.build
     @available_users = User.order(:email_address)
                            .where.not(id: @subscription.users.select(:id))
+    @subscription_users = @subscription.subscription_users.includes(:user)
+    @invoices = @subscription.invoices.order(created_at: :desc)
   end
 
   def create
@@ -25,7 +27,10 @@ class Admin::SubscriptionsController < Admin::BaseController
     else
       @subscription_plan = @subscription.subscription_plan || SubscriptionPlan.find_by(id: subscription_params[:subscription_plan_id])
       @users = User.order(:email_address)
-      @subscriptions = @subscription_plan&.subscriptions&.includes(subscription_users: :user)&.order(:status)
+      @subscriptions = @subscription_plan&.subscriptions
+                                         &.includes(subscription_users: :user)
+                                         &.includes(:subscription_plan)
+                                         &.order(:status)
       render "admin/subscription_plans/show", status: :unprocessable_content
     end
   end

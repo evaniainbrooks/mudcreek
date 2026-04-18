@@ -85,7 +85,7 @@
             - if page.errors[:position].any?
               .invalid-feedback= page.errors[:position].to_sentence
 
-      = render "admin/pages/widget_fields", f: f
+      = render "admin/pages/widget_fields", f: f, widget_collections: widget_collections
 
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold
