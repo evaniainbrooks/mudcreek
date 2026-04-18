@@ -1,7 +1,7 @@
 class SubscriptionUserPolicy < ApplicationPolicy
-  actions(:create) { user.admin? }
+  actions(:create) { permitted?(:create) }
 
   def destroy?
-    user.admin?
+    permitted?(:destroy)
   end
 end
