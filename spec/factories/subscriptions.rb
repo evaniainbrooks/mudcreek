@@ -6,9 +6,19 @@ FactoryBot.define do
   end
 
   factory :subscription do
-    association :user
+    transient do
+      user { nil }
+    end
+
     association :subscription_plan
     renews_at { Date.current + 1.month }
     status    { :active }
+    amount_cents { 5_000 }
+
+    after(:create) do |subscription, evaluator|
+      if evaluator.user
+        subscription.subscription_users.create!(user: evaluator.user, primary_contact: true)
+      end
+    end
   end
 end

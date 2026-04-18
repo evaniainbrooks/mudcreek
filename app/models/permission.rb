@@ -39,6 +39,7 @@ class Permission < ApplicationRecord
     Settlement
     Subscription
     SubscriptionPlan
+    SubscriptionUser
     Tenant
     User
   ].freeze
