@@ -4,8 +4,57 @@
     %h2.h4.fw-semibold.mb-3= gallery.name
   - if gallery.description.present?
     .mb-4= gallery.description
-  - if gallery.photos.attached?
-    .row.row-cols-2.row-cols-md-3.row-cols-lg-4.g-3
-      - gallery.photos.each do |photo|
-        .col
-          = optimized_image_tag photo, preset: :card, class: "img-fluid rounded w-100", style: "object-fit: cover; aspect-ratio: 2/1"
+  :ruby
+    photos = gallery.photos
+    videos = gallery.videos
+    media_count = photos.size + videos.size
+    carousel_id = "gallery-widget-carousel-#{widget.id}"
+  - if media_count > 0
+    .position-relative{ data: { controller: "image-zoom listing-carousel" } }
+      %div{ id: carousel_id, class: "carousel slide", data: { bs_ride: "false", "listing-carousel-target": "carousel" } }
+        .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
+          :ruby
+            slide = 0
+          - photos.each do |photo|
+            .carousel-item{ class: slide.zero? ? "active" : "" }
+              = optimized_image_tag photo, preset: :carousel_slide,
+                  class: "d-block w-100 rounded-3 object-fit-contain bg-secondary-subtle", style: "height: 480px"
+            - slide += 1
+          - videos.each do |video|
+            .carousel-item{ class: slide.zero? ? "active" : "" }
+              %video.d-block.w-100.rounded-3.bg-secondary-subtle{ controls: true, style: "height: 480px; object-fit: contain" }
+                %source{ src: url_for(video) }
+            - slide += 1
+        - if media_count > 1
+          %button.carousel-control-prev{ type: "button", data: { bs_target: "##{carousel_id}", bs_slide: "prev" } }
+            %span.carousel-control-prev-icon{ aria: { hidden: "true" } }
+            %span.visually-hidden Previous
+          %button.carousel-control-next{ type: "button", data: { bs_target: "##{carousel_id}", bs_slide: "next" } }
+            %span.carousel-control-next-icon{ aria: { hidden: "true" } }
+            %span.visually-hidden Next
+      .position-absolute.bottom-0.end-0.p-2{ style: "z-index: 10", data: { "listing-carousel-target": "zoomControls" } }
+        .d-flex.align-items-center.gap-1
+          %span.badge.text-bg-dark.font-monospace.invisible{ data: { image_zoom_target: "level" } } 100%
+          %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Zoom out", data: { action: "image-zoom#zoomOut" } }
+            %i.bi.bi-zoom-out
+          %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Reset", data: { action: "image-zoom#reset" } }
+            %i.bi.bi-arrow-counterclockwise
+          %button.btn.btn-sm.btn-dark.opacity-75{ type: "button", title: "Zoom in", data: { action: "image-zoom#zoomIn" } }
+            %i.bi.bi-zoom-in
+    - if media_count > 1
+      .d-flex.flex-wrap.gap-2.mt-3
+        :ruby
+          thumb_index = 0
+        - photos.each do |photo|
+          = optimized_image_tag photo,
+            preset: :carousel_thumb,
+            class: "rounded-2 object-fit-cover flex-shrink-0",
+            style: "width: 76px; height: 76px; cursor: pointer; outline: 2px solid transparent",
+            data: { bs_target: "##{carousel_id}", bs_slide_to: thumb_index }
+          - thumb_index += 1
+        - videos.each do |video|
+          .rounded-2.bg-dark.d-flex.align-items-center.justify-content-center.flex-shrink-0{
+            style: "width: 76px; height: 76px; cursor: pointer",
+            data: { bs_target: "##{carousel_id}", bs_slide_to: thumb_index }}
+            %i.bi.bi-play-circle-fill.text-white.fs-3
+          - thumb_index += 1

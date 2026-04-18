@@ -93,17 +93,5 @@ RSpec.describe Page, type: :model do
         expect(Page.in_nav.to_a).to eq([p2, p1])
       end
     end
-
-    describe ".in_footer" do
-      it "returns published pages with show_in_footer true" do
-        shown  = create(:page, title: "Footer Shown",  slug: "footer-shown",  published: true,  show_in_footer: true)
-        hidden = create(:page, title: "Footer Hidden", slug: "footer-hidden", published: false, show_in_footer: true)
-        no_footer = create(:page, title: "No Footer",  slug: "no-footer",     published: true,  show_in_footer: false)
-
-        result = Page.in_footer
-        expect(result).to include(shown)
-        expect(result).not_to include(hidden, no_footer)
-      end
-    end
   end
 end

@@ -10,8 +10,7 @@ module Admin::PagesHelper
     end
     table.with_column("Slug") { |p| content_tag(:code, p.slug) }
     table.with_value_column("Published") { it.published }
-    table.with_value_column("Footer") { it.show_in_footer }
-    table.with_value_column("Position") { it.position }
+table.with_value_column("Position") { it.position }
     table.with_column("Actions", html_class: "text-end") do |p|
       safe_join([
         link_to("Edit", edit_admin_page_path(p), class: "btn btn-sm btn-outline-secondary"),

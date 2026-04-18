@@ -2,7 +2,7 @@
   .container
     .row.g-0
       .col-lg-4.px-4.py-2.d-flex.flex-column.align-items-center.text-center
-        %p.h5.fw-bold.mb-2= tenant.name
+        %p.h5.fw-bold.mb-3= tenant.name
         - if tenant.description.present?
           .text-muted.small.mb-3= tenant.description.to_plain_text.truncate(200)
         .d-flex.flex-column.gap-1.align-items-center

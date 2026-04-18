@@ -1935,7 +1935,6 @@ about_page = Page.find_or_create_by!(slug: "about") do |p|
   p.title          = "About Us"
   p.published      = true
   p.show_in_nav    = true
-  p.show_in_footer = true
   p.position       = 1
   p.body           = <<~HTML
     <h2>Welcome to Mudcreek Auctions &amp; Consignment</h2>

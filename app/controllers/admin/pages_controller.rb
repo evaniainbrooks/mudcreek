@@ -62,7 +62,7 @@ class Admin::PagesController < Admin::BaseController
 
   def build_widget_collections
     {
-      galleries:      Gallery.order(:name),
+      galleries:      Gallery.where(listing_id: nil).order(:name),
       locations:      Location.order(:name),
       inquiry_forms:  InquiryForm.order(:name),
       qr_codes:       QrCode.order(:name),

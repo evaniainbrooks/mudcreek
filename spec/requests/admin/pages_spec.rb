@@ -65,7 +65,7 @@ RSpec.describe "Admin::Pages", type: :request do
 
   describe "POST /admin/pages" do
     context "with valid params" do
-      let(:valid_params) { { page: { title: "FAQ", slug: "faq", published: true, show_in_nav: false, show_in_footer: true, position: 1 } } }
+      let(:valid_params) { { page: { title: "FAQ", slug: "faq", published: true, show_in_nav: false, position: 1 } } }
 
       it "creates a new page" do
         expect {

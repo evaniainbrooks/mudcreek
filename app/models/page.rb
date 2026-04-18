@@ -27,7 +27,6 @@ class Page < ApplicationRecord
   scope :published,      -> { where(published: true) }
   scope :top_level,      -> { where(parent_id: nil) }
   scope :in_nav,         -> { published.where(show_in_nav: true).order(:position, :id) }
-  scope :in_footer,      -> { published.where(show_in_footer: true).order(:position, :id) }
 
   private
 
