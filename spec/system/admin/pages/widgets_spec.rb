@@ -68,7 +68,7 @@ RSpec.describe "Admin page widgets", type: :system, js: true do
     expect(widgets.find { |w| w.is_a?(LocationWidget) }.location).to    eq(location)
     expect(widgets.find { |w| w.is_a?(ScheduleWidget) }.location).to    eq(location)
     expect(widgets.find { |w| w.is_a?(ContactFormWidget) }.inquiry_form).to eq(inquiry_form)
-    expect(widgets.find { |w| w.is_a?(QrCodeWidget) }.qr_code).to       eq(qr_code)
-    expect(widgets.find { |w| w.is_a?(ListingWidget) }.listing).to       eq(listing)
+    expect(widgets.find { |w| w.is_a?(QrCodeWidget) }.qr_code).to eq(qr_code)
+    expect(widgets.find { |w| w.is_a?(ListingWidget) }.listing).to eq(listing)
   end
 end
