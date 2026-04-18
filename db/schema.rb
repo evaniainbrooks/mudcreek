@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_18_205526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -559,6 +559,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_000001) do
     t.string "checkin_exit_url"
     t.datetime "created_at", null: false
     t.boolean "default", default: false, null: false
+    t.text "directions"
     t.string "hashid", null: false
     t.string "ical_url"
     t.string "name", null: false

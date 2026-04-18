@@ -61,12 +61,20 @@
                   %i.bi.bi-check-circle-fill.me-1
                   Calendar synced.
 
-      %fieldset.card.shadow-sm.border-0
+      %fieldset.card.shadow-sm.border-0.mb-4
         %legend.card-header.fw-semibold
           %i.bi.bi-chat-text.me-1
           Message
         .card-body.p-4
           = f.rich_text_area :message, class: "form-control"
+
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
+          %i.bi.bi-signpost-2.me-1
+          Directions
+        .card-body.p-4
+          = f.text_area :directions, class: "form-control", rows: 4
+          .form-text Displayed on the location widget in place of the message.
 
     .col-lg-6
       %fieldset.card.shadow-sm.border-0.mb-4{ data: { controller: "direct-upload" } }
