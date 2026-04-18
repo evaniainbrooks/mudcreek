@@ -57,3 +57,6 @@
                 = optimized_image_tag @active_child.right_column_image, preset: :column, class: "img-fluid rounded w-100"
         - else
           .page-body= @active_child.body
+        - @child_widgets.each do |widget|
+          %hr.mt-5.mb-4
+          = render "widgets/#{widget.class.name.underscore}", widget: widget

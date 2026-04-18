@@ -10,6 +10,8 @@ class PagesController < ApplicationController
     @active_child = @children.find { |c| c.slug == params[:tab] } || @children.first
     @widgets = @page.widgets.to_a
     preload_widget_associations(@widgets)
+    @child_widgets = @active_child ? @active_child.widgets.to_a : []
+    preload_widget_associations(@child_widgets)
   end
 
   private
