@@ -54,10 +54,13 @@ class ImprovmxClient < BaseClient
   end
 
   # Returns a hash: { success:, records: [...], errors: [...] }
+  # success is true only when the API call succeeded AND the DNS records are valid
   def check_domain(domain)
     uri = URI("#{BASE_URL}/domains/#{root_domain(domain)}/check")
     body = JSON.parse(get(uri).body)
-    { success: body["success"], records: body["records"] || [], errors: body["errors"] || [] }
+    records = body["records"] || []
+    dns_valid = body["success"] && records.is_a?(Hash) && records["valid"] == true
+    { success: dns_valid, records: records, errors: body["errors"] || [] }
   rescue => e
     { success: false, records: [], errors: [ e.message ] }
   end

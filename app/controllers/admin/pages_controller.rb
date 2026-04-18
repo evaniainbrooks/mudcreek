@@ -24,7 +24,8 @@ class Admin::PagesController < Admin::BaseController
       if params[:create_navbar_item] == "1"
         NavbarItem.create!(
           title: @page.title,
-          path: "/#{@page.slug}",
+          path:  "/pages/#{@page.slug}",
+          icon:  @page.icon.presence,
           position: NavbarItem.maximum(:position).to_i + 1
         )
       end
