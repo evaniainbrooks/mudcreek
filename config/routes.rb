@@ -62,8 +62,6 @@ resource :session
     resource :checkin,   only: [ :show, :create ], controller: "location_check_ins"
     resource :schedule,  only: [ :show ],           controller: "location_schedules"
   end
-  get "/location",  to: "locations#show",           defaults: { hashid: "DEFAULT" }
-  get "/schedule",  to: "location_schedules#show",  defaults: { location_hashid: "DEFAULT" }
   resources :ledgers, only: [:show], param: :hashid do
     resources :entries, only: [:create], module: :ledgers
   end

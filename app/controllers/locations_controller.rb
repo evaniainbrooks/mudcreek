@@ -5,11 +5,7 @@ class LocationsController < ApplicationController
   layout "showroom"
 
   def show
-    @location = if params[:hashid] == "DEFAULT"
-      Location.find_by!(default: true, published: true)
-    else
-      Location.find_by!(hashid: params[:hashid], published: true)
-    end
+    @location = Location.find_by!(hashid: params[:hashid], published: true)
     @today_events = LocationCalendarService.new(@location).today_events
   end
 end
