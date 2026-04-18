@@ -7,8 +7,8 @@
     .mb-3{ data: { page_widgets_target: "container" } }
       = f.fields_for :widgets do |wf|
         = render "admin/pages/widget_row", widget_form: wf, **widget_collections
-    %button.btn.btn-sm.btn-outline-secondary{ type: "button",
-        data: { action: "page-widgets#addWidget" } }
+    %button.btn.btn-sm.btn-outline-secondary{type: "button",
+        data: { action: "page-widgets#addWidget" }}
       %i.bi.bi-plus-lg.me-1
       Add Widget
   %template{ data: { page_widgets_target: "rowTemplate" } }

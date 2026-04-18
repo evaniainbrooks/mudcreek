@@ -96,8 +96,8 @@
                   = image_tag rails_blob_path(@invoice.receipt, disposition: "inline"),
                       class: "img-fluid rounded mb-2", style: "max-height: 200px"
                   %br
-                - = link_to blob.filename.to_s, rails_blob_path(@invoice.receipt, disposition: "attachment"),
-                    class: "text-decoration-none small"
+                = link_to rails_blob_path(@invoice.receipt, disposition: "attachment"), class: "text-decoration-none small" do
+                  = blob.filename.to_s
                   %i.bi.bi-download.ms-1
               = form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch do |f|
                 = f.hidden_field :remove_receipt, value: "1"

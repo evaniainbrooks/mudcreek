@@ -32,9 +32,8 @@
           %i.bi.bi-images.me-1
           Photos
         .card-body.p-4
-          = render Admin::AttachmentsListComponent.new(
-              attachments: gallery.photos_attachments,
-              delete_path: gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil)
+          - gallery_delete_path = gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil
+          = render Admin::AttachmentsListComponent.new(attachments: gallery.photos_attachments, delete_path: gallery_delete_path)
           .mb-0
             = f.label :photos, "Add photos", class: "form-label"
             = f.file_field :photos, multiple: true, accept: "image/*", class: "form-control"
@@ -45,9 +44,7 @@
           %i.bi.bi-camera-video.me-1
           Videos
         .card-body.p-4
-          = render Admin::AttachmentsListComponent.new(
-              attachments: gallery.videos_attachments,
-              delete_path: gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil)
+          = render Admin::AttachmentsListComponent.new(attachments: gallery.videos_attachments, delete_path: gallery_delete_path)
           .mb-0
             = f.label :videos, "Add videos", class: "form-label"
             = f.file_field :videos, multiple: true, accept: "video/*", class: "form-control"
@@ -58,9 +55,7 @@
           %i.bi.bi-file-earmark.me-1
           Documents
         .card-body.p-4
-          = render Admin::AttachmentsListComponent.new(
-              attachments: gallery.documents_attachments,
-              delete_path: gallery.persisted? ? ->(a) { admin_gallery_attachment_path(gallery, a) } : nil)
+          = render Admin::AttachmentsListComponent.new(attachments: gallery.documents_attachments, delete_path: gallery_delete_path)
           .mb-0
             = f.label :documents, "Add documents", class: "form-label"
             = f.file_field :documents, multiple: true, class: "form-control"

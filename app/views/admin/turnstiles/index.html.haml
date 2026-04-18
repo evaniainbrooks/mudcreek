@@ -55,9 +55,9 @@
               %dd.mb-0
                 .input-group
                   %input.form-control.font-monospace{ type: "password", value: @widget.secret, readonly: true, id: "turnstile-secret" }
-                  %button.btn.btn-outline-secondary{ type: "button",
+                  %button.btn.btn-outline-secondary{type: "button",
                       data: { action: "click->clipboard#toggle", clipboard_target: "turnstile-secret" },
-                      onclick: "const f=document.getElementById('turnstile-secret');f.type=f.type==='password'?'text':'password';" } Show
+                      onclick: "const f=document.getElementById('turnstile-secret');f.type=f.type==='password'?'text':'password';"} Show
 
       .col-lg-5
         %p.text-muted.small.mb-2

@@ -59,8 +59,7 @@ resource :session
     member { post :pay }
   end
   resources :locations, only: [:show], param: :hashid do
-    resource :checkin,   only: [ :show, :create ], controller: "location_check_ins"
-    resource :schedule,  only: [ :show ],           controller: "location_schedules"
+    resource :checkin, only: [ :show, :create ], controller: "location_check_ins"
   end
   resources :ledgers, only: [:show], param: :hashid do
     resources :entries, only: [:create], module: :ledgers

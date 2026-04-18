@@ -98,14 +98,14 @@
         %ul.nav.nav-tabs{ role: "tablist" }
           - described_events.each_with_index do |event, i|
             %li.nav-item{ role: "presentation" }
-              %button.nav-link{ class: (i == 0 ? "active" : ""),
+              %button.nav-link{class: (i == 0 ? "active" : ""),
                   id: "event-tab-#{i}",
                   data: { bs_toggle: "tab", bs_target: "#event-pane-#{i}" },
                   type: "button", role: "tab",
-                  aria: { controls: "event-pane-#{i}", selected: i == 0 } }
+                  aria: { controls: "event-pane-#{i}", selected: i == 0 }}
                 = event.summary
         .tab-content.border.border-top-0.rounded-bottom.p-3
           - described_events.each_with_index do |event, i|
-            %div.tab-pane.fade{ id: "event-pane-#{i}", class: (i == 0 ? "show active" : ""),
-                role: "tabpanel", aria: { labelledby: "event-tab-#{i}" } }
+            %div.tab-pane.fade{id: "event-pane-#{i}", class: (i == 0 ? "show active" : ""),
+                role: "tabpanel", aria: { labelledby: "event-tab-#{i}" }}
               = simple_format(event.description.to_s)

@@ -36,9 +36,9 @@
       .nav.nav-tabs{ role: "tablist" }
         - @children.each do |child|
           - active = child == @active_child
-          %a.nav-link{ href: page_path(@page.slug, tab: child.slug),
+          %a.nav-link{href: page_path(@page.slug, tab: child.slug),
                        class: ("active" if active),
-                       "aria-current": ("page" if active) }
+                       "aria-current": ("page" if active)}
             - if child.icon.present?
               %i{ class: "bi #{child.icon} me-1" }
             = child.title
