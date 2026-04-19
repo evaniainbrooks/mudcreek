@@ -11,10 +11,10 @@ class Admin::LedgersController < Admin::BaseController
     @total_credits  = @ledger.entries.credits.sum(:amount) || 0
     @total_debits   = @ledger.entries.debits.sum(:amount) || 0
     @balance        = @total_credits - @total_debits
-    @total_subtotal   = @entries.sum { |e| e.credit? ? e.subtotal.to_d : -e.subtotal.to_d }
     @total_tax_credits = @entries.select(&:credit?).sum { |e| e.tax_amount.to_d }
     @total_tax_debits  = @entries.select(&:debit?).sum { |e| e.tax_amount.to_d }
     @tax_balance       = @total_tax_credits - @total_tax_debits
+    @total_subtotal    = @balance - @tax_balance
     @entry          = Ledger::Entry.new(entry_type: "credit", recorded_at: Time.current)
   end
 

@@ -202,6 +202,26 @@ RSpec.describe "Admin::Ledgers", type: :request do
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
     end
 
+    it "turbo stream response includes updated tax credit, debit, and balance cards" do
+      create(:ledger_entry, :debit, ledger: ledger, amount: 10.80, taxed: true)
+
+      post admin_ledger_entries_path(ledger),
+        params: { ledger_entry: { description: "Coffee sales", entry_type: "credit", amount: "21.60", taxed: "1", recorded_at: Time.current.to_s } },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      tax_rate = ledger.tax_rate
+      credit_tax = (21.60 - (21.60 / (1 + tax_rate)).round(2)).round(2)
+      debit_tax  = (10.80 - (10.80 / (1 + tax_rate)).round(2)).round(2)
+      balance    = credit_tax - debit_tax
+
+      expect(response.body).to include("Tax Credits")
+      expect(response.body).to include("Tax Debits")
+      expect(response.body).to include("Tax Balance")
+      expect(response.body).to include(ActionController::Base.helpers.number_to_currency(credit_tax))
+      expect(response.body).to include(ActionController::Base.helpers.number_to_currency(debit_tax))
+      expect(response.body).to include(ActionController::Base.helpers.number_to_currency(balance))
+    end
+
     it "does not create entry with blank description" do
       expect {
         post admin_ledger_entries_path(ledger),
