@@ -1,2 +1,2 @@
 %section
-  = render LocationScheduleComponent.new(location: widget.location)
+  = render LocationScheduleComponent.new(location: widget.location, view: params[:view].presence_in(%w[daily weekly]) || "weekly")

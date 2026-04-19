@@ -1,7 +1,7 @@
 module RecentlyViewed
   extend ActiveSupport::Concern
 
-  MAX_RECENTLY_VIEWED = 10
+  MAX_RECENTLY_VIEWED = 11
 
   private
 
