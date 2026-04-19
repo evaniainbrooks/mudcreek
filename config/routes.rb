@@ -177,5 +177,5 @@ resource :session
   get  "podium", to: "podium#index",  as: :podium
   post "podium", to: "podium#create"
 
-  root "listings#index"
+  root "home#index"
 end

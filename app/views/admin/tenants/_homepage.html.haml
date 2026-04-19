@@ -1,0 +1,12 @@
+%fieldset.card.shadow-sm.border-0.mb-4
+  %legend.card-header.fw-semibold
+    %i.bi.bi-house.me-2
+    Homepage
+  .card-body.p-4
+    .mb-0
+      = form.label :homepage_page_id, "Homepage page", class: "form-label"
+      = form.select :homepage_page_id,
+        pages.map { [it.title, it.id] },
+        { include_blank: "— Listings (default) —" },
+        class: "form-select"
+      .form-text The page rendered at the root URL. Leave blank to show the listings index.

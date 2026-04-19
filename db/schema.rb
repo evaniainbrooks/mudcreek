@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_205526) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_19_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -1033,6 +1033,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_205526) do
     t.string "footer_color"
     t.string "ga4_measurement_id"
     t.string "google_site_verification"
+    t.bigint "homepage_page_id"
     t.string "key", null: false
     t.string "link_color"
     t.string "name", null: false
@@ -1047,6 +1048,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_205526) do
     t.string "website"
     t.index ["default"], name: "index_tenants_on_default_true", unique: true, where: "(\"default\" = true)"
     t.index ["default_delivery_method_set_id"], name: "index_tenants_on_default_delivery_method_set_id"
+    t.index ["homepage_page_id"], name: "index_tenants_on_homepage_page_id"
     t.index ["key"], name: "index_tenants_on_key", unique: true
   end
 
@@ -1267,6 +1269,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_205526) do
   add_foreign_key "subscriptions", "subscription_plans"
   add_foreign_key "subscriptions", "tenants"
   add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
+  add_foreign_key "tenants", "pages", column: "homepage_page_id", validate: false
   add_foreign_key "transactions", "orders"
   add_foreign_key "user_category_interests", "listings_categories"
   add_foreign_key "user_category_interests", "tenants", on_delete: :cascade

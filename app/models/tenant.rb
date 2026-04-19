@@ -52,6 +52,7 @@ class Tenant < ApplicationRecord
   has_many :property_sets, class_name: "Listings::PropertySet", dependent: :destroy
   has_many :delivery_method_sets, class_name: "Listings::DeliveryMethodSet", dependent: :destroy
   belongs_to :default_delivery_method_set, class_name: "Listings::DeliveryMethodSet", optional: true
+  belongs_to :homepage_page, class_name: "Page", optional: true
 
   accepts_nested_attributes_for :social_media_accounts, allow_destroy: true, reject_if: :all_blank
 
