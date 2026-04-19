@@ -36,8 +36,8 @@
     %meta{name: "view-transition", content: "same-origin"}
     = yield :head
     - if Current.tenant.favicon.attached?
-      %link{rel: "icon", href: Current.tenant.favicon.url, type: Current.tenant.favicon.content_type}
-      %link{rel: "apple-touch-icon", href: Current.tenant.favicon.url}
+      %link{rel: "icon", href: rails_blob_url(Current.tenant.favicon), type: Current.tenant.favicon.content_type}
+      %link{rel: "apple-touch-icon", href: rails_blob_url(Current.tenant.favicon)}
     - else
       %link{rel: "icon", href: "/icon.png", type: "image/png"}
       %link{rel: "icon", href: "/icon.svg", type: "image/svg+xml"}
