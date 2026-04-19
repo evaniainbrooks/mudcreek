@@ -3,8 +3,10 @@
   credits         = local_assigns[:total_credits]  || 0
   debits          = local_assigns[:total_debits]   || 0
   balance         = local_assigns[:balance]        || 0
-  total_subtotal  = local_assigns[:total_subtotal] || 0
-  total_tax       = local_assigns[:total_tax]      || 0
+  total_subtotal   = local_assigns[:total_subtotal]   || 0
+  total_tax_credits = local_assigns[:total_tax_credits] || 0
+  total_tax_debits  = local_assigns[:total_tax_debits]  || 0
+  tax_balance       = local_assigns[:tax_balance]       || 0
   entries         = local_assigns[:entries]        || []
   entry           = local_assigns[:entry]          || Ledger::Entry.new(entry_type: "credit", recorded_at: Time.current)
 
@@ -25,16 +27,26 @@
         .card-body
           .text-muted.small.mb-1 Balance
           .fs-4.fw-semibold{ class: balance >= 0 ? "text-success" : "text-danger" }= number_to_currency(balance)
-    .col-sm-6
+    .col-sm-4
       .card.shadow-sm.border-0.text-center
         .card-body
           .text-muted.small.mb-1 Net Subtotal
           .fs-4.fw-semibold{ class: total_subtotal >= 0 ? "text-success" : "text-danger" }= number_to_currency(total_subtotal)
-    .col-sm-6
+    .col-sm-4
       .card.shadow-sm.border-0.text-center
         .card-body
-          .text-muted.small.mb-1 Total Tax
-          .fs-4.fw-semibold= number_to_currency(total_tax)
+          .text-muted.small.mb-1 Tax Credits
+          .fs-4.fw-semibold.text-success= number_to_currency(total_tax_credits)
+    .col-sm-4
+      .card.shadow-sm.border-0.text-center
+        .card-body
+          .text-muted.small.mb-1 Tax Debits
+          .fs-4.fw-semibold.text-danger= number_to_currency(total_tax_debits)
+    .col-sm-12
+      .card.shadow-sm.border-0.text-center
+        .card-body
+          .text-muted.small.mb-1 Tax Balance
+          .fs-4.fw-semibold{ class: tax_balance >= 0 ? "text-success" : "text-danger" }= number_to_currency(tax_balance)
 
   .card.shadow-sm.border-0.mb-4
     .card-header.fw-semibold.d-flex.align-items-center.justify-content-between{style: "cursor: pointer",
