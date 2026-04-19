@@ -23,6 +23,26 @@ RSpec.describe "Listings", type: :request do
       expect(session[:recently_viewed]).to include(a_hash_including("hashid" => listing_a.hashid))
     end
 
+    it "records a viewed_at timestamp in the session entry" do
+      freeze_time do
+        visit(listing_a)
+
+        entry = session[:recently_viewed].find { |e| e["hashid"] == listing_a.hashid }
+        expect(entry["viewed_at"]).to eq(Time.current.iso8601(3))
+      end
+    end
+
+    it "updates viewed_at when a listing is revisited" do
+      visit(listing_a)
+
+      travel 1.minute do
+        visit(listing_a)
+
+        entry = session[:recently_viewed].find { |e| e["hashid"] == listing_a.hashid }
+        expect(entry["viewed_at"]).to eq(Time.current.iso8601(3))
+      end
+    end
+
     it "bumps a previously viewed listing to the front when revisited" do
       visit(listing_a)
       visit(listing_b)
