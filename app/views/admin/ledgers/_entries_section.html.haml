@@ -27,7 +27,7 @@
         .card-body
           .text-muted.small.mb-1 Balance
           .fs-4.fw-semibold{ class: balance >= 0 ? "text-success" : "text-danger" }= number_to_currency(balance)
-    .col-sm-4
+    .col-sm-12
       .card.shadow-sm.border-0.text-center
         .card-body
           .text-muted.small.mb-1 Net Subtotal
@@ -42,7 +42,7 @@
         .card-body
           .text-muted.small.mb-1 Tax Debits
           .fs-4.fw-semibold.text-danger= number_to_currency(total_tax_debits)
-    .col-sm-12
+    .col-sm-4
       .card.shadow-sm.border-0.text-center
         .card-body
           .text-muted.small.mb-1 Tax Balance
