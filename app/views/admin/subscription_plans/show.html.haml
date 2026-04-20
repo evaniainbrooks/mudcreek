@@ -13,8 +13,8 @@
         .card-header.fw-semibold Plan Details
         .card-body
           %dl.mb-0
-            %dt.text-muted.small Kind
-            %dd= @subscription_plan.kind.humanize
+            %dt.text-muted.small Subscription Type
+            %dd= @subscription_plan.subscription_type.humanize
             %dt.text-muted.small Amount
             %dd= humanized_money_with_symbol(@subscription_plan.amount)
             - if @subscription_plan.description.present?

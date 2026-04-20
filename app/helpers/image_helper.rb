@@ -1,8 +1,8 @@
 module ImageHelper
   IMGPROXY_PRESETS = {
     card:           { width: 800,  height: 400, resizing_type: "fit",  format: "webp" },
-    carousel_slide: { width: 1200, height: 480, resizing_type: "fit",  format: "webp" },
-    carousel_thumb: { width: 152,  height: 152, resizing_type: "fill", format: "webp" },
+    carousel_slide: { width: 1200, height: 480, resizing_type: "fit",  format: "webp", quality: 90 },
+    carousel_thumb: { width: 152,  height: 152, resizing_type: "fill", format: "webp", quality: 85 },
     poster:         { width: 800,  height: 600, resizing_type: "fit",  format: "webp" },
     hero:           { width: 1920, height: 800, resizing_type: "fit",  format: "webp", quality: 90 },
     column:         { width: 600,  height: 800, resizing_type: "fit",  format: "webp" },

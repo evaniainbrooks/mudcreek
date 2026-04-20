@@ -26,6 +26,8 @@ class GenerateSubscriptionInvoicesJob < ApplicationJob
           amount_cents: subscription.amount_cents
         )
 
+        subscription.update!(renews_at: subscription.renews_at + 1.month) if plan.monthly?
+
         if user.default_square_card_id.present?
           ChargeInvoiceJob.perform_later(invoice.id)
         else

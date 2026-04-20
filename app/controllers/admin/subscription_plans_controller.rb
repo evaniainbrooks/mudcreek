@@ -43,6 +43,6 @@ class Admin::SubscriptionPlansController < Admin::BaseController
   end
 
   def subscription_plan_params
-    params.expect(subscription_plan: [ :name, :description, :amount, :kind ])
+    params.expect(subscription_plan: [ :name, :description, :amount, :subscription_type ])
   end
 end

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :subscription_plan do
     sequence(:name) { |n| "Plan #{n}" }
     amount_cents { 5_000 }
-    kind { :month_to_month }
+    subscription_type { :month_to_month }
   end
 
   factory :subscription do

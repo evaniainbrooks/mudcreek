@@ -3,7 +3,7 @@ module Admin::SubscriptionPlansHelper
     table = TableComponent.new(rows: subscription_plans)
 
     table.with_column("Name") { |p| link_to p.name, admin_subscription_plan_path(p) }
-    table.with_value_column("Kind") { it.kind.humanize }
+    table.with_value_column("Type") { it.subscription_type.humanize }
     table.with_value_column("Amount") { humanized_money_with_symbol(it.amount) }
     table.with_value_column("Subscriptions") { it.subscriptions.size }
     table.with_column("Actions", html_class: "text-end") do |p|

@@ -90,7 +90,7 @@ RSpec.describe "Admin::SubscriptionPlans", type: :request do
 
   describe "POST /admin/subscription_plans" do
     let(:valid_params) do
-      { subscription_plan: { name: "Gold", description: "Gold plan", amount: "99.00", kind: "month_to_month" } }
+      { subscription_plan: { name: "Gold", description: "Gold plan", amount: "99.00", subscription_type: "month_to_month" } }
     end
 
     it "creates a new subscription plan" do
@@ -109,12 +109,12 @@ RSpec.describe "Admin::SubscriptionPlans", type: :request do
     context "with a missing name" do
       it "does not create a plan" do
         expect {
-          post admin_subscription_plans_path, params: { subscription_plan: { name: "", amount: "10.00", kind: "month_to_month" } }
+          post admin_subscription_plans_path, params: { subscription_plan: { name: "", amount: "10.00", subscription_type: "month_to_month" } }
         }.not_to change(SubscriptionPlan, :count)
       end
 
       it "returns 422" do
-        post admin_subscription_plans_path, params: { subscription_plan: { name: "", amount: "10.00", kind: "month_to_month" } }
+        post admin_subscription_plans_path, params: { subscription_plan: { name: "", amount: "10.00", subscription_type: "month_to_month" } }
 
         expect(response).to have_http_status(:unprocessable_content)
       end
@@ -122,7 +122,7 @@ RSpec.describe "Admin::SubscriptionPlans", type: :request do
 
     context "with a duplicate name" do
       it "returns 422" do
-        post admin_subscription_plans_path, params: { subscription_plan: { name: plan.name, amount: "10.00", kind: "month_to_month" } }
+        post admin_subscription_plans_path, params: { subscription_plan: { name: plan.name, amount: "10.00", subscription_type: "month_to_month" } }
 
         expect(response).to have_http_status(:unprocessable_content)
       end

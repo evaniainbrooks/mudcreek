@@ -1,14 +1,15 @@
 - wrapper_data = weekly? ? { controller: "schedule-table", "schedule-table-today-col-value": today_col_idx || -1 } : {}
 .schedule-table{ data: wrapper_data }
   .d-flex.align-items-center.justify-content-between.mb-4
-    %h1.h3.mb-0
-      %i.bi.bi-calendar3.me-2
-      = location.name
+    .d-flex.flex-column.align-items-start
+      %h1.h3.mb-0
+        %i.bi.bi-calendar3.me-2
+        - if daily?
+          = today.strftime('%A, %B %-d, %Y')
+        - else
+          = "Week of #{week_start.strftime('%B %-d, %Y')}"
+      %span.text-muted.small.ms-1= location.name
     .d-flex.align-items-center.gap-3
-      - if daily?
-        %span.text-primary= today.strftime('%A, %B %-d, %Y')
-      - else
-        %span.text-primary Week of #{week_start.strftime('%B %-d, %Y')}
       .btn-group{ role: "group", aria: { label: "View" } }
         %a.btn.btn-sm{ href: "?view=daily", class: (daily? ? "btn-primary" : "btn-outline-secondary") }
           %i.bi.bi-calendar-day.me-1
