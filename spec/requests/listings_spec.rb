@@ -28,7 +28,7 @@ RSpec.describe "Listings", type: :request do
         visit(listing_a)
 
         entry = session[:recently_viewed].find { |e| e["hashid"] == listing_a.hashid }
-        expect(entry["viewed_at"]).to eq(Time.current.iso8601(3))
+        expect(entry["viewed_at"]).to eq(Time.current.utc.iso8601(3))
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.describe "Listings", type: :request do
         visit(listing_a)
 
         entry = session[:recently_viewed].find { |e| e["hashid"] == listing_a.hashid }
-        expect(entry["viewed_at"]).to eq(Time.current.iso8601(3))
+        expect(entry["viewed_at"]).to eq(Time.current.utc.iso8601(3))
       end
     end
 

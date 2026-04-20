@@ -8,7 +8,7 @@ module RecentlyViewed
   def record_recently_viewed(type:, hashid:, auction_hashid: nil)
     return if bot_request?
 
-    entry = { "type" => type.to_s, "hashid" => hashid, "auction_hashid" => auction_hashid, "viewed_at" => Time.current.iso8601(3) }
+    entry = { "type" => type.to_s, "hashid" => hashid, "auction_hashid" => auction_hashid, "viewed_at" => Time.current.utc.iso8601(3) }
 
     list = (session[:recently_viewed] || []).dup
     list.reject! { |e| e["type"] == entry["type"] && e["hashid"] == entry["hashid"] }
@@ -19,7 +19,7 @@ module RecentlyViewed
   def recently_viewed_items(exclude_type: nil, exclude_hashid: nil)
     list = (session[:recently_viewed] || []).dup
     list.reject! { |e| e["type"] == exclude_type.to_s && e["hashid"] == exclude_hashid } if exclude_type && exclude_hashid
-    list.sort_by! { |e| e["viewed_at"] || "" }.reverse!
+    list = list.sort_by { |e| e["viewed_at"] || "" }.reverse
     return [] if list.empty?
 
     listing_hashids = list.select { |e| e["type"] == "listing" }.map { |e| e["hashid"] }
