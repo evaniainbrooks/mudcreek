@@ -4,6 +4,9 @@ class Location < ApplicationRecord
 
   has_many :ledgers, dependent: :nullify
   has_many :check_ins, dependent: :destroy
+  has_many :user_locations, dependent: :destroy
+  has_many :users, through: :user_locations
+  has_many :location_announcements, dependent: :destroy
   has_one :qr_code, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
   has_one_attached :logo

@@ -1,0 +1,2 @@
+class UserLocationPolicy < ApplicationPolicy
+end

@@ -1,0 +1,40 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-megaphone.me-2
+    Announcement
+  %small.text-muted= @location.name
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+      %span= @announcement.subject
+      - if @announcement.sent?
+        %span.badge.bg-success
+          %i.bi.bi-check-circle.me-1
+          Sent
+      - else
+        %span.badge.bg-warning.text-dark
+          %i.bi.bi-clock.me-1
+          Pending
+    .card-body
+      %pre.mb-0.text-wrap= @announcement.body
+
+  %dl.row
+    %dt.col-sm-3 Sent by
+    %dd.col-sm-9= @announcement.sent_by.name
+    %dt.col-sm-3 Sent at
+    %dd.col-sm-9
+      - if @announcement.sent_at
+        = @announcement.sent_at.strftime("%B %-d, %Y at %l:%M %p")
+      - else
+        %span.text-muted Pending...
+    %dt.col-sm-3 Recipients
+    %dd.col-sm-9
+      - if @announcement.recipient_count
+        = pluralize(@announcement.recipient_count, "user")
+      - else
+        %span.text-muted Pending...
+
+  = link_to admin_location_path(@location), class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Location

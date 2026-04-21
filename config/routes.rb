@@ -140,7 +140,10 @@ resource :session
     resources :qr_codes, param: :slug do
       member { get :qr_image }
     end
-    resources :locations, param: :hashid
+    resources :locations, param: :hashid do
+      resources :location_users,         only: [:create, :destroy]
+      resources :location_announcements, only: [:index, :new, :create, :show]
+    end
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
     resources :ledgers, param: :hashid do
       resources :entries, only: [ :create, :destroy ], module: :ledgers

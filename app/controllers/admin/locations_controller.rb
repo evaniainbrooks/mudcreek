@@ -31,6 +31,10 @@ class Admin::LocationsController < Admin::BaseController
     @user_stats = (user_rows + guest_rows).sort_by { |s| -s[:count] }
 
     @recent_check_ins = @location.check_ins.ordered.includes(:user).limit(20)
+
+    @members       = @location.users.order(:first_name, :last_name)
+    @non_members   = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+    @announcements = @location.location_announcements.ordered.limit(5)
   end
 
   def new

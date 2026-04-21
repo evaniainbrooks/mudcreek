@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_21_142434) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -417,7 +417,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -552,6 +552,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
     t.datetime "updated_at", null: false
     t.index ["listing_id"], name: "index_listings_variants_on_listing_id"
     t.index ["tenant_id"], name: "index_listings_variants_on_tenant_id"
+  end
+
+  create_table "location_announcements", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.bigint "location_id", null: false
+    t.integer "recipient_count"
+    t.datetime "sent_at"
+    t.bigint "sent_by_id", null: false
+    t.string "subject", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_location_announcements_on_location_id"
+    t.index ["sent_by_id"], name: "index_location_announcements_on_sent_by_id"
+    t.index ["tenant_id"], name: "index_location_announcements_on_tenant_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -1079,6 +1094,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
     t.index ["user_id", "listings_category_id"], name: "idx_on_user_id_listings_category_id_ec5a7d89e4", unique: true
   end
 
+  create_table "user_locations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "location_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["location_id"], name: "index_user_locations_on_location_id"
+    t.index ["tenant_id"], name: "index_user_locations_on_tenant_id"
+    t.index ["user_id", "location_id"], name: "index_user_locations_on_user_id_and_location_id", unique: true
+    t.index ["user_id"], name: "index_user_locations_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "activated_at"
     t.date "birthdate"
@@ -1219,6 +1246,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
   add_foreign_key "listings_variant_option_values", "listings_variants", column: "variant_id"
   add_foreign_key "listings_variants", "listings"
   add_foreign_key "listings_variants", "tenants", on_delete: :cascade
+  add_foreign_key "location_announcements", "locations", on_delete: :cascade
+  add_foreign_key "location_announcements", "tenants", on_delete: :cascade
+  add_foreign_key "location_announcements", "users", column: "sent_by_id"
   add_foreign_key "locations", "tenants", on_delete: :cascade
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
@@ -1275,6 +1305,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
   add_foreign_key "user_category_interests", "listings_categories"
   add_foreign_key "user_category_interests", "tenants", on_delete: :cascade
   add_foreign_key "user_category_interests", "users"
+  add_foreign_key "user_locations", "locations", on_delete: :cascade
+  add_foreign_key "user_locations", "tenants", on_delete: :cascade
+  add_foreign_key "user_locations", "users", on_delete: :cascade
   add_foreign_key "users", "roles"
   add_foreign_key "users", "tenants"
   add_foreign_key "users_verifications", "tenants", on_delete: :cascade

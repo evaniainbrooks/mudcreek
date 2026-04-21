@@ -1,0 +1,30 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-megaphone.me-2
+    New Announcement
+  %small.text-muted= @location.name
+
+.page-container.p-4
+  = form_with model: [:admin, @location, @announcement] do |f|
+    - if @announcement.errors.any?
+      .alert.alert-danger.mb-4
+        %ul.mb-0
+          - @announcement.errors.full_messages.each do |msg|
+            %li= msg
+
+    %fieldset.card.shadow-sm.border-0.mb-4
+      %legend.card-header.fw-semibold
+        %i.bi.bi-envelope.me-1
+        Message
+      .card-body.p-4
+        .mb-3
+          = f.label :subject, class: "form-label required"
+          = f.text_field :subject, class: "form-control #{'is-invalid' if @announcement.errors[:subject].any?}", autofocus: true
+        .mb-3
+          = f.label :body, class: "form-label required"
+          = f.text_area :body, rows: 8, class: "form-control #{'is-invalid' if @announcement.errors[:body].any?}"
+          .form-text Will be sent to #{pluralize(@location.users.count, "member")}.
+
+    .d-flex.gap-2
+      = f.submit "Send Announcement", class: "btn btn-primary"
+      = link_to "Cancel", admin_location_path(@location), class: "btn btn-outline-secondary"

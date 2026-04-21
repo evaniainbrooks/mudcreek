@@ -1,0 +1,2 @@
+class LocationAnnouncementPolicy < ApplicationPolicy
+end
