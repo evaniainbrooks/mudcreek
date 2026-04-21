@@ -46,8 +46,31 @@ RSpec.describe QrCodeNotificationJob, type: :job do
 
       it "sends the scan notification email" do
         mail = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
-        allow(QrCodeMailer).to receive(:scan_notification).with(qr_code).and_return(mail)
+        allow(QrCodeMailer).to receive(:scan_notification).with(qr_code, anything).and_return(mail)
         expect(mail).to receive(:deliver_now)
+
+        described_class.new.perform(qr_code.id)
+      end
+
+      it "updates last_notified_at" do
+        mail = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
+        allow(QrCodeMailer).to receive(:scan_notification).and_return(mail)
+
+        expect { described_class.new.perform(qr_code.id) }
+          .to change { qr_code.reload.last_notified_at }.from(nil)
+      end
+
+      it "includes only scans since last_notified_at" do
+        old_scan  = create(:qr_scan, qr_code: qr_code, created_at: 3.hours.ago)
+        new_scan  = create(:qr_scan, qr_code: qr_code, created_at: 30.minutes.ago)
+        qr_code.update!(last_notified_at: 1.hour.ago)
+
+        mail = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
+        allow(QrCodeMailer).to receive(:scan_notification) do |_qr_code, scans|
+          expect(scans).to include(new_scan)
+          expect(scans).not_to include(old_scan)
+          mail
+        end
 
         described_class.new.perform(qr_code.id)
       end
@@ -58,7 +81,7 @@ RSpec.describe QrCodeNotificationJob, type: :job do
 
       it "sends the scan notification email" do
         mail = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
-        allow(QrCodeMailer).to receive(:scan_notification).with(qr_code).and_return(mail)
+        allow(QrCodeMailer).to receive(:scan_notification).with(qr_code, anything).and_return(mail)
         expect(mail).to receive(:deliver_now)
 
         described_class.new.perform(qr_code.id)

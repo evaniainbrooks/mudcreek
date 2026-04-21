@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_20_173341) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_21_135532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -747,6 +747,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_20_173341) do
     t.text "destination_url", null: false
     t.datetime "expires_at"
     t.text "inactive_url"
+    t.datetime "last_notified_at"
     t.datetime "last_scanned_at"
     t.bigint "location_id"
     t.string "name", null: false

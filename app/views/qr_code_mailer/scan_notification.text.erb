@@ -1,6 +1,17 @@
-Your QR code "<%= @qr_code.name %>" was just scanned.
+<% scan_count = @scans.size %>
+Your QR code "<%= @qr_code.name %>" was scanned <%= pluralize(scan_count, "time") %>.
 
-Scanned at: <%= Time.current.strftime("%B %-d, %Y at %l:%M %p") %>
+<% if scan_count == 1 %>
+  <% scan = @scans.first %>
+Scanned at: <%= scan.created_at.strftime("%B %-d, %Y at %l:%M %p") %>
+<% if scan.ip_address.present? %>IP: <%= scan.ip_address %><% end %>
+<% if scan.user_agent.present? %>Device: <%= scan.user_agent %><% end %>
+<% else %>
+  <% @scans.each do |scan| %>
+- <%= scan.created_at.strftime("%B %-d, %Y at %l:%M %p") %><% if scan.ip_address.present? %> | <%= scan.ip_address %><% end %><% if scan.user_agent.present? %> | <%= scan.user_agent %><% end %>
+  <% end %>
+<% end %>
+
 Total scans: <%= @qr_code.scan_count %>
 
 View QR code: <%= admin_qr_code_url(@qr_code) %>

@@ -1,9 +1,35 @@
-<p>Your QR code <strong><%= @qr_code.name %></strong> was just scanned.</p>
+<% scan_count = @scans.size %>
+<p>Your QR code <strong><%= @qr_code.name %></strong> was scanned <%= pluralize(scan_count, "time") %>.</p>
 
-<p>
-  <strong>Scanned at:</strong> <%= Time.current.strftime("%B %-d, %Y at %l:%M %p") %><br>
-  <strong>Total scans:</strong> <%= @qr_code.scan_count %>
-</p>
+<% if scan_count == 1 %>
+  <% scan = @scans.first %>
+  <p>
+    <strong>Scanned at:</strong> <%= scan.created_at.strftime("%B %-d, %Y at %l:%M %p") %><br>
+    <% if scan.ip_address.present? %><strong>IP:</strong> <%= scan.ip_address %><br><% end %>
+    <% if scan.user_agent.present? %><strong>Device:</strong> <%= scan.user_agent %><br><% end %>
+  </p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>IP</th>
+        <th>Device</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @scans.each do |scan| %>
+        <tr>
+          <td><%= scan.created_at.strftime("%B %-d, %Y at %l:%M %p") %></td>
+          <td><%= scan.ip_address.presence || "—" %></td>
+          <td><%= scan.user_agent.presence || "—" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<p><strong>Total scans:</strong> <%= @qr_code.scan_count %></p>
 
 <p>
   <%= link_to "View QR code", admin_qr_code_url(@qr_code) %>
