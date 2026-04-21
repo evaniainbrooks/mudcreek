@@ -101,8 +101,8 @@
                   %i.bi.bi-download.ms-1
               = form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch do |f|
                 = f.hidden_field :remove_receipt, value: "1"
-                %button.btn.btn-sm.btn-outline-danger.w-100{ type: "submit",
-                    data: { turbo_confirm: "Remove the receipt attachment?" } }
+                %button.btn.btn-sm.btn-outline-danger.w-100{type: "submit",
+                    data: { turbo_confirm: "Remove the receipt attachment?" }}
                   %i.bi.bi-trash.me-1
                   Remove receipt
             = form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch,

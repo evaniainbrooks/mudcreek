@@ -1,11 +1,13 @@
-- if item[:type] == :listing
-  - listing = item[:record]
-  - url = listing_path(listing)
-  - auction_listing = nil
-- else
-  - auction_listing = item[:record]
-  - listing = auction_listing.listing
-  - url = auction_auction_listing_path(auction_listing.auction, auction_listing)
+:ruby
+  if item[:type] == :listing
+    listing = item[:record]
+    url = listing_path(listing)
+    auction_listing = nil
+  else
+    auction_listing = item[:record]
+    listing = auction_listing.listing
+    url = auction_auction_listing_path(auction_listing.auction, auction_listing)
+  end
 
 .col
   .card.h-100.shadow-sm.border.border-secondary-subtle
