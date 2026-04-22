@@ -25,7 +25,7 @@ class IcalImportService
     return nil if uid.blank?
 
     starts_at, ends_at, all_day = parse_times(event)
-    rrule_str = event.rrule.first&.to_ical.presence
+    rrule_str = event.rrule.first&.value_ical.presence
     now = Time.current
 
     {

@@ -4,9 +4,6 @@
     %i.bi.bi-geo-alt.me-2
     = @location.name
   .d-flex.gap-2
-    = link_to admin_locations_path, class: "btn btn-outline-secondary" do
-      %i.bi.bi-arrow-left.me-1
-      Back to Locations
     - if @location.published?
       = link_to location_path(@location), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
         %i.bi.bi-box-arrow-up-right.me-1
@@ -47,7 +44,7 @@
   .p-4
     .tab-content
       #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
-        .row.g-4
+        .row.g-4.mb-4
           .col-12
             .card.shadow-sm.border-0
               .card-header.fw-semibold
@@ -158,7 +155,8 @@
         = render "form", location: @location
 
       #kiosk-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "kiosk-tab" } }
-        .row.g-4.mb-4
+        = render "kiosk_form", location: @location, kiosk: @kiosk
+        .row.g-4.mt-4
           .col-lg-4
             .card.shadow-sm.border-0
               .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
@@ -181,7 +179,6 @@
                       %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
               - else
                 .card-body.text-muted No QR code — resave this location to generate one.
-        = render "kiosk_form", location: @location, kiosk: @kiosk
 
       #schedules-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedules-tab" } }
         .d-flex.justify-content-between.align-items-center.mb-3
@@ -205,6 +202,11 @@
             end
           end
         = render table
+
+.mt-3
+  = link_to admin_locations_path, class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Locations
 
 - if @location.address&.any?
   = render "shared/map_modal", address: @location.address
