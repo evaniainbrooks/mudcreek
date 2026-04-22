@@ -4,6 +4,9 @@
     %i.bi.bi-geo-alt.me-2
     = @location.name
   .d-flex.gap-2
+    = link_to admin_locations_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Locations
     - if @location.published?
       = link_to location_path(@location), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
         %i.bi.bi-box-arrow-up-right.me-1
@@ -44,6 +47,37 @@
   .p-4
     .tab-content
       #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+        .row.g-4
+          .col-12
+            .card.shadow-sm.border-0
+              .card-header.fw-semibold
+                %i.bi.bi-info-circle.me-1
+                Details
+              .card-body
+                .row
+                  .col-md-6
+                    %dl.row.mb-0
+                      %dt.col-5 Name
+                      %dd.col-7= @location.name
+                      %dt.col-5 Address
+                      %dd.col-7
+                        - if @location.address&.any?
+                          %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
+                            = @location.address.to_fs(:long)
+                        - else
+                          %span.text-muted —
+                  .col-md-6
+                    %dl.row.mb-0
+                      %dt.col-5 Published
+                      %dd.col-7
+                        - if @location.published?
+                          %span.badge.text-bg-success Published
+                        - else
+                          %span.badge.text-bg-secondary Unpublished
+                      - if @location.directions.present?
+                        %dt.col-5 Directions
+                        %dd.col-7= @location.directions
+
         = render "stats_row",
             total: @total_check_ins,
             today: @today_check_ins,
@@ -57,56 +91,6 @@
             = render "recent_check_ins", recent_check_ins: @recent_check_ins
 
         .row.g-4.mt-0
-          .col-lg-4
-            .card.shadow-sm.border-0
-              .card-header.fw-semibold
-                %i.bi.bi-info-circle.me-1
-                Details
-              .card-body
-                %dl.row.mb-0
-                  %dt.col-sm-5 Name
-                  %dd.col-sm-7= @location.name
-                  %dt.col-sm-5 Published
-                  %dd.col-sm-7
-                    - if @location.published?
-                      %span.badge.text-bg-success Published
-                    - else
-                      %span.badge.text-bg-secondary Unpublished
-                  %dt.col-sm-5 Address
-                  %dd.col-sm-7
-                    - if @location.address&.any?
-                      %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
-                        = @location.address.to_fs(:long)
-                    - else
-                      %span.text-muted —
-                  - if @location.directions.present?
-                    %dt.col-sm-5 Directions
-                    %dd.col-sm-7= @location.directions
-
-          .col-lg-4
-            .card.shadow-sm.border-0
-              .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
-                %span
-                  %i.bi.bi-qr-code.me-1
-                  Check-in QR Code
-                - if @qr_code
-                  = link_to admin_qr_code_path(@qr_code), class: "btn btn-outline-secondary btn-sm" do
-                    %i.bi.bi-arrow-up-right.me-1
-                    View
-              - if @qr_code
-                .card-body.text-center
-                  - qr = RQRCode::QRCode.new(qr_redirect_url(@qr_code))
-                  = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
-                  %p.mt-2.mb-1
-                    %small.text-muted.text-break= qr_redirect_url(@qr_code)
-                  .d-flex.justify-content-center.gap-3.text-muted.small
-                    %span #{@qr_code.scan_count} scans
-                    - if @qr_code.last_scanned_at
-                      %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
-              - else
-                .card-body.text-muted No QR code — resave this location to generate one.
-
-        .row.g-4.mt-0
           .col-lg-6
             .card.shadow-sm.border-0
               .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
@@ -115,26 +99,25 @@
                   Members
                 %span.badge.bg-secondary= @members.count
               .card-body
-                - if @members.any?
-                  %table.table.table-sm.mb-3
-                    %tbody
-                      - @members.each do |user|
-                        %tr
-                          %td= user.name
-                          %td.text-muted.small= user.email_address
-                          %td.text-end
-                            = button_to admin_location_location_user_path(@location, UserLocation.find_by!(location: @location, user: user)),
-                                method: :delete, class: "btn btn-outline-danger btn-sm",
-                                form: { data: { turbo_confirm: "Remove #{user.name} from this location?" } } do
-                              %i.bi.bi-x
-                - else
-                  %p.text-muted.small.mb-3 No members yet.
+                :ruby
+                  member_table = TableComponent.new(rows: @members)
+                  member_table.with_column("Name")  { |u| u.name }
+                  member_table.with_column("Email") { |u| u.email_address }
+                  member_table.with_column("", html_class: "text-end") do |u|
+                    user_location = UserLocation.find_by!(location: @location, user: u)
+                    button_to admin_location_location_user_path(@location, user_location),
+                      method: :delete, class: "btn btn-outline-danger btn-sm",
+                      form: { data: { turbo_confirm: "Remove #{u.name} from this location?" } } do
+                      content_tag(:i, "", class: "bi bi-x")
+                    end
+                  end
+                = render member_table
                 - if @non_members.any?
-                  = form_with url: admin_location_location_users_path(@location), method: :post, class: "d-flex gap-2 align-items-end" do |f|
+                  = form_with url: admin_location_location_users_path(@location), method: :post, class: "d-flex gap-2 align-items-end mt-3" do |f|
                     .flex-grow-1
                       = label_tag :user_id, "Add member", class: "form-label form-label-sm"
                       = select_tag :user_id,
-                          options_from_collection_for_select(@non_members, :id, :name),
+                          options_from_collection_for_select(@non_members, :id, ->(u) { "#{u.name} (#{u.email_address})" }),
                           class: "form-select form-select-sm"
                     = f.submit "Add", class: "btn btn-outline-primary btn-sm"
 
@@ -175,6 +158,29 @@
         = render "form", location: @location
 
       #kiosk-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "kiosk-tab" } }
+        .row.g-4.mb-4
+          .col-lg-4
+            .card.shadow-sm.border-0
+              .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+                %span
+                  %i.bi.bi-qr-code.me-1
+                  Check-in QR Code
+                - if @qr_code
+                  = link_to admin_qr_code_path(@qr_code), class: "btn btn-outline-secondary btn-sm" do
+                    %i.bi.bi-arrow-up-right.me-1
+                    View
+              - if @qr_code
+                .card-body.text-center
+                  - qr = RQRCode::QRCode.new(qr_redirect_url(@qr_code))
+                  = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
+                  %p.mt-2.mb-1
+                    %small.text-muted.text-break= qr_redirect_url(@qr_code)
+                  .d-flex.justify-content-center.gap-3.text-muted.small
+                    %span #{@qr_code.scan_count} scans
+                    - if @qr_code.last_scanned_at
+                      %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
+              - else
+                .card-body.text-muted No QR code — resave this location to generate one.
         = render "kiosk_form", location: @location, kiosk: @kiosk
 
       #schedules-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedules-tab" } }
@@ -186,12 +192,17 @@
 
         :ruby
           table = TableComponent.new(rows: @schedules)
-          table.with_column("Name")              { |s| s.name.presence || content_tag(:span, "Untitled", class: "text-muted") }
+          table.with_column("Name") do |s|
+            link_to(s.name.presence || content_tag(:span, "Untitled", class: "text-muted"), admin_location_schedule_path(@location, s))
+          end
           table.with_column("Source")            { |s| s.source_url.presence || content_tag(:span, "Uploaded file", class: "text-muted fst-italic") }
           table.with_value_column("Last synced") { |s| s.last_synced_at }
           table.with_column("Events")            { |s| s.schedule_events.count }
           table.with_column("", html_class: "text-end") do |s|
-            link_to("View events", admin_location_schedule_path(@location, s), class: "btn btn-outline-secondary btn-sm")
+            button_to admin_location_schedule_path(@location, s), method: :delete, class: "btn btn-outline-danger btn-sm",
+              form: { data: { turbo_confirm: "Delete \"#{s.name}\"?" } } do
+              content_tag(:i, "", class: "bi bi-trash")
+            end
           end
         = render table
 

@@ -8,7 +8,8 @@ class SyncScheduleJob < ApplicationJob
     Current.tenant = schedule.location.tenant
 
     require "open-uri"
-    data = URI.open(schedule.source_url).read
+    url = schedule.source_url.sub(/\Awebcal:/i, "https:")
+    data = URI.open(url).read
     IcalImportService.new(schedule, data).import
   ensure
     Current.tenant = nil

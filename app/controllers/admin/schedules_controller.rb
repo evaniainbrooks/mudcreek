@@ -1,6 +1,6 @@
 class Admin::SchedulesController < Admin::BaseController
   before_action :set_location
-  before_action :set_schedule, only: [:show]
+  before_action :set_schedule, only: [:show, :destroy]
 
   def show
     @events = @schedule.schedule_events.ordered
@@ -22,6 +22,11 @@ class Admin::SchedulesController < Admin::BaseController
     else
       render :new, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    @schedule.destroy!
+    redirect_to admin_location_path(@location, anchor: "schedules-pane"), notice: "Schedule deleted."
   end
 
   private

@@ -27,6 +27,13 @@ RSpec.describe "Admin::Kiosks", type: :request do
       expect(response.body).to include("Save Kiosk")
     end
 
+    it "points the form at the PATCH endpoint even when no kiosk record exists yet" do
+      get admin_location_path(location)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(admin_location_kiosk_path(location))
+    end
+
     it "renders the kiosk form when a kiosk already exists" do
       location.create_kiosk!
 

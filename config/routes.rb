@@ -144,7 +144,7 @@ resource :session
       resource  :kiosk,                  only: [:update]
       resources :location_users,         only: [:create, :destroy]
       resources :location_announcements, only: [:index, :new, :create, :show]
-      resources :schedules,              only: [:show, :new, :create]
+      resources :schedules,              only: [:show, :new, :create, :destroy]
     end
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
     resources :ledgers, param: :hashid do
