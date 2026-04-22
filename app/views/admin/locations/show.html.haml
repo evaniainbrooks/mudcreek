@@ -8,155 +8,192 @@
       = link_to location_path(@location), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
         %i.bi.bi-box-arrow-up-right.me-1
         Public View
-    = link_to edit_admin_location_path(@location), class: "btn btn-outline-secondary btn-sm" do
-      %i.bi.bi-pencil.me-1
-      Edit
     = button_to admin_location_path(@location), method: :delete, class: "btn btn-outline-danger btn-sm",
         form: { data: { turbo_confirm: "Delete \"#{@location.name}\"?" } } do
       %i.bi.bi-trash.me-1
       Delete
 
-.page-container.p-4
-  = render "stats_row",
-      total: @total_check_ins,
-      today: @today_check_ins,
-      week:  @week_check_ins,
-      month: @month_check_ins
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link.active{ id: "details-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#details-pane" },
+          aria: { controls: "details-pane", selected: "true" } }
+        %i.bi.bi-info-circle.me-1
+        Details
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#edit-pane" },
+          aria: { controls: "edit-pane", selected: "false" } }
+        %i.bi.bi-pencil.me-1
+        Edit
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "schedules-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#schedules-pane" },
+          aria: { controls: "schedules-pane", selected: "false" } }
+        %i.bi.bi-calendar3.me-1
+        Schedules
+        %span.badge.text-bg-secondary.ms-1= @schedules.count
 
-  .row.g-4
-    .col-lg-6
-      = render "check_ins_by_user", user_stats: @user_stats
-    .col-lg-6
-      = render "recent_check_ins", recent_check_ins: @recent_check_ins
+  .p-4
+    .tab-content
+      #details-pane.tab-pane.fade.show.active{ role: "tabpanel", aria: { labelledby: "details-tab" } }
+        = render "stats_row",
+            total: @total_check_ins,
+            today: @today_check_ins,
+            week:  @week_check_ins,
+            month: @month_check_ins
 
-  .row.g-4.mt-0
-    .col-lg-4
-      .card.shadow-sm.border-0
-        .card-header.fw-semibold
-          %i.bi.bi-info-circle.me-1
-          Details
-        .card-body
-          %dl.row.mb-0
-            %dt.col-sm-5 Name
-            %dd.col-sm-7= @location.name
-            %dt.col-sm-5 Address
-            %dd.col-sm-7
-              - if @location.address&.any?
-                %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
-                  = @location.address.to_fs(:long)
+        .row.g-4
+          .col-lg-6
+            = render "check_ins_by_user", user_stats: @user_stats
+          .col-lg-6
+            = render "recent_check_ins", recent_check_ins: @recent_check_ins
+
+        .row.g-4.mt-0
+          .col-lg-4
+            .card.shadow-sm.border-0
+              .card-header.fw-semibold
+                %i.bi.bi-info-circle.me-1
+                Details
+              .card-body
+                %dl.row.mb-0
+                  %dt.col-sm-5 Name
+                  %dd.col-sm-7= @location.name
+                  %dt.col-sm-5 Address
+                  %dd.col-sm-7
+                    - if @location.address&.any?
+                      %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button", data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
+                        = @location.address.to_fs(:long)
+                    - else
+                      %span.text-muted —
+                  %dt.col-sm-5 Logo
+                  %dd.col-sm-7
+                    - if @location.logo.attached?
+                      = image_tag @location.logo.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
+                    - else
+                      %span.text-muted —
+                  %dt.col-sm-5 Backgrounds
+                  %dd.col-sm-7
+                    - count = @location.backgrounds.attachments.size
+                    - if count > 0
+                      = pluralize(count, "item")
+                    - else
+                      %span.text-muted —
+                  %dt.col-sm-5 Slide timeout
+                  %dd.col-sm-7 #{@location.slide_timeout}s
+                  - if @location.message.present?
+                    %dt.col-sm-5 Message
+                    %dd.col-sm-7= @location.message
+
+          .col-lg-4
+            .card.shadow-sm.border-0
+              .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+                %span
+                  %i.bi.bi-qr-code.me-1
+                  Check-in QR Code
+                - if @qr_code
+                  = link_to admin_qr_code_path(@qr_code), class: "btn btn-outline-secondary btn-sm" do
+                    %i.bi.bi-arrow-up-right.me-1
+                    View
+              - if @qr_code
+                .card-body.text-center
+                  - qr = RQRCode::QRCode.new(qr_redirect_url(@qr_code))
+                  = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
+                  %p.mt-2.mb-1
+                    %small.text-muted.text-break= qr_redirect_url(@qr_code)
+                  .d-flex.justify-content-center.gap-3.text-muted.small
+                    %span #{@qr_code.scan_count} scans
+                    - if @qr_code.last_scanned_at
+                      %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
               - else
-                %span.text-muted —
-            %dt.col-sm-5 Logo
-            %dd.col-sm-7
-              - if @location.logo.attached?
-                = image_tag @location.logo.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
-              - else
-                %span.text-muted —
-            %dt.col-sm-5 Backgrounds
-            %dd.col-sm-7
-              - count = @location.backgrounds.attachments.size
-              - if count > 0
-                = pluralize(count, "item")
-              - else
-                %span.text-muted —
-            %dt.col-sm-5 Slide timeout
-            %dd.col-sm-7 #{@location.slide_timeout}s
-            - if @location.message.present?
-              %dt.col-sm-5 Message
-              %dd.col-sm-7= @location.message
+                .card-body.text-muted No QR code — resave this location to generate one.
 
-    .col-lg-4
-      .card.shadow-sm.border-0
-        .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
-          %span
-            %i.bi.bi-qr-code.me-1
-            Check-in QR Code
-          - if @qr_code
-            = link_to admin_qr_code_path(@qr_code), class: "btn btn-outline-secondary btn-sm" do
-              %i.bi.bi-arrow-up-right.me-1
-              View
-        - if @qr_code
-          .card-body.text-center
-            - qr = RQRCode::QRCode.new(qr_redirect_url(@qr_code))
-            = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
-            %p.mt-2.mb-1
-              %small.text-muted.text-break= qr_redirect_url(@qr_code)
-            .d-flex.justify-content-center.gap-3.text-muted.small
-              %span #{@qr_code.scan_count} scans
-              - if @qr_code.last_scanned_at
-                %span Last scanned #{time_ago_in_words(@qr_code.last_scanned_at)} ago
-        - else
-          .card-body.text-muted No QR code — resave this location to generate one.
+        .row.g-4.mt-0
+          .col-lg-6
+            .card.shadow-sm.border-0
+              .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+                %span
+                  %i.bi.bi-people.me-1
+                  Members
+                %span.badge.bg-secondary= @members.count
+              .card-body
+                - if @members.any?
+                  %table.table.table-sm.mb-3
+                    %tbody
+                      - @members.each do |user|
+                        %tr
+                          %td= user.name
+                          %td.text-muted.small= user.email_address
+                          %td.text-end
+                            = button_to admin_location_location_user_path(@location, UserLocation.find_by!(location: @location, user: user)),
+                                method: :delete, class: "btn btn-outline-danger btn-sm",
+                                form: { data: { turbo_confirm: "Remove #{user.name} from this location?" } } do
+                              %i.bi.bi-x
+                - else
+                  %p.text-muted.small.mb-3 No members yet.
+                - if @non_members.any?
+                  = form_with url: admin_location_location_users_path(@location), method: :post, class: "d-flex gap-2 align-items-end" do |f|
+                    .flex-grow-1
+                      = label_tag :user_id, "Add member", class: "form-label form-label-sm"
+                      = select_tag :user_id,
+                          options_from_collection_for_select(@non_members, :id, :name),
+                          class: "form-select form-select-sm"
+                    = f.submit "Add", class: "btn btn-outline-primary btn-sm"
 
-  .row.g-4.mt-0
-    .col-lg-6
-      .card.shadow-sm.border-0
-        .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
-          %span
-            %i.bi.bi-people.me-1
-            Members
-          %span.badge.bg-secondary= @members.count
-        .card-body
-          - if @members.any?
-            %table.table.table-sm.mb-3
-              %tbody
-                - @members.each do |user|
-                  %tr
-                    %td= user.name
-                    %td.text-muted.small= user.email_address
-                    %td.text-end
-                      = button_to admin_location_location_user_path(@location, UserLocation.find_by!(location: @location, user: user)),
-                          method: :delete, class: "btn btn-outline-danger btn-sm",
-                          form: { data: { turbo_confirm: "Remove #{user.name} from this location?" } } do
-                        %i.bi.bi-x
-          - else
-            %p.text-muted.small.mb-3 No members yet.
-          - if @non_members.any?
-            = form_with url: admin_location_location_users_path(@location), method: :post, class: "d-flex gap-2 align-items-end" do |f|
-              .flex-grow-1
-                = label_tag :user_id, "Add member", class: "form-label form-label-sm"
-                = select_tag :user_id,
-                    options_from_collection_for_select(@non_members, :id, :name),
-                    class: "form-select form-select-sm"
-              = f.submit "Add", class: "btn btn-outline-primary btn-sm"
+          .col-lg-6
+            .card.shadow-sm.border-0
+              .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+                %span
+                  %i.bi.bi-megaphone.me-1
+                  Announcements
+                = link_to new_admin_location_location_announcement_path(@location), class: "btn btn-primary btn-sm" do
+                  %i.bi.bi-plus-lg.me-1
+                  New
+              .card-body
+                - if @announcements.any?
+                  %table.table.table-sm.mb-2
+                    %thead
+                      %tr
+                        %th Subject
+                        %th Sent
+                        %th
+                    %tbody
+                      - @announcements.each do |a|
+                        %tr
+                          %td= a.subject
+                          %td.text-muted.small
+                            - if a.sent_at
+                              = a.sent_at.strftime("%b %-d")
+                            - else
+                              %span.badge.bg-warning.text-dark Pending
+                          %td.text-end
+                            = link_to admin_location_location_announcement_path(@location, a), class: "btn btn-outline-secondary btn-sm" do
+                              View
+                  = link_to "All announcements →", admin_location_location_announcements_path(@location), class: "small"
+                - else
+                  %p.text-muted.small.mb-0 No announcements yet.
 
-    .col-lg-6
-      .card.shadow-sm.border-0
-        .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
-          %span
-            %i.bi.bi-megaphone.me-1
-            Announcements
-          = link_to new_admin_location_location_announcement_path(@location), class: "btn btn-primary btn-sm" do
+      #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
+        = render "form", location: @location
+
+      #schedules-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedules-tab" } }
+        .d-flex.justify-content-between.align-items-center.mb-3
+          %h6.fw-semibold.mb-0 Schedules
+          = link_to new_admin_location_schedule_path(@location), class: "btn btn-primary btn-sm" do
             %i.bi.bi-plus-lg.me-1
-            New
-        .card-body
-          - if @announcements.any?
-            %table.table.table-sm.mb-2
-              %thead
-                %tr
-                  %th Subject
-                  %th Sent
-                  %th
-              %tbody
-                - @announcements.each do |a|
-                  %tr
-                    %td= a.subject
-                    %td.text-muted.small
-                      - if a.sent_at
-                        = a.sent_at.strftime("%b %-d")
-                      - else
-                        %span.badge.bg-warning.text-dark Pending
-                    %td.text-end
-                      = link_to admin_location_location_announcement_path(@location, a), class: "btn btn-outline-secondary btn-sm" do
-                        View
-            = link_to "All announcements →", admin_location_location_announcements_path(@location), class: "small"
-          - else
-            %p.text-muted.small.mb-0 No announcements yet.
+            New Schedule
 
-  .mt-3
-    = link_to admin_locations_path, class: "btn btn-outline-secondary" do
-      %i.bi.bi-arrow-left.me-1
-      Back to Locations
+        :ruby
+          table = TableComponent.new(rows: @schedules)
+          table.with_column("Name")              { |s| s.name.presence || content_tag(:span, "Untitled", class: "text-muted") }
+          table.with_column("Source")            { |s| s.source_url.presence || content_tag(:span, "Uploaded file", class: "text-muted fst-italic") }
+          table.with_value_column("Last synced") { |s| s.last_synced_at }
+          table.with_column("Events")            { |s| s.schedule_events.count }
+          table.with_column("", html_class: "text-end") do |s|
+            link_to("View events", admin_location_schedule_path(@location, s), class: "btn btn-outline-secondary btn-sm")
+          end
+        = render table
 
 - if @location.address&.any?
   = render "shared/map_modal", address: @location.address

@@ -1,0 +1,55 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-calendar3.me-2
+    = @schedule.name.presence || "Schedule"
+  %small.text-muted= @location.name
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-3
+    .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+      %span
+        %i.bi.bi-calendar-event.me-1
+        Events
+      %span.badge.bg-secondary= @events.count
+    - if @events.any?
+      %table.table.table-hover.mb-0
+        %thead
+          %tr
+            %th Summary
+            %th Starts
+            %th Ends
+            %th.text-center All Day
+            %th Recurrence
+        %tbody
+          - @events.each do |event|
+            %tr
+              %td= event.summary.presence || %(<em class="text-muted">No title</em>).html_safe
+              %td.text-nowrap
+                - if event.starts_at
+                  = event.all_day? ? event.starts_at.to_date.strftime("%b %-d, %Y") : event.starts_at.strftime("%b %-d, %Y %l:%M %p")
+              %td.text-nowrap
+                - if event.ends_at
+                  = event.all_day? ? event.ends_at.to_date.strftime("%b %-d, %Y") : event.ends_at.strftime("%b %-d, %Y %l:%M %p")
+              %td.text-center
+                - if event.all_day?
+                  %i.bi.bi-check-lg.text-success
+              %td
+                - if event.rrule.present?
+                  %code.small= event.rrule
+    - else
+      .card-body
+        %p.text-muted.mb-0 No events in this schedule.
+
+  %dl.row.text-muted.small
+    %dt.col-sm-3 Source
+    %dd.col-sm-9= @schedule.source_url.presence || "Uploaded file"
+    %dt.col-sm-3 Last synced
+    %dd.col-sm-9
+      - if @schedule.last_synced_at
+        = @schedule.last_synced_at.strftime("%B %-d, %Y at %l:%M %p")
+      - else
+        Never
+
+  = link_to admin_location_path(@location), class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Location

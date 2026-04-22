@@ -28,13 +28,15 @@ class Admin::LocationsController < Admin::BaseController
       { guest_name: name, count: count, last_at: guest_last_times[name] }
     end
 
-    @user_stats = (user_rows + guest_rows).sort_by { |s| -s[:count] }
+    @user_stats = (user_rows + guest_rows).sort_by { |s| -s[:count] }.first(20)
 
     @recent_check_ins = @location.check_ins.ordered.includes(:user).limit(20)
 
+    @location.build_address unless @location.address
     @members       = @location.users.order(:first_name, :last_name)
     @non_members   = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
     @announcements = @location.location_announcements.ordered.limit(5)
+    @schedules     = @location.schedules.ordered
   end
 
   def new
@@ -44,7 +46,7 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def edit
-    @location.build_address unless @location.address
+    redirect_to admin_location_path(@location)
   end
 
   def create
@@ -60,7 +62,6 @@ class Admin::LocationsController < Admin::BaseController
         active:          true,
         owner:           Current.user
       )
-      SyncLocationCalendarJob.perform_later(@location.id, Current.tenant.id) if @location.ical_url.present?
       redirect_to admin_location_path(@location), notice: "Location was successfully created."
     else
       render :new, status: :unprocessable_content
@@ -82,10 +83,15 @@ class Admin::LocationsController < Admin::BaseController
         active:          true,
         owner:           Current.user
       ) unless @location.qr_code
-      SyncLocationCalendarJob.perform_later(@location.id, Current.tenant.id) if @location.ical_url.present?
       redirect_to admin_location_path(@location), notice: "Location was successfully updated."
     else
-      render :edit, status: :unprocessable_content
+      @location.build_address unless @location.address
+      @qr_code      = @location.qr_code
+      @members      = @location.users.order(:first_name, :last_name)
+      @non_members  = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+      @announcements = @location.location_announcements.ordered.limit(5)
+      @schedules    = @location.schedules.ordered
+      render :show, status: :unprocessable_content
     end
   end
 
@@ -102,6 +108,6 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def location_params
-    params.require(:location).permit(:name, :published, :default, :logo, :ical_url, :message, :directions, :checkin_exit_url, :background_tint_opacity, :slide_timeout, :tax_rate_percent, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
+    params.require(:location).permit(:name, :published, :default, :logo, :message, :directions, :checkin_exit_url, :background_tint_opacity, :slide_timeout, :tax_rate_percent, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
   end
 end

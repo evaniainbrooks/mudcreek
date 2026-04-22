@@ -13,5 +13,9 @@ class SyncLocationCalendarJob < ApplicationJob
       filename: "calendar.ics",
       content_type: "text/calendar"
     )
+
+    schedule = location.schedules.find_or_initialize_by(source_url: location.ical_url)
+    schedule.save! if schedule.new_record?
+    IcalImportService.new(schedule, data).import
   end
 end

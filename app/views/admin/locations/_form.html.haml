@@ -44,22 +44,12 @@
       %fieldset.card.shadow-sm.border-0.mb-4
         %legend.card-header.fw-semibold
           %i.bi.bi-calendar-event.me-1
-          Calendar
+          Check-in
         .card-body.p-4
-          .mb-3
+          .mb-0
             = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
             = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
-            .form-text
-              Where the "Close" button on the check-in screen links to.
-          .mb-0
-            = f.label :ical_url, "iCal / ICS Feed URL", class: "form-label"
-            = f.url_field :ical_url, class: "form-control", placeholder: "https://..."
-            .form-text
-              Paste a public .ics URL. Events for the current day will appear on the showroom screen.
-              - if location.calendar_file.attached?
-                %span.ms-1.text-success
-                  %i.bi.bi-check-circle-fill.me-1
-                  Calendar synced.
+            .form-text Where the "Close" button on the check-in screen links to.
 
       %fieldset.card.shadow-sm.border-0.mb-4
         %legend.card-header.fw-semibold
@@ -120,4 +110,4 @@
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"
-    = link_to "Cancel", admin_locations_path, class: "btn btn-outline-secondary"
+    = link_to "Cancel", location.persisted? ? admin_location_path(location) : admin_locations_path, class: "btn btn-outline-secondary"

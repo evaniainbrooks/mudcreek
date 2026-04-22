@@ -143,6 +143,7 @@ resource :session
     resources :locations, param: :hashid do
       resources :location_users,         only: [:create, :destroy]
       resources :location_announcements, only: [:index, :new, :create, :show]
+      resources :schedules,              only: [:show, :new, :create]
     end
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
     resources :ledgers, param: :hashid do
