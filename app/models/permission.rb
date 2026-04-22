@@ -16,6 +16,7 @@ class Permission < ApplicationRecord
     InquiryForm
     Invoice
     Kid
+    Kiosk
     Ledger
     Ledger::Entry
     Listing
