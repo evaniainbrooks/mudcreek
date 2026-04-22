@@ -28,6 +28,12 @@
         %i.bi.bi-pencil.me-1
         Edit
     %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "kiosk-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#kiosk-pane" },
+          aria: { controls: "kiosk-pane", selected: "false" } }
+        %i.bi.bi-display.me-1
+        Kiosk
+    %li.nav-item{ role: "presentation" }
       %button.nav-link{ id: "schedules-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#schedules-pane" },
           aria: { controls: "schedules-pane", selected: "false" } }
@@ -60,6 +66,12 @@
                 %dl.row.mb-0
                   %dt.col-sm-5 Name
                   %dd.col-sm-7= @location.name
+                  %dt.col-sm-5 Published
+                  %dd.col-sm-7
+                    - if @location.published?
+                      %span.badge.text-bg-success Published
+                    - else
+                      %span.badge.text-bg-secondary Unpublished
                   %dt.col-sm-5 Address
                   %dd.col-sm-7
                     - if @location.address&.any?
@@ -67,24 +79,9 @@
                         = @location.address.to_fs(:long)
                     - else
                       %span.text-muted —
-                  %dt.col-sm-5 Logo
-                  %dd.col-sm-7
-                    - if @location.logo.attached?
-                      = image_tag @location.logo.variant(resize_to_fill: [80, 80]), class: "rounded", style: "object-fit: cover"
-                    - else
-                      %span.text-muted —
-                  %dt.col-sm-5 Backgrounds
-                  %dd.col-sm-7
-                    - count = @location.backgrounds.attachments.size
-                    - if count > 0
-                      = pluralize(count, "item")
-                    - else
-                      %span.text-muted —
-                  %dt.col-sm-5 Slide timeout
-                  %dd.col-sm-7 #{@location.slide_timeout}s
-                  - if @location.message.present?
-                    %dt.col-sm-5 Message
-                    %dd.col-sm-7= @location.message
+                  - if @location.directions.present?
+                    %dt.col-sm-5 Directions
+                    %dd.col-sm-7= @location.directions
 
           .col-lg-4
             .card.shadow-sm.border-0
@@ -176,6 +173,9 @@
 
       #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
         = render "form", location: @location
+
+      #kiosk-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "kiosk-tab" } }
+        = render "kiosk_form", location: @location, kiosk: @kiosk
 
       #schedules-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedules-tab" } }
         .d-flex.justify-content-between.align-items-center.mb-3

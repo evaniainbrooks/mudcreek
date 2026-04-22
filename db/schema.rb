@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_22_163339) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_22_164930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -343,6 +343,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_163339) do
     t.index ["user_id"], name: "index_kids_on_user_id"
   end
 
+  create_table "kiosks", force: :cascade do |t|
+    t.float "background_tint_opacity", default: 0.5, null: false
+    t.string "checkin_exit_url"
+    t.datetime "created_at", null: false
+    t.bigint "location_id", null: false
+    t.bigint "schedule_id"
+    t.integer "slide_timeout", default: 8, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_kiosks_on_location_id"
+    t.index ["schedule_id"], name: "index_kiosks_on_schedule_id"
+    t.index ["tenant_id"], name: "index_kiosks_on_tenant_id"
+  end
+
   create_table "ledger_entries", force: :cascade do |t|
     t.decimal "amount", precision: 10, scale: 2
     t.datetime "created_at", null: false
@@ -570,8 +584,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_163339) do
   end
 
   create_table "locations", force: :cascade do |t|
-    t.float "background_tint_opacity", default: 0.5, null: false
-    t.string "checkin_exit_url"
     t.datetime "created_at", null: false
     t.boolean "default", default: false, null: false
     t.text "directions"
@@ -579,7 +591,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_163339) do
     t.string "ical_url"
     t.string "name", null: false
     t.boolean "published", default: false, null: false
-    t.integer "slide_timeout", default: 8, null: false
     t.decimal "tax_rate", precision: 8, scale: 4, default: "0.15", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
@@ -1242,6 +1253,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_163339) do
   add_foreign_key "invoices", "users"
   add_foreign_key "kids", "tenants"
   add_foreign_key "kids", "users"
+  add_foreign_key "kiosks", "locations", on_delete: :cascade
+  add_foreign_key "kiosks", "schedules"
+  add_foreign_key "kiosks", "tenants", on_delete: :cascade
   add_foreign_key "ledger_entries", "ledgers"
   add_foreign_key "ledger_entries", "tenants", on_delete: :cascade, validate: false
   add_foreign_key "ledger_entries", "users", on_delete: :nullify, validate: false

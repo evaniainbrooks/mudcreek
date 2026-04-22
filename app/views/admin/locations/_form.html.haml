@@ -41,23 +41,6 @@
             - if location.errors[:tax_rate].any?
               .text-danger.small= location.errors[:tax_rate].to_sentence
 
-      %fieldset.card.shadow-sm.border-0.mb-4
-        %legend.card-header.fw-semibold
-          %i.bi.bi-calendar-event.me-1
-          Check-in
-        .card-body.p-4
-          .mb-0
-            = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
-            = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
-            .form-text Where the "Close" button on the check-in screen links to.
-
-      %fieldset.card.shadow-sm.border-0.mb-4
-        %legend.card-header.fw-semibold
-          %i.bi.bi-chat-text.me-1
-          Message
-        .card-body.p-4
-          = f.rich_text_area :message, class: "form-control"
-
       %fieldset.card.shadow-sm.border-0
         %legend.card-header.fw-semibold
           %i.bi.bi-signpost-2.me-1
@@ -67,39 +50,6 @@
           .form-text Displayed on the location widget in place of the message.
 
     .col-lg-6
-      %fieldset.card.shadow-sm.border-0.mb-4{ data: { controller: "direct-upload" } }
-        %legend.card-header.fw-semibold
-          %i.bi.bi-image.me-1
-          Media
-        .card-body.p-4
-          .mb-3
-            = f.label :logo, class: "form-label"
-            = f.file_field :logo, direct_upload: true, class: "form-control", accept: "image/*"
-            - if location.logo.attached?
-              .mt-2.d-flex.align-items-center.gap-2
-                = image_tag location.logo.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
-                - if location.persisted?
-                  = link_to admin_location_path(location, remove_logo: "1"),
-                      class: "btn btn-sm btn-outline-danger",
-                      data: { turbo_method: :patch, turbo_confirm: "Remove logo?" } do
-                    %i.bi.bi-x-lg.me-1
-                    Remove
-          .mb-3
-            = f.label :backgrounds, "Background gallery (images or videos)", class: "form-label"
-            = f.file_field :backgrounds, direct_upload: true, class: "form-control", accept: "image/*,video/*", multiple: true
-            = render Admin::AttachmentsListComponent.new(attachments: location.backgrounds.attachments,
-                delete_path: location.persisted? ? ->(a) { admin_location_path(location, remove_background_ids: [a.blob.signed_id]) } : nil,
-                delete_method: :patch)
-          .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
-          .mt-3
-            = f.label :background_tint_opacity, "Background tint opacity (0–1)", class: "form-label"
-            = f.number_field :background_tint_opacity, class: "form-control", min: 0, max: 1, step: 0.05
-            .form-text Controls how dark the overlay on the background is. 0 = no tint, 1 = fully black.
-          .mt-3
-            = f.label :slide_timeout, "Slide timeout (seconds)", class: "form-label"
-            = f.number_field :slide_timeout, class: "form-control", min: 1, max: 300
-            .form-text How long each background is shown before advancing to the next.
-
       = f.fields_for :address do |a|
         %fieldset.card.shadow-sm.border-0
           %legend.card-header.fw-semibold

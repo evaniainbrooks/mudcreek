@@ -141,6 +141,7 @@ resource :session
       member { get :qr_image }
     end
     resources :locations, param: :hashid do
+      resource  :kiosk,                  only: [:update]
       resources :location_users,         only: [:create, :destroy]
       resources :location_announcements, only: [:index, :new, :create, :show]
       resources :schedules,              only: [:show, :new, :create]

@@ -1,7 +1,8 @@
 - content_for :title, "Check In – #{@location.name}"
 
 :ruby
-  first_bg = @location.backgrounds.attachments.first
+  kiosk = @location.kiosk
+  first_bg = kiosk&.backgrounds&.attachments&.first
   has_image_bg = first_bg && !first_bg.blob.video?
 
 .checkin-page
@@ -11,8 +12,8 @@
 
   .checkin-content
     .checkin-card
-      - if @location.logo.attached?
-        = image_tag @location.logo, class: "checkin-logo", alt: @location.name
+      - if kiosk&.logo&.attached?
+        = image_tag kiosk.logo, class: "checkin-logo", alt: @location.name
       %h1.checkin-location= @location.name
 
       - if @check_in.persisted? || @checked_in || @guest_checked_in
@@ -24,7 +25,7 @@
               Welcome, #{Current.user.first_name}!
             - elsif @guest_checked_in
               Welcome, #{@guest_checked_in}!
-        = link_to @location.checkin_exit_url.presence || root_path,
+        = link_to kiosk&.checkin_exit_url.presence || root_path,
             class: "btn btn-lg w-100 checkin-close-btn mt-2" do
           Done
       - else

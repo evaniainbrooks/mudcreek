@@ -1,9 +1,10 @@
 - content_for :title, @location.name
 
 :ruby
-  styles         = location_showroom_styles(@location)
-  qr_url         = qr_redirect_url(@location.qr_code, tenant_key: Current.tenant.key)
-  qr             = RQRCode::QRCode.new(qr_url)
+  kiosk         = @location.kiosk
+  styles        = location_showroom_styles(@location)
+  qr_url        = qr_redirect_url(@location.qr_code, tenant_key: Current.tenant.key)
+  qr            = RQRCode::QRCode.new(qr_url)
   schedule_style = "font-size: clamp(0.7rem, 1.2vw, 1rem); font-weight: 700; " \
                    "letter-spacing: 0.12em; text-transform: uppercase; " \
                    "color: rgba(255,255,255,0.5); margin-bottom: 0.75rem"
@@ -11,13 +12,13 @@
 %div{data: { controller: "clock" },
      style: "position: fixed; inset: 0; #{styles[:bg]}"}
 
-  - if @location.backgrounds.attached?
+  - if kiosk&.backgrounds&.attached?
     %div{id: "location-slideshow",
          data: { controller: "slideshow",
-                 "slideshow-timeout-value": @location.slide_timeout * 1000,
+                 "slideshow-timeout-value": kiosk.slide_timeout * 1000,
                  "turbo-permanent": true },
          style: "position: absolute; inset: 0"}
-      - @location.backgrounds.each_with_index do |bg, i|
+      - kiosk.backgrounds.each_with_index do |bg, i|
         - slide_style = "position: absolute; inset: 0; transition: opacity 1s ease-in-out; opacity: #{i == 0 ? 1 : 0}"
         - if bg.video?
           %video{src: url_for(bg),
@@ -28,13 +29,13 @@
           - bg_style = "#{slide_style}; background-image: url(#{url_for(bg)}); background-size: cover; background-position: center"
           %div{data: { "slideshow-target": "slide" }, style: bg_style}
 
-  %div{ style: "position: absolute; inset: 0; background: rgba(0,0,0,#{@location.background_tint_opacity})" }
+  %div{ style: "position: absolute; inset: 0; background: rgba(0,0,0,#{kiosk&.background_tint_opacity || 0.5})" }
   %div{ style: "position: relative; display: flex; flex-direction: column; height: 100%" }
 
     %div{ style: styles[:top_bar] }
       %div
-        - if @location.logo.attached?
-          = image_tag @location.logo, style: "max-height: 120px; max-width: 360px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8))"
+        - if kiosk&.logo&.attached?
+          = image_tag kiosk.logo, style: "max-height: 120px; max-width: 360px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8))"
       %div{ style: "text-align: center; display: flex; gap: 1.5rem; text-shadow: 0 2px 8px rgba(0,0,0,0.9)" }
         %span{ data: { clock_target: "date" }, style: styles[:clock] }
         %span{ data: { clock_target: "time" }, style: styles[:clock] }
@@ -44,9 +45,9 @@
       %h1{ style: styles[:title] }= @location.name
 
       %div{ style: "display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 3rem; width: 100%" }
-        - if @location.message.present?
+        - if kiosk&.message&.present?
           %div{ style: styles[:msg] }
-            = @location.message
+            = kiosk.message
         - else
           %div
 

@@ -1,0 +1,2 @@
+class KioskPolicy < ApplicationPolicy
+end

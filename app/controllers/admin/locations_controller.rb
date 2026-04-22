@@ -33,6 +33,7 @@ class Admin::LocationsController < Admin::BaseController
     @recent_check_ins = @location.check_ins.ordered.includes(:user).limit(20)
 
     @location.build_address unless @location.address
+    @kiosk         = @location.kiosk || @location.build_kiosk
     @members       = @location.users.order(:first_name, :last_name)
     @non_members   = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
     @announcements = @location.location_announcements.ordered.limit(5)
@@ -53,9 +54,7 @@ class Admin::LocationsController < Admin::BaseController
     @location = Location.new(location_params)
     authorize(@location)
 
-    new_backgrounds = params.dig(:location, :backgrounds)&.reject(&:blank?)
     if @location.save
-      @location.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       @location.create_qr_code!(
         name:            "#{@location.name} Check-in",
         destination_url: location_checkin_url(@location, tenant_key: Current.tenant.key),
@@ -69,12 +68,6 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def update
-    @location.logo.purge_later if params[:remove_logo].present?
-    Array(params[:remove_background_ids]).each do |signed_id|
-      blob = ActiveStorage::Blob.find_signed(signed_id)
-      @location.backgrounds.attachments.find_by(blob_id: blob.id)&.purge_later
-    end
-    new_backgrounds = params.dig(:location, :backgrounds)&.reject(&:blank?)
     if @location.update(location_params)
       @location.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       @location.create_qr_code!(
@@ -86,6 +79,7 @@ class Admin::LocationsController < Admin::BaseController
       redirect_to admin_location_path(@location), notice: "Location was successfully updated."
     else
       @location.build_address unless @location.address
+      @kiosk        = @location.kiosk || @location.build_kiosk
       @qr_code      = @location.qr_code
       @members      = @location.users.order(:first_name, :last_name)
       @non_members  = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
@@ -108,6 +102,6 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def location_params
-    params.require(:location).permit(:name, :published, :default, :logo, :message, :directions, :checkin_exit_url, :background_tint_opacity, :slide_timeout, :tax_rate_percent, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
+    params.require(:location).permit(:name, :published, :default, :directions, :tax_rate_percent, address_attributes: [:id, :street_address, :city, :province, :postal_code, :country])
   end
 end

@@ -2,8 +2,8 @@
 - addr = location.address
 %section
   .d-flex.align-items-start.gap-4.mb-3
-    - if location.logo.attached?
-      = optimized_image_tag location.logo, preset: :logo,
+    - if location.kiosk&.logo&.attached?
+      = optimized_image_tag location.kiosk.logo, preset: :logo,
           class: "rounded flex-shrink-0", style: "width: 80px; height: 80px; object-fit: contain"
     .flex-grow-1
       %h2.h4.fw-semibold.mb-1= location.name

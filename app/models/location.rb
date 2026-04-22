@@ -8,14 +8,13 @@ class Location < ApplicationRecord
   has_many :user_locations, dependent: :destroy
   has_many :users, through: :user_locations
   has_many :location_announcements, dependent: :destroy
+  has_one :kiosk, dependent: :destroy
   has_one :qr_code, dependent: :destroy
   has_one :address, as: :addressable, dependent: :destroy
-  has_one_attached :logo
-  has_many_attached :backgrounds
   has_one_attached :calendar_file
   accepts_nested_attributes_for :address, reject_if: :all_blank
 
-  has_rich_text :message
+  after_create :create_kiosk!
 
   validates :name, presence: true
   validates :tax_rate, numericality: { greater_than_or_equal_to: 0, less_than: 1 }

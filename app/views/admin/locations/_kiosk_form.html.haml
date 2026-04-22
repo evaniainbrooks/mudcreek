@@ -1,0 +1,75 @@
+= form_with model: [:admin, location, kiosk], data: { controller: "direct-upload" } do |f|
+  - if kiosk.errors.any?
+    .alert.alert-danger.mb-4
+      %ul.mb-0
+        - kiosk.errors.full_messages.each do |msg|
+          %li= msg
+
+  .row.g-4
+    .col-lg-6
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-image.me-1
+          Media
+        .card-body.p-4
+          .mb-3
+            = f.label :logo, class: "form-label"
+            = f.file_field :logo, direct_upload: true, class: "form-control", accept: "image/*"
+            - if kiosk.logo.attached?
+              .mt-2.d-flex.align-items-center.gap-2
+                = image_tag kiosk.logo.variant(resize_to_fill: [120, 80]), class: "rounded", style: "object-fit: cover"
+                - if kiosk.persisted?
+                  = link_to admin_location_kiosk_path(location, remove_logo: "1"),
+                      class: "btn btn-sm btn-outline-danger",
+                      data: { turbo_method: :patch, turbo_confirm: "Remove logo?" } do
+                    %i.bi.bi-x-lg.me-1
+                    Remove
+          .mb-3
+            = f.label :backgrounds, "Background gallery (images or videos)", class: "form-label"
+            = f.file_field :backgrounds, direct_upload: true, class: "form-control", accept: "image/*,video/*", multiple: true
+            = render Admin::AttachmentsListComponent.new(
+                attachments: kiosk.backgrounds.attachments,
+                delete_path: kiosk.persisted? ? ->(a) { admin_location_kiosk_path(location, remove_background_ids: [a.blob.signed_id]) } : nil,
+                delete_method: :patch)
+          .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
+          .mb-3
+            = f.label :background_tint_opacity, "Background tint opacity (0–1)", class: "form-label"
+            = f.number_field :background_tint_opacity, class: "form-control", min: 0, max: 1, step: 0.05
+            .form-text 0 = no tint, 1 = fully black.
+          .mb-0
+            = f.label :slide_timeout, "Slide timeout (seconds)", class: "form-label"
+            = f.number_field :slide_timeout, class: "form-control", min: 1, max: 300
+            .form-text How long each background is shown before advancing to the next.
+
+    .col-lg-6
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-chat-text.me-1
+          Message
+        .card-body.p-4
+          = f.rich_text_area :message, class: "form-control"
+
+      %fieldset.card.shadow-sm.border-0.mb-4
+        %legend.card-header.fw-semibold
+          %i.bi.bi-calendar3.me-1
+          Schedule
+        .card-body.p-4
+          = f.label :schedule_id, "Display schedule", class: "form-label"
+          = f.select :schedule_id,
+              options_from_collection_for_select(location.schedules.ordered, :id, :name, kiosk.schedule_id),
+              { include_blank: "— None —" },
+              class: "form-select"
+          .form-text The selected schedule's events will appear on the kiosk screen.
+
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold
+          %i.bi.bi-door-open.me-1
+          Check-in
+        .card-body.p-4
+          = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
+          = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
+          .form-text Where the "Done" button redirects after a successful check-in.
+
+  .d-flex.gap-2.mt-4
+    = f.submit "Save Kiosk", class: "btn btn-primary"
+    = link_to "Cancel", admin_location_path(location), class: "btn btn-outline-secondary"
