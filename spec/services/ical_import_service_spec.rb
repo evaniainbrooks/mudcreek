@@ -117,5 +117,34 @@ RSpec.describe IcalImportService do
         expect { perform(basic_ics) }.not_to change(ScheduleEvent, :count)
       end
     end
+
+    context "when the feed contains duplicate UIDs" do
+      let(:duplicate_uid_ics) do
+        <<~ICS
+          BEGIN:VCALENDAR
+          VERSION:2.0
+          BEGIN:VEVENT
+          UID:dup-uid
+          SUMMARY:First occurrence
+          DTSTART:20260501T100000Z
+          END:VEVENT
+          BEGIN:VEVENT
+          UID:dup-uid
+          SUMMARY:Second occurrence
+          DTSTART:20260502T100000Z
+          END:VEVENT
+          END:VCALENDAR
+        ICS
+      end
+
+      it "does not raise a cardinality violation" do
+        expect { perform(duplicate_uid_ics) }.not_to raise_error
+      end
+
+      it "creates only one event for the duplicated UID" do
+        perform(duplicate_uid_ics)
+        expect(ScheduleEvent.where(uid: "dup-uid").count).to eq(1)
+      end
+    end
   end
 end

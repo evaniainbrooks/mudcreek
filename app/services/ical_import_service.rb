@@ -12,7 +12,7 @@ class IcalImportService
     cal = calendars.first
     @schedule.name ||= cal.x_wr_calname&.first.presence || "Calendar"
 
-    rows = cal.events.filter_map { |e| build_row(e) }
+    rows = cal.events.filter_map { |e| build_row(e) }.uniq { |r| r[:uid] }
     ScheduleEvent.upsert_all(rows, unique_by: [:schedule_id, :uid]) if rows.any?
 
     @schedule.update_columns(name: @schedule.name, last_synced_at: Time.current)
