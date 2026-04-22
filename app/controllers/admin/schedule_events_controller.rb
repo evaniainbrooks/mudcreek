@@ -1,0 +1,45 @@
+class Admin::ScheduleEventsController < Admin::BaseController
+  before_action :set_location
+  before_action :set_schedule
+  before_action :set_event, only: [:destroy]
+
+  def new
+    @event = @schedule.schedule_events.build
+    authorize(@event)
+  end
+
+  def create
+    @event = @schedule.schedule_events.build(event_params)
+    authorize(@event)
+
+    if @event.save
+      redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event added."
+    else
+      render :new, status: :unprocessable_content
+    end
+  end
+
+  def destroy
+    @event.destroy!
+    redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event deleted."
+  end
+
+  private
+
+  def set_location
+    @location = Location.find_by!(hashid: params[:location_hashid])
+  end
+
+  def set_schedule
+    @schedule = @location.schedules.find(params[:schedule_id])
+  end
+
+  def set_event
+    @event = @schedule.schedule_events.find(params[:id])
+    authorize(@event)
+  end
+
+  def event_params
+    params.require(:schedule_event).permit(:summary, :starts_at, :ends_at, :all_day, :rrule)
+  end
+end

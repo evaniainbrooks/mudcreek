@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_22_164930) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_22_232027) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -348,6 +348,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_164930) do
     t.string "checkin_exit_url"
     t.datetime "created_at", null: false
     t.bigint "location_id", null: false
+    t.boolean "member_birthdays", default: false, null: false
     t.bigint "schedule_id"
     t.integer "slide_timeout", default: 8, null: false
     t.bigint "tenant_id", null: false

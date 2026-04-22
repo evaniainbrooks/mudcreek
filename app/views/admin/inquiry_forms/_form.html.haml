@@ -23,6 +23,7 @@
                 required: true
             - if inquiry_form.errors[:name].any?
               .invalid-feedback= inquiry_form.errors[:name].to_sentence
+            %small.text-muted Internal only — not displayed publicly.
           .mb-3
             = f.label :slug, class: "form-label required"
             = f.text_field :slug,
@@ -31,12 +32,6 @@
             - if inquiry_form.errors[:slug].any?
               .invalid-feedback= inquiry_form.errors[:slug].to_sentence
             %small.text-muted Lowercase letters, numbers, and hyphens only (e.g. contact-us)
-          .mb-3
-            = f.label :description, class: "form-label"
-            = f.text_area :description, rows: 3,
-                class: "form-control #{'is-invalid' if inquiry_form.errors[:description].any?}"
-            - if inquiry_form.errors[:description].any?
-              .invalid-feedback= inquiry_form.errors[:description].to_sentence
           .mb-3
             = f.label :cta_label, "Submit Button Label", class: "form-label"
             = f.text_field :cta_label, class: "form-control", placeholder: "Send Message"

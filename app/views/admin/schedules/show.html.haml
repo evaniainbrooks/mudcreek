@@ -10,32 +10,38 @@
       %span
         %i.bi.bi-calendar-event.me-1
         Events
-      %span.badge.bg-secondary= @events.count
+        %span.badge.bg-secondary.ms-1= @events.count
+      = link_to new_admin_location_schedule_schedule_event_path(@location, @schedule), class: "btn btn-primary btn-sm" do
+        %i.bi.bi-plus-lg.me-1
+        New Event
     - if @events.any?
-      %table.table.table-hover.mb-0
-        %thead
-          %tr
-            %th Summary
-            %th Starts
-            %th Ends
-            %th.text-center All Day
-            %th Recurrence
-        %tbody
-          - @events.each do |event|
-            %tr
-              %td= event.summary.presence || %(<em class="text-muted">No title</em>).html_safe
-              %td.text-nowrap
-                - if event.starts_at
-                  = event.all_day? ? event.starts_at.to_date.strftime("%b %-d, %Y") : event.starts_at.strftime("%b %-d, %Y %l:%M %p")
-              %td.text-nowrap
-                - if event.ends_at
-                  = event.all_day? ? event.ends_at.to_date.strftime("%b %-d, %Y") : event.ends_at.strftime("%b %-d, %Y %l:%M %p")
-              %td.text-center
-                - if event.all_day?
-                  %i.bi.bi-check-lg.text-success
-              %td
-                - if event.rrule.present?
-                  %code.small= event.rrule
+      :ruby
+        evt_table = TableComponent.new(rows: @events)
+        evt_table.with_column("Summary") do |e|
+          e.summary.presence || content_tag(:em, "No title", class: "text-muted")
+        end
+        evt_table.with_column("Starts") do |e|
+          next unless e.starts_at
+          e.all_day? ? e.starts_at.to_date.strftime("%b %-d, %Y") : e.starts_at.strftime("%b %-d, %Y %-I:%M %p")
+        end
+        evt_table.with_column("Ends") do |e|
+          next unless e.ends_at
+          e.all_day? ? e.ends_at.to_date.strftime("%b %-d, %Y") : e.ends_at.strftime("%b %-d, %Y %-I:%M %p")
+        end
+        evt_table.with_column("All Day", html_class: "text-center") do |e|
+          content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
+        end
+        evt_table.with_column("Recurrence") do |e|
+          content_tag(:code, e.rrule, class: "small") if e.rrule.present?
+        end
+        evt_table.with_column("", html_class: "text-end") do |e|
+          button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
+            method: :delete, class: "btn btn-outline-danger btn-sm",
+            form: { data: { turbo_confirm: "Delete this event?" } } do
+            content_tag(:i, "", class: "bi bi-trash")
+          end
+        end
+      = render evt_table
     - else
       .card-body
         %p.text-muted.mb-0 No events in this schedule.

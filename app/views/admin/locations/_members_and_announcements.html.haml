@@ -1,0 +1,55 @@
+.row.g-4.mt-0
+  .col-lg-6
+    .card.shadow-sm.border-0
+      .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+        %span
+          %i.bi.bi-people.me-1
+          Members
+        %span.badge.bg-secondary= members.count
+      .card-body
+        :ruby
+          member_table = TableComponent.new(rows: members)
+          member_table.with_column("Name")  { |u| u.name }
+          member_table.with_column("Email") { |u| u.email_address }
+          member_table.with_column("", html_class: "text-end") do |u|
+            user_location = UserLocation.find_by!(location: location, user: u)
+            button_to admin_location_location_user_path(location, user_location),
+              method: :delete, class: "btn btn-outline-danger btn-sm",
+              form: { data: { turbo_confirm: "Remove #{u.name} from this location?" } } do
+              content_tag(:i, "", class: "bi bi-x")
+            end
+          end
+        = render member_table
+        - if non_members.any?
+          = form_with url: admin_location_location_users_path(location), method: :post, class: "d-flex gap-2 align-items-end mt-3" do |f|
+            .flex-grow-1
+              = label_tag :user_id, "Add member", class: "form-label form-label-sm"
+              = select_tag :user_id,
+                  options_from_collection_for_select(non_members, :id, ->(u) { "#{u.name} (#{u.email_address})" }),
+                  class: "form-select form-select-sm"
+            = f.submit "Add", class: "btn btn-outline-primary btn-sm"
+
+  .col-lg-6
+    .card.shadow-sm.border-0
+      .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+        %span
+          %i.bi.bi-megaphone.me-1
+          Announcements
+        = link_to new_admin_location_location_announcement_path(location), class: "btn btn-primary btn-sm" do
+          %i.bi.bi-plus-lg.me-1
+          New
+      .card-body
+        - if announcements.any?
+          :ruby
+            ann_table = TableComponent.new(rows: announcements)
+            ann_table.with_column("Subject") { |a| a.subject }
+            ann_table.with_column("Sent") do |a|
+              a.sent_at ? a.sent_at.strftime("%b %-d") : content_tag(:span, "Pending", class: "badge bg-warning text-dark")
+            end
+            ann_table.with_column("", html_class: "text-end") do |a|
+              link_to("View", admin_location_location_announcement_path(location, a), class: "btn btn-outline-secondary btn-sm")
+            end
+          = render ann_table
+          = link_to "All announcements →", admin_location_location_announcements_path(location), class: "small"
+        - else
+          %p.text-muted.small.mb-0 No announcements yet.

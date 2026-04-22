@@ -37,6 +37,7 @@ class Admin::KiosksController < Admin::BaseController
 
   def kiosk_params
     params.require(:kiosk).permit(:logo, :message, :checkin_exit_url,
-                                  :background_tint_opacity, :slide_timeout, :schedule_id)
+                                  :background_tint_opacity, :slide_timeout, :schedule_id,
+                                  :member_birthdays)
   end
 end

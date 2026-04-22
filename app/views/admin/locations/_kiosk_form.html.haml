@@ -64,9 +64,39 @@
           %i.bi.bi-door-open.me-1
           Check-in
         .card-body.p-4
-          = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
-          = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
-          .form-text Where the "Done" button redirects after a successful check-in.
+          .mb-3
+            = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
+            = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
+            .form-text Where the "Done" button redirects after a successful check-in.
+          .mb-0
+            .form-check
+              = f.check_box :member_birthdays, class: "form-check-input"
+              = f.label :member_birthdays, "Show member birthdays", class: "form-check-label"
+            .form-text Displays a birthday message on the kiosk for any member or their kids with a birthday today.
+
+  .row.g-4.mt-0
+    .col-lg-6
+      %fieldset.card.shadow-sm.border-0
+        %legend.card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+          %span
+            %i.bi.bi-qr-code.me-1
+            Check-in QR Code
+          - if qr_code
+            = link_to admin_qr_code_path(qr_code), class: "btn btn-outline-secondary btn-sm" do
+              %i.bi.bi-arrow-up-right.me-1
+              View
+        - if qr_code
+          .card-body.text-center
+            - qr = RQRCode::QRCode.new(qr_redirect_url(qr_code))
+            = raw qr.as_svg(offset: 0, color: "000000", shape_rendering: "crispEdges", module_size: 6)
+            %p.mt-2.mb-1
+              %small.text-muted.text-break= qr_redirect_url(qr_code)
+            .d-flex.justify-content-center.gap-3.text-muted.small
+              %span #{qr_code.scan_count} scans
+              - if qr_code.last_scanned_at
+                %span Last scanned #{time_ago_in_words(qr_code.last_scanned_at)} ago
+        - else
+          .card-body.text-muted No QR code — resave this location to generate one.
 
   .d-flex.gap-2.mt-4
     = f.submit "Save Kiosk", class: "btn btn-primary"

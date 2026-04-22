@@ -58,7 +58,8 @@ resource :session
   resources :invoices,     only: [:show], param: :number do
     member { post :pay }
   end
-  resources :locations, only: [:show], param: :hashid do
+  resources :locations, only: [], param: :hashid do
+    resource :kiosk,   only: [:show], controller: "location_kiosks"
     resource :checkin, only: [ :show, :create ], controller: "location_check_ins"
   end
   resources :ledgers, only: [:show], param: :hashid do
@@ -144,7 +145,9 @@ resource :session
       resource  :kiosk,                  only: [:update]
       resources :location_users,         only: [:create, :destroy]
       resources :location_announcements, only: [:index, :new, :create, :show]
-      resources :schedules,              only: [:show, :new, :create, :destroy]
+      resources :schedules,              only: [:show, :new, :create, :destroy] do
+        resources :schedule_events, only: [:new, :create, :destroy]
+      end
     end
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
     resources :ledgers, param: :hashid do
