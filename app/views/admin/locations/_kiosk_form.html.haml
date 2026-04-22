@@ -1,4 +1,4 @@
-= form_with model: [:admin, location, kiosk], data: { controller: "direct-upload" } do |f|
+= form_with model: [:admin, location, kiosk], url: admin_location_kiosk_path(location), method: :patch, data: { controller: "direct-upload" } do |f|
   - if kiosk.errors.any?
     .alert.alert-danger.mb-4
       %ul.mb-0
