@@ -144,6 +144,14 @@ RSpec.describe RruleBuilderService do
     end
   end
 
+  describe ".build with ActionController::Parameters" do
+    it "accepts unpermitted params without raising UnfilteredParameters" do
+      ac_params = ActionController::Parameters.new(freq: "WEEKLY", byday: %w[MO WE FR])
+      expect { described_class.build(ac_params) }.not_to raise_error
+      expect(described_class.build(ac_params)).to eq("FREQ=WEEKLY;BYDAY=MO,WE,FR")
+    end
+  end
+
   describe "round-trip" do
     it "parse then build returns the original string" do
       original = "FREQ=WEEKLY;INTERVAL=2;BYDAY=TU,TH;UNTIL=20261231"

@@ -2,7 +2,8 @@ class RruleBuilderService
   VALID_FREQS = %w[DAILY WEEKLY MONTHLY YEARLY].freeze
 
   def self.build(recurrence_params)
-    p = (recurrence_params || {}).to_h.with_indifferent_access
+    raw = recurrence_params || {}
+    p   = (raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : raw.to_h).with_indifferent_access
 
     return p[:raw].presence if p[:advanced].in?(%w[1 true])
 

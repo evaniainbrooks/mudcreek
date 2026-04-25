@@ -3,7 +3,16 @@ class Admin::SchedulesController < Admin::BaseController
   before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def show
-    @events = @schedule.schedule_events.ordered
+    @sort      = params[:sort].presence_in(%w[summary starts_at]) || "starts_at"
+    @direction = params[:direction].presence_in(%w[asc desc]) || "asc"
+    @day       = params[:day].presence_in(%w[SU MO TU WE TH FR SA])
+    @q         = params[:q].to_s.strip
+
+    events = @schedule.schedule_events
+    events = events.where("summary ILIKE ?", "%#{@q}%") if @q.present?
+    events = events.reorder(@sort => @direction)
+    @events = @day.present? ? filter_by_day(events.to_a, @day) : events.to_a
+
     @calendar_view = params[:view].presence || "weekly"
   end
 
@@ -42,6 +51,25 @@ class Admin::SchedulesController < Admin::BaseController
   end
 
   private
+
+  DAY_MAP = { "SU" => 0, "MO" => 1, "TU" => 2, "WE" => 3, "TH" => 4, "FR" => 5, "SA" => 6 }.freeze
+
+  def filter_by_day(events, day_abbr)
+    target_wday = DAY_MAP[day_abbr]
+    return events unless target_wday
+
+    events.select do |e|
+      next false unless e.starts_at
+
+      if e.rrule.present? && e.rrule.include?("BYDAY")
+        byday_part = e.rrule.split(";").find { |p| p.start_with?("BYDAY=") }
+        days = byday_part&.delete_prefix("BYDAY=")&.split(",")&.filter_map { |d| DAY_MAP[d[-2..]] } || []
+        days.include?(target_wday)
+      else
+        e.starts_at.in_time_zone.wday == target_wday
+      end
+    end
+  end
 
   def set_location
     @location = Location.find_by!(hashid: params[:location_hashid])
