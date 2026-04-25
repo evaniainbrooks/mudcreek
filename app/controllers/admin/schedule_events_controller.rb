@@ -1,7 +1,7 @@
 class Admin::ScheduleEventsController < Admin::BaseController
   before_action :set_location
   before_action :set_schedule
-  before_action :set_event, only: [:destroy]
+  before_action :set_event, only: [:edit, :update, :destroy]
 
   def new
     @event = @schedule.schedule_events.build
@@ -16,6 +16,16 @@ class Admin::ScheduleEventsController < Admin::BaseController
       redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event added."
     else
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def edit; end
+
+  def update
+    if @event.update(event_params)
+      redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event updated."
+    else
+      render :edit, status: :unprocessable_content
     end
   end
 

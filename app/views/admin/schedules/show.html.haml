@@ -4,58 +4,91 @@
     = @schedule.name.presence || "Schedule"
   %small.text-muted= @location.name
 
-.page-container.p-4
-  .card.shadow-sm.border-0.mb-3
-    .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
-      %span
+.page-container
+  %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "events-tab", type: "button", role: "tab",
+          class: @schedule.errors.any? ? "" : "active",
+          data: { bs_toggle: "tab", bs_target: "#events-pane" },
+          aria: { controls: "events-pane", selected: !@schedule.errors.any? } }
         %i.bi.bi-calendar-event.me-1
         Events
         %span.badge.bg-secondary.ms-1= @events.count
-      = link_to new_admin_location_schedule_schedule_event_path(@location, @schedule), class: "btn btn-primary btn-sm" do
-        %i.bi.bi-plus-lg.me-1
-        New Event
-    - if @events.any?
-      :ruby
-        evt_table = TableComponent.new(rows: @events)
-        evt_table.with_column("Summary") do |e|
-          e.summary.presence || content_tag(:em, "No title", class: "text-muted")
-        end
-        evt_table.with_column("Starts") do |e|
-          next unless e.starts_at
-          e.all_day? ? e.starts_at.to_date.strftime("%b %-d, %Y") : e.starts_at.strftime("%b %-d, %Y %-I:%M %p")
-        end
-        evt_table.with_column("Ends") do |e|
-          next unless e.ends_at
-          e.all_day? ? e.ends_at.to_date.strftime("%b %-d, %Y") : e.ends_at.strftime("%b %-d, %Y %-I:%M %p")
-        end
-        evt_table.with_column("All Day", html_class: "text-center") do |e|
-          content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
-        end
-        evt_table.with_column("Recurrence") do |e|
-          content_tag(:code, e.rrule, class: "small") if e.rrule.present?
-        end
-        evt_table.with_column("", html_class: "text-end") do |e|
-          button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
-            method: :delete, class: "btn btn-outline-danger btn-sm",
-            form: { data: { turbo_confirm: "Delete this event?" } } do
-            content_tag(:i, "", class: "bi bi-trash")
-          end
-        end
-      = render evt_table
-    - else
-      .card-body
-        %p.text-muted.mb-0 No events in this schedule.
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "calendar-tab", type: "button", role: "tab",
+          data: { bs_toggle: "tab", bs_target: "#calendar-pane" },
+          aria: { controls: "calendar-pane", selected: false } }
+        %i.bi.bi-calendar3.me-1
+        Calendar
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+          class: @schedule.errors.any? ? "active" : "",
+          data: { bs_toggle: "tab", bs_target: "#edit-pane" },
+          aria: { controls: "edit-pane", selected: @schedule.errors.any? } }
+        %i.bi.bi-pencil.me-1
+        Edit
 
-  %dl.row.text-muted.small
-    %dt.col-sm-3 Source
-    %dd.col-sm-9= @schedule.source_url.presence || "Uploaded file"
-    %dt.col-sm-3 Last synced
-    %dd.col-sm-9
-      - if @schedule.last_synced_at
-        = @schedule.last_synced_at.strftime("%B %-d, %Y at %l:%M %p")
-      - else
-        Never
+  .p-4
+    .tab-content
+      #events-pane.tab-pane.fade{ class: (@schedule.errors.any? ? "" : "show active"), role: "tabpanel", aria: { labelledby: "events-tab" } }
+        .card.shadow-sm.border-0
+          .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+            %span
+              %i.bi.bi-calendar-event.me-1
+              Events
+            = link_to new_admin_location_schedule_schedule_event_path(@location, @schedule), class: "btn btn-primary btn-sm" do
+              %i.bi.bi-plus-lg.me-1
+              New Event
+          - if @events.any?
+            :ruby
+              evt_table = TableComponent.new(rows: @events)
+              evt_table.with_column("Summary") do |e|
+                link_to(e.summary.presence || content_tag(:em, "No title", class: "text-muted"),
+                        edit_admin_location_schedule_schedule_event_path(@location, @schedule, e))
+              end
+              evt_table.with_column("Starts") do |e|
+                next unless e.starts_at
+                e.all_day? ? e.starts_at.to_date.strftime("%b %-d, %Y") : e.starts_at.strftime("%b %-d, %Y %-I:%M %p")
+              end
+              evt_table.with_column("Ends") do |e|
+                next unless e.ends_at
+                e.all_day? ? e.ends_at.to_date.strftime("%b %-d, %Y") : e.ends_at.strftime("%b %-d, %Y %-I:%M %p")
+              end
+              evt_table.with_column("All Day", html_class: "text-center") do |e|
+                content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
+              end
+              evt_table.with_column("Recurrence") do |e|
+                content_tag(:code, e.rrule, class: "small") if e.rrule.present?
+              end
+              evt_table.with_column("", html_class: "text-end") do |e|
+                button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
+                  method: :delete, class: "btn btn-outline-danger btn-sm",
+                  form: { data: { turbo_confirm: "Delete this event?" } } do
+                  content_tag(:i, "", class: "bi bi-trash")
+                end
+              end
+            = render evt_table
+          - else
+            .card-body
+              %p.text-muted.mb-0 No events in this schedule.
 
-  = link_to admin_location_path(@location), class: "btn btn-outline-secondary" do
+      #calendar-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "calendar-tab" } }
+        = render ScheduleCalendarComponent.new(schedule: @schedule, view: @calendar_view)
+
+      #edit-pane.tab-pane.fade{ class: (@schedule.errors.any? ? "show active" : ""), role: "tabpanel", aria: { labelledby: "edit-tab" } }
+        .card.shadow-sm.border-0
+          .card-body.p-4
+            = render "form"
+
+        %dl.row.text-muted.small.mt-3
+          %dt.col-sm-3 Last synced
+          %dd.col-sm-9
+            - if @schedule.last_synced_at
+              = @schedule.last_synced_at.strftime("%B %-d, %Y at %l:%M %p")
+            - else
+              Never
+
+.mt-3
+  = link_to admin_location_path(@location, anchor: "schedules-pane"), class: "btn btn-outline-secondary" do
     %i.bi.bi-arrow-left.me-1
     Back to Location

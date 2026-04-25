@@ -1,9 +1,21 @@
 class Admin::SchedulesController < Admin::BaseController
   before_action :set_location
-  before_action :set_schedule, only: [:show, :destroy]
+  before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def show
     @events = @schedule.schedule_events.ordered
+    @calendar_view = params[:calendar_view].presence || "weekly"
+  end
+
+  def edit; end
+
+  def update
+    if @schedule.update(schedule_params)
+      SyncScheduleJob.perform_later(@schedule.id) if @schedule.source_url.present? && @schedule.saved_change_to_source_url?
+      redirect_to admin_location_schedule_path(@location, @schedule), notice: "Schedule updated."
+    else
+      render :show, status: :unprocessable_content
+    end
   end
 
   def new
