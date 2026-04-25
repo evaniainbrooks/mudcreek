@@ -4,7 +4,7 @@ class Admin::SchedulesController < Admin::BaseController
 
   def show
     @events = @schedule.schedule_events.ordered
-    @calendar_view = params[:calendar_view].presence || "weekly"
+    @calendar_view = params[:view].presence || "weekly"
   end
 
   def edit; end

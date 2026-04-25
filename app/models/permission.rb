@@ -37,6 +37,8 @@ class Permission < ApplicationRecord
     Postmark::Domain
     QrCode
     Role
+    Schedule
+    ScheduleEvent
     Settlement
     Subscription
     SubscriptionPlan

@@ -43,9 +43,10 @@ class LocationScheduleComponent < ViewComponent::Base
     { bg: "#fef2f2", border: "#fca5a5", text: "#7f1d1d" }  # soft red
   ].freeze
 
-  def initialize(location:, view: "weekly")
-    @view          = view
-    @location      = location
+  def initialize(location:, view: "weekly", calendar_service: nil)
+    @view             = view
+    @location         = location
+    @calendar_service = calendar_service || LocationCalendarService.new(location)
     @week_start    = Date.current.beginning_of_week(:sunday)
     @week_days     = (0..6).map { |d| @week_start + d.days }
     @today         = Date.current
@@ -64,7 +65,7 @@ class LocationScheduleComponent < ViewComponent::Base
   end
 
   def today_events
-    @today_events ||= LocationCalendarService.new(@location).today_events
+    @today_events ||= @calendar_service.today_events
   end
 
   def today_col_idx
@@ -97,7 +98,7 @@ class LocationScheduleComponent < ViewComponent::Base
       events = if daily?
         today_events
       else
-        LocationCalendarService.new(@location).week_events(@week_start).values.flatten
+        @calendar_service.week_events(@week_start).values.flatten
       end
       events.select { |e| e.description.to_s.strip.present? }
             .uniq { |e| e.summary.to_s.strip.downcase }
@@ -108,7 +109,7 @@ class LocationScheduleComponent < ViewComponent::Base
   private
 
   def build_grid
-    week_events = LocationCalendarService.new(@location).week_events(@week_start)
+    week_events = @calendar_service.week_events(@week_start)
 
     @week_days.map do |day|
       events = week_events[day] || []

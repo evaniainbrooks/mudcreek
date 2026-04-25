@@ -48,11 +48,11 @@
               end
               evt_table.with_column("Starts") do |e|
                 next unless e.starts_at
-                e.all_day? ? e.starts_at.to_date.strftime("%b %-d, %Y") : e.starts_at.strftime("%b %-d, %Y %-I:%M %p")
+                e.all_day? ? e.starts_at.utc.to_date.strftime("%b %-d, %Y") : e.starts_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
               end
               evt_table.with_column("Ends") do |e|
                 next unless e.ends_at
-                e.all_day? ? e.ends_at.to_date.strftime("%b %-d, %Y") : e.ends_at.strftime("%b %-d, %Y %-I:%M %p")
+                e.all_day? ? e.ends_at.utc.to_date.strftime("%b %-d, %Y") : e.ends_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
               end
               evt_table.with_column("All Day", html_class: "text-center") do |e|
                 content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
@@ -73,7 +73,7 @@
               %p.text-muted.mb-0 No events in this schedule.
 
       #calendar-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "calendar-tab" } }
-        = render ScheduleCalendarComponent.new(schedule: @schedule, view: @calendar_view)
+        = render LocationScheduleComponent.new(location: @location, calendar_service: ScheduleEventsCalendarService.new(@schedule), view: @calendar_view)
 
       #edit-pane.tab-pane.fade{ class: (@schedule.errors.any? ? "show active" : ""), role: "tabpanel", aria: { labelledby: "edit-tab" } }
         .card.shadow-sm.border-0
