@@ -28,7 +28,7 @@ class ScheduleEventsCalendarService
 
   def today_events
     today = Date.current
-    events_on_date(today).sort_by { |a| a.dtstart rescue Time.at(0) }
+    events_on_date(today).sort_by { |a| time_of_day_sort_key(a) }
   end
 
   def week_events(week_start)
@@ -36,13 +36,21 @@ class ScheduleEventsCalendarService
     result    = week_days.index_with { [] }
 
     week_days.each do |day|
-      result[day] = events_on_date(day).sort_by { |a| a.dtstart rescue Time.at(0) }
+      result[day] = events_on_date(day).sort_by { |a| time_of_day_sort_key(a) }
     end
 
     result
   end
 
   private
+
+  def time_of_day_sort_key(event)
+    return [-1] if event.all_day?
+    dt = event.dtstart
+    [0, dt.hour * 60 + dt.min]
+  rescue
+    [0, 0]
+  end
 
   def all_events
     @all_events ||= @schedule.schedule_events.to_a
