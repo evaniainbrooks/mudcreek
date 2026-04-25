@@ -4,12 +4,15 @@ class Admin::ScheduleEventsController < Admin::BaseController
   before_action :set_event, only: [:edit, :update, :destroy]
 
   def new
-    @event = @schedule.schedule_events.build
+    @event        = @schedule.schedule_events.build
+    @rrule_params = RruleBuilderService.parse(nil)
     authorize(@event)
   end
 
   def create
-    @event = @schedule.schedule_events.build(event_params)
+    @event        = @schedule.schedule_events.build(event_params)
+    @event.rrule  = RruleBuilderService.build(params.dig(:schedule_event, :recurrence))
+    @rrule_params = RruleBuilderService.parse(@event.rrule)
     authorize(@event)
 
     if @event.save
@@ -19,10 +22,16 @@ class Admin::ScheduleEventsController < Admin::BaseController
     end
   end
 
-  def edit; end
+  def edit
+    @rrule_params = RruleBuilderService.parse(@event.rrule)
+  end
 
   def update
-    if @event.update(event_params)
+    @event.assign_attributes(event_params)
+    @event.rrule  = RruleBuilderService.build(params.dig(:schedule_event, :recurrence))
+    @rrule_params = RruleBuilderService.parse(@event.rrule)
+
+    if @event.save
       redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event updated."
     else
       render :edit, status: :unprocessable_content
@@ -50,6 +59,6 @@ class Admin::ScheduleEventsController < Admin::BaseController
   end
 
   def event_params
-    params.require(:schedule_event).permit(:summary, :starts_at, :ends_at, :all_day, :rrule)
+    params.require(:schedule_event).permit(:summary, :starts_at, :ends_at, :all_day)
   end
 end

@@ -21,10 +21,53 @@
       = f.datetime_local_field :ends_at, class: "form-control"
 
     .col-12
-      = f.label :rrule, "Recurrence rule (RRULE)", class: "form-label"
-      = f.text_field :rrule, class: "form-control", placeholder: "e.g. FREQ=WEEKLY;BYDAY=MO,WE,FR"
-      .form-text
-        RFC 5545 RRULE string. Leave blank for a one-time event.
+      %label.form-label Recurrence
+      :ruby
+        r        = @rrule_params || {}
+        freq_val = r[:freq].to_s
+        adv      = r[:advanced]
+        byday    = Array(r[:byday])
+      .border.rounded.p-3{ data: { controller: "rrule-builder" } }
+
+        .mb-3
+          = select_tag "schedule_event[recurrence][freq]",
+              options_for_select([["Does not repeat", ""], ["Daily", "DAILY"], ["Weekly", "WEEKLY"], ["Monthly", "MONTHLY"], ["Yearly", "YEARLY"]], freq_val),
+              class: "form-select",
+              data: { rrule_builder_target: "freq", action: "change->rrule-builder#update" }
+
+        .mb-3{ data: { rrule_builder_target: "intervalRow" } }
+          %label.form-label{ for: "recurrence_interval" } Repeat every
+          .d-flex.align-items-center.gap-2{ style: "max-width: 220px" }
+            = number_field_tag "schedule_event[recurrence][interval]", (r[:interval] || 1), min: 1,
+                class: "form-control", id: "recurrence_interval",
+                data: { rrule_builder_target: "interval" }
+            %span.text-nowrap{ data: { rrule_builder_target: "intervalUnit" } } days
+
+        .mb-3{ data: { rrule_builder_target: "bydayRow" } }
+          %label.form-label Repeat on
+          .d-flex.gap-3.flex-wrap
+            - [["SU","Sun"],["MO","Mon"],["TU","Tue"],["WE","Wed"],["TH","Thu"],["FR","Fri"],["SA","Sat"]].each do |val, lbl|
+              .form-check
+                = check_box_tag "schedule_event[recurrence][byday][]", val, byday.include?(val),
+                    class: "form-check-input", id: "byday_#{val}"
+                = label_tag "byday_#{val}", lbl, class: "form-check-label"
+
+        .mb-3
+          %label.form-label{ for: "recurrence_until" } End date
+          %span.text-muted.small.ms-1 (optional)
+          = date_field_tag "schedule_event[recurrence][until]", r[:until],
+              class: "form-control", id: "recurrence_until", style: "max-width: 200px"
+
+        .mb-0
+          .form-check.mb-2
+            = check_box_tag "schedule_event[recurrence][advanced]", "1", adv,
+                class: "form-check-input", id: "recurrence_advanced",
+                data: { rrule_builder_target: "advancedToggle", action: "change->rrule-builder#update" }
+            = label_tag "recurrence_advanced", "Advanced (raw RRULE string)", class: "form-check-label"
+          .ps-4{ data: { rrule_builder_target: "rawRow" } }
+            = text_field_tag "schedule_event[recurrence][raw]", r[:raw],
+                class: "form-control font-monospace", placeholder: "FREQ=WEEKLY;BYDAY=MO,WE,FR"
+            .form-text RFC 5545 RRULE string.
 
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"
