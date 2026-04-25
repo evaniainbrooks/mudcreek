@@ -167,6 +167,67 @@ body.checkin-body {
   padding: 0.75rem;
 }
 
+.checkin-event-prompt {
+  margin: 0.75rem 0 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.checkin-events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+
+  form { width: 100%; margin: 0; }
+}
+
+.checkin-event-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.75rem;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1.3;
+
+  &:hover, &:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #fff;
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.28);
+  }
+}
+
+.checkin-event-btn-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.checkin-event-btn-time {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.1rem;
+}
+
+.checkin-skip-link {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 0.25rem 0;
+
+  &:hover { color: rgba(255, 255, 255, 0.8); text-decoration: underline; }
+}
+
 @keyframes checkin-pop {
   from { transform: scale(0.5); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }

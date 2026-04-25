@@ -60,7 +60,7 @@ resource :session
   end
   resources :locations, only: [], param: :hashid do
     resource :kiosk,   only: [:show], controller: "location_kiosks"
-    resource :checkin, only: [ :show, :create ], controller: "location_check_ins"
+    resource :checkin, only: [ :show, :create, :update ], controller: "location_check_ins"
   end
   resources :ledgers, only: [:show], param: :hashid do
     resources :entries, only: [:create], module: :ledgers

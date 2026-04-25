@@ -3,11 +3,15 @@ class ScheduleEventsCalendarService
   # dtstart/dtend return TimeWithZone (or Date for all-day) so the component
   # can call .hour, .min, .strftime, and .to_date on them.
   class Adapter
-    attr_reader :summary, :description
-
     def initialize(event)
       @event = event
     end
+
+    def id          = @event.id
+    def summary     = @event.summary
+    def description = @event.description
+    def all_day?    = @event.all_day?
+    def rrule       = []
 
     def dtstart
       @event.all_day? ? @event.starts_at.utc.to_date : @event.starts_at.in_time_zone
@@ -15,18 +19,6 @@ class ScheduleEventsCalendarService
 
     def dtend
       @event.all_day? ? @event.ends_at&.utc&.to_date : @event.ends_at&.in_time_zone
-    end
-
-    def summary
-      @event.summary
-    end
-
-    def description
-      @event.description
-    end
-
-    def rrule
-      []
     end
   end
 

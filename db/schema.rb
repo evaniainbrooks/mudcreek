@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_22_232027) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -194,10 +194,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_232027) do
     t.datetime "created_at", null: false
     t.string "guest_name"
     t.bigint "location_id", null: false
+    t.bigint "schedule_event_id"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
+    t.index ["schedule_event_id"], name: "index_check_ins_on_schedule_event_id"
     t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
@@ -432,7 +434,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_232027) do
     t.index ["owner_id"], name: "index_listings_on_owner_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -1231,6 +1233,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_232027) do
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "check_ins", "locations"
+  add_foreign_key "check_ins", "schedule_events", validate: false
   add_foreign_key "check_ins", "tenants", on_delete: :cascade
   add_foreign_key "check_ins", "users"
   add_foreign_key "cloudflare_turnstile_widgets", "tenants", on_delete: :cascade
