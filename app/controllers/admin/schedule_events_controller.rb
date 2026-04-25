@@ -59,6 +59,6 @@ class Admin::ScheduleEventsController < Admin::BaseController
   end
 
   def event_params
-    params.require(:schedule_event).permit(:summary, :starts_at, :ends_at, :all_day)
+    params.require(:schedule_event).permit(:summary, :starts_at, :ends_at, :all_day, :photo)
   end
 end

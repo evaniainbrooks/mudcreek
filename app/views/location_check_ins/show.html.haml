@@ -35,7 +35,7 @@
                 t_end   = event.all_day? ? nil : (event.dtend&.strftime("%-I:%M %p") rescue nil)
               = button_to location_checkin_path(@location), method: :patch,
                   params: { schedule_event_id: event.id },
-                  class: "checkin-event-btn" do
+                  class: "checkin-event-btn", data: { turbo: false } do
                 .checkin-event-btn-name= event.summary
                 - if t_start
                   .checkin-event-btn-time= t_end ? "#{t_start} – #{t_end}" : t_start

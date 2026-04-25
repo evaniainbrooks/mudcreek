@@ -1,10 +1,16 @@
-= form_with model: [:admin, @location, @schedule, @event] do |f|
+= form_with model: [:admin, @location, @schedule, @event], multipart: true do |f|
   .row.g-3
     .col-12
       = f.label :summary, class: "form-label required"
       = f.text_field :summary, class: "form-control #{'is-invalid' if @event.errors[:summary].any?}", required: true
       - if @event.errors[:summary].any?
         .invalid-feedback= @event.errors[:summary].to_sentence
+
+    .col-12
+      = f.label :photo, class: "form-label"
+      - if @event.photo.attached?
+        = image_tag @event.photo, class: "d-block mb-2 rounded", style: "max-height: 120px"
+      = f.file_field :photo, class: "form-control", accept: "image/*"
 
     .col-12
       .form-check

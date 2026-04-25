@@ -46,7 +46,7 @@ class LocationScheduleComponent < ViewComponent::Base
   def initialize(location:, view: "weekly", calendar_service: nil)
     @view             = view
     @location         = location
-    @calendar_service = calendar_service || LocationCalendarService.new(location)
+    @calendar_service = calendar_service || ScheduleEventsCalendarService.new(location.kiosk&.schedule)
     @week_start    = Date.current.beginning_of_week(:sunday)
     @week_days     = (0..6).map { |d| @week_start + d.days }
     @today         = Date.current

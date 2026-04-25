@@ -53,6 +53,7 @@ class ScheduleEventsCalendarService
   end
 
   def all_events
+    return [] unless @schedule
     @all_events ||= @schedule.schedule_events.to_a
   end
 
