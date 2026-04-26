@@ -18,7 +18,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "discount_code_type", ["fixed", "percentage"]
   create_enum "improvmx_domain_status", ["unchecked", "verified", "failed"]
-  create_enum "inquiry_status", ["new", "in_progress", "resolved", "spam"]
+  create_enum "inquiry_status", ["open", "in_progress", "resolved", "spam"]
   create_enum "invoice_status", ["unpaid", "paid"]
   create_enum "ledger_entry_type", ["credit", "debit"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
@@ -284,7 +284,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.string "name", null: false
     t.bigint "owner_id"
     t.string "phone"
-    t.enum "status", default: "new", null: false, enum_type: "inquiry_status"
+    t.enum "status", default: "open", null: false, enum_type: "inquiry_status"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"

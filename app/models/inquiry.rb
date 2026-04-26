@@ -6,7 +6,7 @@ class Inquiry < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :owner, class_name: "User", optional: true
 
-  native_enum :status, %i[new in_progress resolved spam]
+  native_enum :status, %i[open in_progress resolved spam]
 
   validates :name,    presence: true
   validates :email,   presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -33,6 +33,6 @@ class Inquiry < ApplicationRecord
   end
 
   def set_followed_up_at
-    self.followed_up_at ||= Time.current unless new?
+    self.followed_up_at ||= Time.current unless open?
   end
 end
