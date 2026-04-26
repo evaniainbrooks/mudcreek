@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_083810) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,6 +18,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_083810) do
   # Note that some types may not work with other database engines. Be careful if changing database.
   create_enum "discount_code_type", ["fixed", "percentage"]
   create_enum "improvmx_domain_status", ["unchecked", "verified", "failed"]
+  create_enum "inquiry_status", ["new", "in_progress", "resolved", "spam"]
   create_enum "invoice_status", ["unpaid", "paid"]
   create_enum "ledger_entry_type", ["credit", "debit"]
   create_enum "listing_pricing_type", ["firm", "negotiable"]
@@ -274,16 +275,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_083810) do
   end
 
   create_table "inquiries", force: :cascade do |t|
+    t.text "admin_notes"
     t.datetime "created_at", null: false
     t.string "email", null: false
+    t.datetime "followed_up_at"
     t.bigint "inquiry_form_id", null: false
     t.text "message", null: false
     t.string "name", null: false
+    t.bigint "owner_id"
     t.string "phone"
+    t.enum "status", default: "new", null: false, enum_type: "inquiry_status"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["inquiry_form_id", "created_at"], name: "index_inquiries_on_inquiry_form_id_and_created_at"
+    t.index ["owner_id"], name: "index_inquiries_on_owner_id"
     t.index ["tenant_id"], name: "index_inquiries_on_tenant_id"
     t.index ["user_id"], name: "index_inquiries_on_user_id"
   end
@@ -1291,6 +1297,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_083810) do
   add_foreign_key "improvmx_domains", "tenants", on_delete: :cascade
   add_foreign_key "inquiries", "inquiry_forms"
   add_foreign_key "inquiries", "tenants"
+  add_foreign_key "inquiries", "users", column: "owner_id", validate: false
   add_foreign_key "inquiries", "users", on_delete: :nullify
   add_foreign_key "inquiry_forms", "tenants"
   add_foreign_key "inquiry_forms", "users", column: "notification_recipient_id"

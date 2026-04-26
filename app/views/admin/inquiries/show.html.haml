@@ -4,35 +4,70 @@
     Inquiry
 
 .page-container.p-4
-  .card.shadow-sm.border-0
-    .card-body
-      %dl.row.mb-0
-        %dt.col-sm-3 Form
-        %dd.col-sm-9= link_to @inquiry.inquiry_form.name, admin_inquiry_form_path(@inquiry.inquiry_form)
+  .row.g-4
+    .col-12.col-lg-8
+      .card.shadow-sm.border-0
+        .card-body
+          %dl.row.mb-0
+            %dt.col-sm-3 Form
+            %dd.col-sm-9= link_to @inquiry.inquiry_form.name, admin_inquiry_form_path(@inquiry.inquiry_form)
 
-        %dt.col-sm-3= @inquiry.guest? ? "Guest" : "Submitter"
-        %dd.col-sm-9
-          - if @inquiry.user
-            = link_to @inquiry.user.name, admin_user_path(@inquiry.user)
-          - else
-            = @inquiry.name
+            %dt.col-sm-3= @inquiry.guest? ? "Guest" : "Submitter"
+            %dd.col-sm-9
+              - if @inquiry.user
+                = link_to @inquiry.user.name, admin_user_path(@inquiry.user)
+              - else
+                = @inquiry.name
 
-        %dt.col-sm-3 Email
-        %dd.col-sm-9= mail_to @inquiry.email
+            %dt.col-sm-3 Email
+            %dd.col-sm-9= mail_to @inquiry.email
 
-        %dt.col-sm-3 Phone
-        %dd.col-sm-9
-          - if @inquiry.phone.present?
-            = @inquiry.phone
-          - else
-            %span.text-muted —
+            %dt.col-sm-3 Phone
+            %dd.col-sm-9
+              - if @inquiry.phone.present?
+                = @inquiry.phone
+              - else
+                %span.text-muted —
 
-        %dt.col-sm-3 Message
-        %dd.col-sm-9
-          = simple_format @inquiry.message
+            %dt.col-sm-3 Message
+            %dd.col-sm-9
+              = simple_format @inquiry.message
 
-        %dt.col-sm-3 Submitted
-        %dd.col-sm-9= @inquiry.created_at.to_fs(:long)
+            %dt.col-sm-3 Submitted
+            %dd.col-sm-9= @inquiry.created_at.to_fs(:long)
+
+    .col-12.col-lg-4
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Owner
+        .card-body
+          %dl.row.mb-0
+            %dt.col-6 Assigned to
+            %dd.col-6.text-end
+              - if @inquiry.owner
+                = link_to @inquiry.owner.name, admin_user_path(@inquiry.owner)
+              - else
+                %span.text-muted Unassigned
+            - if @inquiry.followed_up_at
+              %dt.col-6 Followed up
+              %dd.col-6.text-end= @inquiry.followed_up_at.to_fs(:long)
+
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Status
+        .card-body
+          = form_with model: @inquiry, url: admin_inquiry_path(@inquiry), method: :patch do |f|
+            .d-flex.gap-2
+              = f.select :status, Inquiry.statuses.keys.map { |s| [s.humanize, s] },
+                  { selected: @inquiry.status },
+                  class: "form-select form-select-sm"
+              = f.submit "Save", class: "btn btn-primary btn-sm"
+
+      - if policy(@inquiry).update?
+        .card.shadow-sm.border-0
+          .card-header.fw-semibold Admin Notes
+          .card-body
+            = form_with model: @inquiry, url: admin_inquiry_path(@inquiry), method: :patch do |f|
+              = f.text_area :admin_notes, class: "form-control form-control-sm mb-2", rows: 4, placeholder: "Internal notes…"
+              = f.submit "Save notes", class: "btn btn-primary btn-sm w-100"
 
   .mt-3
     = link_to admin_inquiries_path, class: "btn btn-outline-secondary" do

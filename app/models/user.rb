@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_one :verification, class_name: "Users::Verification", dependent: :destroy
   has_many :inquiry_forms, foreign_key: :notification_recipient_id, dependent: :destroy
   has_many :inquiries, dependent: :nullify
+  has_many :owned_inquiries, class_name: "Inquiry", foreign_key: :owner_id, dependent: :nullify
   has_many :subscription_users, dependent: :destroy
   has_many :subscriptions, through: :subscription_users
   has_many :kids, dependent: :destroy

@@ -1,5 +1,5 @@
 class Admin::InquiriesController < Admin::BaseController
-  before_action :set_inquiry, only: [ :show ]
+  before_action :set_inquiry, only: [ :show, :update ]
 
   def index
     authorize(Inquiry)
@@ -27,10 +27,22 @@ class Admin::InquiriesController < Admin::BaseController
   def show
   end
 
+  def update
+    if @inquiry.update(inquiry_params)
+      redirect_to admin_inquiry_path(@inquiry), notice: "Inquiry updated."
+    else
+      render :show, status: :unprocessable_content
+    end
+  end
+
   private
 
   def set_inquiry
-    @inquiry = Inquiry.includes(:inquiry_form, :user).find(params[:id])
+    @inquiry = Inquiry.includes(:inquiry_form, :user, :owner).find(params[:id])
     authorize(@inquiry)
+  end
+
+  def inquiry_params
+    params.expect(inquiry: [ :status, :admin_notes ])
   end
 end

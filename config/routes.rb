@@ -133,7 +133,7 @@ resource :session
     end
     resources :pages
     resources :inquiry_forms
-    resources :inquiries, only: [ :index, :show ]
+    resources :inquiries, only: [ :index, :show, :update ]
     resources :kids, only: [ :index ]
     resources :subscription_plans, only: [ :index, :create, :show, :destroy ]
     resources :subscriptions, only: [ :show, :create, :update ] do

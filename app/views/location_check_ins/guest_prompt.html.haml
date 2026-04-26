@@ -17,15 +17,13 @@
         = image_tag kiosk.logo, class: "checkin-logo", alt: @location.name
       %h1.checkin-location= @location.name
 
-      %p.text-muted.mb-3 Sign in or register to track your visits and manage memberships.
-
       = link_to new_session_path, class: "btn btn-lg w-100 btn-primary mb-2" do
-        Sign In / Create Account
+        Sign In
 
       - if listing
         = button_to purchase_drop_in_location_checkin_path(@location),
             method: :post,
-            class: "btn btn-lg w-100 btn-primary mb-2",
+            class: "btn btn-lg w-100 checkin-close-btn",
             data: { turbo: false } do
           Buy Drop-In Pass – #{listing.price.format}
 
