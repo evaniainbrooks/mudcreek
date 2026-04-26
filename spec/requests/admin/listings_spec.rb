@@ -23,6 +23,15 @@ RSpec.describe "Admin::Listings", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "renders the fulfillment section without error when subscription plans exist" do
+      create(:subscription_plan, name: "Monthly")
+
+      get new_admin_listing_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Monthly")
+    end
+
     context "when the listing_variants feature is enabled" do
       before { Current.tenant.update!(features: { listing_variants: true }) }
 

@@ -13,7 +13,9 @@
     .col-lg-6
       = render "admin/listings/general_fields", f: f, listing: listing, lots: lots
       = render "admin/listings/location_fields", f: f, listing: listing
-      = render "admin/listings/configuration_fields", f: f, listing: listing, categories: categories, delivery_method_sets: delivery_method_sets
+      = render "admin/listings/configuration_fields", f: f, listing: listing,
+    categories: categories, delivery_method_sets: delivery_method_sets,
+    subscription_plans: subscription_plans
 
     .col-lg-6
       = render "admin/listings/pricing_fields", f: f, listing: listing
