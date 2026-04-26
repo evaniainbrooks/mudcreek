@@ -1,15 +1,15 @@
-= form_with model: [:admin, @location, @schedule, @event], multipart: true do |f|
+= form_with model: [:admin, location, schedule, event], multipart: true do |f|
   .row.g-3
     .col-12
       = f.label :summary, class: "form-label required"
-      = f.text_field :summary, class: "form-control #{'is-invalid' if @event.errors[:summary].any?}", required: true
-      - if @event.errors[:summary].any?
-        .invalid-feedback= @event.errors[:summary].to_sentence
+      = f.text_field :summary, class: "form-control #{'is-invalid' if event.errors[:summary].any?}", required: true
+      - if event.errors[:summary].any?
+        .invalid-feedback= event.errors[:summary].to_sentence
 
     .col-12
       = f.label :photo, class: "form-label"
-      - if @event.photo.attached?
-        = image_tag @event.photo, class: "d-block mb-2 rounded", style: "max-height: 120px"
+      - if event.photo.attached?
+        = image_tag event.photo, class: "d-block mb-2 rounded", style: "max-height: 120px"
       = f.file_field :photo, class: "form-control", accept: "image/*"
 
     .col-12
@@ -29,7 +29,7 @@
     .col-12
       %label.form-label Recurrence
       :ruby
-        r        = @rrule_params || {}
+        r        = rrule_params || {}
         freq_val = r[:freq].to_s
         adv      = r[:advanced]
         byday    = Array(r[:byday])
@@ -52,7 +52,7 @@
         .mb-3{ data: { rrule_builder_target: "bydayRow" } }
           %label.form-label Repeat on
           .d-flex.gap-3.flex-wrap
-            - [["SU","Sun"],["MO","Mon"],["TU","Tue"],["WE","Wed"],["TH","Thu"],["FR","Fri"],["SA","Sat"]].each do |val, lbl|
+            - [["SU", "Sun"], ["MO", "Mon"], ["TU", "Tue"], ["WE", "Wed"], ["TH", "Thu"], ["FR", "Fri"], ["SA", "Sat"]].each do |val, lbl|
               .form-check
                 = check_box_tag "schedule_event[recurrence][byday][]", val, byday.include?(val),
                     class: "form-check-input", id: "byday_#{val}"
@@ -75,6 +75,11 @@
                 class: "form-control font-monospace", placeholder: "FREQ=WEEKLY;BYDAY=MO,WE,FR"
             .form-text RFC 5545 RRULE string.
 
+    .col-12
+      .form-check
+        = f.check_box :bookable, class: "form-check-input"
+        = f.label :bookable, "Bookable (members can register)", class: "form-check-label"
+
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"
-    = link_to "Cancel", admin_location_schedule_path(@location, @schedule), class: "btn btn-outline-secondary"
+    = link_to "Cancel", admin_location_schedule_path(location, schedule), class: "btn btn-outline-secondary"

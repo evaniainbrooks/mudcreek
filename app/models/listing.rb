@@ -6,6 +6,7 @@ class Listing < ApplicationRecord
   belongs_to :owner, class_name: "User", optional: true
   belongs_to :lot, optional: true
   belongs_to :delivery_method_set, class_name: "Listings::DeliveryMethodSet", optional: true
+  belongs_to :subscription_plan, optional: true
 
   acts_as_list scope: :tenant, add_new_at: :bottom
 
@@ -54,6 +55,13 @@ class Listing < ApplicationRecord
   validates :quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, unless: :unlimited_quantity?
   validates :owner_id, absence: true, if: :lot_id?
   validate :owner_or_lot_present
+  validate :schedule_event_credits_or_subscription_plan_not_both
+
+  def schedule_event_credits_or_subscription_plan_not_both
+    if schedule_event_credits.present? && subscription_plan_id.present?
+      errors.add(:base, "cannot have both schedule event credits and a subscription plan")
+    end
+  end
 
   def owner_or_lot_present
     errors.add(:base, "must have an owner or a lot") if owner_id.nil? && lot_id.nil?

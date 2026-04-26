@@ -1,0 +1,28 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-calendar-check.me-2
+    = @event.summary
+  %small.text-muted= @session.occurs_on.strftime("%A, %B %-d, %Y")
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-header.fw-semibold.d-flex.justify-content-between.align-items-center
+      %span
+        %i.bi.bi-people.me-1
+        Registrations
+      %span.badge.bg-secondary= @registrations.count
+    - if @registrations.any?
+      :ruby
+        t = TableComponent.new(rows: @registrations)
+        t.with_column("Member") { |r| r.user&.email_address }
+        t.with_column("Pass used") { |r| r.schedule_event_pass ? "#{r.schedule_event_pass.credits_remaining} credits remaining" : "—" }
+        t.with_column("Registered at") { |r| r.created_at.strftime("%b %-d, %Y %-I:%M %p") }
+      = render t
+    - else
+      .card-body
+        %p.text-muted.mb-0 No registrations for this session yet.
+
+.mt-3
+  = link_to edit_admin_location_schedule_schedule_event_path(@location, @schedule, @event), class: "btn btn-outline-secondary" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Event

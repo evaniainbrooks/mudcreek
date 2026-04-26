@@ -14,6 +14,5 @@ position       { 0 }
       published { true }
       show_in_nav { true }
     end
-
   end
 end

@@ -4,6 +4,7 @@ class CheckIn < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :location
   belongs_to :schedule_event, optional: true
+  belongs_to :schedule_event_registration, optional: true
 
   validates :guest_name, presence: true, if: -> { user_id.nil? }
 

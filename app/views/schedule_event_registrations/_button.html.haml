@@ -1,0 +1,18 @@
+- error ||= nil
+%span{ id: dom_id(event, :registration) }
+  - if registration&.confirmed?
+    = button_to schedule_event_registration_path(registration), method: :delete,
+        class: "btn btn-sm btn-success",
+        data: { turbo_confirm: "Cancel your registration for #{event.summary}?" } do
+      %i.bi.bi-check-lg.me-1
+      Registered
+  - elsif error
+    %span.badge.bg-danger.small= error
+  - else
+    - pass = current_user&.schedule_event_passes&.active&.first
+    = button_to schedule_event_registrations_path,
+        params: { schedule_event_id: event.id, occurs_on: occurs_on.to_s, schedule_event_pass_id: pass&.id },
+        class: "btn btn-sm btn-outline-primary",
+        data: { turbo: true } do
+      %i.bi.bi-calendar-plus.me-1
+      Register

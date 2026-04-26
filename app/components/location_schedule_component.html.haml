@@ -7,7 +7,7 @@
         - if daily?
           = today.strftime('%A, %B %-d, %Y')
         - else
-          = "Week of #{week_start.strftime('%B %-d, %Y')}"
+          Week of #{week_start.strftime('%B %-d, %Y')}
       %span.text-muted.small.ms-1= location.name
     .d-flex.align-items-center.gap-3
       .btn-group{ role: "group", aria: { label: "View" } }
@@ -33,8 +33,16 @@
           .list-group-item.p-3{ style: "border-left: 4px solid #{colors[:border]}" }
             .d-flex.justify-content-between.align-items-start.gap-2
               .fw-semibold{ style: "color: #{colors[:text]}" }= event.summary
-              - if t_start && t_end
-                %span.text-muted.text-nowrap{ style: "font-size: 0.8rem" }= "#{t_start} – #{t_end}"
+              .d-flex.align-items-center.gap-2
+                - if t_start && t_end
+                  %span.text-muted.text-nowrap{ style: "font-size: 0.8rem" } #{t_start} – #{t_end}
+                - if event.respond_to?(:bookable?) && event.bookable? && current_user
+                  :ruby
+                    reg = current_user.schedule_event_registrations
+                                      .joins(:schedule_event_session)
+                                      .find_by(schedule_event_sessions: { schedule_event_id: event.id, occurs_on: today },
+                                               status: :confirmed)
+                  = render "schedule_event_registrations/button", event: event, occurs_on: today, registration: reg
             - if event.description.to_s.strip.present?
               .mt-1.text-muted{ style: "font-size: 0.85rem" }= simple_format(event.description.to_s)
 
@@ -107,6 +115,6 @@
                 = event.summary
         .tab-content.border.border-top-0.rounded-bottom.p-3
           - described_events.each_with_index do |event, i|
-            %div.tab-pane.fade{id: "event-pane-#{i}", class: (i == 0 ? "show active" : ""),
+            .tab-pane.fade{id: "event-pane-#{i}", class: (i == 0 ? "show active" : ""),
                 role: "tabpanel", aria: { labelledby: "event-tab-#{i}" }}
               = simple_format(event.description.to_s)

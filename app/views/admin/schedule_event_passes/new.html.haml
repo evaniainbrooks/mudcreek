@@ -1,0 +1,30 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-ticket-perforated.me-2
+    Issue Schedule Event Pass
+
+.page-container.p-4
+  .card.shadow-sm.border-0
+    .card-body.p-4
+      = form_with model: [:admin, @pass] do |f|
+        - if @pass.errors.any?
+          .alert.alert-danger= @pass.errors.full_messages.to_sentence
+
+        .mb-3
+          = f.label :user_id, "Member", class: "form-label required"
+          = f.collection_select :user_id, User.activated.order(:email_address), :id, :email_address,
+              { include_blank: "— Select a member —" },
+              { class: "form-select #{'is-invalid' if @pass.errors[:user_id].any?}" }
+
+        .mb-3
+          = f.label :credits_remaining, "Credits", class: "form-label required"
+          = f.number_field :credits_remaining, class: "form-control", min: 1, style: "max-width: 140px"
+
+        .mb-3
+          = f.label :expires_at, "Expires on", class: "form-label"
+          %span.text-muted.small.ms-1 (optional)
+          = f.date_field :expires_at, class: "form-control", style: "max-width: 200px"
+
+        .d-flex.gap-2
+          = f.submit "Issue Pass", class: "btn btn-primary"
+          = link_to "Cancel", admin_schedule_event_passes_path, class: "btn btn-outline-secondary"

@@ -22,6 +22,8 @@ class User < ApplicationRecord
   has_many :watched_listings, through: :watchlist_items, source: :listing
   has_many :check_ins, dependent: :destroy
   has_many :checked_in_locations, through: :check_ins, source: :location
+  has_many :schedule_event_passes, dependent: :destroy
+  has_many :schedule_event_registrations, dependent: :destroy
   has_many :user_locations, dependent: :destroy
   has_many :locations, through: :user_locations
   has_many :category_interests, class_name: "UserCategoryInterest", dependent: :destroy

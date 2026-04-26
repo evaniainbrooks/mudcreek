@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_081703) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -195,11 +195,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
     t.string "guest_name"
     t.bigint "location_id", null: false
     t.bigint "schedule_event_id"
+    t.bigint "schedule_event_registration_id"
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
     t.index ["schedule_event_id"], name: "index_check_ins_on_schedule_event_id"
+    t.index ["schedule_event_registration_id"], name: "index_check_ins_on_schedule_event_registration_id"
     t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
@@ -421,9 +423,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
     t.enum "pricing_type", default: "firm", null: false, enum_type: "listing_pricing_type"
     t.boolean "published", default: false, null: false
     t.integer "quantity", default: 1, null: false
+    t.integer "schedule_event_credits"
     t.boolean "show_video_as_poster", default: false, null: false
     t.string "sku"
     t.enum "state", default: "on_sale", null: false, enum_type: "listing_state"
+    t.bigint "subscription_plan_id"
     t.boolean "tax_exempt", default: false, null: false
     t.bigint "tenant_id", null: false
     t.boolean "unlimited_quantity", default: false, null: false
@@ -432,6 +436,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
     t.index ["hashid"], name: "index_listings_on_hashid", unique: true
     t.index ["lot_id"], name: "index_listings_on_lot_id"
     t.index ["owner_id"], name: "index_listings_on_owner_id"
+    t.index ["subscription_plan_id"], name: "index_listings_on_subscription_plan_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
     t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
@@ -827,8 +832,46 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
     t.index "tenant_id, lower((name)::text)", name: "index_roles_on_tenant_id_and_lower_name", unique: true
   end
 
+  create_table "schedule_event_passes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "credits_remaining", null: false
+    t.date "expires_at"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["tenant_id"], name: "index_schedule_event_passes_on_tenant_id"
+    t.index ["user_id"], name: "index_schedule_event_passes_on_user_id"
+  end
+
+  create_table "schedule_event_registrations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "schedule_event_pass_id"
+    t.bigint "schedule_event_session_id", null: false
+    t.integer "status", default: 0, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["schedule_event_pass_id"], name: "index_schedule_event_registrations_on_schedule_event_pass_id"
+    t.index ["schedule_event_session_id"], name: "idx_on_schedule_event_session_id_cdc12b85c6"
+    t.index ["tenant_id"], name: "index_schedule_event_registrations_on_tenant_id"
+    t.index ["user_id", "schedule_event_session_id"], name: "index_ser_on_user_and_session_not_cancelled", unique: true, where: "(status <> 1)"
+    t.index ["user_id"], name: "index_schedule_event_registrations_on_user_id"
+  end
+
+  create_table "schedule_event_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "occurs_on", null: false
+    t.bigint "schedule_event_id", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["schedule_event_id", "occurs_on"], name: "idx_on_schedule_event_id_occurs_on_d0a974fe39", unique: true
+    t.index ["schedule_event_id"], name: "index_schedule_event_sessions_on_schedule_event_id"
+    t.index ["tenant_id"], name: "index_schedule_event_sessions_on_tenant_id"
+  end
+
   create_table "schedule_events", force: :cascade do |t|
     t.boolean "all_day", default: false, null: false
+    t.boolean "bookable", default: false, null: false
     t.datetime "created_at", null: false
     t.text "description"
     t.datetime "ends_at"
@@ -1233,6 +1276,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "check_ins", "locations"
+  add_foreign_key "check_ins", "schedule_event_registrations", validate: false
   add_foreign_key "check_ins", "schedule_events", validate: false
   add_foreign_key "check_ins", "tenants", on_delete: :cascade
   add_foreign_key "check_ins", "users"
@@ -1269,6 +1313,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
   add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade
   add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify, validate: false
   add_foreign_key "listings", "lots", on_delete: :cascade
+  add_foreign_key "listings", "subscription_plans", validate: false
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
   add_foreign_key "listings_categories", "tenants"
@@ -1328,6 +1373,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_114415) do
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
+  add_foreign_key "schedule_event_passes", "tenants"
+  add_foreign_key "schedule_event_passes", "users"
+  add_foreign_key "schedule_event_registrations", "schedule_event_passes"
+  add_foreign_key "schedule_event_registrations", "schedule_event_sessions"
+  add_foreign_key "schedule_event_registrations", "tenants"
+  add_foreign_key "schedule_event_registrations", "users"
+  add_foreign_key "schedule_event_sessions", "schedule_events"
+  add_foreign_key "schedule_event_sessions", "tenants"
   add_foreign_key "schedule_events", "schedules", on_delete: :cascade
   add_foreign_key "schedule_events", "tenants", on_delete: :cascade
   add_foreign_key "schedules", "locations", on_delete: :cascade

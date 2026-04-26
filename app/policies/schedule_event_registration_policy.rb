@@ -1,0 +1,2 @@
+class ScheduleEventRegistrationPolicy < ApplicationPolicy
+end

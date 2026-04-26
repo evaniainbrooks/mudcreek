@@ -99,10 +99,11 @@ class Admin::ListingsController < Admin::BaseController
   private
 
   def load_form_collections
-    @categories          = Listings::Category.order(:name)
-    @lots                = Lot.order(:name)
-    @property_sets       = Listings::PropertySet.order(:name)
+    @categories           = Listings::Category.order(:name)
+    @lots                 = Lot.order(:name)
+    @property_sets        = Listings::PropertySet.order(:name)
     @delivery_method_sets = Listings::DeliveryMethodSet.order(:name)
+    @subscription_plans   = SubscriptionPlan.order(:name)
   end
 
   def set_listing
@@ -115,7 +116,7 @@ class Admin::ListingsController < Admin::BaseController
   end
 
   def listing_params
-    base = %i[name description price quantity unlimited_quantity sku tax_exempt delivery_method_set_id owner_id lot_id published pricing_type show_video_as_poster]
+    base = %i[name description price quantity unlimited_quantity sku tax_exempt delivery_method_set_id owner_id lot_id published pricing_type show_video_as_poster schedule_event_credits subscription_plan_id]
     base.unshift(:listing_type) if action_name == "create"
     p = params.require(:listing).permit(*base, category_ids: [],
       gallery_attributes: [ :id, :name, photos: [], videos: [], documents: [] ],

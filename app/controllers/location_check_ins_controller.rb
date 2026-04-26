@@ -43,8 +43,10 @@ class LocationCheckInsController < ApplicationController
   end
 
   def update
-    check_in = CheckIn.find_by(id: session.delete(:check_in_id))
-    check_in&.update(schedule_event_id: params[:schedule_event_id].presence)
+    check_in      = CheckIn.find_by(id: session.delete(:check_in_id))
+    event_id      = params[:schedule_event_id].presence
+    registration  = resolve_registration(check_in, event_id)
+    check_in&.update(schedule_event_id: event_id, schedule_event_registration: registration)
     redirect_to exit_url, allow_other_host: true
   end
 
@@ -56,6 +58,17 @@ class LocationCheckInsController < ApplicationController
 
   def check_in_params
     params.expect(check_in: [:guest_name])
+  end
+
+  def resolve_registration(check_in, event_id)
+    return nil unless check_in&.user_id && event_id
+    ScheduleEventRegistration
+      .joins(:schedule_event_session)
+      .find_by(
+        user_id: check_in.user_id,
+        status: :confirmed,
+        schedule_event_sessions: { schedule_event_id: event_id, occurs_on: Date.current }
+      )
   end
 
   def load_today_schedule_events

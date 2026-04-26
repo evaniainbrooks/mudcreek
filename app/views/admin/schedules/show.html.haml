@@ -91,6 +91,9 @@
               evt_table.with_column("Recurrence") do |e|
                 content_tag(:code, e.rrule, class: "small") if e.rrule.present?
               end
+              evt_table.with_column("Bookable", html_class: "text-center") do |e|
+                content_tag(:i, "", class: "bi bi-check-lg text-success") if e.bookable?
+              end
               evt_table.with_column("", html_class: "text-end") do |e|
                 button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
                   method: :delete, class: "btn btn-outline-danger btn-sm",

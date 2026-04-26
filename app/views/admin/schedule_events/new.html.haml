@@ -13,4 +13,4 @@
             - @event.errors.full_messages.each do |msg|
               %li= msg
 
-      = render "form"
+      = render "form", event: @event, rrule_params: @rrule_params, location: @location, schedule: @schedule

@@ -1,0 +1,2 @@
+class ScheduleEventPassPolicy < ApplicationPolicy
+end

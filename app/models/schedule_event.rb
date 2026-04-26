@@ -4,10 +4,12 @@ class ScheduleEvent < ApplicationRecord
   belongs_to :schedule
 
   has_one_attached :photo
+  has_many :schedule_event_sessions, dependent: :destroy
 
   before_validation :assign_uid, on: :create
 
-  scope :ordered, -> { order(:starts_at) }
+  scope :ordered,   -> { order(:starts_at) }
+  scope :bookable,  -> { where(bookable: true) }
 
   private
 
