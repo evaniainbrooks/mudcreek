@@ -49,7 +49,8 @@
                       %i.bi.bi-search
                     = f.text_field :q, value: @q, class: "form-control form-control-sm", placeholder: "Filter by name…"
                     - if @q.present?
-                      = link_to admin_location_schedule_path(@location, @schedule, sort: @sort, direction: @direction, day: @day), class: "btn btn-outline-secondary btn-sm" do
+                      = link_to admin_location_schedule_path(@location, @schedule, sort: @sort, direction: @direction, day: @day),
+                          class: "btn btn-outline-secondary btn-sm" do
                         %i.bi.bi-x
                 .flex-shrink-0
                   = f.label :day, "Day", class: "form-label form-label-sm mb-1"
@@ -62,45 +63,28 @@
                 = f.submit "Filter", class: "btn btn-primary btn-sm align-self-end"
 
           - if @events.any?
-            :ruby
-              sort_link = ->(col, label) do
-                new_dir = (@sort == col && @direction == "asc") ? "desc" : "asc"
-                icon    = @sort == col ? (@direction == "asc" ? "bi-sort-up" : "bi-sort-down") : "bi-arrow-down-up text-muted"
-                link_to(admin_location_schedule_path(@location, @schedule, sort: col, direction: new_dir, q: @q, day: @day),
-                        class: "text-decoration-none text-reset d-inline-flex align-items-center gap-1") do
-                  label + content_tag(:i, "", class: "bi #{icon} small")
-                end
-              end
-
-              evt_table = TableComponent.new(rows: @events)
-              evt_table.with_column(sort_link.("summary", "Summary")) do |e|
-                link_to(e.summary.presence || content_tag(:em, "No title", class: "text-muted"),
-                        edit_admin_location_schedule_schedule_event_path(@location, @schedule, e))
-              end
-              evt_table.with_column(sort_link.("starts_at", "Starts")) do |e|
-                next unless e.starts_at
-                e.all_day? ? e.starts_at.utc.to_date.strftime("%b %-d, %Y") : e.starts_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
-              end
-              evt_table.with_column("Ends") do |e|
-                next unless e.ends_at
-                e.all_day? ? e.ends_at.utc.to_date.strftime("%b %-d, %Y") : e.ends_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
-              end
-              evt_table.with_column("All Day", html_class: "text-center") do |e|
-                content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
-              end
-              evt_table.with_column("Recurrence") do |e|
-                content_tag(:code, e.rrule, class: "small") if e.rrule.present?
-              end
-              evt_table.with_column("Bookable", html_class: "text-center") do |e|
-                content_tag(:i, "", class: "bi bi-check-lg text-success") if e.bookable?
-              end
-              evt_table.with_column("", html_class: "text-end") do |e|
-                button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
+            - evt_table = TableComponent.new(rows: @events)
+            - evt_table.with_column(schedule_sort_link("summary", "Summary", @location, @schedule, sort: @sort, direction: @direction, q: @q, day: @day)) do |e|
+              = link_to(e.summary.presence || content_tag(:em, "No title", class: "text-muted"),
+                  edit_admin_location_schedule_schedule_event_path(@location, @schedule, e))
+            - evt_table.with_column(schedule_sort_link("starts_at", "Starts", @location, @schedule,
+                sort: @sort, direction: @direction, q: @q, day: @day)) do |e|
+              - next unless e.starts_at
+              = e.all_day? ? e.starts_at.utc.to_date.strftime("%b %-d, %Y") : e.starts_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
+            - evt_table.with_column("Ends") do |e|
+              - next unless e.ends_at
+              = e.all_day? ? e.ends_at.utc.to_date.strftime("%b %-d, %Y") : e.ends_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
+            - evt_table.with_column("All Day", html_class: "text-center") do |e|
+              = content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
+            - evt_table.with_column("Recurrence") do |e|
+              = content_tag(:code, e.rrule, class: "small") if e.rrule.present?
+            - evt_table.with_column("Bookable", html_class: "text-center") do |e|
+              = content_tag(:i, "", class: "bi bi-check-lg text-success") if e.bookable?
+            - evt_table.with_column("", html_class: "text-end") do |e|
+              = button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
                   method: :delete, class: "btn btn-outline-danger btn-sm",
                   form: { data: { turbo_confirm: "Delete this event?" } } do
-                  content_tag(:i, "", class: "bi bi-trash")
-                end
-              end
+                = content_tag(:i, "", class: "bi bi-trash")
             = render evt_table
           - else
             .card-body

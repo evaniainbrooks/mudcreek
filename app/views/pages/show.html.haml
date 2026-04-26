@@ -57,5 +57,4 @@
         - else
           .page-body= @active_child.body
         - @child_widgets.each do |widget|
-          %hr.mt-5.mb-4
           = render "widgets/#{widget.class.name.underscore}", widget: widget
