@@ -14,11 +14,12 @@ class Admin::KiosksController < Admin::BaseController
       @kiosk.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       redirect_to admin_location_path(@location), notice: "Kiosk updated."
     else
-      @qr_code      = @location.qr_code
-      @schedules    = @location.schedules.ordered
-      @members      = @location.users.order(:first_name, :last_name)
-      @non_members  = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
-      @announcements = @location.location_announcements.ordered.limit(5)
+      @qr_code          = @location.qr_code
+      @schedules        = @location.schedules.ordered
+      @members          = @location.users.order(:first_name, :last_name)
+      @non_members      = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+      @announcements    = @location.location_announcements.ordered.limit(5)
+      @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)
       @location.build_address unless @location.address
       render "admin/locations/show", status: :unprocessable_content
     end
@@ -38,6 +39,6 @@ class Admin::KiosksController < Admin::BaseController
   def kiosk_params
     params.require(:kiosk).permit(:logo, :message, :checkin_exit_url,
                                   :background_tint_opacity, :slide_timeout, :schedule_id,
-                                  :member_birthdays)
+                                  :member_birthdays, :drop_in_pass_listing_id)
   end
 end

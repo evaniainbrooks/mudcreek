@@ -3,6 +3,7 @@ class Kiosk < ApplicationRecord
 
   belongs_to :location
   belongs_to :schedule, optional: true
+  belongs_to :drop_in_pass_listing, class_name: "Listing", optional: true
 
   has_one_attached :logo
   has_many_attached :backgrounds

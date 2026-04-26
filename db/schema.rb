@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_081703) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_083810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -351,12 +351,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_081703) do
     t.float "background_tint_opacity", default: 0.5, null: false
     t.string "checkin_exit_url"
     t.datetime "created_at", null: false
+    t.bigint "drop_in_pass_listing_id"
     t.bigint "location_id", null: false
     t.boolean "member_birthdays", default: false, null: false
     t.bigint "schedule_id"
     t.integer "slide_timeout", default: 8, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["drop_in_pass_listing_id"], name: "index_kiosks_on_drop_in_pass_listing_id"
     t.index ["location_id"], name: "index_kiosks_on_location_id"
     t.index ["schedule_id"], name: "index_kiosks_on_schedule_id"
     t.index ["tenant_id"], name: "index_kiosks_on_tenant_id"
@@ -1301,6 +1303,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_081703) do
   add_foreign_key "invoices", "users"
   add_foreign_key "kids", "tenants"
   add_foreign_key "kids", "users"
+  add_foreign_key "kiosks", "listings", column: "drop_in_pass_listing_id", validate: false
   add_foreign_key "kiosks", "locations", on_delete: :cascade
   add_foreign_key "kiosks", "schedules"
   add_foreign_key "kiosks", "tenants", on_delete: :cascade

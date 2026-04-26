@@ -39,11 +39,16 @@
                 .checkin-event-btn-name= event.summary
                 - if t_start
                   .checkin-event-btn-time= t_end ? "#{t_start} – #{t_end}" : t_start
-          = link_to exit_url, class: "checkin-skip-link mt-3 d-block" do
+          - next_url = @guest_checked_in ? guest_prompt_location_checkin_path(@location) : exit_url
+          = link_to next_url, class: "checkin-skip-link mt-3 d-block" do
             Skip
         - else
-          = link_to exit_url, class: "btn btn-lg w-100 checkin-close-btn mt-2", allow_other_host: true do
-            Done
+          - if @guest_checked_in
+            = link_to guest_prompt_location_checkin_path(@location), class: "btn btn-lg w-100 checkin-close-btn mt-2" do
+              Next
+          - else
+            = link_to exit_url, class: "btn btn-lg w-100 checkin-close-btn mt-2", allow_other_host: true do
+              Done
       - else
         - if @check_in.errors.any?
           .alert.alert-danger.text-start.mb-3= @check_in.errors.full_messages.to_sentence

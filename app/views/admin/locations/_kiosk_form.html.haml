@@ -68,6 +68,13 @@
             = f.label :checkin_exit_url, "Close Button URL", class: "form-label"
             = f.url_field :checkin_exit_url, class: "form-control", placeholder: "https://... (defaults to /)"
             .form-text Where the "Done" button redirects after a successful check-in.
+          .mb-3
+            = f.label :drop_in_pass_listing_id, "Drop-In Pass Listing", class: "form-label"
+            = f.select :drop_in_pass_listing_id,
+                options_from_collection_for_select(drop_in_listings, :id, :name, kiosk.drop_in_pass_listing_id),
+                { include_blank: "— None —" },
+                class: "form-select"
+            .form-text When set, guests are offered this listing for purchase after checking in.
           .mb-0
             .form-check
               = f.check_box :member_birthdays, class: "form-check-input"

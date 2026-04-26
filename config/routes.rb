@@ -61,7 +61,10 @@ resource :session
   resources :schedule_event_registrations, only: [:create, :destroy]
   resources :locations, only: [], param: :hashid do
     resource :kiosk,   only: [:show], controller: "location_kiosks"
-    resource :checkin, only: [ :show, :create, :update ], controller: "location_check_ins"
+    resource :checkin, only: [ :show, :create, :update ], controller: "location_check_ins" do
+      get  :guest_prompt
+      post :purchase_drop_in
+    end
   end
   resources :ledgers, only: [:show], param: :hashid do
     resources :entries, only: [:create], module: :ledgers

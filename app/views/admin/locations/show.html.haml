@@ -98,7 +98,7 @@
         = render "form", location: @location
 
       #kiosk-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "kiosk-tab" } }
-        = render "kiosk_form", location: @location, kiosk: @kiosk, qr_code: @qr_code
+        = render "kiosk_form", location: @location, kiosk: @kiosk, qr_code: @qr_code, drop_in_listings: @drop_in_listings
 
       #schedules-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedules-tab" } }
         .d-flex.justify-content-between.align-items-center.mb-3

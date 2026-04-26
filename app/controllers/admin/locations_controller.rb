@@ -33,11 +33,12 @@ class Admin::LocationsController < Admin::BaseController
     @recent_check_ins = @location.check_ins.ordered.includes(:user).limit(20)
 
     @location.build_address unless @location.address
-    @kiosk         = @location.kiosk || @location.build_kiosk
-    @members       = @location.users.order(:first_name, :last_name)
-    @non_members   = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
-    @announcements = @location.location_announcements.ordered.limit(5)
-    @schedules     = @location.schedules.ordered
+    @kiosk           = @location.kiosk || @location.build_kiosk
+    @members         = @location.users.order(:first_name, :last_name)
+    @non_members     = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+    @announcements   = @location.location_announcements.ordered.limit(5)
+    @schedules       = @location.schedules.ordered
+    @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)
   end
 
   def new
@@ -79,12 +80,13 @@ class Admin::LocationsController < Admin::BaseController
       redirect_to admin_location_path(@location), notice: "Location was successfully updated."
     else
       @location.build_address unless @location.address
-      @kiosk        = @location.kiosk || @location.build_kiosk
-      @qr_code      = @location.qr_code
-      @members      = @location.users.order(:first_name, :last_name)
-      @non_members  = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
-      @announcements = @location.location_announcements.ordered.limit(5)
-      @schedules    = @location.schedules.ordered
+      @kiosk            = @location.kiosk || @location.build_kiosk
+      @qr_code          = @location.qr_code
+      @members          = @location.users.order(:first_name, :last_name)
+      @non_members      = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+      @announcements    = @location.location_announcements.ordered.limit(5)
+      @schedules        = @location.schedules.ordered
+      @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)
       render :show, status: :unprocessable_content
     end
   end

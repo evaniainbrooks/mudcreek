@@ -1,0 +1,36 @@
+- content_for :title, "Welcome – #{@location.name}"
+
+:ruby
+  kiosk = @kiosk
+  first_bg = kiosk&.backgrounds&.attachments&.first
+  has_image_bg = first_bg && !first_bg.blob.video?
+  listing = kiosk&.drop_in_pass_listing
+
+.checkin-page
+  - if has_image_bg
+    .checkin-backdrop{ style: "background-image: url(#{url_for(first_bg)})" }
+  .checkin-overlay
+
+  .checkin-content
+    .checkin-card
+      - if kiosk&.logo&.attached?
+        = image_tag kiosk.logo, class: "checkin-logo", alt: @location.name
+      %h1.checkin-location= @location.name
+
+      %h2.checkin-success-heading.mb-1 Create an account
+      %p.text-muted.mb-4 Sign in or register to track your visits and manage memberships.
+
+      = link_to new_session_path, class: "btn btn-lg w-100 btn-primary mb-2" do
+        Sign In / Create Account
+
+      - if listing
+        %hr.my-3
+        %p.text-muted.text-center.mb-3 Or purchase a drop-in pass to get started.
+        = button_to purchase_drop_in_location_checkin_path(@location),
+            method: :post,
+            class: "btn btn-lg w-100 checkin-close-btn",
+            data: { turbo: false } do
+          Buy Drop-In Pass – #{listing.price.format}
+
+      = link_to exit_url, class: "checkin-skip-link mt-4 d-block", allow_other_host: true do
+        Skip

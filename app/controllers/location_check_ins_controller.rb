@@ -47,7 +47,33 @@ class LocationCheckInsController < ApplicationController
     event_id      = params[:schedule_event_id].presence
     registration  = resolve_registration(check_in, event_id)
     check_in&.update(schedule_event_id: event_id, schedule_event_registration: registration)
-    redirect_to exit_url, allow_other_host: true
+
+    if check_in&.user_id.nil?
+      redirect_to guest_prompt_location_checkin_path(@location)
+    else
+      redirect_to exit_url, allow_other_host: true
+    end
+  end
+
+  def guest_prompt
+    @kiosk = @location.kiosk
+  end
+
+  def purchase_drop_in
+    kiosk   = @location.kiosk
+    listing = kiosk&.drop_in_pass_listing
+    return redirect_to guest_prompt_location_checkin_path(@location) unless listing
+
+    token = session[:guest_cart_token] ||= SecureRandom.uuid
+    scope = CartItem.where(guest_cart_token: token)
+
+    AddSaleCartItemService.call(
+      listing:            listing,
+      cart_items_scope:   scope,
+      requested_quantity: 1
+    )
+
+    redirect_to cart_path
   end
 
   private
