@@ -28,15 +28,22 @@ class ScheduleEventsCalendarService
 
   def today_events
     today = Date.current
-    events_on_date(today).sort_by { |a| time_of_day_sort_key(a) }
+    raw_events_for_window(today, today)
+      .select { |e| occurs_on_date?(e, today) }
+      .map    { |e| Adapter.new(e) }
+      .sort_by { |a| time_of_day_sort_key(a) }
   end
 
   def week_events(week_start)
+    week_end  = week_start + 6.days
     week_days = (0..6).map { |d| week_start + d.days }
     result    = week_days.index_with { [] }
+    pool      = raw_events_for_window(week_start, week_end)
 
     week_days.each do |day|
-      result[day] = events_on_date(day).sort_by { |a| time_of_day_sort_key(a) }
+      result[day] = pool.select { |e| occurs_on_date?(e, day) }
+                        .map    { |e| Adapter.new(e) }
+                        .sort_by { |a| time_of_day_sort_key(a) }
     end
 
     result
@@ -52,15 +59,16 @@ class ScheduleEventsCalendarService
     [0, 0]
   end
 
-  def all_events
+  # Load only events that could appear within [start_date, end_date].
+  # Recurring events (rrule present) are always included since they can fall on any date;
+  # non-recurring events are filtered to those whose starts_at is within the window.
+  def raw_events_for_window(start_date, end_date)
     return [] unless @schedule
-    @all_events ||= @schedule.schedule_events.to_a
-  end
 
-  def events_on_date(date)
-    all_events
-      .select { |e| occurs_on_date?(e, date) }
-      .map    { |e| Adapter.new(e) }
+    @window_cache ||= {}
+    @window_cache[[start_date, end_date]] ||= @schedule.schedule_events
+      .where("rrule IS NOT NULL OR starts_at::date BETWEEN ? AND ?", start_date, end_date)
+      .to_a
   end
 
   def occurs_on_date?(event, date)

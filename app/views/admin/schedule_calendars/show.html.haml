@@ -1,0 +1,2 @@
+= turbo_frame_tag "schedule-calendar" do
+  = render LocationScheduleComponent.new(location: @location, calendar_service: ScheduleEventsCalendarService.new(@schedule), view: @calendar_view)

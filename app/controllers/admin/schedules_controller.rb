@@ -11,9 +11,12 @@ class Admin::SchedulesController < Admin::BaseController
     events = @schedule.schedule_events
     events = events.where("summary ILIKE ?", "%#{@q}%") if @q.present?
     events = events.reorder(@sort => @direction)
-    @events = @day.present? ? filter_by_day(events.to_a, @day) : events.to_a
 
-    @calendar_view = params[:view].presence || "weekly"
+    if @day.present?
+      @pagy, @events = nil, filter_by_day(events.to_a, @day)
+    else
+      @pagy, @events = pagy(events, limit: 100)
+    end
   end
 
   def edit; end

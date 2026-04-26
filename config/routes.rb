@@ -151,6 +151,7 @@ resource :session
       resources :location_users,         only: [:create, :destroy]
       resources :location_announcements, only: [:index, :new, :create, :show]
       resources :schedules,              only: [:show, :new, :create, :edit, :update, :destroy] do
+        resource  :calendar, only: [:show], controller: "schedule_calendars"
         resources :schedule_events, only: [:new, :create, :edit, :update, :destroy] do
           resources :schedule_event_sessions, only: [:show], param: :occurs_on
         end

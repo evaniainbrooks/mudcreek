@@ -13,7 +13,7 @@
           aria: { controls: "events-pane", selected: !@schedule.errors.any? } }
         %i.bi.bi-calendar-event.me-1
         Events
-        %span.badge.bg-secondary.ms-1= @events.count
+        %span.badge.bg-secondary.ms-1= @pagy ? @pagy.count : @events.count
     %li.nav-item{ role: "presentation" }
       %button.nav-link{ id: "calendar-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#calendar-pane" },
@@ -86,12 +86,18 @@
                   form: { data: { turbo_confirm: "Delete this event?" } } do
                 = content_tag(:i, "", class: "bi bi-trash")
             = render evt_table
+            - if @pagy && @pagy.pages > 1
+              .card-footer
+                = pagy_nav(@pagy)
           - else
             .card-body
               %p.text-muted.mb-0 No events in this schedule.
 
       #calendar-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "calendar-tab" } }
-        = render LocationScheduleComponent.new(location: @location, calendar_service: ScheduleEventsCalendarService.new(@schedule), view: @calendar_view)
+        = turbo_frame_tag "schedule-calendar", src: admin_location_schedule_calendar_path(@location, @schedule), loading: :lazy do
+          .text-center.py-5.text-muted
+            %i.bi.bi-hourglass-split.d-block.fs-3.mb-2
+            Loading calendar…
 
       #edit-pane.tab-pane.fade{ class: (@schedule.errors.any? ? "show active" : ""), role: "tabpanel", aria: { labelledby: "edit-tab" } }
         .card.shadow-sm.border-0
