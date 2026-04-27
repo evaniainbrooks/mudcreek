@@ -43,32 +43,27 @@
             = form_with url: admin_location_schedule_path(@location, @schedule), method: :get, data: { turbo_frame: "_top" } do |f|
               .d-flex.flex-wrap.gap-2.align-items-end
                 .flex-grow-1{ style: "min-width: 180px" }
-                  = f.label :q, "Search", class: "form-label form-label-sm mb-1"
                   .input-group.input-group-sm
                     %span.input-group-text
                       %i.bi.bi-search
                     = f.text_field :q, value: @q, class: "form-control form-control-sm", placeholder: "Filter by name…"
                     - if @q.present?
-                      = link_to admin_location_schedule_path(@location, @schedule, sort: @sort, direction: @direction, day: @day),
+                      = link_to admin_location_schedule_path(@location, @schedule, day: @day),
                           class: "btn btn-outline-secondary btn-sm" do
                         %i.bi.bi-x
                 .flex-shrink-0
-                  = f.label :day, "Day", class: "form-label form-label-sm mb-1"
                   = f.select :day,
                       [["Any day", ""], ["Sun", "SU"], ["Mon", "MO"], ["Tue", "TU"], ["Wed", "WE"], ["Thu", "TH"], ["Fri", "FR"], ["Sat", "SA"]],
                       { selected: @day },
                       class: "form-select form-select-sm"
-                = f.hidden_field :sort, value: @sort
-                = f.hidden_field :direction, value: @direction
                 = f.submit "Filter", class: "btn btn-primary btn-sm align-self-end"
 
           - if @events.any?
             - evt_table = TableComponent.new(rows: @events)
-            - evt_table.with_column(schedule_sort_link("summary", "Summary", @location, @schedule, sort: @sort, direction: @direction, q: @q, day: @day)) do |e|
+            - evt_table.with_column("Summary") do |e|
               = link_to(e.summary.presence || content_tag(:em, "No title", class: "text-muted"),
                   edit_admin_location_schedule_schedule_event_path(@location, @schedule, e))
-            - evt_table.with_column(schedule_sort_link("starts_at", "Starts", @location, @schedule,
-                sort: @sort, direction: @direction, q: @q, day: @day)) do |e|
+            - evt_table.with_column("Starts") do |e|
               - next unless e.starts_at
               = e.all_day? ? e.starts_at.utc.to_date.strftime("%b %-d, %Y") : e.starts_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
             - evt_table.with_column("Ends") do |e|

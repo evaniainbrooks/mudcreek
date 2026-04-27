@@ -3,14 +3,11 @@ class Admin::SchedulesController < Admin::BaseController
   before_action :set_schedule, only: [:show, :edit, :update, :destroy]
 
   def show
-    @sort      = params[:sort].presence_in(%w[summary starts_at]) || "starts_at"
-    @direction = params[:direction].presence_in(%w[asc desc]) || "asc"
-    @day       = params[:day].presence_in(%w[SU MO TU WE TH FR SA])
-    @q         = params[:q].to_s.strip
+    @day = params[:day].presence_in(%w[SU MO TU WE TH FR SA])
+    @q   = params[:q].to_s.strip
 
-    events = @schedule.schedule_events
+    events = @schedule.schedule_events.ordered
     events = events.where("summary ILIKE ?", "%#{@q}%") if @q.present?
-    events = events.reorder(@sort => @direction)
 
     if @day.present?
       @pagy, @events = nil, filter_by_day(events.to_a, @day)
