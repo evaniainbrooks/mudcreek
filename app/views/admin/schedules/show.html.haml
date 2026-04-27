@@ -59,31 +59,7 @@
                 = f.submit "Filter", class: "btn btn-primary btn-sm align-self-end"
 
           - if @events.any?
-            - evt_table = TableComponent.new(rows: @events)
-            - evt_table.with_column("Summary") do |e|
-              = link_to(e.summary.presence || content_tag(:em, "No title", class: "text-muted"),
-                  edit_admin_location_schedule_schedule_event_path(@location, @schedule, e))
-            - evt_table.with_column("Starts") do |e|
-              - next unless e.starts_at
-              = e.all_day? ? e.starts_at.utc.to_date.strftime("%b %-d, %Y") : e.starts_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
-            - evt_table.with_column("Ends") do |e|
-              - next unless e.ends_at
-              = e.all_day? ? e.ends_at.utc.to_date.strftime("%b %-d, %Y") : e.ends_at.in_time_zone.strftime("%b %-d, %Y %-I:%M %p")
-            - evt_table.with_column("All Day", html_class: "text-center") do |e|
-              = content_tag(:i, "", class: "bi bi-check-lg text-success") if e.all_day?
-            - evt_table.with_column("Recurrence") do |e|
-              = content_tag(:code, e.rrule, class: "small") if e.rrule.present?
-            - evt_table.with_column("Bookable", html_class: "text-center") do |e|
-              = content_tag(:i, "", class: "bi bi-check-lg text-success") if e.bookable?
-            - evt_table.with_column("", html_class: "text-end") do |e|
-              = button_to admin_location_schedule_schedule_event_path(@location, @schedule, e),
-                  method: :delete, class: "btn btn-outline-danger btn-sm",
-                  form: { data: { turbo_confirm: "Delete this event?" } } do
-                = content_tag(:i, "", class: "bi bi-trash")
-            = render evt_table
-            - if @pagy && @pagy.pages > 1
-              .card-footer
-                = pagy_nav(@pagy)
+            = schedule_events_table(@events, @location, @schedule, @pagy)
           - else
             .card-body
               %p.text-muted.mb-0 No events in this schedule.
