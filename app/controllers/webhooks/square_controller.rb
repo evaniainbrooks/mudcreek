@@ -1,4 +1,6 @@
 class Webhooks::SquareController < ActionController::Base
+  include TenantResolution
+
   skip_before_action :verify_authenticity_token
 
   HANDLED_EVENTS = %w[payment.completed payment.canceled].freeze

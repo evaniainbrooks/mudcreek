@@ -46,6 +46,20 @@ RSpec.describe "Webhooks::Square", type: :request do
     }
   end
 
+  def pos_payment_event(payment_id: "sq_pos_001")
+    {
+      "type" => "payment.completed",
+      "data" => {
+        "object" => {
+          "payment" => {
+            "amount_money" => { "amount" => 5000 },
+            "id"           => payment_id
+          }
+        }
+      }
+    }
+  end
+
   describe "POST /webhooks/square" do
     context "with an invalid signature" do
       it "returns 401" do
@@ -94,6 +108,57 @@ RSpec.describe "Webhooks::Square", type: :request do
         expect {
           post_webhook(payment_event("payment.unknown_event"))
         }.not_to change { order.reload.status }
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with a POS payment (no reference_id)" do
+      before { allow(SyncSquarePosPaymentService).to receive(:call) }
+
+      it "returns 200" do
+        post_webhook(pos_payment_event)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "delegates to SyncSquarePosPaymentService" do
+        post_webhook(pos_payment_event(payment_id: "sq_pos_001"))
+
+        expect(SyncSquarePosPaymentService).to have_received(:call).with(
+          payment_data: hash_including("id" => "sq_pos_001"),
+          tenant:       be_a(Tenant)
+        )
+      end
+
+      it "does not change any existing order" do
+        expect {
+          post_webhook(pos_payment_event)
+        }.not_to change { order.reload.status }
+      end
+    end
+
+    context "with payment.completed whose reference_id matches no order" do
+      before { allow(SyncSquarePosPaymentService).to receive(:call) }
+
+      it "delegates to SyncSquarePosPaymentService" do
+        post_webhook(payment_event("payment.completed", reference_id: "MC-UNKNOWN0"))
+
+        expect(SyncSquarePosPaymentService).to have_received(:call)
+      end
+
+      it "returns 200" do
+        post_webhook(payment_event("payment.completed", reference_id: "MC-UNKNOWN0"))
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with payment.canceled for a POS payment (no matching order)" do
+      it "returns 200 without calling SyncSquarePosPaymentService" do
+        expect(SyncSquarePosPaymentService).not_to receive(:call)
+
+        post_webhook(pos_payment_event.merge("type" => "payment.canceled"))
 
         expect(response).to have_http_status(:ok)
       end

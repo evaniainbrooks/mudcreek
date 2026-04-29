@@ -11,6 +11,7 @@ class SyncSquarePosPaymentService
   end
 
   def call
+    Current.tenant = @tenant
     return if Order.unscoped.exists?(square_payment_id: @payment_data["id"])
 
     ActiveRecord::Base.transaction do
@@ -55,7 +56,7 @@ class SyncSquarePosPaymentService
     return [ nil, placeholder_email ] if customer.nil?
 
     email = customer.email_address.presence
-    user  = email ? User.find_by(email:) : nil
+    user  = email ? User.find_by(email_address: email) : nil
     [ user, email || placeholder_email ]
   rescue Square::Errors::ResponseError => e
     Rails.logger.warn("Could not fetch Square customer #{customer_id}: #{e.message}")
