@@ -11,6 +11,7 @@
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = tenant_theme_tag(Current.tenant)
     = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+    %title= content_for?(:title) ? yield(:title) : Current.tenant.name
     = yield :head
   %body{ class: "checkin-body #{content_for?(:body_class) ? yield(:body_class) : ""}".strip }
     #flash

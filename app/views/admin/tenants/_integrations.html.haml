@@ -29,6 +29,19 @@
 
       .col-lg-6
         %h6.fw-semibold.mb-3
+          %i.bi.bi-square.me-2
+          Square
+        .mb-0
+          = form.label :square_location_id, "Location ID", class: "form-label"
+          = form.text_field :square_location_id,
+              class: "form-control",
+              placeholder: "L1234567890ABC"
+          .form-text
+            Found in Square Dashboard → Account & Settings → Business information → Locations.
+            Leave blank to use the server default.
+
+      .col-lg-6
+        %h6.fw-semibold.mb-3
           %i.bi.bi-meta.me-2
           Meta / Facebook
         .mb-3

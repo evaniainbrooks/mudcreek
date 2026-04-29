@@ -9,17 +9,19 @@ class Tenant::Features
   attribute :watchlist,        :boolean, default: false
   attribute :listing_variants,    :boolean, default: false
   attribute :user_verifications,  :boolean, default: false
-  attribute :hide_powered_by,     :boolean, default: false
+  attribute :hide_powered_by,          :boolean, default: false
+  attribute :sync_square_pos_payments, :boolean, default: false
 
   DESCRIPTIONS = {
-    auctions:         "Enable auction listings, bidding, and registration.",
-    kids:             "Track children/kids associated with user accounts.",
-    locations:        "Enable physical locations with QR code check-in and showroom display.",
-    watchlist:        "Allow users to save listings to a personal watchlist.",
-    sold_listings:    "Show a Sold tab on the public listings page.",
-    listing_variants:   "Allow listings to define options (e.g. Size, Color) with per-variant stock and pricing.",
-    user_verifications: "Require users to upload a verification document before accessing the platform.",
-    oauth_login:      "Enable sign-in with third-party OAuth providers.",
-    hide_powered_by:  'Hide the "Powered by Podium" label in the site footer.'
+    auctions:                "Enable auction listings, bidding, and registration.",
+    kids:                    "Track children/kids associated with user accounts.",
+    locations:               "Enable physical locations with QR code check-in and showroom display.",
+    watchlist:               "Allow users to save listings to a personal watchlist.",
+    sold_listings:           "Show a Sold tab on the public listings page.",
+    listing_variants:        "Allow listings to define options (e.g. Size, Color) with per-variant stock and pricing.",
+    user_verifications:      "Require users to upload a verification document before accessing the platform.",
+    oauth_login:             "Enable sign-in with third-party OAuth providers.",
+    hide_powered_by:         'Hide the "Powered by Podium" label in the site footer.',
+    sync_square_pos_payments: "Sync Square POS payments into the ledger."
   }.freeze
 end

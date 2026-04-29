@@ -3,6 +3,10 @@
     %i.bi.bi-journal-text.me-2
     = @ledger.name
   .d-flex.gap-2
+    - if @ledger.shared?
+      = link_to ledger_path(@ledger), class: "btn btn-outline-secondary btn-sm", target: "_blank" do
+        %i.bi.bi-box-arrow-up-right.me-1
+        Public View
     = link_to edit_admin_ledger_path(@ledger), class: "btn btn-outline-secondary btn-sm" do
       %i.bi.bi-pencil.me-1
       Edit

@@ -5,6 +5,6 @@ class LedgersController < ApplicationController
   def show
     @ledger = Ledger.includes(:location).find_by!(hashid: params[:hashid])
     raise ActiveRecord::RecordNotFound unless @ledger.shared?
-    @entry  = Ledger::Entry.new(entry_type: "credit")
+    @entry  = Ledger::Entry.new(entry_type: "debit")
   end
 end

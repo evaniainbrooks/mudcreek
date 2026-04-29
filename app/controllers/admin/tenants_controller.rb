@@ -54,6 +54,7 @@ module Admin
         :currency,
         :website,
         :custom_domain,
+        :square_location_id,
         :ga4_measurement_id,
         :facebook_pixel_id,
         :facebook_domain_verification,

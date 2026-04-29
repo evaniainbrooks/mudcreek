@@ -12,6 +12,7 @@ class Gallery < ApplicationRecord
   before_validation :inherit_listing_name
 
   validates :name, presence: true
+  validates :listing_id, uniqueness: true, allow_nil: true
 
   private
 

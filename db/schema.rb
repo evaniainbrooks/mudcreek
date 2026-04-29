@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_000003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -389,6 +389,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
 
   create_table "ledgers", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "default_description"
     t.text "description"
     t.string "hashid", null: false
     t.bigint "location_id"
@@ -447,7 +448,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.index ["subscription_plan_id"], name: "index_listings_on_subscription_plan_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -873,7 +874,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["schedule_event_id", "occurs_on"], name: "idx_on_schedule_event_id_occurs_on_d0a974fe39", unique: true
-    t.index ["schedule_event_id"], name: "index_schedule_event_sessions_on_schedule_event_id"
     t.index ["tenant_id"], name: "index_schedule_event_sessions_on_tenant_id"
   end
 
@@ -891,7 +891,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.string "uid", null: false
     t.datetime "updated_at", null: false
     t.index ["schedule_id", "uid"], name: "index_schedule_events_on_schedule_id_and_uid", unique: true
-    t.index ["schedule_id"], name: "index_schedule_events_on_schedule_id"
     t.index ["tenant_id"], name: "index_schedule_events_on_tenant_id"
   end
 
@@ -1112,7 +1111,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["subscription_id", "user_id"], name: "index_subscription_users_on_sub_and_user", unique: true
-    t.index ["subscription_id"], name: "index_subscription_users_on_subscription_id"
     t.index ["tenant_id"], name: "index_subscription_users_on_tenant_id"
     t.index ["user_id"], name: "index_subscription_users_on_user_id"
   end
@@ -1126,6 +1124,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["subscription_plan_id"], name: "index_subscriptions_on_subscription_plan_id"
+    t.index ["tenant_id"], name: "index_subscriptions_on_tenant_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -1151,6 +1150,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.string "phone_number"
     t.string "primary_color"
     t.string "secondary_color"
+    t.string "square_location_id"
     t.string "tagline"
     t.string "tertiary_color"
     t.string "text_color"
@@ -1198,7 +1198,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_090001) do
     t.index ["location_id"], name: "index_user_locations_on_location_id"
     t.index ["tenant_id"], name: "index_user_locations_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_user_locations_on_user_id_and_location_id", unique: true
-    t.index ["user_id"], name: "index_user_locations_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

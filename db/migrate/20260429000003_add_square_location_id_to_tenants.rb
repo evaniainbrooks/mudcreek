@@ -1,0 +1,5 @@
+class AddSquareLocationIdToTenants < ActiveRecord::Migration[8.0]
+  def change
+    add_column :tenants, :square_location_id, :string
+  end
+end

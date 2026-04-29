@@ -1,15 +1,15 @@
 - content_for :body_class, "ledger-body"
+- content_for :title, "#{@ledger.name} Ledger"
 
 .ledger-shell
-  .ledger-name= "Ledger"
-  %h1.ledger-title= @ledger.name
+  %h1.ledger-title= "#{@ledger.name} Ledger"
 
   - if @entry.errors.any?
     .alert-entry= @entry.errors.full_messages.to_sentence
 
   = form_with url: ledger_entries_path(@ledger), scope: :ledger_entry, multipart: true,
       data: { controller: "ledger-entry" } do |f|
-    - is_credit = @entry.entry_type != "debit"
+    - is_credit = @entry.entry_type == "credit"
 
     .type-toggle
       %input.btn-check{type: "radio", name: "ledger_entry[entry_type]", id: "type_credit",
@@ -27,7 +27,7 @@
     .field-group
       %label.field-label{ for: "ledger_entry_description" } Description
       %input.field-input{type: "text", name: "ledger_entry[description]", id: "ledger_entry_description",
-          value: @entry.description, placeholder: "What was this for?",
+          value: @entry.description.presence || @ledger.default_description, placeholder: "What was this for?",
           autocomplete: "off", class: @entry.errors[:description].any? ? "is-invalid" : "",
           required: true}
       - if @entry.errors[:description].any?

@@ -10,7 +10,7 @@ class Ledgers::EntriesController < ApplicationController
     if @entry.save
       redirect_to ledger_path(@ledger), notice: "Entry added."
     else
-      @entry.entry_type ||= "credit"
+      @entry.entry_type ||= "debit"
       render template: "ledgers/show", status: :unprocessable_content
     end
   end

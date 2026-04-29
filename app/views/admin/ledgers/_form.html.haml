@@ -19,6 +19,11 @@
         = f.text_area :description, class: "form-control", rows: 3
 
       .mb-3
+        = f.label :default_description, class: "form-label"
+        = f.text_field :default_description, class: "form-control", placeholder: "Pre-filled description for new entries"
+        .form-text New entries will have this description pre-filled.
+
+      .mb-3
         = f.label :location_id, "Location", class: "form-label"
         = f.select :location_id,
             locations.map { |l| [l.name, l.id] },

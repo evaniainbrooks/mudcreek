@@ -8,6 +8,8 @@ class ScheduleEvent < ApplicationRecord
 
   before_validation :assign_uid, on: :create
 
+  validates :uid, presence: true, uniqueness: { scope: :schedule_id }
+
   scope :ordered,   -> { order(:starts_at) }
   scope :bookable,  -> { where(bookable: true) }
 
