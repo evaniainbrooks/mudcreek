@@ -1,5 +1,5 @@
 class SyncSquarePosPaymentService
-  PLACEHOLDER_EMAIL_PREFIX = "pos-anonymous-".freeze
+  PLACEHOLDER_EMAIL_PREFIX = "posanon".freeze
 
   def self.call(payment_data:, tenant:)
     new(payment_data:, tenant:).call
