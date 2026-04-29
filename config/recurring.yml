@@ -22,3 +22,6 @@ production:
   generate_subscription_invoices:
     command: "GenerateSubscriptionInvoicesJob.perform_later"
     schedule: at 6am every day
+  sync_square_pos_transactions:
+    command: "SyncSquareTransactionsJob.perform_later"
+    schedule: every 15 minutes

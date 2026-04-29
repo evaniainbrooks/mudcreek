@@ -30,10 +30,13 @@ class Webhooks::SquareController < ActionController::Base
   def handle_event(event)
     payment_data = event.dig("data", "object", "payment")
     reference_id = payment_data["reference_id"]
-    return if reference_id.blank?
 
-    order = Order.unscoped.find_by(number: reference_id)
-    return unless order
+    order = reference_id.present? ? Order.unscoped.find_by(number: reference_id) : nil
+
+    if order.nil?
+      SyncSquarePosPaymentService.call(payment_data: payment_data, tenant: Current.tenant) if event["type"] == "payment.completed"
+      return
+    end
 
     # Find or create the transaction for reconciliation
     transaction = order.transactions.find_by(square_payment_id: payment_data["id"])
