@@ -70,7 +70,6 @@ class Admin::LocationsController < Admin::BaseController
 
   def update
     if @location.update(location_params)
-      @location.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       @location.create_qr_code!(
         name:            "#{@location.name} Check-in",
         destination_url: location_checkin_url(@location, tenant_key: Current.tenant.key),

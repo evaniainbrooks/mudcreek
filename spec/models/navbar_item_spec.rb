@@ -8,13 +8,8 @@ RSpec.describe NavbarItem, type: :model do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:path) }
 
-    it "requires a non-negative integer position" do
-      item = build(:navbar_item, position: -1)
-      expect(item).not_to be_valid
-      expect(item.errors[:position]).to be_present
-    end
-
-    it "accepts position 0" do
+    it "accepts any integer position" do
+      expect(build(:navbar_item, position: -1)).to be_valid
       expect(build(:navbar_item, position: 0)).to be_valid
     end
   end

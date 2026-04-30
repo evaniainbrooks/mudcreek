@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "QrRedirects", type: :request do
+  let(:browser_headers) { { "User-Agent" => "TestBrowser/1.0" } }
+
   before do
     host! "example.com"
     Current.tenant = Tenant.create!(key: "test", name: "Test", default: true)
@@ -19,18 +21,18 @@ RSpec.describe "QrRedirects", type: :request do
 
       it "increments scan_count" do
         expect {
-          get qr_redirect_path("my-code")
+          get qr_redirect_path("my-code"), headers: browser_headers
         }.to change { qr_code.reload.scan_count }.by(1)
       end
 
       it "creates a QrScan record" do
         expect {
-          get qr_redirect_path("my-code")
+          get qr_redirect_path("my-code"), headers: browser_headers
         }.to change(QrScan, :count).by(1)
       end
 
       it "records last_scanned_at" do
-        get qr_redirect_path("my-code")
+        get qr_redirect_path("my-code"), headers: browser_headers
 
         expect(qr_code.reload.last_scanned_at).to be_within(5.seconds).of(Time.current)
       end
@@ -53,7 +55,7 @@ RSpec.describe "QrRedirects", type: :request do
 
       it "increments scan_count" do
         expect {
-          get qr_redirect_path("expiring-code")
+          get qr_redirect_path("expiring-code"), headers: browser_headers
         }.to change { qr_code.reload.scan_count }.by(1)
       end
     end

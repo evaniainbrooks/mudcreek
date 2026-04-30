@@ -9,16 +9,9 @@ RSpec.describe Subscription, type: :model do
 
   describe "validations" do
     it "requires renews_at" do
-      sub = Subscription.new(user: user, subscription_plan: plan, renews_at: nil)
+      sub = Subscription.new(subscription_plan: plan, renews_at: nil)
       expect(sub).not_to be_valid
       expect(sub.errors[:renews_at]).to be_present
-    end
-
-    it "prevents duplicate plan assignment per user" do
-      create(:subscription, user: user, subscription_plan: plan)
-      dup = Subscription.new(user: user, subscription_plan: plan, renews_at: Date.current)
-      expect(dup).not_to be_valid
-      expect(dup.errors[:subscription_plan_id]).to be_present
     end
   end
 

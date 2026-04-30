@@ -9,7 +9,7 @@ class Profiles::WatchlistItemsController < Profiles::BaseController
 
     @filter_total = Current.user.watchlist_items.count
     scope = Current.user.watchlist_items
-      .includes(listing: [ :images_attachments, :categories,
+      .includes(listing: [ { gallery: { photos_attachments: :blob } }, :categories,
                            lot: [ :owner, :address, :listing_placeholder_attachment ],
                            auction_listing: [ :auction, :current_bid ] ])
       .order(created_at: :desc)
