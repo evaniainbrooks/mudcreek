@@ -9,6 +9,7 @@ class Page < ApplicationRecord
 
   belongs_to :parent, class_name: "Page", optional: true
   has_many :children, class_name: "Page", foreign_key: :parent_id, dependent: :nullify, inverse_of: :parent
+  has_one :tenant_as_homepage, class_name: "Tenant", foreign_key: :homepage_page_id, dependent: :nullify
 
   has_many :widgets, dependent: :destroy, inverse_of: :page
   accepts_nested_attributes_for :widgets, allow_destroy: true, reject_if: :all_blank

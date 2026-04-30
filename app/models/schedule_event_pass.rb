@@ -2,6 +2,7 @@ class ScheduleEventPass < ApplicationRecord
   include MultiTenant
 
   belongs_to :user
+  has_many :schedule_event_registrations, dependent: :nullify
 
   scope :active, -> { where("credits_remaining > 0 AND (expires_at IS NULL OR expires_at >= ?)", Date.current) }
 

@@ -5,6 +5,7 @@ class ScheduleEvent < ApplicationRecord
 
   has_one_attached :photo
   has_many :schedule_event_sessions, dependent: :destroy
+  has_many :check_ins, dependent: :nullify
 
   before_validation :assign_uid, on: :create
 
