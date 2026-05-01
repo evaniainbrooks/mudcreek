@@ -35,7 +35,7 @@ RSpec.describe "Admin::Kiosks", type: :request do
     end
 
     it "renders the kiosk form when a kiosk already exists" do
-      location.create_kiosk!
+      expect(location.kiosk).to be_present
 
       get admin_location_path(location)
 
