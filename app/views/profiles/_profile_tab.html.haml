@@ -18,6 +18,9 @@
             = f.label :last_name, "Last name", class: "form-label required"
             = f.text_field :last_name, required: true, autocomplete: "family-name", class: "form-control"
           .mb-3
+            = f.label :birthdate, "Date of birth", class: "form-label"
+            = f.date_field :birthdate, class: "form-control"
+          .mb-3
             = f.label :email_address, "Email address", class: "form-label"
             = f.email_field :email_address, disabled: true, autocomplete: "username", class: "form-control"
             %p.form-text Email address cannot be changed here.
@@ -58,5 +61,32 @@
                   autocomplete: "postal-code",
                   placeholder: "A1A 1A1",
                   class: "form-control"
+  - if Current.tenant.features.kids?
+    .col-12
+      .card.shadow-sm.border-0
+        .card-body.p-4
+          %h2.card-title.h5.mb-4
+            %i.bi.bi-people-fill.me-2
+            Kids
+          = f.fields_for :kids do |k|
+            .row.g-2.mb-2.align-items-end
+              .col-sm-5
+                = k.label :name, class: "form-label"
+                = k.text_field :name, class: "form-control form-control-sm"
+              .col-sm-4
+                = k.label :birthdate, class: "form-label"
+                = k.date_field :birthdate, class: "form-control form-control-sm"
+              .col-sm-3.d-flex.align-items-center.gap-2.pt-4
+                = k.check_box :_destroy, class: "form-check-input"
+                = k.label :_destroy, "Remove", class: "form-check-label small text-danger"
+          = f.fields_for :kids, Kid.new, child_index: @user.kids.size do |k|
+            .row.g-2.mb-2.align-items-end
+              .col-sm-5
+                = k.label :name, class: "form-label"
+                = k.text_field :name, class: "form-control form-control-sm", placeholder: "Name"
+              .col-sm-4
+                = k.label :birthdate, class: "form-label"
+                = k.date_field :birthdate, class: "form-control form-control-sm"
+              .col-sm-3
   .d-flex.justify-content-end.mt-4
     = f.submit "Save changes", class: "btn btn-primary px-4"

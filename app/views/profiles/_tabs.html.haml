@@ -11,12 +11,13 @@
     = link_to profile_invoices_path, class: "nav-link #{'active' if request.path == profile_invoices_path}" do
       %i.bi.bi-receipt.me-2
       Invoices
-  %li.nav-item
-    - auctions_active = request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')
-    = link_to profile_auctions_path,
-      class: "nav-link #{'active' if auctions_active}" do
-      %i.bi.bi-hammer.me-2
-      Auctions
+  - if Current.tenant.features.auctions?
+    %li.nav-item
+      - auctions_active = request.path == profile_auctions_path || request.path.start_with?(profile_auctions_path + '/')
+      = link_to profile_auctions_path,
+        class: "nav-link #{'active' if auctions_active}" do
+        %i.bi.bi-hammer.me-2
+        Auctions
   %li.nav-item
     = link_to profile_listings_path, class: "nav-link #{'active' if request.path == profile_listings_path}" do
       %i.bi.bi-tag.me-2
