@@ -5,6 +5,9 @@ class ScheduleEventRegistration < ApplicationRecord
   belongs_to :schedule_event_session
   belongs_to :schedule_event_pass, optional: true
 
+  has_one :check_in, dependent: :destroy
+  accepts_nested_attributes_for :check_in
+
   enum :status, { confirmed: 0, cancelled: 1 }
 
   validates :user_id, uniqueness: {

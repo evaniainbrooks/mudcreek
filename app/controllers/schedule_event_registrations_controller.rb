@@ -30,20 +30,21 @@ class ScheduleEventRegistrationsController < ApplicationController
       user: Current.user,
       schedule_event_session: session,
       schedule_event_pass: pass,
-      tenant: Current.tenant
+      tenant: Current.tenant,
+      check_in_attributes: { user: Current.user, location: event.schedule.location, schedule_event: event }
     )
 
     if @registration.save
       render turbo_stream: turbo_stream.replace(
         ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
-        locals: { event: event, occurs_on: date, registration: @registration }
+        locals: { event:, occurs_on: date, registration: @registration }
       )
     else
       render turbo_stream: turbo_stream.replace(
         ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
-        locals: { event: event, occurs_on: date, registration: nil, error: @registration.errors.full_messages.first }
+        locals: { event:, occurs_on: date, registration: nil, error: @registration.errors.full_messages.first }
       )
     end
   end
