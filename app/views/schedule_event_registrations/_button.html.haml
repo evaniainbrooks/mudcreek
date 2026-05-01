@@ -9,7 +9,7 @@
   - elsif error
     %span.badge.bg-danger.small= error
   - else
-    - pass = current_user&.schedule_event_passes&.active&.first
+    - pass = Current.user&.schedule_event_passes&.active&.first
     = button_to schedule_event_registrations_path,
         params: { schedule_event_id: event.id, occurs_on: occurs_on.to_s, schedule_event_pass_id: pass&.id },
         class: "btn btn-sm btn-outline-primary",

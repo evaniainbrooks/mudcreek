@@ -36,9 +36,9 @@
               .d-flex.align-items-center.gap-2
                 - if t_start && t_end
                   %span.text-muted.text-nowrap{ style: "font-size: 0.8rem" } #{t_start} – #{t_end}
-                - if event.respond_to?(:bookable?) && event.bookable? && current_user
+                - if event.respond_to?(:bookable?) && event.bookable? && Current.user
                   :ruby
-                    reg = current_user.schedule_event_registrations
+                    reg = Current.user.schedule_event_registrations
                                       .joins(:schedule_event_session)
                                       .find_by(schedule_event_sessions: { schedule_event_id: event.id, occurs_on: today },
                                                status: :confirmed)
