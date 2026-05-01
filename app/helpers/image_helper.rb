@@ -4,7 +4,7 @@ module ImageHelper
     carousel_slide: { width: 1200, height: 480, resizing_type: "fit",  format: "webp", quality: 90 },
     carousel_thumb: { width: 152,  height: 152, resizing_type: "fill", format: "webp", quality: 85 },
     poster:         { width: 800,  height: 600, resizing_type: "fit",  format: "webp" },
-    hero:           { width: 1920, height: 800, resizing_type: "fit",  format: "webp", quality: 90 },
+    hero:           { width: 2560, height: 0,   resizing_type: "fit",  format: "webp", quality: 92 },
     column:         { width: 600,  height: 800, resizing_type: "fit",  format: "webp" },
     logo:           { width: 96,   height: 96,  resizing_type: "fit",  format: "webp" }
   }.freeze
