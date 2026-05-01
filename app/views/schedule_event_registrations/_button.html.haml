@@ -1,5 +1,5 @@
 - error ||= nil
-%span{ id: dom_id(event.event, :registration) }
+%span{ id: dom_id(event, :registration) }
   - if registration&.confirmed?
     = button_to schedule_event_registration_path(registration), method: :delete,
         class: "btn btn-sm btn-success",
