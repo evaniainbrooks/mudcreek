@@ -11,9 +11,15 @@ class LocationCheckInsController < ApplicationController
 
   def show
     @guest_checked_in = session.delete(:guest_checked_in)
+    @today_schedule_events = load_today_schedule_events
+
     if Current.user && !bot_request?
       @check_in = @location.check_ins.build(user: Current.user)
       if @check_in.save
+        if @today_schedule_events.one?
+          apply_event(@check_in, @today_schedule_events.first)
+          redirect_to exit_url, allow_other_host: true and return
+        end
         session[:check_in_id] = @check_in.id
       end
     elsif Current.user
@@ -27,7 +33,11 @@ class LocationCheckInsController < ApplicationController
                             .pluck(:guest_name)
     end
 
-    @today_schedule_events = load_today_schedule_events
+    if @guest_checked_in && @today_schedule_events.one?
+      check_in = CheckIn.find_by(id: session.delete(:check_in_id))
+      apply_event(check_in, @today_schedule_events.first)
+      @today_schedule_events = []
+    end
   end
 
   def create
@@ -85,6 +95,11 @@ class LocationCheckInsController < ApplicationController
 
   def check_in_params
     params.expect(check_in: [:guest_name])
+  end
+
+  def apply_event(check_in, event)
+    registration = resolve_registration(check_in, event.id.to_s)
+    check_in&.update(schedule_event_id: event.id, schedule_event_registration: registration)
   end
 
   def resolve_registration(check_in, event_id)
