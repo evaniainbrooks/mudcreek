@@ -13,6 +13,7 @@ class ScheduleEventsCalendarService
     def all_day?    = @event.all_day?
     def rrule       = []
     def bookable?   = @event.bookable?
+    def event       = @event
 
     def dtstart
       @event.all_day? ? @event.starts_at.utc.to_date : @event.starts_at.in_time_zone
