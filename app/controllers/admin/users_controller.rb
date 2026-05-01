@@ -17,6 +17,9 @@ class Admin::UsersController < Admin::BaseController
 
   def show
     @roles = Role.order(:name)
+    @active_tab = active_show_tab
+    scope = @user.check_ins.ordered.includes(:location, :schedule_event)
+    @pagy_checkins, @check_ins = pagy(scope, limit: 20)
   end
 
   def resend_activation
@@ -63,6 +66,11 @@ class Admin::UsersController < Admin::BaseController
   def set_user
     @user = User.find(params[:id])
     authorize(@user)
+  end
+
+  def active_show_tab
+    return "edit" if @user.errors.any?
+    params[:tab].presence_in(%w[details edit checkins]) || "details"
   end
 
   def load_users_tab

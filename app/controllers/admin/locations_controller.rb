@@ -30,12 +30,12 @@ class Admin::LocationsController < Admin::BaseController
 
     @user_stats = (user_rows + guest_rows).sort_by { |s| -s[:count] }.first(20)
 
-    @recent_check_ins = @location.check_ins.ordered.includes(:user).limit(20)
+    @recent_check_ins = @location.check_ins.ordered.includes(:user, :schedule_event).limit(20)
 
     @location.build_address unless @location.address
     @kiosk           = @location.kiosk || @location.build_kiosk
-    @members         = @location.users.order(:first_name, :last_name)
-    @non_members     = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+    @members         = @location.users.active.order(:first_name, :last_name)
+    @non_members     = User.active.where.not(id: @members.select(:id)).order(:first_name, :last_name)
     @announcements   = @location.location_announcements.ordered.limit(5)
     @schedules       = @location.schedules.ordered
     @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)
@@ -81,8 +81,8 @@ class Admin::LocationsController < Admin::BaseController
       @location.build_address unless @location.address
       @kiosk            = @location.kiosk || @location.build_kiosk
       @qr_code          = @location.qr_code
-      @members          = @location.users.order(:first_name, :last_name)
-      @non_members      = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
+      @members          = @location.users.active.order(:first_name, :last_name)
+      @non_members      = User.active.where.not(id: @members.select(:id)).order(:first_name, :last_name)
       @announcements    = @location.location_announcements.ordered.limit(5)
       @schedules        = @location.schedules.ordered
       @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)

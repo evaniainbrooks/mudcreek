@@ -7,23 +7,29 @@
   %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
     %li.nav-item{ role: "presentation" }
       %button.nav-link{id: "details-tab", type: "button", role: "tab",
-          class: @user.errors.any? ? "" : "active",
+          class: @active_tab == "details" ? "active" : "",
           data: { bs_toggle: "tab", bs_target: "#details-pane" },
-          aria: { controls: "details-pane", selected: !@user.errors.any? }}
+          aria: { controls: "details-pane", selected: @active_tab == "details" }}
         %i.bi.bi-info-circle.me-1
         Details
     %li.nav-item{ role: "presentation" }
       %button.nav-link{id: "edit-tab", type: "button", role: "tab",
-          class: @user.errors.any? ? "active" : "",
+          class: @active_tab == "edit" ? "active" : "",
           data: { bs_toggle: "tab", bs_target: "#edit-pane" },
-          aria: { controls: "edit-pane", selected: @user.errors.any? }}
+          aria: { controls: "edit-pane", selected: @active_tab == "edit" }}
         %i.bi.bi-pencil.me-1
         Edit
+    %li.nav-item{ role: "presentation" }
+      = link_to admin_user_path(@user, tab: "checkins"), class: "nav-link #{"active" if @active_tab == "checkins"}",
+          id: "checkins-tab", role: "tab",
+          aria: { controls: "checkins-pane", selected: @active_tab == "checkins" } do
+        %i.bi.bi-clock-history.me-1
+        Check-ins
 
   .p-4
     .tab-content
       #details-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "details-tab" },
-          class: @user.errors.any? ? "" : "show active"}
+          class: @active_tab == "details" ? "show active" : ""}
         .card.shadow-sm.border-0
           .card-body
             %dl.row.mb-0
@@ -85,8 +91,40 @@
                   %span.text-muted —
 
       #edit-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "edit-tab" },
-          class: @user.errors.any? ? "show active" : ""}
+          class: @active_tab == "edit" ? "show active" : ""}
         = render "edit_pane", user: @user, roles: @roles
+
+      #checkins-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "checkins-tab" },
+          class: @active_tab == "checkins" ? "show active" : ""}
+        - if @check_ins.any?
+          .card.shadow-sm.border-0
+            .card-body.p-0
+              %table.table.table-hover.mb-0
+                %thead
+                  %tr
+                    %th Date
+                    %th Location
+                    %th Event
+                %tbody
+                  - @check_ins.each do |ci|
+                    %tr
+                      %td
+                        %time{ datetime: ci.created_at.iso8601 }
+                          = ci.created_at.in_time_zone(Current.tenant.timezone).strftime("%b %-d, %Y %H:%M")
+                      %td= ci.location.name
+                      %td= ci.schedule_event&.summary || content_tag(:span, "—", class: "text-muted")
+          - if @pagy_checkins.pages > 1
+            .d-flex.gap-2.mt-3
+              - if @pagy_checkins.prev
+                = link_to admin_user_path(@user, tab: "checkins", page: @pagy_checkins.prev), class: "btn btn-sm btn-outline-secondary" do
+                  %i.bi.bi-chevron-left.me-1
+                  Previous
+              - if @pagy_checkins.next
+                = link_to admin_user_path(@user, tab: "checkins", page: @pagy_checkins.next), class: "btn btn-sm btn-outline-secondary" do
+                  Next
+                  %i.bi.bi-chevron-right.ms-1
+        - else
+          .text-muted.text-center.py-4 No check-ins yet.
 
     .mt-3
       = link_to admin_users_path, class: "btn btn-outline-secondary" do

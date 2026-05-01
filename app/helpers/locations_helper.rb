@@ -40,6 +40,7 @@ module LocationsHelper
     table = TableComponent.new(rows: recent_check_ins)
     table.with_column("Time") { |ci| localize_time(ci.created_at).strftime("%b %-d, %Y %H:%M") }
     table.with_column("User") { |ci| check_in_user_cell(user: ci.user, guest_name: ci.guest_name) }
+    table.with_column("Event") { |ci| ci.schedule_event&.summary || content_tag(:span, "—", class: "text-muted") }
     render table
   end
 
