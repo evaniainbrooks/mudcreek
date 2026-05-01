@@ -6,25 +6,17 @@
     %i.bi.bi-plus-lg.me-1
     New Discipline
 
-.page-container
-  - if @disciplines.any?
-    .card.shadow-sm.border-0
-      .card-body.p-0
-        %table.table.table-hover.mb-0
-          %thead
-            %tr
-              %th Name
-              %th Ranks
-              %th
-          %tbody
-            - @disciplines.each do |discipline|
-              %tr
-                %td= link_to discipline.name, admin_discipline_path(discipline)
-                %td= discipline.ranks.size
-                %td.text-end
-                  = link_to "Edit", edit_admin_discipline_path(discipline), class: "btn btn-sm btn-outline-secondary me-1"
-                  = button_to "Delete", admin_discipline_path(discipline), method: :delete,
-                      class: "btn btn-sm btn-outline-danger",
-                      form: { data: { turbo_confirm: "Delete #{discipline.name}? This will remove all associated ranks and promotions." } }
-  - else
-    .text-muted.text-center.py-4 No disciplines yet.
+.page-container.p-4
+  :ruby
+    t = TableComponent.new(rows: @disciplines)
+    t.with_column("Name") { |d| link_to d.name, admin_discipline_path(d) }
+    t.with_column("Ranks") { |d| d.ranks.size }
+    t.with_column("", html_class: "text-end") do |d|
+      safe_join([
+        link_to("Edit", edit_admin_discipline_path(d), class: "btn btn-sm btn-outline-secondary me-1"),
+        button_to("Delete", admin_discipline_path(d), method: :delete,
+          class: "btn btn-sm btn-outline-danger",
+          form: { data: { turbo_confirm: "Delete #{d.name}? This will remove all associated ranks and promotions." } })
+      ])
+    end
+  = render t
