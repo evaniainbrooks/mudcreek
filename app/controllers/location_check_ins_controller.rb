@@ -2,6 +2,7 @@ class LocationCheckInsController < ApplicationController
   include LocationFeatureGated
 
   allow_unauthenticated_access
+  skip_before_action :verify_authenticity_token, only: %i[create update]
   layout "checkin"
 
   before_action :set_location

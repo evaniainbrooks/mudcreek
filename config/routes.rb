@@ -159,7 +159,7 @@ resource :session
     end
     resources :listing_inference_batches, only: [ :new, :create, :show ], param: :hashid
     resources :ledgers, param: :hashid do
-      resources :entries, only: [ :create, :destroy ], module: :ledgers
+      resources :entries, only: [ :create, :destroy, :edit, :update ], module: :ledgers
     end
     get    "email_aliases",        to: "email_aliases#index",   as: :email_aliases
     post   "email_aliases",        to: "email_aliases#create"

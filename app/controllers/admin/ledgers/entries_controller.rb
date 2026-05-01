@@ -15,6 +15,22 @@ class Admin::Ledgers::EntriesController < Admin::BaseController
     end
   end
 
+  def edit
+    @entry = @ledger.entries.find(params[:id])
+    authorize(@entry)
+  end
+
+  def update
+    @entry = @ledger.entries.find(params[:id])
+    authorize(@entry)
+
+    if @entry.update(entry_params)
+      redirect_to admin_ledger_path(@ledger), notice: "Entry updated."
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   def destroy
     @entry = @ledger.entries.find(params[:id])
     authorize(@entry)

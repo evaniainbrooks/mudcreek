@@ -25,7 +25,7 @@ module Admin::LedgersHelper
       content_tag(:time, localized.strftime("%b %-d, %Y %H:%M"),
         datetime: e.recorded_at.iso8601, class: "text-muted")
     end
-    table.with_column("Description") { |e| h(e.description) }
+    table.with_column("Description") { |e| link_to h(e.description), edit_admin_ledger_entry_path(@ledger, e), class: "text-decoration-none" }
     table.with_column("Type") { |e| entry_type_badge(e) }
     table.with_column("Amount") do |e|
       if e.amount

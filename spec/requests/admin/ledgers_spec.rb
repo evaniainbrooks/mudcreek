@@ -15,6 +15,7 @@ RSpec.describe "Admin::Ledgers", type: :request do
       r.permissions.create!(resource: "Ledger",       action: "destroy")
       r.permissions.create!(resource: "Ledger::Entry", action: "create")
       r.permissions.create!(resource: "Ledger::Entry", action: "destroy")
+      r.permissions.create!(resource: "Ledger::Entry", action: "update")
     end
   end
 
@@ -228,6 +229,80 @@ RSpec.describe "Admin::Ledgers", type: :request do
           params: { ledger_entry: { description: "", entry_type: "credit" } },
           headers: { "Accept" => "text/vnd.turbo-stream.html" }
       }.not_to change(Ledger::Entry, :count)
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "GET /admin/ledgers/:ledger_hashid/entries/:id/edit" do
+    let!(:entry) { create(:ledger_entry, ledger: ledger, description: "Morning sales") }
+
+    it "returns 200 and renders the entry form" do
+      get edit_admin_ledger_entry_path(ledger, entry)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Morning sales")
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to sign in" do
+        get edit_admin_ledger_entry_path(ledger, entry)
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the edit permission" do
+      let(:role) { Role.create!(name: "no_entry_edit", description: "No entry edit") }
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect { get edit_admin_ledger_entry_path(ledger, entry) }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "PATCH /admin/ledgers/:ledger_hashid/entries/:id" do
+    let!(:entry) { create(:ledger_entry, ledger: ledger, description: "Old description", amount: 10.00) }
+
+    it "updates the entry and redirects to the ledger" do
+      patch admin_ledger_entry_path(ledger, entry),
+        params: { ledger_entry: { description: "New description", entry_type: "credit", amount: "20.00" } }
+
+      expect(entry.reload.description).to eq("New description")
+      expect(entry.reload.amount).to eq(20.00)
+      expect(response).to redirect_to(admin_ledger_path(ledger))
+    end
+
+    it "re-renders edit with unprocessable_content on blank description" do
+      patch admin_ledger_entry_path(ledger, entry),
+        params: { ledger_entry: { description: "", entry_type: "credit" } }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(entry.reload.description).to eq("Old description")
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to sign in" do
+        patch admin_ledger_entry_path(ledger, entry),
+          params: { ledger_entry: { description: "Blocked" } }
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the update permission" do
+      let(:role) { Role.create!(name: "no_entry_update", description: "No entry update") }
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          patch admin_ledger_entry_path(ledger, entry),
+            params: { ledger_entry: { description: "Blocked" } }
+        }.to raise_error(Pundit::NotAuthorizedError)
+      end
     end
   end
 

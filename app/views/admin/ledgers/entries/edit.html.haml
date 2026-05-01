@@ -1,0 +1,57 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-pencil.me-2
+    Edit Entry
+  = link_to admin_ledger_path(@ledger), class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    Back to #{@ledger.name}
+
+= form_with model: @entry, url: admin_ledger_entry_path(@ledger, @entry), method: :patch do |f|
+  - if @entry.errors.any?
+    .alert.alert-danger.mb-4= @entry.errors.full_messages.to_sentence
+
+  %fieldset.card.shadow-sm.border-0
+    %legend.card-header.fw-semibold
+      %i.bi.bi-journal-text.me-1
+      Entry
+    .card-body.p-4
+      .row.g-3
+        .col-sm-4
+          = f.label :entry_type, class: "form-label required"
+          = f.select :entry_type,
+              [["Credit", "credit"], ["Debit", "debit"]],
+              {},
+              class: "form-select #{'is-invalid' if @entry.errors[:entry_type].any?}", required: true
+        .col-sm-8
+          = f.label :description, class: "form-label required"
+          = f.text_field :description, class: "form-control #{'is-invalid' if @entry.errors[:description].any?}", required: true
+        .col-sm-4
+          = f.label :amount, class: "form-label"
+          .input-group
+            %span.input-group-text $
+            = f.number_field :amount, step: "0.01", min: "0.01",
+                class: "form-control #{'is-invalid' if @entry.errors[:amount].any?}",
+                placeholder: "0.00"
+        .col-sm-4
+          = f.label :recorded_at, "Date & Time", class: "form-label"
+          = f.datetime_local_field :recorded_at,
+              value: @entry.recorded_at&.in_time_zone(Current.tenant.timezone)&.strftime("%Y-%m-%dT%H:%M"),
+              class: "form-control"
+        .col-sm-4
+          = f.label :memo, class: "form-label"
+          = f.text_field :memo, class: "form-control", placeholder: "Optional note"
+        .col-sm-4
+          = f.label :receipt, class: "form-label"
+          - if @entry.receipt.attached?
+            .mb-2
+              = link_to @entry.receipt.filename.to_s, rails_blob_path(@entry.receipt, disposition: "attachment"),
+                  target: "_blank", rel: "noopener", class: "small"
+          = f.file_field :receipt, class: "form-control", accept: "image/*,application/pdf"
+        .col-12
+          .form-check
+            = f.check_box :taxed, class: "form-check-input"
+            = f.label :taxed, "Amount includes tax", class: "form-check-label"
+
+  .d-flex.gap-2.mt-4
+    = f.submit "Save Changes", class: "btn btn-primary"
+    = link_to "Cancel", admin_ledger_path(@ledger), class: "btn btn-outline-secondary"
