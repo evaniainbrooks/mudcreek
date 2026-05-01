@@ -2006,7 +2006,6 @@ Current.tenant = mudcreek
 ].each do |attrs|
   location = Location.find_or_create_by!(name: attrs[:name]) do |l|
     l.published = true
-    l.message   = attrs[:message]
     l.build_address(attrs[:address])
   end
 
