@@ -47,7 +47,7 @@
           %details
             %summary.btn.btn-sm.btn-outline-secondary.mb-2 Add Promotion
             .mt-2
-              = form_with url: admin_rank_awards_path do |f|
+              = form_with url: admin_rank_awards_path, scope: :rank_award do |f|
                 = f.hidden_field :rankable_type, value: "User"
                 = f.hidden_field :rankable_id, value: user.id
                 .row.g-2
@@ -121,7 +121,7 @@
               %details
                 %summary.btn.btn-sm.btn-outline-secondary.mb-1 Add Promotion
                 .mt-2
-                  = form_with url: admin_rank_awards_path do |f|
+                  = form_with url: admin_rank_awards_path, scope: :rank_award do |f|
                     = f.hidden_field :rankable_type, value: "Kid"
                     = f.hidden_field :rankable_id, value: kid.id
                     .row.g-2
