@@ -107,6 +107,30 @@ RSpec.describe "Admin::Users", type: :request do
     end
   end
 
+  describe "GET /admin/users/:id with ranks feature enabled" do
+    before do
+      Current.tenant.update!(features: { ranks: true })
+    end
+
+    it "returns 200 on the details tab without raising NoMethodError" do
+      get admin_user_path(target)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 200 on the checkins tab without raising NoMethodError" do
+      get admin_user_path(target, tab: "checkins")
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "returns 200 on the ranks tab" do
+      get admin_user_path(target, tab: "ranks")
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "GET /admin/users/:id" do
     it "returns 200" do
       get admin_user_path(target)

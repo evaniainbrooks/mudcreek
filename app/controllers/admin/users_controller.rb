@@ -70,7 +70,7 @@ class Admin::UsersController < Admin::BaseController
     @active_tab = active_show_tab
     scope = @user.check_ins.ordered.includes(:location, :schedule_event)
     @pagy_checkins, @check_ins = pagy(scope, limit: 20)
-    if @active_tab == "ranks" && Current.tenant.features.ranks?
+    if Current.tenant.features.ranks?
       @disciplines = Discipline.ordered.includes(:ranks)
       @user_rank_awards = @user.rank_awards.ordered.includes(rank: :discipline, awarded_by: [])
       @kid_rank_awards = @user.kids.includes(rank_awards: [ rank: :discipline, awarded_by: [] ])
