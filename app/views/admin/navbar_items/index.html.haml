@@ -9,31 +9,27 @@
     New Item
 
 .page-container.p-4
-  - if @navbar_items.empty?
-    = render EmptyStateComponent.new(icon: "list-ul", message: "No navbar items yet.")
-  - else
-    .table-responsive
-      %table.table.table-hover.align-middle.mb-0
-        %thead.table-light
-          %tr
-            %th.pe-0{style: "width: 1%"}
-            %th Icon
-            %th Title
-            %th Path
-            %th
-        %tbody{data: { controller: "sortable", sortable_url_value: reorder_admin_navbar_items_path }}
-          - @navbar_items.each do |item|
-            %tr{data: { id: item.id }}
-              %td.pe-0
-                %span.bi.bi-grip-vertical.text-muted.sortable-handle{style: "cursor: grab"}
-              %td
-                - if item.icon.present?
-                  %i{ class: "bi #{item.icon} fs-5" }
-              %td.fw-semibold= item.title
-              %td.text-muted.small.font-monospace= item.path
-              %td.text-end
-                = link_to edit_admin_navbar_item_path(item), class: "btn btn-sm btn-outline-secondary me-1" do
-                  %i.bi.bi-pencil
-                = link_to admin_navbar_item_path(item), class: "btn btn-sm btn-outline-danger",
-                    data: { turbo_method: :delete, turbo_confirm: "Delete '#{item.title}'?" } do
-                  %i.bi.bi-trash
+  :ruby
+    t = TableComponent.new(
+      rows: @navbar_items,
+      row_data: ->(item) { { id: item.id } },
+      tbody_data: { controller: "sortable", sortable_url_value: reorder_admin_navbar_items_path }
+    )
+    t.with_column("", html_class: "pe-0") do
+      content_tag(:span, "", class: "bi bi-grip-vertical text-muted sortable-handle", style: "cursor: grab")
+    end
+    t.with_column("Icon") do |item|
+      content_tag(:i, "", class: "bi #{item.icon} fs-5") if item.icon.present?
+    end
+    t.with_column("Title", html_class: "fw-semibold") { |item| item.title }
+    t.with_column("Path", html_class: "text-muted small font-monospace") { |item| item.path }
+    t.with_column("", html_class: "text-end") do |item|
+      content_tag(:div, class: "d-flex gap-1 justify-content-end") do
+        safe_join([
+          link_to(content_tag(:i, "", class: "bi bi-pencil"), edit_admin_navbar_item_path(item), class: "btn btn-sm btn-outline-secondary"),
+          link_to(content_tag(:i, "", class: "bi bi-trash"), admin_navbar_item_path(item), class: "btn btn-sm btn-outline-danger",
+            data: { turbo_method: :delete, turbo_confirm: "Delete '#{item.title}'?" })
+        ])
+      end
+    end
+  = render t

@@ -19,54 +19,44 @@
                 - current_award.stripes.times do
                   %i.bi.bi-star-fill.text-warning.ms-1
 
-          - if awards.any?
-            %table.table.table-sm.mb-3
-              %thead
-                %tr
-                  %th Date
-                  %th Rank
-                  %th Stripes
-                  %th Awarded by
-                  %th Notes
-                  %th
-              %tbody
-                - awards.each do |award|
-                  %tr
-                    %td= award.awarded_at.to_fs(:long)
-                    %td= award.rank.name
-                    %td= award.stripes
-                    %td= award.awarded_by&.name || content_tag(:span, "—", class: "text-muted")
-                    %td= award.notes.presence || content_tag(:span, "—", class: "text-muted")
-                    %td.text-end
-                      = button_to "Remove", admin_rank_award_path(award), method: :delete,
-                          class: "btn btn-sm btn-outline-danger",
-                          form: { data: { turbo_confirm: "Remove this promotion record?" } }
-          - else
-            %p.text-muted.small No promotions recorded yet.
+          :ruby
+            t = TableComponent.new(rows: awards)
+            t.with_column("Date")       { |a| a.awarded_at.to_fs(:long) }
+            t.with_column("Rank")       { |a| a.rank.name }
+            t.with_column("Stripes")    { |a| a.stripes }
+            t.with_column("Awarded by") { |a| a.awarded_by&.name || content_tag(:span, "—", class: "text-muted") }
+            t.with_column("Notes")      { |a| a.notes.presence || content_tag(:span, "—", class: "text-muted") }
+            t.with_column("", html_class: "text-end") do |a|
+              button_to "Remove", admin_rank_award_path(a), method: :delete,
+                class: "btn btn-sm btn-outline-danger",
+                form: { data: { turbo_confirm: "Remove this promotion record?" } }
+            end
+          = render t
 
-          %details
-            %summary.btn.btn-sm.btn-outline-secondary.mb-2 Add Promotion
-            .mt-2
-              = form_with url: admin_rank_awards_path, scope: :rank_award do |f|
-                = f.hidden_field :rankable_type, value: "User"
-                = f.hidden_field :rankable_id, value: user.id
-                .row.g-2
-                  .col-sm-4
-                    = f.label :rank_id, "Rank", class: "form-label form-label-sm"
-                    = f.select :rank_id, discipline.ranks.ordered.map { |r| [ r.name, r.id ] },
-                        { include_blank: "Select rank…" },
-                        class: "form-select form-select-sm"
-                  .col-sm-2
-                    = f.label :stripes, class: "form-label form-label-sm"
-                    = f.select :stripes, (0..4).map { |n| [ n, n ] }, {}, class: "form-select form-select-sm"
-                  .col-sm-3
-                    = f.label :awarded_at, "Date", class: "form-label form-label-sm"
-                    = f.date_field :awarded_at, class: "form-control form-control-sm", value: Date.current
-                  .col-sm-3
-                    = f.label :notes, class: "form-label form-label-sm"
-                    = f.text_field :notes, class: "form-control form-control-sm", placeholder: "Optional"
-                .mt-2
-                  = f.submit "Record Promotion", class: "btn btn-sm btn-primary"
+          .mt-3
+            %details
+              %summary.btn.btn-sm.btn-outline-secondary.mb-2 Add Promotion
+              .mt-2
+                = form_with url: admin_rank_awards_path, scope: :rank_award do |f|
+                  = f.hidden_field :rankable_type, value: "User"
+                  = f.hidden_field :rankable_id, value: user.id
+                  .row.g-2
+                    .col-sm-4
+                      = f.label :rank_id, "Rank", class: "form-label form-label-sm"
+                      = f.select :rank_id, discipline.ranks.ordered.map { |r| [ r.name, r.id ] },
+                          { include_blank: "Select rank…" },
+                          class: "form-select form-select-sm"
+                    .col-sm-2
+                      = f.label :stripes, class: "form-label form-label-sm"
+                      = f.select :stripes, (0..4).map { |n| [ n, n ] }, {}, class: "form-select form-select-sm"
+                    .col-sm-3
+                      = f.label :awarded_at, "Date", class: "form-label form-label-sm"
+                      = f.date_field :awarded_at, class: "form-control form-control-sm", value: Date.current
+                    .col-sm-3
+                      = f.label :notes, class: "form-label form-label-sm"
+                      = f.text_field :notes, class: "form-control form-control-sm", placeholder: "Optional"
+                  .mt-2
+                    = f.submit "Record Promotion", class: "btn btn-sm btn-primary"
   - else
     .text-muted
       No disciplines configured.
@@ -97,47 +87,40 @@
                     - current_award.stripes.times do
                       %i.bi.bi-star-fill.text-warning.ms-1
 
-              - if awards.any?
-                %table.table.table-sm.mb-2
-                  %thead
-                    %tr
-                      %th Date
-                      %th Rank
-                      %th Stripes
-                      %th Awarded by
-                      %th
-                  %tbody
-                    - awards.each do |award|
-                      %tr
-                        %td= award.awarded_at.to_fs(:long)
-                        %td= award.rank.name
-                        %td= award.stripes
-                        %td= award.awarded_by&.name || content_tag(:span, "—", class: "text-muted")
-                        %td.text-end
-                          = button_to "Remove", admin_rank_award_path(award), method: :delete,
-                              class: "btn btn-sm btn-outline-danger",
-                              form: { data: { turbo_confirm: "Remove this promotion record?" } }
+              :ruby
+                t = TableComponent.new(rows: awards)
+                t.with_column("Date")       { |a| a.awarded_at.to_fs(:long) }
+                t.with_column("Rank")       { |a| a.rank.name }
+                t.with_column("Stripes")    { |a| a.stripes }
+                t.with_column("Awarded by") { |a| a.awarded_by&.name || content_tag(:span, "—", class: "text-muted") }
+                t.with_column("", html_class: "text-end") do |a|
+                  button_to "Remove", admin_rank_award_path(a), method: :delete,
+                    class: "btn btn-sm btn-outline-danger",
+                    form: { data: { turbo_confirm: "Remove this promotion record?" } }
+                end
+              = render t
 
-              %details
-                %summary.btn.btn-sm.btn-outline-secondary.mb-1 Add Promotion
-                .mt-2
-                  = form_with url: admin_rank_awards_path, scope: :rank_award do |f|
-                    = f.hidden_field :rankable_type, value: "Kid"
-                    = f.hidden_field :rankable_id, value: kid.id
-                    .row.g-2
-                      .col-sm-4
-                        = f.label :rank_id, "Rank", class: "form-label form-label-sm"
-                        = f.select :rank_id, discipline.ranks.ordered.map { |r| [ r.name, r.id ] },
-                            { include_blank: "Select rank…" },
-                            class: "form-select form-select-sm"
-                      .col-sm-2
-                        = f.label :stripes, class: "form-label form-label-sm"
-                        = f.select :stripes, (0..4).map { |n| [ n, n ] }, {}, class: "form-select form-select-sm"
-                      .col-sm-3
-                        = f.label :awarded_at, "Date", class: "form-label form-label-sm"
-                        = f.date_field :awarded_at, class: "form-control form-control-sm", value: Date.current
-                      .col-sm-3
-                        = f.label :notes, class: "form-label form-label-sm"
-                        = f.text_field :notes, class: "form-control form-control-sm", placeholder: "Optional"
-                    .mt-2
-                      = f.submit "Record Promotion", class: "btn btn-sm btn-primary"
+              .mt-2
+                %details
+                  %summary.btn.btn-sm.btn-outline-secondary.mb-1 Add Promotion
+                  .mt-2
+                    = form_with url: admin_rank_awards_path, scope: :rank_award do |f|
+                      = f.hidden_field :rankable_type, value: "Kid"
+                      = f.hidden_field :rankable_id, value: kid.id
+                      .row.g-2
+                        .col-sm-4
+                          = f.label :rank_id, "Rank", class: "form-label form-label-sm"
+                          = f.select :rank_id, discipline.ranks.ordered.map { |r| [ r.name, r.id ] },
+                              { include_blank: "Select rank…" },
+                              class: "form-select form-select-sm"
+                        .col-sm-2
+                          = f.label :stripes, class: "form-label form-label-sm"
+                          = f.select :stripes, (0..4).map { |n| [ n, n ] }, {}, class: "form-select form-select-sm"
+                        .col-sm-3
+                          = f.label :awarded_at, "Date", class: "form-label form-label-sm"
+                          = f.date_field :awarded_at, class: "form-control form-control-sm", value: Date.current
+                        .col-sm-3
+                          = f.label :notes, class: "form-label form-label-sm"
+                          = f.text_field :notes, class: "form-control form-control-sm", placeholder: "Optional"
+                      .mt-2
+                        = f.submit "Record Promotion", class: "btn btn-sm btn-primary"
