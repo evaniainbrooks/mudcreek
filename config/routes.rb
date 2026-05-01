@@ -67,7 +67,7 @@ resource :session
     end
   end
   resources :ledgers, only: [:show], param: :hashid do
-    resources :entries, only: [:create], module: :ledgers
+    resources :entries, only: [:create, :destroy], module: :ledgers
   end
 
   resources :subdivisions, only: [ :index ]

@@ -7,6 +7,12 @@
         .invalid-feedback= event.errors[:summary].to_sentence
 
     .col-12
+      = f.label :description, class: "form-label"
+      = f.text_area :description, class: "form-control #{'is-invalid' if event.errors[:description].any?}", rows: 4
+      - if event.errors[:description].any?
+        .invalid-feedback= event.errors[:description].to_sentence
+
+    .col-12
       = f.label :photo, class: "form-label"
       - if event.photo.attached?
         = image_tag event.photo, class: "d-block mb-2 rounded", style: "max-height: 120px"
