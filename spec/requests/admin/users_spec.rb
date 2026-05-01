@@ -52,6 +52,61 @@ RSpec.describe "Admin::Users", type: :request do
     end
   end
 
+  describe "GET /admin/users/:id?tab=checkins" do
+    let!(:location) { create(:location) }
+
+    it "returns 200 and renders the check-ins tab" do
+      get admin_user_path(target, tab: "checkins")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Check-ins")
+    end
+
+    it "lists check-ins for the user" do
+      ci = create(:check_in, user: target, location: location)
+
+      get admin_user_path(target, tab: "checkins")
+
+      expect(response.body).to include(location.name)
+    end
+
+    it "shows no check-ins message when empty" do
+      get admin_user_path(target, tab: "checkins")
+
+      expect(response.body).to include("No check-ins yet")
+    end
+
+    context "with more than one page of check-ins" do
+      before { 21.times { create(:check_in, user: target, location: location) } }
+
+      it "returns 200 on page 1" do
+        get admin_user_path(target, tab: "checkins", page: 1)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "renders a Next link on page 1" do
+        get admin_user_path(target, tab: "checkins", page: 1)
+
+        expect(response.body).to include("page=2")
+        expect(response.body).to include("Next")
+      end
+
+      it "renders a Previous link on page 2" do
+        get admin_user_path(target, tab: "checkins", page: 2)
+
+        expect(response.body).to include("page=1")
+        expect(response.body).to include("Previous")
+      end
+
+      it "does not render a Previous link on page 1" do
+        get admin_user_path(target, tab: "checkins", page: 1)
+
+        expect(response.body).not_to include("Previous")
+      end
+    end
+  end
+
   describe "GET /admin/users/:id" do
     it "returns 200" do
       get admin_user_path(target)

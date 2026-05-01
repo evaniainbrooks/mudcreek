@@ -122,8 +122,8 @@
                       %td= ci.schedule_event&.summary || content_tag(:span, "—", class: "text-muted")
           - if @pagy_checkins.pages > 1
             .d-flex.gap-2.mt-3
-              - if @pagy_checkins.prev
-                = link_to admin_user_path(@user, tab: "checkins", page: @pagy_checkins.prev), class: "btn btn-sm btn-outline-secondary" do
+              - if @pagy_checkins.previous
+                = link_to admin_user_path(@user, tab: "checkins", page: @pagy_checkins.previous), class: "btn btn-sm btn-outline-secondary" do
                   %i.bi.bi-chevron-left.me-1
                   Previous
               - if @pagy_checkins.next
