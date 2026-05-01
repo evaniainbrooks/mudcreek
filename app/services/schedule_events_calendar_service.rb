@@ -14,6 +14,7 @@ class ScheduleEventsCalendarService
     def rrule       = []
     def bookable?   = @event.bookable?
     def to_key      = @event.to_key
+    def model_name  = @event.model_name
 
     def dtstart
       @event.all_day? ? @event.starts_at.utc.to_date : @event.starts_at.in_time_zone
