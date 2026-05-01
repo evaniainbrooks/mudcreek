@@ -36,6 +36,7 @@ class LocationCheckInsController < ApplicationController
     if @guest_checked_in && @today_schedule_events.one?
       check_in = CheckIn.find_by(id: session.delete(:check_in_id))
       apply_event(check_in, @today_schedule_events.first)
+      session[:guest_name_for_prompt] = @guest_checked_in
       redirect_to guest_prompt_location_checkin_path(@location) and return
     end
   end
@@ -62,12 +63,14 @@ class LocationCheckInsController < ApplicationController
     if Current.user
       redirect_to exit_url, allow_other_host: true
     else
+      session[:guest_name_for_prompt] = check_in&.guest_name
       redirect_to guest_prompt_location_checkin_path(@location)
     end
   end
 
   def guest_prompt
     @kiosk = @location.kiosk
+    @guest_name = session.delete(:guest_name_for_prompt)
   end
 
   def purchase_drop_in
