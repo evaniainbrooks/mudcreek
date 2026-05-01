@@ -35,13 +35,13 @@ class ScheduleEventRegistrationsController < ApplicationController
 
     if @registration.save
       render turbo_stream: turbo_stream.replace(
-        dom_id(event, :registration),
+        ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
         locals: { event: event, occurs_on: date, registration: @registration }
       )
     else
       render turbo_stream: turbo_stream.replace(
-        dom_id(event, :registration),
+        ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
         locals: { event: event, occurs_on: date, registration: nil, error: @registration.errors.full_messages.first }
       )
@@ -55,7 +55,7 @@ class ScheduleEventRegistrationsController < ApplicationController
     @registration.update!(status: :cancelled)
 
     render turbo_stream: turbo_stream.replace(
-      dom_id(event, :registration),
+      ActionView::RecordIdentifier.dom_id(event, :registration),
       partial: "schedule_event_registrations/button",
       locals: { event: event, occurs_on: occurs_on, registration: nil }
     )
