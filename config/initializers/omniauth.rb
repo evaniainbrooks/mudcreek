@@ -1,3 +1,18 @@
+# Strip subdomain from callback URL so all tenants share one registered redirect URI.
+# The tenant key is saved to session in before_request_phase (below) so TenantResolution
+# can resolve it on the callback request, which arrives at the root domain.
+OmniAuth.config.full_host = lambda do |env|
+  request = Rack::Request.new(env)
+  port_part = request.port.in?([80, 443]) ? "" : ":#{request.port}"
+  "#{request.scheme}://#{request.host.sub(/\A[^.]+\./, '')}#{port_part}"
+end
+
+OmniAuth.config.before_request_phase do |env|
+  request = Rack::Request.new(env)
+  subdomain = request.host.split(".").first if request.host.split(".").length > 2
+  env["rack.session"][:tenant_key] = subdomain if subdomain.present?
+end
+
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2,
     (Rails.application.credentials.dig(:oauth, :google, :client_id) || ""),
