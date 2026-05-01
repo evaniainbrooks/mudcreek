@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Listings new with property set", :js, type: :system do
-  before { driven_by :rack_test }
+  before { driven_by :selenium_chrome_headless_xl }
 
   let(:current_user) { create(:user, :super_admin) }
 

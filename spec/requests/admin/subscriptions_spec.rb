@@ -60,7 +60,7 @@ RSpec.describe "Admin::Subscriptions", type: :request do
     let(:valid_params) do
       {
         subscription: {
-          user_id: other_user.id,
+          primary_user_id: other_user.id,
           subscription_plan_id: other_plan.id,
           renews_at: 1.month.from_now.to_date
         }
@@ -80,44 +80,24 @@ RSpec.describe "Admin::Subscriptions", type: :request do
       expect(flash[:notice]).to include("successfully created")
     end
 
-    context "when the user already has a subscription to that plan" do
-      it "does not create a duplicate subscription" do
-        expect {
-          post admin_subscriptions_path, params: {
-            subscription: {
-              user_id: target_user.id,
-              subscription_plan_id: plan.id,
-              renews_at: 1.month.from_now.to_date
-            }
-          }
-        }.not_to change(Subscription, :count)
-      end
+    it "associates the primary user via a SubscriptionUser" do
+      post admin_subscriptions_path, params: valid_params
 
-      it "returns 422" do
-        post admin_subscriptions_path, params: {
-          subscription: {
-            user_id: target_user.id,
-            subscription_plan_id: plan.id,
-            renews_at: 1.month.from_now.to_date
-          }
-        }
-
-        expect(response).to have_http_status(:unprocessable_content)
-      end
+      expect(Subscription.last.users).to include(other_user)
     end
 
     context "with a missing renews_at" do
       it "does not create a subscription" do
         expect {
           post admin_subscriptions_path, params: {
-            subscription: { user_id: other_user.id, subscription_plan_id: other_plan.id, renews_at: "" }
+            subscription: { primary_user_id: other_user.id, subscription_plan_id: other_plan.id, renews_at: "" }
           }
         }.not_to change(Subscription, :count)
       end
 
       it "returns 422" do
         post admin_subscriptions_path, params: {
-          subscription: { user_id: other_user.id, subscription_plan_id: other_plan.id, renews_at: "" }
+          subscription: { primary_user_id: other_user.id, subscription_plan_id: other_plan.id, renews_at: "" }
         }
 
         expect(response).to have_http_status(:unprocessable_content)

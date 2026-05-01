@@ -2,14 +2,7 @@ class Admin::SubscriptionsController < Admin::BaseController
   before_action :set_subscription, only: %i[show update]
 
   def show
-    @subscription_user = @subscription.subscription_users.build
-    @available_users = User.activated.order(:email_address)
-                           .where.not(id: @subscription.users.select(:id))
-    @subscription_users = @subscription.subscription_users
-                                        .joins(:user)
-                                        .where.not(users: { activated_at: nil })
-                                        .includes(:user)
-    @invoices = @subscription.invoices.order(created_at: :desc)
+    prepare_show_assigns
   end
 
   def create
@@ -42,11 +35,23 @@ class Admin::SubscriptionsController < Admin::BaseController
     if @subscription.update(subscription_update_params)
       redirect_to admin_subscription_path(@subscription), notice: "Subscription was successfully updated."
     else
+      prepare_show_assigns
       render :show, status: :unprocessable_content
     end
   end
 
   private
+
+  def prepare_show_assigns
+    @subscription_user = @subscription.subscription_users.build
+    @available_users = User.activated.order(:email_address)
+                           .where.not(id: @subscription.users.select(:id))
+    @subscription_users = @subscription.subscription_users
+                                        .joins(:user)
+                                        .where.not(users: { activated_at: nil })
+                                        .includes(:user)
+    @invoices = @subscription.invoices.order(created_at: :desc)
+  end
 
   def set_subscription
     @subscription = Subscription.find(params[:id])

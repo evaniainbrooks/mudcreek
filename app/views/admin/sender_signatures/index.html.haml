@@ -35,9 +35,10 @@
               %strong= @root_domain
               to enable authenticated sending via Postmark.
 
-            - dkim_host    = @postmark_domain.api_response["dkim_pending_host"].presence || @postmark_domain.api_response["dkim_host"]
-            - dkim_value   = @postmark_domain.api_response["dkim_pending_text_value"].presence || @postmark_domain.api_response["dkim_text_value"]
-            - return_path  = @postmark_domain.api_response["return_path_domain"]
+            :ruby
+              dkim_host   = @postmark_domain.api_response["dkim_pending_host"].presence || @postmark_domain.api_response["dkim_host"]
+              dkim_value  = @postmark_domain.api_response["dkim_pending_text_value"].presence || @postmark_domain.api_response["dkim_text_value"]
+              return_path = @postmark_domain.api_response["return_path_domain"]
 
             - if dkim_host.present?
               %p.fw-semibold.mb-2 DKIM Record

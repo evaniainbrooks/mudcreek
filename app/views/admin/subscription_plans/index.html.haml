@@ -26,7 +26,14 @@
                   required: true, min: "0.01", step: "0.01", placeholder: "0.00"
           .col-sm-2
             = f.label :subscription_type, class: "form-label form-label-sm"
-            - subscription_type_labels = { "month_to_month" => "Month-to-month", "monthly" => "Monthly", "annual" => "Annual", "semi_annual" => "Semi-annual", "one_time" => "One-time" }
+            :ruby
+              subscription_type_labels = {
+                "month_to_month" => "Month-to-month",
+                "monthly" => "Monthly",
+                "annual" => "Annual",
+                "semi_annual" => "Semi-annual",
+                "one_time" => "One-time"
+              }
             = f.select :subscription_type, SubscriptionPlan.subscription_types.keys.map { [subscription_type_labels[it] || it.humanize, it] }, {},
                 class: "form-select form-select-sm"
           .col-sm-3

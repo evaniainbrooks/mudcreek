@@ -7,31 +7,8 @@ class Admin::LocationsController < Admin::BaseController
   end
 
   def show
-    @qr_code           = @location.qr_code
-    @total_check_ins   = @location.check_ins.count
-    @today_check_ins   = @location.check_ins.today.count
-    @week_check_ins    = @location.check_ins.this_week.count
-    @month_check_ins   = @location.check_ins.this_month.count
-
-    user_counts     = @location.check_ins.where.not(user_id: nil).group(:user_id).count
-    user_last_times = @location.check_ins.where.not(user_id: nil).group(:user_id).maximum(:created_at)
-    users           = User.where(id: user_counts.keys).index_by(&:id)
-
-    guest_counts     = @location.check_ins.where(user_id: nil).group(:guest_name).count
-    guest_last_times = @location.check_ins.where(user_id: nil).group(:guest_name).maximum(:created_at)
-
-    user_rows = user_counts.map do |uid, count|
-      { user: users[uid], count: count, last_at: user_last_times[uid] }
-    end
-
-    guest_rows = guest_counts.map do |name, count|
-      { guest_name: name, count: count, last_at: guest_last_times[name] }
-    end
-
-    @user_stats = (user_rows + guest_rows).sort_by { |s| -s[:count] }.first(20)
-
-    @recent_check_ins = @location.check_ins.ordered.includes(:user, :schedule_event).limit(20)
-
+    @qr_code = @location.qr_code
+    load_check_in_stats
     @location.build_address unless @location.address
     @kiosk           = @location.kiosk || @location.build_kiosk
     @members         = @location.users.active.order(:first_name, :last_name)
@@ -78,9 +55,10 @@ class Admin::LocationsController < Admin::BaseController
       ) unless @location.qr_code
       redirect_to admin_location_path(@location), notice: "Location was successfully updated."
     else
+      @qr_code = @location.qr_code
+      load_check_in_stats
       @location.build_address unless @location.address
       @kiosk            = @location.kiosk || @location.build_kiosk
-      @qr_code          = @location.qr_code
       @members          = @location.users.active.order(:first_name, :last_name)
       @non_members      = User.active.where.not(id: @members.select(:id)).order(:first_name, :last_name)
       @announcements    = @location.location_announcements.ordered.limit(5)
@@ -100,6 +78,31 @@ class Admin::LocationsController < Admin::BaseController
   def set_location
     @location = Location.find_by!(hashid: params[:hashid])
     authorize(@location)
+  end
+
+  def load_check_in_stats
+    @total_check_ins = @location.check_ins.count
+    @today_check_ins = @location.check_ins.today.count
+    @week_check_ins  = @location.check_ins.this_week.count
+    @month_check_ins = @location.check_ins.this_month.count
+
+    user_counts     = @location.check_ins.where.not(user_id: nil).group(:user_id).count
+    user_last_times = @location.check_ins.where.not(user_id: nil).group(:user_id).maximum(:created_at)
+    users           = User.where(id: user_counts.keys).index_by(&:id)
+
+    guest_counts     = @location.check_ins.where(user_id: nil).group(:guest_name).count
+    guest_last_times = @location.check_ins.where(user_id: nil).group(:guest_name).maximum(:created_at)
+
+    user_rows = user_counts.map do |uid, count|
+      { user: users[uid], count: count, last_at: user_last_times[uid] }
+    end
+
+    guest_rows = guest_counts.map do |name, count|
+      { guest_name: name, count: count, last_at: guest_last_times[name] }
+    end
+
+    @user_stats       = (user_rows + guest_rows).sort_by { |s| -s[:count] }.first(20)
+    @recent_check_ins = @location.check_ins.ordered.includes(:user, :schedule_event).limit(20)
   end
 
   def location_params

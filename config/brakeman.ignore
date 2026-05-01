@@ -3,6 +3,74 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 2,
+      "fingerprint": "12473827a2d6171a1fa0681a679e2c94d5a513f5ff52d949436235ad52872282",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/pages/show.html.haml",
+      "line": 22,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "::Haml::AttributeBuilder.build_class(true, page_body_col_class(Current.tenant.homepage_page))",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "HomeController",
+          "method": "index",
+          "line": 19,
+          "file": "app/controllers/home_controller.rb",
+          "rendered": {
+            "name": "pages/show",
+            "file": "app/views/pages/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "pages/show"
+      },
+      "user_input": "Current.tenant.homepage_page",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "2ace9f2e26e3bef78d307569b7a02fb444d0f131a528d332798afb94608b43d1",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/pages/show.html.haml",
+      "line": 52,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "::Haml::AttributeBuilder.build_class(true, page_body_col_class((Current.tenant.homepage_page.children.published.order(:position, :id).with_attached_left_column_image.with_attached_right_column_image.with_attached_hero_image.find do\n (c.slug == params[:tab])\n end or Current.tenant.homepage_page.children.published.order(:position, :id).with_attached_left_column_image.with_attached_right_column_image.with_attached_hero_image.first)))",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "HomeController",
+          "method": "index",
+          "line": 19,
+          "file": "app/controllers/home_controller.rb",
+          "rendered": {
+            "name": "pages/show",
+            "file": "app/views/pages/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "pages/show"
+      },
+      "user_input": "Current.tenant.homepage_page",
+      "confidence": "Weak",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
       "fingerprint": "2b5441fa55fa9405336b323662001e1c88fb3c63e3cfec65a3540c931adc0143",
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
@@ -15,7 +83,7 @@
           "type": "controller",
           "class": "Admin::LotsController",
           "method": "show",
-          "line": 19,
+          "line": 20,
           "file": "app/controllers/admin/lots_controller.rb",
           "rendered": {
             "name": "admin/lots/show",
@@ -28,74 +96,6 @@
         "template": "admin/lots/show"
       },
       "user_input": "Lot.find_by!(:hashid => params[:hashid])",
-      "confidence": "Weak",
-      "cwe_id": [
-        79
-      ],
-      "note": ""
-    },
-    {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 2,
-      "fingerprint": "47bc04b78f3e047c4e76868df22efe857985fdb7a9e17e3dc3ef0f95af8d6708",
-      "check_name": "CrossSiteScripting",
-      "message": "Unescaped model attribute",
-      "file": "app/views/pages/show.html.haml",
-      "line": 60,
-      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "::Haml::AttributeBuilder.build_class(true, page_body_col_class((Page.published.find_by!(:slug => params[:slug]).children.published.order(:position, :id).with_attached_left_column_image.with_attached_right_column_image.with_attached_hero_image.find do\n (c.slug == params[:tab])\n end or Page.published.find_by!(:slug => params[:slug]).children.published.order(:position, :id).with_attached_left_column_image.with_attached_right_column_image.with_attached_hero_image.first)))",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "PagesController",
-          "method": "show",
-          "line": 13,
-          "file": "app/controllers/pages_controller.rb",
-          "rendered": {
-            "name": "pages/show",
-            "file": "app/views/pages/show.html.haml"
-          }
-        }
-      ],
-      "location": {
-        "type": "template",
-        "template": "pages/show"
-      },
-      "user_input": "Page.published.find_by!(:slug => params[:slug])",
-      "confidence": "Weak",
-      "cwe_id": [
-        79
-      ],
-      "note": ""
-    },
-    {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 2,
-      "fingerprint": "54aec348a61292018be402a825906a69bf44b254fbba6cd9e68cf9d39d9ae981",
-      "check_name": "CrossSiteScripting",
-      "message": "Unescaped model attribute",
-      "file": "app/views/pages/show.html.haml",
-      "line": 11,
-      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "::Haml::AttributeBuilder.build_class(true, \"bi #{Page.published.find_by!(:slug => params[:slug]).icon} me-2\")",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "PagesController",
-          "method": "show",
-          "line": 13,
-          "file": "app/controllers/pages_controller.rb",
-          "rendered": {
-            "name": "pages/show",
-            "file": "app/views/pages/show.html.haml"
-          }
-        }
-      ],
-      "location": {
-        "type": "template",
-        "template": "pages/show"
-      },
-      "user_input": "Page.published.find_by!(:slug => params[:slug])",
       "confidence": "Weak",
       "cwe_id": [
         79
@@ -122,40 +122,6 @@
       "confidence": "Weak",
       "cwe_id": [
         601
-      ],
-      "note": ""
-    },
-    {
-      "warning_type": "Cross-Site Scripting",
-      "warning_code": 2,
-      "fingerprint": "6d4bc94aff50bd033e0a0eae3c413ddfc2f358a34af97a37f8cb0fb990c49638",
-      "check_name": "CrossSiteScripting",
-      "message": "Unescaped model attribute",
-      "file": "app/views/pages/show.html.haml",
-      "line": 22,
-      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
-      "code": "::Haml::AttributeBuilder.build_class(true, page_body_col_class(Page.published.find_by!(:slug => params[:slug])))",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "PagesController",
-          "method": "show",
-          "line": 13,
-          "file": "app/controllers/pages_controller.rb",
-          "rendered": {
-            "name": "pages/show",
-            "file": "app/views/pages/show.html.haml"
-          }
-        }
-      ],
-      "location": {
-        "type": "template",
-        "template": "pages/show"
-      },
-      "user_input": "Page.published.find_by!(:slug => params[:slug])",
-      "confidence": "Weak",
-      "cwe_id": [
-        79
       ],
       "note": ""
     },
@@ -189,7 +155,7 @@
       "check_name": "CrossSiteScripting",
       "message": "Unescaped model attribute",
       "file": "app/views/layouts/application.html.haml",
-      "line": 26,
+      "line": 53,
       "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
       "code": "Current.tenant.notice.body",
       "render_path": [
@@ -211,6 +177,108 @@
       },
       "user_input": null,
       "confidence": "Medium",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "9164d570a2873a7336c67f81edbf37749336f7fb90344dd56058342b7a42e3ff",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/layouts/application.html.haml",
+      "line": 13,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "Current.tenant.ga4_measurement_id",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ActivationsController",
+          "method": "show",
+          "line": 6,
+          "file": "app/controllers/activations_controller.rb",
+          "rendered": {
+            "name": "layouts/application",
+            "file": "app/views/layouts/application.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "layouts/application"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "adf794737f56d6d15d096215b3939cdbd8bb6d84e007015548c2f397d46d5d8e",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/layouts/application.html.haml",
+      "line": 21,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "Current.tenant.facebook_pixel_id",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "ActivationsController",
+          "method": "show",
+          "line": 6,
+          "file": "app/controllers/activations_controller.rb",
+          "rendered": {
+            "name": "layouts/application",
+            "file": "app/views/layouts/application.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "layouts/application"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        79
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "c9e6606f047bba9165492c79ad00d4206761e0b9fef1d9ee7efe66cda82d74fc",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/pages/show.html.haml",
+      "line": 11,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "::Haml::AttributeBuilder.build_class(true, \"bi #{Current.tenant.homepage_page.icon} me-2\")",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "HomeController",
+          "method": "index",
+          "line": 19,
+          "file": "app/controllers/home_controller.rb",
+          "rendered": {
+            "name": "pages/show",
+            "file": "app/views/pages/show.html.haml"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "pages/show"
+      },
+      "user_input": "Current.tenant.homepage_page",
+      "confidence": "Weak",
       "cwe_id": [
         79
       ],

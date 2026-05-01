@@ -21,7 +21,7 @@
         %i.bi.bi-check-circle-fill.checkin-success-icon
         %h2.checkin-success-heading Checked in!
         - if @guest_name
-          %p.checkin-welcome= "Welcome, #{@guest_name}!"
+          %p.checkin-welcome Welcome, #{@guest_name}!
 
       .d-grid.gap-2
         = link_to new_session_path, class: "btn btn-lg btn-primary" do

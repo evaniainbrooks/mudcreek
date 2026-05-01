@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe SyncSquareTransactionsJob, type: :job do
-  let!(:tenant) { Tenant.create!(name: "Test", key: "test", default: true) }
+  let!(:tenant) { Tenant.create!(name: "Test", key: "test", default: true, features: { sync_square_pos_payments: true }) }
 
   let(:payments_api) { instance_double("Square::Payments::Client") }
   let(:mock_client)  { instance_double("Square::Client", payments: payments_api) }

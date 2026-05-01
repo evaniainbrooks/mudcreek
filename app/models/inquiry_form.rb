@@ -7,7 +7,7 @@ class InquiryForm < ApplicationRecord
   validates :name,                    presence: true
   validates :notification_recipient,  presence: true
   validates :redirect_path,            presence: true,
-                                      format: { with: /\A\//, message: "must start with /" }
+                                      format: { with: /\A\/[^\r\n]*\z/, message: "must be a valid relative path" }
   validates :slug,                    presence: true,
                                       format: { with: /\A[a-z0-9-]+\z/, message: "only lowercase letters, numbers, and hyphens" },
                                       uniqueness: { scope: :tenant_id }

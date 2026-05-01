@@ -40,7 +40,7 @@ RSpec.describe "Admin page widgets", type: :system, js: true do
     within(row) do
       find("[data-widget-type-select]").select(type)
       # Wait for JS to reveal the FK selector for this type, then pick the record.
-      find("[data-widget-type-fields='#{WIDGET_TYPE_CLASS[type]}'] select").select(resource_name)
+      find("[data-widget-type-fields~='#{WIDGET_TYPE_CLASS[type]}'] select").select(resource_name)
     end
   end
 

@@ -1,24 +1,24 @@
-= form_with model: [:admin, @location, @schedule] do |f|
-  - if @schedule.errors.any?
+= form_with model: [:admin, location, schedule] do |f|
+  - if schedule.errors.any?
     .alert.alert-danger.mb-4
       %ul.mb-0
-        - @schedule.errors.full_messages.each do |msg|
+        - schedule.errors.full_messages.each do |msg|
           %li= msg
 
   .mb-3
     = f.label :name, class: "form-label"
-    = f.text_field :name, class: "form-control #{'is-invalid' if @schedule.errors[:name].any?}",
+    = f.text_field :name, class: "form-control #{'is-invalid' if schedule.errors[:name].any?}",
         placeholder: "e.g. Team Events"
-    - if @schedule.errors[:name].any?
-      .invalid-feedback= @schedule.errors[:name].to_sentence
+    - if schedule.errors[:name].any?
+      .invalid-feedback= schedule.errors[:name].to_sentence
 
   .mb-3
     = f.label :source_url, "iCal / WebCal URL", class: "form-label"
-    = f.url_field :source_url, class: "form-control #{'is-invalid' if @schedule.errors[:source_url].any?}",
+    = f.url_field :source_url, class: "form-control #{'is-invalid' if schedule.errors[:source_url].any?}",
         placeholder: "https:// or webcal://"
     .form-text Leave blank to manage events manually.
-    - if @schedule.errors[:source_url].any?
-      .invalid-feedback= @schedule.errors[:source_url].to_sentence
+    - if schedule.errors[:source_url].any?
+      .invalid-feedback= schedule.errors[:source_url].to_sentence
 
   .mb-4
     .form-check

@@ -160,10 +160,10 @@ RSpec.describe "Admin::Locations", type: :request do
 
   # ------------------------------------------------------------------ #
   describe "GET /admin/locations/:id/edit" do
-    it "returns 200" do
+    it "redirects to show" do
       get edit_admin_location_path(location)
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to redirect_to(admin_location_path(location))
     end
   end
 

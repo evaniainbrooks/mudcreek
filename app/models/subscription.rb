@@ -15,7 +15,7 @@ class Subscription < ApplicationRecord
   validates :renews_at, presence: true
   validates :amount_cents, presence: true, numericality: { greater_than: 0 }, on: :update
 
-  before_create :copy_plan_amount
+  before_validation :copy_plan_amount, on: :create
 
   scope :due, -> { active.where(renews_at: ..Date.current) }
 

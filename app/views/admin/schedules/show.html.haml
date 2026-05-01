@@ -73,7 +73,7 @@
       #edit-pane.tab-pane.fade{ class: (@schedule.errors.any? ? "show active" : ""), role: "tabpanel", aria: { labelledby: "edit-tab" } }
         .card.shadow-sm.border-0
           .card-body.p-4
-            = render "form"
+            = render "form", location: @location, schedule: @schedule
 
         %dl.row.text-muted.small.mt-3
           %dt.col-sm-3 Last synced

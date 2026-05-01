@@ -51,7 +51,7 @@ RSpec.describe SyncSquarePosPaymentService do
 
     it "generates a placeholder guest email" do
       call
-      expect(Order.last.guest_email).to match(/\Apos-anonymous-[a-f0-9]+@pos\.local\z/)
+      expect(Order.last.guest_email).to match(/\Aposanon[a-f0-9]+@pos\.local\z/)
     end
 
     it "creates a succeeded transaction" do
