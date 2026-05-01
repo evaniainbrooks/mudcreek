@@ -13,6 +13,7 @@ class ScheduleEventsCalendarService
     def all_day?    = @event.all_day?
     def rrule       = []
     def bookable?   = @event.bookable?
+    def capacity    = @event.capacity
     def to_key      = @event.to_key
     def model_name  = @event.model_name
 

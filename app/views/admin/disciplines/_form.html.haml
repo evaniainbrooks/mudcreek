@@ -7,4 +7,9 @@
   .mb-3
     = f.label :name, class: "form-label required"
     = f.text_field :name, required: true, class: "form-control", placeholder: "e.g. Brazilian Jiu-Jitsu"
+  - if Current.tenant.features.kids?
+    .mb-3
+      .form-check
+        = f.check_box :kids, class: "form-check-input"
+        = f.label :kids, "Kids discipline (ranks only assignable to kids)", class: "form-check-label"
   = f.submit class: "btn btn-primary"

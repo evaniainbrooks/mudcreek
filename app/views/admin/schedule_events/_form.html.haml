@@ -86,6 +86,11 @@
         = f.check_box :bookable, class: "form-check-input"
         = f.label :bookable, "Bookable (members can register)", class: "form-check-label"
 
+    .col-md-4
+      = f.label :capacity, class: "form-label"
+      = f.number_field :capacity, class: "form-control", min: 1, placeholder: "Unlimited"
+      .form-text Leave blank for no limit.
+
   .d-flex.gap-2.mt-4
     = f.submit class: "btn btn-primary"
     = link_to "Cancel", admin_location_schedule_path(location, schedule), class: "btn btn-outline-secondary"

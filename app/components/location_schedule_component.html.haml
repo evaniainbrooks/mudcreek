@@ -42,7 +42,8 @@
                                       .joins(:schedule_event_session)
                                       .find_by(schedule_event_sessions: { schedule_event_id: event.id, occurs_on: today },
                                                status: :confirmed)
-                  = render "schedule_event_registrations/button", event: event, occurs_on: today, registration: reg
+                    event_session = ScheduleEventSession.find_by(schedule_event_id: event.id, occurs_on: today)
+                  = render "schedule_event_registrations/button", event: event, occurs_on: today, registration: reg, session: event_session
             - if event.description.to_s.strip.present?
               .mt-1.text-muted{ style: "font-size: 0.85rem" }= simple_format(event.description.to_s)
 
@@ -107,8 +108,9 @@
                                             .joins(:schedule_event_session)
                                             .find_by(schedule_event_sessions: { schedule_event_id: event.id, occurs_on: occurs_on },
                                                      status: :confirmed)
+                          event_session = ScheduleEventSession.find_by(schedule_event_id: event.id, occurs_on: occurs_on)
                         .mt-1
-                          = render "schedule_event_registrations/button", event: event, occurs_on: occurs_on, registration: reg
+                          = render "schedule_event_registrations/button", event: event, occurs_on: occurs_on, registration: reg, session: event_session
 
     - if described_events.any?
       .mt-4

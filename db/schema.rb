@@ -232,6 +232,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
 
   create_table "disciplines", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.boolean "kids", default: false, null: false
     t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
@@ -917,6 +918,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   create_table "schedule_events", force: :cascade do |t|
     t.boolean "all_day", default: false, null: false
     t.boolean "bookable", default: false, null: false
+    t.integer "capacity"
     t.datetime "created_at", null: false
     t.text "description"
     t.datetime "ends_at"

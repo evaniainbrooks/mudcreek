@@ -21,7 +21,16 @@ class ScheduleEventRegistrationsController < ApplicationController
       render turbo_stream: turbo_stream.replace(
         ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
-        locals: { event: event, occurs_on: date, registration: existing }
+        locals: { event: event, occurs_on: date, registration: existing, session: session }
+      )
+      return
+    end
+
+    if event.capacity.present? && session.confirmed_registrations.count >= event.capacity
+      render turbo_stream: turbo_stream.replace(
+        ActionView::RecordIdentifier.dom_id(event, :registration),
+        partial: "schedule_event_registrations/button",
+        locals: { event:, occurs_on: date, registration: nil, session:, error: "This event is full." }
       )
       return
     end
@@ -38,13 +47,13 @@ class ScheduleEventRegistrationsController < ApplicationController
       render turbo_stream: turbo_stream.replace(
         ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
-        locals: { event:, occurs_on: date, registration: @registration }
+        locals: { event:, occurs_on: date, registration: @registration, session: }
       )
     else
       render turbo_stream: turbo_stream.replace(
         ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
-        locals: { event:, occurs_on: date, registration: nil, error: @registration.errors.full_messages.first }
+        locals: { event:, occurs_on: date, registration: nil, session:, error: @registration.errors.full_messages.first }
       )
     end
   end
@@ -53,12 +62,13 @@ class ScheduleEventRegistrationsController < ApplicationController
     @registration = Current.user.schedule_event_registrations.find(params[:id])
     event         = @registration.schedule_event_session.schedule_event
     occurs_on     = @registration.schedule_event_session.occurs_on
+    event_session = @registration.schedule_event_session
     @registration.update!(status: :cancelled)
 
     render turbo_stream: turbo_stream.replace(
       ActionView::RecordIdentifier.dom_id(event, :registration),
       partial: "schedule_event_registrations/button",
-      locals: { event: event, occurs_on: occurs_on, registration: nil }
+      locals: { event: event, occurs_on: occurs_on, registration: nil, session: event_session }
     )
   end
 end

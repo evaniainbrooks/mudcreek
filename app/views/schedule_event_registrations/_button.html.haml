@@ -1,5 +1,11 @@
 - error ||= nil
+- session ||= nil
+- registered_count = session&.confirmed_registrations&.count || 0
+- at_capacity = event.capacity.present? && registered_count >= event.capacity
 %span{ id: dom_id(event, :registration) }
+  - if event.capacity.present?
+    %small.d-block.mb-1{ class: at_capacity ? "text-danger" : "text-muted" }
+      = "#{registered_count} of #{event.capacity} registered"
   - if registration&.confirmed?
     = button_to schedule_event_registration_path(registration), method: :delete,
         class: "btn btn-sm btn-success",
@@ -13,6 +19,7 @@
     = button_to schedule_event_registrations_path,
         params: { schedule_event_id: event.id, occurs_on: occurs_on.to_s, schedule_event_pass_id: pass&.id },
         class: "btn btn-sm btn-outline-primary",
+        disabled: at_capacity,
         data: { turbo: true } do
       %i.bi.bi-calendar-plus.me-1
-      Register
+      = at_capacity ? "Full" : "Register"
