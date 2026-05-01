@@ -50,3 +50,6 @@ yarn-error.log
 .vscode/
 *.swp
 *.swo
+
+# Dangerous
+deploy.sh
