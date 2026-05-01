@@ -15,9 +15,15 @@ module Admin::OrdersHelper
     table.with_column("Order", sort_attr: :number) { |o| link_to(o.number, admin_order_path(o), class: "fw-semibold") }
     table.with_value_column("Buyer") { it.user }
     table.with_column("Items", html_class: "text-center") { |o| o.order_items.size }
-    table.with_column("Source") { |o| o.manual? ? content_tag(:span, "Manual", class: "badge text-bg-warning") : nil }
+    table.with_column("Source") do |o|
+      case o.source
+      when "manual" then content_tag(:span, "Manual", class: "badge text-bg-warning")
+      when "pos"    then content_tag(:span, "POS",    class: "badge text-bg-info")
+      else               content_tag(:span, "Online", class: "badge text-bg-secondary")
+      end
+    end
     table.with_column("Status", sort_attr: :status) { |o| order_status_badge(o) }
     table.with_value_column("Total", sort_attr: :total_cents) { it.total }
-    table.with_value_column("Date", sort_attr: :created_at) { it.created_at }
+    table.with_value_column("Date", sort_attr: :created_at) { it.effective_date }
   end
 end

@@ -17,16 +17,16 @@
         = image_tag kiosk.logo, class: "checkin-logo", alt: @location.name
       %h1.checkin-location= @location.name
 
-      = link_to new_session_path, class: "btn btn-lg w-100 btn-primary mb-2 d-block" do
-        Sign In
+      .d-grid.gap-2
+        = link_to new_session_path, class: "btn btn-lg btn-primary" do
+          Sign In
 
-      - if listing
-        = button_to purchase_drop_in_location_checkin_path(@location),
-            method: :post,
-            class: "btn btn-lg w-100 checkin-close-btn",
-            form: { class: "d-block mb-2" },
-            data: { turbo: false } do
-          Buy Drop-In Pass – #{listing.price.format}
+        - if listing
+          = button_to purchase_drop_in_location_checkin_path(@location),
+              method: :post,
+              class: "btn btn-lg checkin-close-btn",
+              data: { turbo: false } do
+            Buy Drop-In Pass – #{listing.price.format}
 
       = link_to exit_url, class: "checkin-skip-link mt-4 d-block", allow_other_host: true do
         Skip

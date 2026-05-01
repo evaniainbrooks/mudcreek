@@ -36,7 +36,7 @@ class LocationCheckInsController < ApplicationController
     if @guest_checked_in && @today_schedule_events.one?
       check_in = CheckIn.find_by(id: session.delete(:check_in_id))
       apply_event(check_in, @today_schedule_events.first)
-      @today_schedule_events = []
+      redirect_to guest_prompt_location_checkin_path(@location) and return
     end
   end
 

@@ -85,6 +85,7 @@ resource :session
     resource :tenant, only: [ :show, :update ]
     resources :users, only: [ :index, :show, :new, :create, :update ] do
       member { post :resend_activation }
+      resource :disablement, only: [ :create, :destroy ], module: :users
     end
     resources :lots, only: [ :index, :create, :show, :update, :destroy ], param: :hashid do
       resource :listing_placeholder, only: [ :destroy ], module: :lots

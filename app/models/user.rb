@@ -44,6 +44,7 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :kids, allow_destroy: true, reject_if: :all_blank
 
   scope :activated, -> { where.not(activated_at: nil) }
+  scope :active,    -> { where(disabled_at: nil) }
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
@@ -58,6 +59,10 @@ class User < ApplicationRecord
 
   def activated?
     activated_at.present?
+  end
+
+  def disabled?
+    disabled_at.present?
   end
 
   def self.ransackable_attributes(_auth_object = nil)

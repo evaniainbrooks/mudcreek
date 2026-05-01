@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_30_232454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -448,7 +448,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_000003) do
     t.index ["subscription_plan_id"], name: "index_listings_on_subscription_plan_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -717,6 +717,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_000003) do
     t.string "postal_code"
     t.string "province"
     t.string "source", default: "online", null: false
+    t.datetime "square_created_at"
     t.string "square_payment_id"
     t.string "status", default: "pending", null: false
     t.string "street_address"
@@ -1206,6 +1207,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_000003) do
     t.datetime "created_at", null: false
     t.bigint "created_by_id"
     t.string "default_square_card_id"
+    t.datetime "disabled_at"
+    t.string "disabled_email_address"
     t.string "email_address", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false

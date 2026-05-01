@@ -31,6 +31,7 @@ class Order < ApplicationRecord
   after_update_commit :fulfill_class_products,    if: -> { saved_change_to_status?(to: "paid") }
 
   def currency = tenant&.currency
+  def effective_date = (pos? && square_created_at) ? square_created_at : created_at
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[status created_at]

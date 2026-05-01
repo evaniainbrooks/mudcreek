@@ -77,7 +77,7 @@ class Admin::UsersController < Admin::BaseController
   def load_kids_tab
     @filter_total = Kid.count
     @q = Kid.ransack(params[:q])
-    scope = @q.result.includes(:user).order(:name)
+    scope = @q.result.includes(:user).joins(:user).merge(User.active).order(:name)
     @filter_count = scope.count
     @kids = scope
   end
@@ -92,7 +92,7 @@ class Admin::UsersController < Admin::BaseController
   def upcoming_birthdays(today, window_end)
     entries = []
 
-    User.where.not(birthdate: nil).includes(:role).find_each do |user|
+    User.active.where.not(birthdate: nil).includes(:role).find_each do |user|
       next_bday = next_birthday(user.birthdate, today)
       entries << { type: :user, record: user, next_birthday: next_bday } if next_bday <= window_end
     end

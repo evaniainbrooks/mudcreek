@@ -42,6 +42,7 @@ class SyncSquarePosPaymentService
       delivery_price_cents: 0,
       discount_cents:       0,
       square_payment_id:    @payment_data["id"],
+      square_created_at:    @payment_data["created_at"] ? Time.parse(@payment_data["created_at"]) : nil,
       user:,
       guest_email:          user ? nil : guest_email
     }
