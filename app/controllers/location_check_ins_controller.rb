@@ -49,10 +49,10 @@ class LocationCheckInsController < ApplicationController
     registration  = resolve_registration(check_in, event_id)
     check_in&.update(schedule_event_id: event_id, schedule_event_registration: registration)
 
-    if check_in&.user_id.nil?
-      redirect_to guest_prompt_location_checkin_path(@location)
-    else
+    if Current.user
       redirect_to exit_url, allow_other_host: true
+    else
+      redirect_to guest_prompt_location_checkin_path(@location)
     end
   end
 
