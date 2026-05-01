@@ -24,8 +24,8 @@
           %p.checkin-welcome Welcome, #{@guest_name}!
 
       .d-grid.gap-2
-        = link_to new_session_path, class: "btn btn-lg btn-primary" do
-          Sign In
+        = link_to new_session_path(anchor: "create-account"), class: "btn btn-lg btn-primary" do
+          Create Account
 
         - if listing
           = button_to purchase_drop_in_location_checkin_path(@location),
