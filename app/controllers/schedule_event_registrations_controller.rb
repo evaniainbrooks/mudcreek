@@ -19,7 +19,7 @@ class ScheduleEventRegistrationsController < ApplicationController
 
     if existing
       render turbo_stream: turbo_stream.replace(
-        dom_id(event, :registration),
+        ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
         locals: { event: event, occurs_on: date, registration: existing }
       )
