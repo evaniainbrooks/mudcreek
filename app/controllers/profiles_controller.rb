@@ -2,6 +2,9 @@ class ProfilesController < ApplicationController
   def edit
     @user = Current.user
     @user.build_address unless @user.address
+    if Current.tenant.features.ranks?
+      @user_ranks_by_discipline = @user.rank_awards.ordered.includes(rank: :discipline).group_by(&:discipline)
+    end
   end
 
   def update

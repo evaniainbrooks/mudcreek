@@ -1,0 +1,2 @@
+class RankPolicy < ApplicationPolicy
+end

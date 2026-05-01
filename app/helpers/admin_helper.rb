@@ -29,6 +29,7 @@ module AdminHelper
     sections << { title: "Sales", icon: "bi-basket-fill", links: sales_links } if sales_links.any?
 
     settings_links = []
+    settings_links << { label: "Disciplines",    icon: "bi-award",             path: admin_disciplines_path        } if Current.tenant.features.ranks? && policy(Discipline).index?
     settings_links << { label: "Email Aliases", icon: "bi-envelope-at",       path: admin_email_aliases_path      } if policy(EmailAlias).index?
     settings_links << { label: "Navbar",        icon: "bi-list-ul",           path: admin_navbar_items_path       } if policy(NavbarItem).index?
     settings_links << { label: "Pages",         icon: "bi-file-earmark-text", path: admin_pages_path              } if policy(Page).index?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_30_232454) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_01_011308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -228,6 +228,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_232454) do
     t.datetime "updated_at", null: false
     t.index "tenant_id, lower((name)::text)", name: "index_delivery_methods_on_tenant_id_and_lower_name", unique: true
     t.check_constraint "price_cents >= 0", name: "delivery_methods_price_cents_non_negative"
+  end
+
+  create_table "disciplines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "name"], name: "index_disciplines_on_tenant_id_and_name", unique: true
+    t.index ["tenant_id"], name: "index_disciplines_on_tenant_id"
   end
 
   create_table "discount_codes", force: :cascade do |t|
@@ -818,6 +827,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_232454) do
     t.index ["qr_code_id"], name: "index_qr_scans_on_qr_code_id"
   end
 
+  create_table "rank_awards", force: :cascade do |t|
+    t.date "awarded_at", null: false
+    t.bigint "awarded_by_id"
+    t.datetime "created_at", null: false
+    t.text "notes"
+    t.bigint "rank_id", null: false
+    t.bigint "rankable_id", null: false
+    t.string "rankable_type", null: false
+    t.integer "stripes", default: 0, null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["awarded_by_id"], name: "index_rank_awards_on_awarded_by_id"
+    t.index ["rank_id"], name: "index_rank_awards_on_rank_id"
+    t.index ["rankable_type", "rankable_id"], name: "index_rank_awards_on_rankable_type_and_rankable_id"
+    t.index ["tenant_id"], name: "index_rank_awards_on_tenant_id"
+  end
+
+  create_table "ranks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "discipline_id", null: false
+    t.string "name", null: false
+    t.integer "position", null: false
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discipline_id", "name"], name: "index_ranks_on_discipline_id_and_name", unique: true
+    t.index ["discipline_id"], name: "index_ranks_on_discipline_id"
+    t.index ["tenant_id"], name: "index_ranks_on_tenant_id"
+  end
+
   create_table "rental_bookings", force: :cascade do |t|
     t.bigint "cart_item_id"
     t.datetime "created_at", null: false
@@ -1292,6 +1330,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_232454) do
   add_foreign_key "check_ins", "users"
   add_foreign_key "cloudflare_turnstile_widgets", "tenants", on_delete: :cascade
   add_foreign_key "delivery_methods", "tenants"
+  add_foreign_key "disciplines", "tenants"
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "email_aliases", "tenants", on_delete: :cascade
   add_foreign_key "galleries", "listings", on_delete: :cascade
@@ -1381,6 +1420,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_232454) do
   add_foreign_key "qr_codes", "users", column: "notify_user_id", validate: false
   add_foreign_key "qr_codes", "users", column: "owner_id", on_delete: :nullify
   add_foreign_key "qr_scans", "qr_codes"
+  add_foreign_key "rank_awards", "ranks"
+  add_foreign_key "rank_awards", "tenants"
+  add_foreign_key "rank_awards", "users", column: "awarded_by_id"
+  add_foreign_key "ranks", "disciplines"
+  add_foreign_key "ranks", "tenants"
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"

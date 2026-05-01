@@ -1,0 +1,56 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-award.me-2
+    = @discipline.name
+  = link_to edit_admin_discipline_path(@discipline), class: "btn btn-outline-secondary" do
+    %i.bi.bi-pencil.me-1
+    Edit
+
+.page-container
+  .row.g-4
+    .col-12.col-lg-6
+      .card.shadow-sm.border-0
+        .card-body
+          %h5.card-title.mb-3 Belt / Rank Levels
+          - if @ranks.any?
+            %table.table.mb-0
+              %thead
+                %tr
+                  %th Position
+                  %th Name
+                  %th
+              %tbody
+                - @ranks.each do |rank|
+                  %tr
+                    %td= rank.position
+                    %td= rank.name
+                    %td.text-end
+                      = link_to "Edit", edit_admin_discipline_rank_path(@discipline, rank), class: "btn btn-sm btn-outline-secondary me-1"
+                      = button_to "Delete", admin_discipline_rank_path(@discipline, rank), method: :delete,
+                          class: "btn btn-sm btn-outline-danger",
+                          form: { data: { turbo_confirm: "Delete #{rank.name}?" } }
+          - else
+            %p.text-muted No ranks defined yet.
+
+    .col-12.col-lg-6
+      .card.shadow-sm.border-0
+        .card-body
+          %h5.card-title.mb-3 Add Rank
+          = form_with model: [ :admin, @discipline, Rank.new ] do |f|
+            - if @rank&.errors&.any?
+              .alert.alert-danger
+                %ul.mb-0
+                  - @rank.errors.full_messages.each do |msg|
+                    %li= msg
+            .mb-3
+              = f.label :name, class: "form-label"
+              = f.text_field :name, class: "form-control", placeholder: "e.g. White, Blue, Purple"
+            .mb-3
+              = f.label :position, class: "form-label"
+              = f.number_field :position, class: "form-control", min: 1, placeholder: "1"
+            = f.submit "Add Rank", class: "btn btn-primary"
+
+  .mt-3
+    = link_to admin_disciplines_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Disciplines

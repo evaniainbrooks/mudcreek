@@ -37,6 +37,8 @@ class User < ApplicationRecord
   has_many :subscription_users, dependent: :destroy
   has_many :subscriptions, through: :subscription_users
   has_many :kids, dependent: :destroy
+  has_many :rank_awards, as: :rankable, dependent: :destroy
+  has_many :awarded_rank_awards, class_name: "RankAward", foreign_key: :awarded_by_id, dependent: :nullify
 
   before_destroy { Address.where(addressable: self).delete_all }
   accepts_nested_attributes_for :address, update_only: true

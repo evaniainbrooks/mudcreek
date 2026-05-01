@@ -2,6 +2,7 @@ class Kid < ApplicationRecord
   include MultiTenant
 
   belongs_to :user
+  has_many :rank_awards, as: :rankable, dependent: :destroy
 
   validates :name, presence: true
   validates :birthdate, presence: true

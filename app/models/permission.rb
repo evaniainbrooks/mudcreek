@@ -8,6 +8,7 @@ class Permission < ApplicationRecord
     Bid
     Cloudflare::TurnstileWidget
     DeliveryMethod
+    Discipline
     DiscountCode
     EmailAlias
     Gallery
@@ -36,6 +37,8 @@ class Permission < ApplicationRecord
     Permission
     Postmark::Domain
     QrCode
+    Rank
+    RankAward
     Role
     Schedule
     ScheduleEvent

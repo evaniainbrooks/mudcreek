@@ -83,6 +83,10 @@ resource :session
   namespace :admin do
     root to: "dashboard#index"
     resource :tenant, only: [ :show, :update ]
+    resources :disciplines do
+      resources :ranks, only: [ :create, :edit, :update, :destroy ]
+    end
+    resources :rank_awards, only: [ :create, :destroy ]
     resources :users, only: [ :index, :show, :new, :create, :update ] do
       member { post :resend_activation }
       resource :disablement, only: [ :create, :destroy ], module: :users

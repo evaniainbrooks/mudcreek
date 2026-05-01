@@ -25,6 +25,13 @@
           aria: { controls: "checkins-pane", selected: @active_tab == "checkins" } do
         %i.bi.bi-clock-history.me-1
         Check-ins
+    - if Current.tenant.features.ranks?
+      %li.nav-item{ role: "presentation" }
+        = link_to admin_user_path(@user, tab: "ranks"), class: "nav-link #{"active" if @active_tab == "ranks"}",
+            id: "ranks-tab", role: "tab",
+            aria: { controls: "ranks-pane", selected: @active_tab == "ranks" } do
+          %i.bi.bi-award.me-1
+          Ranks
 
   .p-4
     .tab-content
@@ -125,6 +132,11 @@
                   %i.bi.bi-chevron-right.ms-1
         - else
           .text-muted.text-center.py-4 No check-ins yet.
+
+      - if Current.tenant.features.ranks?
+        #ranks-pane.tab-pane.fade{role: "tabpanel", aria: { labelledby: "ranks-tab" },
+            class: @active_tab == "ranks" ? "show active" : ""}
+          = render "ranks_pane", user: @user, disciplines: @disciplines, user_rank_awards: @user_rank_awards, kid_rank_awards: @kid_rank_awards
 
     .mt-3
       = link_to admin_users_path, class: "btn btn-outline-secondary" do

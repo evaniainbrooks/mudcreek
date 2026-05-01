@@ -10,6 +10,7 @@ class Tenant::Features
   attribute :listing_variants,    :boolean, default: false
   attribute :user_verifications,  :boolean, default: false
   attribute :hide_powered_by,          :boolean, default: false
+  attribute :ranks,                    :boolean, default: false
   attribute :sync_square_pos_payments, :boolean, default: false
 
   DESCRIPTIONS = {
@@ -22,6 +23,7 @@ class Tenant::Features
     user_verifications:      "Require users to upload a verification document before accessing the platform.",
     oauth_login:             "Enable sign-in with third-party OAuth providers.",
     hide_powered_by:         'Hide the "Powered by Podium" label in the site footer.',
+    ranks:                    "Track belt/rank progression for members and kids.",
     sync_square_pos_payments: "Sync Square POS payments into the ledger."
   }.freeze
 end

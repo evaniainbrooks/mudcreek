@@ -1,0 +1,2 @@
+class DisciplinePolicy < ApplicationPolicy
+end

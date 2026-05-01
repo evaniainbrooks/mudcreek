@@ -1,0 +1,26 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-award.me-2
+    Edit Rank — #{@discipline.name}
+
+.page-container
+  .card.shadow-sm.border-0
+    .card-body
+      = form_with model: [ :admin, @discipline, @rank ] do |f|
+        - if @rank.errors.any?
+          .alert.alert-danger
+            %ul.mb-0
+              - @rank.errors.full_messages.each do |msg|
+                %li= msg
+        .mb-3
+          = f.label :name, class: "form-label required"
+          = f.text_field :name, required: true, class: "form-control"
+        .mb-3
+          = f.label :position, class: "form-label required"
+          = f.number_field :position, required: true, class: "form-control", min: 1
+        = f.submit "Save", class: "btn btn-primary"
+
+  .mt-3
+    = link_to admin_discipline_path(@discipline), class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to #{@discipline.name}

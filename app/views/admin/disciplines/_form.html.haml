@@ -1,0 +1,10 @@
+= form_with model: [ :admin, discipline ] do |f|
+  - if discipline.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - discipline.errors.full_messages.each do |msg|
+          %li= msg
+  .mb-3
+    = f.label :name, class: "form-label required"
+    = f.text_field :name, required: true, class: "form-control", placeholder: "e.g. Brazilian Jiu-Jitsu"
+  = f.submit class: "btn btn-primary"

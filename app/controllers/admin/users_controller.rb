@@ -16,10 +16,7 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def show
-    @roles = Role.order(:name)
-    @active_tab = active_show_tab
-    scope = @user.check_ins.ordered.includes(:location, :schedule_event)
-    @pagy_checkins, @check_ins = pagy(scope, limit: 20)
+    load_show_data
   end
 
   def resend_activation
@@ -56,7 +53,7 @@ class Admin::UsersController < Admin::BaseController
       update_verification_from_params
       redirect_to admin_user_path(@user), notice: "User updated."
     else
-      @roles = Role.order(:name)
+      load_show_data
       render :show, status: :unprocessable_content
     end
   end
@@ -68,9 +65,21 @@ class Admin::UsersController < Admin::BaseController
     authorize(@user)
   end
 
+  def load_show_data
+    @roles = Role.order(:name)
+    @active_tab = active_show_tab
+    scope = @user.check_ins.ordered.includes(:location, :schedule_event)
+    @pagy_checkins, @check_ins = pagy(scope, limit: 20)
+    if @active_tab == "ranks" && Current.tenant.features.ranks?
+      @disciplines = Discipline.ordered.includes(:ranks)
+      @user_rank_awards = @user.rank_awards.ordered.includes(rank: :discipline, awarded_by: [])
+      @kid_rank_awards = @user.kids.includes(rank_awards: [ rank: :discipline, awarded_by: [] ])
+    end
+  end
+
   def active_show_tab
     return "edit" if @user.errors.any?
-    params[:tab].presence_in(%w[details edit checkins]) || "details"
+    params[:tab].presence_in(%w[details edit checkins ranks]) || "details"
   end
 
   def load_users_tab

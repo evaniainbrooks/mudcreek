@@ -79,7 +79,7 @@
               .col-sm-3.d-flex.align-items-center.gap-2.pt-4
                 = k.check_box :_destroy, class: "form-check-input"
                 = k.label :_destroy, "Remove", class: "form-check-label small text-danger"
-          = f.fields_for :kids, Kid.new, child_index: @user.kids.size do |k|
+          = f.fields_for :kids, Kid.new, child_index: user.kids.size do |k|
             .row.g-2.mb-2.align-items-end
               .col-sm-5
                 = k.label :name, class: "form-label"
@@ -88,5 +88,24 @@
                 = k.label :birthdate, class: "form-label"
                 = k.date_field :birthdate, class: "form-control form-control-sm"
               .col-sm-3
+  - if Current.tenant.features.ranks?
+    .col-12
+      .card.shadow-sm.border-0
+        .card-body.p-4
+          %h2.card-title.h5.mb-4
+            %i.bi.bi-award.me-2
+            Ranks
+          - if user_ranks_by_discipline&.any?
+            - user_ranks_by_discipline.each do |discipline, awards|
+              - current = awards.first
+              .mb-3
+                %h6.fw-semibold= discipline.name
+                .d-flex.align-items-center.gap-2
+                  %span.badge.text-bg-primary= current.rank.name
+                  - current.stripes.times do
+                    %i.bi.bi-star-fill.text-warning
+                %small.text-muted Awarded #{current.awarded_at.to_fs(:long)}
+          - else
+            %span.text-muted No ranks recorded yet.
   .d-flex.justify-content-end.mt-4
     = f.submit "Save changes", class: "btn btn-primary px-4"

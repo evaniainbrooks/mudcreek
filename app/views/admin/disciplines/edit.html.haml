@@ -1,0 +1,14 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-award.me-2
+    Edit Discipline
+
+.page-container
+  .card.shadow-sm.border-0
+    .card-body
+      = render "form", discipline: @discipline
+
+  .mt-3
+    = link_to admin_discipline_path(@discipline), class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back
