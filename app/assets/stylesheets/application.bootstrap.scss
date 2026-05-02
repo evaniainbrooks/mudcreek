@@ -29,6 +29,14 @@ $app-border-color: rgba(0, 0, 0, 0.12);
   box-shadow: $app-shadow;
 }
 
+// On md+, show both sign-in/create-account panes side-by-side regardless of tab state
+@include media-breakpoint-up(md) {
+  .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+  }
+}
+
 // Rotate chevron icon when its sibling collapse panel is open
 [data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
   transform: rotate(180deg);
