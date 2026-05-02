@@ -4,8 +4,8 @@ module AuthenticationHelpers
     within(".signin-card") do
       fill_in "Email address", with: user.email_address
       fill_in "Password", with: password
+      click_button "Sign in"
     end
-    click_button "Sign in"
   end
 end
 
