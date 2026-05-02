@@ -12,6 +12,9 @@ class PagesController < ApplicationController
     preload_widget_associations(@widgets)
     @child_widgets = @active_child ? @active_child.widgets.to_a : []
     preload_widget_associations(@child_widgets)
+
+    tenant_template = "pages/#{Current.tenant.key}/#{@page.slug}"
+    render tenant_template if lookup_context.template_exists?(tenant_template, [], false)
   end
 
   private

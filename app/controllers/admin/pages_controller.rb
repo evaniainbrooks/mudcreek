@@ -14,6 +14,8 @@ class Admin::PagesController < Admin::BaseController
 
   def edit
     @widget_collections = build_widget_collections
+    tenant_template = "pages/#{Current.tenant.key}/#{@page.slug}"
+    @template_override = lookup_context.template_exists?(tenant_template, [], false)
   end
 
   def create
