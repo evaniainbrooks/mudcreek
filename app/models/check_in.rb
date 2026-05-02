@@ -6,6 +6,8 @@ class CheckIn < ApplicationRecord
   belongs_to :schedule_event, optional: true
   belongs_to :schedule_event_registration, optional: true
 
+  native_enum :source, %i[kiosk schedule admin], default: "kiosk"
+
   validates :guest_name, presence: true, if: -> { user_id.nil? }
   validates :schedule_event_registration_id, uniqueness: true, allow_nil: true
 

@@ -40,7 +40,7 @@ class ScheduleEventRegistrationsController < ApplicationController
       schedule_event_session: session,
       schedule_event_pass: pass,
       tenant: Current.tenant,
-      check_in_attributes: { user: Current.user, location: event.schedule.location, schedule_event: event }
+      check_in_attributes: { user: Current.user, location: event.schedule.location, schedule_event: event, source: :schedule }
     )
 
     if @registration.save

@@ -14,7 +14,7 @@ class LocationCheckInsController < ApplicationController
     @today_schedule_events = load_today_schedule_events
 
     if Current.user && !bot_request?
-      @check_in = @location.check_ins.build(user: Current.user)
+      @check_in = @location.check_ins.build(user: Current.user, source: :kiosk)
       if @check_in.save
         if @today_schedule_events.one?
           apply_event(@check_in, @today_schedule_events.first)
@@ -44,7 +44,7 @@ class LocationCheckInsController < ApplicationController
   def create
     return head :ok if bot_request?
 
-    @check_in = @location.check_ins.build(guest_name: check_in_params[:guest_name])
+    @check_in = @location.check_ins.build(guest_name: check_in_params[:guest_name], source: :kiosk)
     if @check_in.save
       session[:guest_checked_in] = @check_in.guest_name
       session[:check_in_id]      = @check_in.id
