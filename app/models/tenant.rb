@@ -48,6 +48,14 @@ class Tenant < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
   has_many :kids, dependent: :destroy
 
+  has_many :disciplines, dependent: :destroy
+  has_many :ranks, dependent: :destroy
+  has_many :rank_awards, dependent: :destroy
+  has_many :schedule_event_passes, dependent: :destroy
+  has_many :schedule_event_registrations, dependent: :destroy
+  has_many :schedule_event_sessions, dependent: :destroy
+  has_many :subscription_users, dependent: :destroy
+
   has_many :social_media_accounts, dependent: :destroy
   has_many :property_sets, class_name: "Listings::PropertySet", dependent: :destroy
   has_many :delivery_method_sets, class_name: "Listings::DeliveryMethodSet", dependent: :destroy

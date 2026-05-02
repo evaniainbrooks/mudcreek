@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_02_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -202,7 +202,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
     t.bigint "user_id"
     t.index ["location_id", "created_at"], name: "index_check_ins_on_location_id_and_created_at"
     t.index ["schedule_event_id"], name: "index_check_ins_on_schedule_event_id"
-    t.index ["schedule_event_registration_id"], name: "index_check_ins_on_schedule_event_registration_id"
+    t.index ["schedule_event_registration_id"], name: "index_check_ins_on_schedule_event_registration_id", unique: true, where: "(schedule_event_registration_id IS NOT NULL)"
     t.index ["tenant_id"], name: "index_check_ins_on_tenant_id"
     t.index ["user_id", "location_id"], name: "index_check_ins_on_user_id_and_location_id"
     t.check_constraint "user_id IS NOT NULL OR guest_name IS NOT NULL", name: "check_ins_user_or_guest_name_present"
@@ -457,7 +457,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
     t.index ["subscription_plan_id"], name: "index_listings_on_subscription_plan_id"
     t.check_constraint "owner_id IS NOT NULL OR lot_id IS NOT NULL", name: "listings_owner_or_lot_present"
     t.check_constraint "price_cents >= 0", name: "listings_price_cents_non_negative"
-    t.check_constraint "quantity >= 0", name: "listings_quantity_non_negative"
+    t.check_constraint "quantity IS NULL OR quantity >= 0", name: "listings_quantity_non_negative"
     t.unique_constraint ["tenant_id", "position"], deferrable: :deferred, name: "uq_listings_tenant_position"
   end
 
@@ -1324,13 +1324,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
   add_foreign_key "check_ins", "locations"
-  add_foreign_key "check_ins", "schedule_event_registrations", on_delete: :nullify, validate: false
-  add_foreign_key "check_ins", "schedule_events", on_delete: :nullify, validate: false
+  add_foreign_key "check_ins", "schedule_event_registrations", on_delete: :nullify
+  add_foreign_key "check_ins", "schedule_events", on_delete: :nullify
   add_foreign_key "check_ins", "tenants", on_delete: :cascade
   add_foreign_key "check_ins", "users"
   add_foreign_key "cloudflare_turnstile_widgets", "tenants", on_delete: :cascade
   add_foreign_key "delivery_methods", "tenants"
-  add_foreign_key "disciplines", "tenants", on_delete: :cascade, validate: false
+  add_foreign_key "disciplines", "tenants", on_delete: :cascade
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "email_aliases", "tenants", on_delete: :cascade
   add_foreign_key "galleries", "listings", on_delete: :cascade
@@ -1338,7 +1338,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "improvmx_domains", "tenants", on_delete: :cascade
   add_foreign_key "inquiries", "inquiry_forms"
   add_foreign_key "inquiries", "tenants"
-  add_foreign_key "inquiries", "users", column: "owner_id", on_delete: :nullify, validate: false
+  add_foreign_key "inquiries", "users", column: "owner_id", on_delete: :nullify
   add_foreign_key "inquiries", "users", on_delete: :nullify
   add_foreign_key "inquiry_forms", "tenants"
   add_foreign_key "inquiry_forms", "users", column: "notification_recipient_id"
@@ -1351,9 +1351,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "invoices", "users"
   add_foreign_key "kids", "tenants"
   add_foreign_key "kids", "users"
-  add_foreign_key "kiosks", "listings", column: "drop_in_pass_listing_id", on_delete: :nullify, validate: false
+  add_foreign_key "kiosks", "listings", column: "drop_in_pass_listing_id", on_delete: :nullify
   add_foreign_key "kiosks", "locations", on_delete: :cascade
-  add_foreign_key "kiosks", "schedules", on_delete: :nullify, validate: false
+  add_foreign_key "kiosks", "schedules", on_delete: :nullify
   add_foreign_key "kiosks", "tenants", on_delete: :cascade
   add_foreign_key "ledger_entries", "ledgers"
   add_foreign_key "ledger_entries", "tenants", on_delete: :cascade, validate: false
@@ -1364,7 +1364,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "listing_inference_batches", "tenants", on_delete: :cascade
   add_foreign_key "listings", "listings_delivery_method_sets", column: "delivery_method_set_id", on_delete: :nullify, validate: false
   add_foreign_key "listings", "lots", on_delete: :cascade
-  add_foreign_key "listings", "subscription_plans", on_delete: :nullify, validate: false
+  add_foreign_key "listings", "subscription_plans", on_delete: :nullify
   add_foreign_key "listings", "tenants"
   add_foreign_key "listings", "users", column: "owner_id"
   add_foreign_key "listings_categories", "tenants"
@@ -1392,7 +1392,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "listings_variants", "tenants", on_delete: :cascade
   add_foreign_key "location_announcements", "locations", on_delete: :cascade
   add_foreign_key "location_announcements", "tenants", on_delete: :cascade
-  add_foreign_key "location_announcements", "users", column: "sent_by_id", on_delete: :nullify, validate: false
+  add_foreign_key "location_announcements", "users", column: "sent_by_id", on_delete: :nullify
   add_foreign_key "locations", "tenants", on_delete: :cascade
   add_foreign_key "lots", "tenants"
   add_foreign_key "lots", "users", column: "owner_id"
@@ -1421,22 +1421,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "qr_codes", "users", column: "owner_id", on_delete: :nullify
   add_foreign_key "qr_scans", "qr_codes"
   add_foreign_key "rank_awards", "ranks"
-  add_foreign_key "rank_awards", "tenants", on_delete: :cascade, validate: false
-  add_foreign_key "rank_awards", "users", column: "awarded_by_id", on_delete: :nullify, validate: false
+  add_foreign_key "rank_awards", "tenants", on_delete: :cascade
+  add_foreign_key "rank_awards", "users", column: "awarded_by_id", on_delete: :nullify
   add_foreign_key "ranks", "disciplines"
-  add_foreign_key "ranks", "tenants", on_delete: :cascade, validate: false
+  add_foreign_key "ranks", "tenants", on_delete: :cascade
   add_foreign_key "rental_bookings", "cart_items", on_delete: :nullify, validate: false
   add_foreign_key "rental_bookings", "listings"
   add_foreign_key "rental_bookings", "tenants"
   add_foreign_key "roles", "tenants"
-  add_foreign_key "schedule_event_passes", "tenants", on_delete: :cascade, validate: false
+  add_foreign_key "schedule_event_passes", "tenants", on_delete: :cascade
   add_foreign_key "schedule_event_passes", "users"
-  add_foreign_key "schedule_event_registrations", "schedule_event_passes", on_delete: :nullify, validate: false
+  add_foreign_key "schedule_event_registrations", "schedule_event_passes", on_delete: :nullify
   add_foreign_key "schedule_event_registrations", "schedule_event_sessions"
-  add_foreign_key "schedule_event_registrations", "tenants", on_delete: :cascade, validate: false
+  add_foreign_key "schedule_event_registrations", "tenants", on_delete: :cascade
   add_foreign_key "schedule_event_registrations", "users"
   add_foreign_key "schedule_event_sessions", "schedule_events"
-  add_foreign_key "schedule_event_sessions", "tenants", on_delete: :cascade, validate: false
+  add_foreign_key "schedule_event_sessions", "tenants", on_delete: :cascade
   add_foreign_key "schedule_events", "schedules", on_delete: :cascade
   add_foreign_key "schedule_events", "tenants", on_delete: :cascade
   add_foreign_key "schedules", "locations", on_delete: :cascade
@@ -1456,12 +1456,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_020000) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscription_plans", "tenants"
   add_foreign_key "subscription_users", "subscriptions"
-  add_foreign_key "subscription_users", "tenants", on_delete: :cascade, validate: false
+  add_foreign_key "subscription_users", "tenants", on_delete: :cascade
   add_foreign_key "subscription_users", "users"
   add_foreign_key "subscriptions", "subscription_plans"
   add_foreign_key "subscriptions", "tenants"
   add_foreign_key "tenants", "listings_delivery_method_sets", column: "default_delivery_method_set_id", on_delete: :nullify
-  add_foreign_key "tenants", "pages", column: "homepage_page_id", on_delete: :nullify, validate: false
+  add_foreign_key "tenants", "pages", column: "homepage_page_id", on_delete: :nullify
   add_foreign_key "transactions", "orders"
   add_foreign_key "user_category_interests", "listings_categories"
   add_foreign_key "user_category_interests", "tenants", on_delete: :cascade

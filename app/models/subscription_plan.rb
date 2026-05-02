@@ -5,6 +5,7 @@ class SubscriptionPlan < ApplicationRecord
   native_enum :subscription_type, %i[month_to_month monthly annual semi_annual one_time]
 
   has_many :subscriptions, dependent: :restrict_with_error
+  has_many :listings, dependent: :nullify
 
   monetize :amount_cents, with_model_currency: :currency
 
