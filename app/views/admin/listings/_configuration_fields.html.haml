@@ -32,32 +32,32 @@
       %label.form-label Grants on purchase
       .d-flex.flex-column.gap-2
         .form-check
-          %input.form-check-input{ type: "radio", name: "fulfillment_type", id: "ft_none",
+          %input.form-check-input{type: "radio", name: "fulfillment_type", id: "ft_none",
               value: "none",
               checked: f.object.schedule_event_credits.blank? && f.object.subscription_plan_id.blank?,
-              data: { action: "change->listing-fulfillment#update" } }
+              data: { action: "change->listing-fulfillment#update" }}
           %label.form-check-label{ for: "ft_none" } Nothing (standard product)
         .form-check
-          %input.form-check-input{ type: "radio", name: "fulfillment_type", id: "ft_credits",
+          %input.form-check-input{type: "radio", name: "fulfillment_type", id: "ft_credits",
               value: "credits",
               checked: f.object.schedule_event_credits.present?,
-              data: { action: "change->listing-fulfillment#update" } }
+              data: { action: "change->listing-fulfillment#update" }}
           %label.form-check-label{ for: "ft_credits" } Schedule event credits (punch pass)
         .form-check
-          %input.form-check-input{ type: "radio", name: "fulfillment_type", id: "ft_subscription",
+          %input.form-check-input{type: "radio", name: "fulfillment_type", id: "ft_subscription",
               value: "subscription",
               checked: f.object.subscription_plan_id.present?,
-              data: { action: "change->listing-fulfillment#update" } }
+              data: { action: "change->listing-fulfillment#update" }}
           %label.form-check-label{ for: "ft_subscription" } Membership subscription
 
-    .mb-0{ data: { listing_fulfillment_target: "creditsRow" },
-           style: f.object.schedule_event_credits.present? ? "" : "display:none" }
+    .mb-0{data: { listing_fulfillment_target: "creditsRow" },
+           style: f.object.schedule_event_credits.present? ? "" : "display:none"}
       = f.label :schedule_event_credits, "Number of credits", class: "form-label"
       = f.number_field :schedule_event_credits, class: "form-control", min: 1, style: "max-width: 140px"
       .form-text Added to buyer's schedule event pass on purchase.
 
-    .mb-0{ data: { listing_fulfillment_target: "subscriptionRow" },
-           style: f.object.subscription_plan_id.present? ? "" : "display:none" }
+    .mb-0{data: { listing_fulfillment_target: "subscriptionRow" },
+           style: f.object.subscription_plan_id.present? ? "" : "display:none"}
       = f.label :subscription_plan_id, "Subscription plan", class: "form-label"
       = f.collection_select :subscription_plan_id, subscription_plans, :id, :name,
           { include_blank: "— Select a plan —" },

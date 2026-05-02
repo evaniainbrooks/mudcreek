@@ -16,27 +16,27 @@
 .page-container
   %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
     %li.nav-item{ role: "presentation" }
-      %button.nav-link.active{ id: "details-tab", type: "button", role: "tab",
+      %button.nav-link.active{id: "details-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#details-pane" },
-          aria: { controls: "details-pane", selected: "true" } }
+          aria: { controls: "details-pane", selected: "true" }}
         %i.bi.bi-info-circle.me-1
         Details
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+      %button.nav-link{id: "edit-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#edit-pane" },
-          aria: { controls: "edit-pane", selected: "false" } }
+          aria: { controls: "edit-pane", selected: "false" }}
         %i.bi.bi-pencil.me-1
         Edit
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "kiosk-tab", type: "button", role: "tab",
+      %button.nav-link{id: "kiosk-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#kiosk-pane" },
-          aria: { controls: "kiosk-pane", selected: "false" } }
+          aria: { controls: "kiosk-pane", selected: "false" }}
         %i.bi.bi-display.me-1
         Kiosk
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "schedules-tab", type: "button", role: "tab",
+      %button.nav-link{id: "schedules-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#schedules-pane" },
-          aria: { controls: "schedules-pane", selected: "false" } }
+          aria: { controls: "schedules-pane", selected: "false" }}
         %i.bi.bi-calendar3.me-1
         Schedules
         %span.badge.text-bg-secondary.ms-1= @schedules.count
@@ -59,8 +59,8 @@
                       %dt.col-5 Address
                       %dd.col-7
                         - if @location.address&.any?
-                          %button.btn.btn-link.p-0.text-start.text-decoration-underline{ type: "button",
-                              data: { "bs-toggle": "modal", "bs-target": "#map-modal" } }
+                          %button.btn.btn-link.p-0.text-start.text-decoration-underline{type: "button",
+                              data: { "bs-toggle": "modal", "bs-target": "#map-modal" }}
                             = @location.address.to_fs(:long)
                         - else
                           %span.text-muted —

@@ -7,24 +7,24 @@
 .page-container
   %ul.nav.nav-tabs.px-4.pt-3{ role: "tablist" }
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "events-tab", type: "button", role: "tab",
+      %button.nav-link{id: "events-tab", type: "button", role: "tab",
           class: @schedule.errors.any? ? "" : "active",
           data: { bs_toggle: "tab", bs_target: "#events-pane" },
-          aria: { controls: "events-pane", selected: !@schedule.errors.any? } }
+          aria: { controls: "events-pane", selected: !@schedule.errors.any? }}
         %i.bi.bi-calendar-event.me-1
         Events
         %span.badge.bg-secondary.ms-1= @pagy ? @pagy.count : @events.count
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "calendar-tab", type: "button", role: "tab",
+      %button.nav-link{id: "calendar-tab", type: "button", role: "tab",
           data: { bs_toggle: "tab", bs_target: "#calendar-pane" },
-          aria: { controls: "calendar-pane", selected: false } }
+          aria: { controls: "calendar-pane", selected: false }}
         %i.bi.bi-calendar3.me-1
         Calendar
     %li.nav-item{ role: "presentation" }
-      %button.nav-link{ id: "edit-tab", type: "button", role: "tab",
+      %button.nav-link{id: "edit-tab", type: "button", role: "tab",
           class: @schedule.errors.any? ? "active" : "",
           data: { bs_toggle: "tab", bs_target: "#edit-pane" },
-          aria: { controls: "edit-pane", selected: @schedule.errors.any? } }
+          aria: { controls: "edit-pane", selected: @schedule.errors.any? }}
         %i.bi.bi-pencil.me-1
         Edit
 
