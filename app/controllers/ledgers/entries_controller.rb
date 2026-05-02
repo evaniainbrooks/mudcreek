@@ -10,7 +10,7 @@ class Ledgers::EntriesController < ApplicationController
 
     if @entry.save
       type   = @entry.entry_type.capitalize
-      amount = number_to_currency(@entry.amount)
+      amount = view_context.number_to_currency(@entry.amount)
       undo   = view_context.link_to("Undo", ledger_entry_path(@ledger, @entry), data: { turbo_method: :delete }, class: "alert-link")
       redirect_to ledger_path(@ledger), notice: "A #{type} of #{amount} for #{@entry.description} was added. #{undo}"
     else
