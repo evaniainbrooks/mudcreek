@@ -94,7 +94,7 @@ class SyncSquarePosPaymentService
 
     sq_order.line_items.map do |item|
       {
-        name:        [ item.name, item.variation_name ].compact.join(" – "),
+        name:        [ item.name, item.variation_name ].compact.join(" – ").presence || "POS Sale",
         price_cents: item.base_price_money&.amount.to_i
       }
     end
