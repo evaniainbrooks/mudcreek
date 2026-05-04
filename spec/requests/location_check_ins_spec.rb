@@ -241,4 +241,140 @@ RSpec.describe "LocationCheckIns", type: :request do
       include_examples "ignores post for bot", { "User-Agent" => "AhrefsBot/7.0" }
     end
   end
+
+  # ------------------------------------------------------------------ #
+  describe "PATCH /locations/:location_id/checkin — update event selection" do
+    let(:visitor) { create(:user) }
+
+    before { post session_path, params: { email_address: visitor.email_address, password: "password" } }
+
+    context "when authenticated" do
+      it "redirects to the exit URL (root_path when no kiosk exit url)" do
+        # GET check-in creates a check_in and stores its id in session
+        get location_checkin_path(location), headers: browser_headers
+        patch location_checkin_path(location),
+              params: { schedule_event_id: "" },
+              headers: browser_headers
+
+        expect(response).to redirect_to(root_path)
+      end
+
+      it "clears check_in_id from the session after update" do
+        get location_checkin_path(location), headers: browser_headers
+        patch location_checkin_path(location),
+              params: { schedule_event_id: "" },
+              headers: browser_headers
+
+        expect(session[:check_in_id]).to be_nil
+      end
+
+      it "handles a nil check_in gracefully (no session key set)" do
+        expect {
+          patch location_checkin_path(location),
+                params: { schedule_event_id: "" },
+                headers: browser_headers
+        }.not_to raise_error
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to the guest prompt" do
+        # POST create stores check_in_id in session; PATCH update reads it
+        post location_checkin_path(location),
+             params: { check_in: { guest_name: "Carol Guest" } },
+             headers: browser_headers
+        patch location_checkin_path(location),
+              params: { schedule_event_id: "" },
+              headers: browser_headers
+
+        expect(response).to redirect_to(guest_prompt_location_checkin_path(location))
+      end
+
+      it "stores the guest name in session for the prompt" do
+        post location_checkin_path(location),
+             params: { check_in: { guest_name: "Carol Guest" } },
+             headers: browser_headers
+        patch location_checkin_path(location),
+              params: { schedule_event_id: "" },
+              headers: browser_headers
+
+        expect(session[:guest_name_for_prompt]).to eq("Carol Guest")
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "GET /locations/:location_id/checkin/guest_prompt" do
+    it "returns 200" do
+      get guest_prompt_location_checkin_path(location)
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "consumes the guest_name_for_prompt session key" do
+      # POST create + PATCH update sets guest_name_for_prompt in session
+      post location_checkin_path(location),
+           params: { check_in: { guest_name: "Carol Guest" } },
+           headers: browser_headers
+      patch location_checkin_path(location),
+            params: { schedule_event_id: "" },
+            headers: browser_headers
+      get guest_prompt_location_checkin_path(location)
+
+      expect(session[:guest_name_for_prompt]).to be_nil
+    end
+
+    it "shows the location name" do
+      get guest_prompt_location_checkin_path(location)
+
+      expect(response.body).to include("Front Desk")
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "POST /locations/:location_id/checkin/purchase_drop_in" do
+    context "when the kiosk has no drop-in pass listing" do
+      it "redirects to the guest prompt" do
+        post purchase_drop_in_location_checkin_path(location), headers: browser_headers
+
+        expect(response).to redirect_to(guest_prompt_location_checkin_path(location))
+      end
+    end
+
+    context "when the kiosk has a drop-in pass listing" do
+      let(:drop_in_listing) { create(:listing) }
+
+      before do
+        location.kiosk.update!(drop_in_pass_listing: drop_in_listing)
+        allow(AddSaleCartItemService).to receive(:call)
+      end
+
+      it "calls AddSaleCartItemService with the listing" do
+        post purchase_drop_in_location_checkin_path(location), headers: browser_headers
+
+        expect(AddSaleCartItemService).to have_received(:call).with(
+          hash_including(listing: drop_in_listing)
+        )
+      end
+
+      it "redirects to the cart" do
+        post purchase_drop_in_location_checkin_path(location), headers: browser_headers
+
+        expect(response).to redirect_to(cart_path)
+      end
+
+      it "assigns and reuses a guest cart token in the session" do
+        post purchase_drop_in_location_checkin_path(location), headers: browser_headers
+        token = session[:guest_cart_token]
+        expect(token).to be_present
+
+        post purchase_drop_in_location_checkin_path(location), headers: browser_headers
+        expect(session[:guest_cart_token]).to eq(token)
+      end
+    end
+  end
 end

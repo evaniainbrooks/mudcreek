@@ -2,6 +2,7 @@ class Admin::ScheduleEventPassesController < Admin::BaseController
   before_action :set_user, only: [:index, :new, :create]
 
   def index
+    authorize ScheduleEventPass, :index?
     @passes = @user ? @user.schedule_event_passes.order(created_at: :desc)
                     : ScheduleEventPass.order(created_at: :desc).includes(:user)
   end

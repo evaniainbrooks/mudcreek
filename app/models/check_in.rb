@@ -1,5 +1,6 @@
 class CheckIn < ApplicationRecord
   include MultiTenant
+  include NativeEnum
 
   belongs_to :user, optional: true
   belongs_to :location
