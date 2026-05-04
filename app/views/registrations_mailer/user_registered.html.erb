@@ -1,0 +1,16 @@
+<p>A new user has registered on <%= Current.tenant.name %>.</p>
+
+<table>
+  <tr>
+    <th style="text-align: left; padding-right: 16px;">Name</th>
+    <td><%= @user.name %></td>
+  </tr>
+  <tr>
+    <th style="text-align: left; padding-right: 16px;">Email</th>
+    <td><%= @user.email_address %></td>
+  </tr>
+  <tr>
+    <th style="text-align: left; padding-right: 16px;">Registered at</th>
+    <td><%= @user.created_at.strftime("%B %-d, %Y at %l:%M %p %Z") %></td>
+  </tr>
+</table>

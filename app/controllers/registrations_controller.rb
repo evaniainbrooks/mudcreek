@@ -9,6 +9,7 @@ class RegistrationsController < ApplicationController
     user = User.new(registration_params)
     if user.save
       RegistrationsMailer.activate(user).deliver_later
+      RegistrationsMailer.user_registered(user).deliver_later if Current.tenant.features.notify_on_user_registration?
       redirect_to new_session_path, notice: "Check your email for an activation link."
     else
       redirect_to new_session_path, alert: user.errors.full_messages.to_sentence

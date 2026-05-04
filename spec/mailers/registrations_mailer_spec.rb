@@ -37,4 +37,32 @@ RSpec.describe RegistrationsMailer, type: :mailer do
       expect(mail.text_part.body.to_s).to include("activation")
     end
   end
+
+  describe "#user_registered" do
+    subject(:mail) { RegistrationsMailer.user_registered(user) }
+
+    it "sends to the tenant email address" do
+      expect(mail.to).to eq([Current.tenant.email_address])
+    end
+
+    it "has the correct subject" do
+      expect(mail.subject).to eq("New user registration: Bob Jones")
+    end
+
+    it "includes the user's name in the HTML body" do
+      expect(mail.html_part.body.to_s).to include("Bob Jones")
+    end
+
+    it "includes the user's email address in the HTML body" do
+      expect(mail.html_part.body.to_s).to include(user.email_address)
+    end
+
+    it "includes the user's name in the text body" do
+      expect(mail.text_part.body.to_s).to include("Bob Jones")
+    end
+
+    it "includes the user's email address in the text body" do
+      expect(mail.text_part.body.to_s).to include(user.email_address)
+    end
+  end
 end

@@ -55,6 +55,27 @@ RSpec.describe "Registrations", type: :request do
 
         expect(cookies[:session_id]).to be_blank
       end
+
+      context "when notify_on_user_registration is enabled" do
+        before do
+          Current.tenant.features.notify_on_user_registration = true
+          Current.tenant.save!
+        end
+
+        it "enqueues a user_registered notification email" do
+          expect {
+            post registration_path, params: valid_params
+          }.to have_enqueued_mail(RegistrationsMailer, :user_registered)
+        end
+      end
+
+      context "when notify_on_user_registration is disabled" do
+        it "does not enqueue a user_registered notification email" do
+          expect {
+            post registration_path, params: valid_params
+          }.not_to have_enqueued_mail(RegistrationsMailer, :user_registered)
+        end
+      end
     end
 
     context "with a missing first name" do

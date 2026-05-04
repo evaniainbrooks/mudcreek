@@ -1,0 +1,5 @@
+A new user has registered on <%= Current.tenant.name %>.
+
+Name:          <%= @user.name %>
+Email:         <%= @user.email_address %>
+Registered at: <%= @user.created_at.strftime("%B %-d, %Y at %l:%M %p %Z") %>

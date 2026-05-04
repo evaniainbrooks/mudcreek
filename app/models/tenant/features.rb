@@ -11,7 +11,8 @@ class Tenant::Features
   attribute :user_verifications,  :boolean, default: false
   attribute :hide_powered_by,          :boolean, default: false
   attribute :ranks,                    :boolean, default: false
-  attribute :sync_square_pos_payments, :boolean, default: false
+  attribute :sync_square_pos_payments,       :boolean, default: false
+  attribute :notify_on_user_registration,    :boolean, default: false
 
   DESCRIPTIONS = {
     auctions:                "Enable auction listings, bidding, and registration.",
@@ -24,6 +25,7 @@ class Tenant::Features
     oauth_login:             "Enable sign-in with third-party OAuth providers.",
     hide_powered_by:         'Hide the "Powered by Podium" label in the site footer.',
     ranks:                    "Track belt/rank progression for members and kids.",
-    sync_square_pos_payments: "Sync Square POS payments into the ledger."
+    sync_square_pos_payments:    "Sync Square POS payments into the ledger.",
+    notify_on_user_registration: "Send an email to the tenant address whenever a new user registers from the public interface."
   }.freeze
 end
