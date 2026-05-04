@@ -33,8 +33,12 @@ class Order < ApplicationRecord
   def currency = tenant&.currency
   def effective_date = (pos? && square_created_at) ? square_created_at : created_at
 
+  ransacker :effective_date do
+    Arel::Nodes::SqlLiteral.new("COALESCE(orders.square_created_at, orders.created_at)")
+  end
+
   def self.ransackable_attributes(_auth_object = nil)
-    %w[status created_at]
+    %w[status created_at effective_date]
   end
 
   def self.ransackable_associations(_auth_object = nil)

@@ -5,9 +5,10 @@ class Admin::OrdersController < Admin::BaseController
     authorize(Order)
     @filter_total = Order.count
     @q = Order.ransack(params[:q])
-    scope = @q.result.includes(:user, :order_items).order(created_at: :desc, id: :desc)
+    scope = @q.result.includes(:user, :order_items)
+    scope = scope.order(Arel.sql("COALESCE(orders.square_created_at, orders.created_at) DESC"), id: :desc) unless @q.sorts.any?
     @filter_count = scope.count
-    @pagy, @orders = pagy(:keyset, scope)
+    @pagy, @orders = pagy(scope)
 
     respond_to do |format|
       format.html

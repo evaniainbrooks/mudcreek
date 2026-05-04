@@ -24,6 +24,6 @@ module Admin::OrdersHelper
     end
     table.with_column("Status", sort_attr: :status) { |o| order_status_badge(o) }
     table.with_value_column("Total", sort_attr: :total_cents) { it.total }
-    table.with_value_column("Date", sort_attr: :created_at) { it.effective_date }
+    table.with_value_column("Date", sort_attr: :effective_date) { it.effective_date }
   end
 end
