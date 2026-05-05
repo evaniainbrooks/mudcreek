@@ -12,7 +12,7 @@ class ProfilesController < ApplicationController
     @user.build_address unless @user.address
 
     if @user.update(profile_params)
-      redirect_to edit_profile_path, notice: "Profile updated successfully."
+      redirect_to edit_profile_path, notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end

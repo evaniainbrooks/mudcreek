@@ -14,7 +14,7 @@ class Admin::Listings::SalesController < Admin::BaseController
     )
 
     if result.success?
-      redirect_to admin_order_path(result.order), notice: "Manual sale recorded."
+      redirect_to admin_order_path(result.order), notice: t(".notice")
     else
       redirect_to admin_listing_path(@listing, anchor: "inventory-pane"), alert: result.error
     end

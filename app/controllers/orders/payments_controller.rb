@@ -3,7 +3,7 @@ class Orders::PaymentsController < ApplicationController
     @order = Current.user.orders.find_by!(number: params[:order_number])
 
     unless @order.pending?
-      redirect_to order_path(@order), alert: "This order has already been processed."
+      redirect_to order_path(@order), alert: t(".alert")
       return
     end
 

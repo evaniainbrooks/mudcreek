@@ -6,7 +6,7 @@ class Admin::Lots::SettlementsController < Admin::BaseController
 
   def pay
     authorize(@settlement || Settlement.new, :update?)
-    return redirect_to admin_lot_settlement_path(@lot), alert: "No settlement exists." unless @settlement
+    return redirect_to admin_lot_settlement_path(@lot), alert: t(".alert") unless @settlement
 
     @lot.update!(
       state:               :paid,
@@ -15,7 +15,7 @@ class Admin::Lots::SettlementsController < Admin::BaseController
     )
 
     LotMailer.payout_sent(@lot).deliver_later
-    redirect_to admin_lot_settlement_path(@lot), notice: "Lot marked as paid. Seller has been notified."
+    redirect_to admin_lot_settlement_path(@lot), notice: t(".notice")
   end
 
   private

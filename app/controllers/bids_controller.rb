@@ -12,7 +12,7 @@ class BidsController < ApplicationController
     fallback = auction_path(@auction)
 
     if current_bid && current_bid.amount_cents >= submitted_amount
-      flash.now[:alert] = "Another bid was placed while you were viewing the page. Please try again."
+      flash.now[:alert] = t(".alert_stale")
       return respond_with_flash_or_redirect(fallback)
     end
 
@@ -28,7 +28,7 @@ class BidsController < ApplicationController
 
     if bid.save
       ProxyBiddingService.resolve(@auction_listing)
-      flash.now[:notice] = "Bid of #{helpers.humanized_money_with_symbol(bid.amount)} placed successfully."
+      flash.now[:notice] = t(".notice", amount: helpers.humanized_money_with_symbol(bid.amount))
       respond_with_flash_or_redirect(fallback)
     else
       flash.now[:alert] = bid.errors.full_messages.join(", ")

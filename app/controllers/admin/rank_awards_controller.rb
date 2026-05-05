@@ -5,7 +5,7 @@ class Admin::RankAwardsController < Admin::BaseController
     authorize(@rank_award)
 
     if @rank_award.save
-      redirect_back fallback_location: admin_users_path, notice: "Promotion recorded."
+      redirect_back fallback_location: admin_users_path, notice: t(".notice")
     else
       redirect_back fallback_location: admin_users_path, alert: @rank_award.errors.full_messages.to_sentence
     end
@@ -15,7 +15,7 @@ class Admin::RankAwardsController < Admin::BaseController
     @rank_award = RankAward.find(params[:id])
     authorize(@rank_award)
     @rank_award.destroy!
-    redirect_back fallback_location: admin_users_path, notice: "Promotion removed."
+    redirect_back fallback_location: admin_users_path, notice: t(".notice")
   end
 
   private

@@ -19,7 +19,7 @@ class Admin::SubscriptionsController < Admin::BaseController
           tenant: Current.tenant
         )
       end
-      redirect_to admin_subscription_plan_path(@subscription.subscription_plan), notice: "Subscription was successfully created."
+      redirect_to admin_subscription_plan_path(@subscription.subscription_plan), notice: t(".notice")
     else
       @subscription_plan = @subscription.subscription_plan || SubscriptionPlan.find_by(id: subscription_params[:subscription_plan_id])
       @users = User.order(:email_address)
@@ -33,7 +33,7 @@ class Admin::SubscriptionsController < Admin::BaseController
 
   def update
     if @subscription.update(subscription_update_params)
-      redirect_to admin_subscription_path(@subscription), notice: "Subscription was successfully updated."
+      redirect_to admin_subscription_path(@subscription), notice: t(".notice")
     else
       prepare_show_assigns
       render :show, status: :unprocessable_content

@@ -23,7 +23,7 @@ class Admin::UsersController < Admin::BaseController
     @user = User.find(params[:id])
     authorize(@user, :update?)
     RegistrationsMailer.activate(@user).deliver_later
-    redirect_to admin_users_path, notice: "Activation email queued for #{@user.email_address}."
+    redirect_to admin_users_path, notice: t(".notice", email: @user.email_address)
   end
 
   def new
@@ -38,7 +38,7 @@ class Admin::UsersController < Admin::BaseController
     authorize(@user)
 
     if @user.save
-      redirect_to admin_user_path(@user), notice: "User was successfully created."
+      redirect_to admin_user_path(@user), notice: t(".notice")
     else
       @roles = Role.order(:name)
       render :new, status: :unprocessable_content
@@ -51,7 +51,7 @@ class Admin::UsersController < Admin::BaseController
 
     if @user.save
       update_verification_from_params
-      redirect_to admin_user_path(@user), notice: "User updated."
+      redirect_to admin_user_path(@user), notice: t(".notice")
     else
       load_show_data
       render :show, status: :unprocessable_content

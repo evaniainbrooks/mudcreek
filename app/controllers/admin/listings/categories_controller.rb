@@ -11,7 +11,7 @@ class Admin::Listings::CategoriesController < Admin::BaseController
     @category = Listings::Category.new(category_params)
     authorize(@category)
     if @category.save
-      redirect_to admin_listings_categories_path, notice: "Category \"#{@category.name}\" was successfully created."
+      redirect_to admin_listings_categories_path, notice: t(".notice", name: @category.name)
     else
       @categories = Listings::Category.includes(:category_assignments).order(:name)
       render :index, status: :unprocessable_content
@@ -23,7 +23,7 @@ class Admin::Listings::CategoriesController < Admin::BaseController
 
   def update
     if @category.update(category_params)
-      redirect_to admin_listings_categories_path, notice: "Category \"#{@category.name}\" was successfully updated."
+      redirect_to admin_listings_categories_path, notice: t(".notice", name: @category.name)
     else
       render :edit, status: :unprocessable_content
     end
@@ -31,7 +31,7 @@ class Admin::Listings::CategoriesController < Admin::BaseController
 
   def destroy
     @category.destroy!
-    redirect_to admin_listings_categories_path, notice: "Category \"#{@category.name}\" was successfully deleted."
+    redirect_to admin_listings_categories_path, notice: t(".notice", name: @category.name)
   end
 
   private

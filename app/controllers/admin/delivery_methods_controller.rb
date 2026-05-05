@@ -11,7 +11,7 @@ class Admin::DeliveryMethodsController < Admin::BaseController
     @delivery_method = DeliveryMethod.new(delivery_method_params)
     authorize(@delivery_method)
     if @delivery_method.save
-      redirect_to admin_delivery_methods_path, notice: "\"#{@delivery_method.name}\" was successfully created."
+      redirect_to admin_delivery_methods_path, notice: t(".notice", name: @delivery_method.name)
     else
       @delivery_methods = DeliveryMethod.order(:name)
       render :index, status: :unprocessable_content
@@ -28,7 +28,7 @@ class Admin::DeliveryMethodsController < Admin::BaseController
 
   def destroy
     @delivery_method.destroy!
-    redirect_to admin_delivery_methods_path, notice: "\"#{@delivery_method.name}\" was successfully deleted."
+    redirect_to admin_delivery_methods_path, notice: t(".notice", name: @delivery_method.name)
   end
 
   private

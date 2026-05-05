@@ -7,7 +7,7 @@ class Profiles::VerificationsController < Profiles::BaseController
     @verification = Current.user.verification || Users::Verification.new(user: Current.user)
 
     if @verification.update(verification_params)
-      redirect_to profile_verification_path, notice: "Verification document uploaded."
+      redirect_to profile_verification_path, notice: t(".notice")
     else
       render :show, status: :unprocessable_content
     end

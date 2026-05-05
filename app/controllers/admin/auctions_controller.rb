@@ -56,7 +56,7 @@ class Admin::AuctionsController < Admin::BaseController
 
     if @auction.save
       schedule_reconciler(@auction)
-      redirect_to admin_auction_path(@auction), notice: "Auction was successfully created."
+      redirect_to admin_auction_path(@auction), notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -75,7 +75,7 @@ class Admin::AuctionsController < Admin::BaseController
         @auction.recalculate_listing_end_times!
         schedule_reconciler(@auction)
       end
-      redirect_to admin_auction_path(@auction), notice: "Auction was successfully updated."
+      redirect_to admin_auction_path(@auction), notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -83,7 +83,7 @@ class Admin::AuctionsController < Admin::BaseController
 
   def destroy
     @auction.destroy!
-    redirect_to admin_auctions_path, notice: "Auction was successfully deleted."
+    redirect_to admin_auctions_path, notice: t(".notice")
   end
 
   private

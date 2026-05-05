@@ -4,7 +4,7 @@ class AuctionRegistrationsController < ApplicationController
 
   def create
     if AuctionRegistration.exists?(auction: @auction, user: Current.user)
-      redirect_to auction_path(@auction), alert: "You are already registered for this auction."
+      redirect_to auction_path(@auction), alert: t(".alert")
       return
     end
 
@@ -13,9 +13,9 @@ class AuctionRegistrationsController < ApplicationController
     if @registration.save
       AuctionMailer.registration_pending(@registration).deliver_later unless @auction.auto_approve?
       notice = if @auction.auto_approve?
-        "You're registered and approved to bid!"
+        t(".notice_approved")
       else
-        "You're registered! You'll receive an email once your registration is approved."
+        t(".notice_pending")
       end
       redirect_to auction_path(@auction), notice: notice
     else

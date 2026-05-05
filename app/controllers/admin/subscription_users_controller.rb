@@ -6,7 +6,7 @@ class Admin::SubscriptionUsersController < Admin::BaseController
     authorize(@subscription_user)
 
     if @subscription_user.save
-      redirect_to admin_subscription_path(@subscription), notice: "User added to subscription."
+      redirect_to admin_subscription_path(@subscription), notice: t(".notice")
     else
       redirect_to admin_subscription_path(@subscription),
         alert: @subscription_user.errors.full_messages.to_sentence
@@ -18,10 +18,10 @@ class Admin::SubscriptionUsersController < Admin::BaseController
     authorize(@subscription_user)
 
     if @subscription_user.primary_contact?
-      redirect_to admin_subscription_path(@subscription), alert: "Cannot remove the primary contact."
+      redirect_to admin_subscription_path(@subscription), alert: t(".alert")
     else
       @subscription_user.destroy!
-      redirect_to admin_subscription_path(@subscription), notice: "User removed from subscription."
+      redirect_to admin_subscription_path(@subscription), notice: t(".notice")
     end
   end
 

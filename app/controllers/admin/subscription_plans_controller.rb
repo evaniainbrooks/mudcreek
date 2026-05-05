@@ -21,7 +21,7 @@ class Admin::SubscriptionPlansController < Admin::BaseController
     authorize(@subscription_plan)
 
     if @subscription_plan.save
-      redirect_to admin_subscription_plans_path, notice: "\"#{@subscription_plan.name}\" was successfully created."
+      redirect_to admin_subscription_plans_path, notice: t(".notice", name: @subscription_plan.name)
     else
       @subscription_plans = SubscriptionPlan.order(:name)
       render :index, status: :unprocessable_content
@@ -30,9 +30,9 @@ class Admin::SubscriptionPlansController < Admin::BaseController
 
   def destroy
     @subscription_plan.destroy!
-    redirect_to admin_subscription_plans_path, notice: "\"#{@subscription_plan.name}\" was successfully deleted."
+    redirect_to admin_subscription_plans_path, notice: t(".notice", name: @subscription_plan.name)
   rescue ActiveRecord::DeleteRestrictionError
-    redirect_to admin_subscription_plans_path, alert: "Cannot delete a plan with active subscriptions."
+    redirect_to admin_subscription_plans_path, alert: t(".alert")
   end
 
   private

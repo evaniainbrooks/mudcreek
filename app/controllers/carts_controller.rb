@@ -39,7 +39,7 @@ class CartsController < ApplicationController
     @cart_items = @cart_items.reject { |item| item.listing.sold? }
 
     names = sold.map { |item| item.listing.name }.to_sentence
-    flash.now[:alert] = "#{names} #{sold.one? ? 'has' : 'have'} been sold and removed from your cart."
+    flash.now[:alert] = t(".items_sold", count: sold.size, names: names)
   end
 
   def reconcile_discount_code
@@ -49,10 +49,8 @@ class CartsController < ApplicationController
 
     if code.nil? || !code.active?
       session.delete(:discount_code_id)
-      flash.now[:alert] = [
-        flash.now[:alert],
-        code ? "Discount code \"#{code.key}\" is no longer active." : "Your discount code is no longer valid."
-      ].compact.join(" ")
+      msg = code ? t(".discount_code_inactive", key: code.key) : t(".discount_code_invalid")
+      flash.now[:alert] = [ flash.now[:alert], msg ].compact.join(" ")
       @discount_code = nil
     else
       @discount_code = code
@@ -91,7 +89,7 @@ class CartsController < ApplicationController
 
     if method.nil? || !method.active?
       session.delete(:delivery_method_id)
-      flash.now[:alert] = [ flash.now[:alert], "Your delivery method is no longer available." ].compact.join(" ")
+      flash.now[:alert] = [ flash.now[:alert], t(".delivery_method_unavailable") ].compact.join(" ")
       @delivery_method = nil
     else
       @delivery_method = method

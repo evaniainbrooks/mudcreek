@@ -6,7 +6,7 @@ class InvoicesController < ApplicationController
 
   def pay
     if @invoice.paid?
-      redirect_to edit_profile_path, alert: "That invoice has already been paid."
+      redirect_to edit_profile_path, alert: t(".alert")
       return
     end
 
@@ -19,7 +19,7 @@ class InvoicesController < ApplicationController
       Current.user.cart_items.create!(listing: item.listing, invoice_item: item)
     end
 
-    redirect_to cart_path, notice: "Your cart has been loaded with your invoice items. Complete checkout to pay your invoice."
+    redirect_to cart_path, notice: t(".notice")
   end
 
   private

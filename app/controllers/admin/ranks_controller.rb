@@ -6,7 +6,7 @@ class Admin::RanksController < Admin::BaseController
     authorize(@rank)
 
     if @rank.save
-      redirect_to admin_discipline_path(@discipline), notice: "Rank added."
+      redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
       redirect_to admin_discipline_path(@discipline), alert: @rank.errors.full_messages.to_sentence
     end
@@ -22,7 +22,7 @@ class Admin::RanksController < Admin::BaseController
     authorize(@rank)
 
     if @rank.update(rank_params)
-      redirect_to admin_discipline_path(@discipline), notice: "Rank updated."
+      redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -32,7 +32,7 @@ class Admin::RanksController < Admin::BaseController
     @rank = @discipline.ranks.find(params[:id])
     authorize(@rank)
     @rank.destroy!
-    redirect_to admin_discipline_path(@discipline), notice: "Rank deleted."
+    redirect_to admin_discipline_path(@discipline), notice: t(".notice")
   end
 
   private

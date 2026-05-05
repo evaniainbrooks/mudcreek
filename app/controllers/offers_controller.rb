@@ -5,7 +5,7 @@ class OffersController < ApplicationController
 
   def create
     if @listing.rental?
-      redirect_to listing_path(@listing), alert: "Offers are not available for rental listings."
+      redirect_to listing_path(@listing), alert: t(".alert")
       return
     end
 
@@ -20,7 +20,7 @@ class OffersController < ApplicationController
 
     if @offer.save
       ListingMailer.offer_received(@offer).deliver_later
-      redirect_to listing_path(@listing), notice: "Your offer has been submitted."
+      redirect_to listing_path(@listing), notice: t(".notice")
     else
       redirect_to listing_path(@listing), alert: @offer.errors.full_messages.to_sentence
     end

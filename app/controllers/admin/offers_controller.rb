@@ -30,10 +30,10 @@ class Admin::OffersController < Admin::BaseController
 
   def update
     state = params[:state].presence_in(Offer.states.keys)
-    return redirect_to admin_offer_path(@offer), alert: "Invalid state." unless state
+    return redirect_to admin_offer_path(@offer), alert: t(".alert") unless state
 
     @offer.update!(state: state)
-    redirect_to admin_offer_path(@offer), notice: "Offer #{state}."
+    redirect_to admin_offer_path(@offer), notice: t(".notice", state: state)
   rescue ActiveRecord::RecordInvalid => e
     redirect_to admin_offer_path(@offer), alert: e.message
   end

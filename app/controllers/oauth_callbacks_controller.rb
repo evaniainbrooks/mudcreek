@@ -7,7 +7,7 @@ class OauthCallbacksController < ApplicationController
 
     if auth.info.email.blank?
       return redirect_to new_session_path,
-        alert: "Your #{auth.provider.humanize} account has no email. Please sign in another way."
+        alert: t(".alert_no_email", provider: auth.provider.humanize)
     end
 
     # uid lookup is global (provider+uid is unique across tenants)
@@ -44,11 +44,11 @@ class OauthCallbacksController < ApplicationController
 
   rescue => e
     Rails.logger.error "OauthCallbacksController error: #{e.message}"
-    redirect_to new_session_path, alert: "Sign in failed. Please try again."
+    redirect_to new_session_path, alert: t(".alert_sign_in_failed")
   end
 
   def failure
-    redirect_to new_session_path, alert: "Authentication failed: #{params[:message].humanize}"
+    redirect_to new_session_path, alert: t(".alert", message: params[:message].humanize)
   end
 
   private

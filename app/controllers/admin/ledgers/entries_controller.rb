@@ -25,7 +25,7 @@ class Admin::Ledgers::EntriesController < Admin::BaseController
     authorize(@entry)
 
     if @entry.update(entry_params)
-      redirect_to admin_ledger_path(@ledger), notice: "Entry updated."
+      redirect_to admin_ledger_path(@ledger), notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end

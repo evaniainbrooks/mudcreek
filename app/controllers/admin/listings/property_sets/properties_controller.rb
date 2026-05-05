@@ -5,7 +5,7 @@ class Admin::Listings::PropertySets::PropertiesController < Admin::BaseControlle
     @property = @property_set.properties.build(property_params)
     authorize(@property)
     if @property.save
-      redirect_to admin_listings_property_set_path(@property_set), notice: "\"#{@property.name}\" was added."
+      redirect_to admin_listings_property_set_path(@property_set), notice: t(".notice", name: @property.name)
     else
       @properties = @property_set.properties.order(:position)
       render "admin/listings/property_sets/show", status: :unprocessable_content
@@ -26,7 +26,7 @@ class Admin::Listings::PropertySets::PropertiesController < Admin::BaseControlle
     property = @property_set.properties.find(params[:id])
     authorize(property)
     property.destroy!
-    redirect_to admin_listings_property_set_path(@property_set), notice: "\"#{property.name}\" was removed."
+    redirect_to admin_listings_property_set_path(@property_set), notice: t(".notice", name: property.name)
   end
 
   private

@@ -23,7 +23,7 @@ class Admin::LotsController < Admin::BaseController
     @lot = Lot.new(lot_params)
     authorize(@lot)
     if @lot.save
-      redirect_to admin_lot_path(@lot), notice: "Lot \"#{@lot.name}\" was successfully created."
+      redirect_to admin_lot_path(@lot), notice: t(".notice", name: @lot.name)
     else
       @users = User.activated.order(:email_address)
       @q = Lot.ransack(nil)
@@ -36,7 +36,7 @@ class Admin::LotsController < Admin::BaseController
 
   def update
     if @lot.update(lot_params)
-      redirect_to admin_lot_path(@lot), notice: "Lot updated."
+      redirect_to admin_lot_path(@lot), notice: t(".notice")
     else
       @lot.build_address unless @lot.address
       @users = User.activated.order(:email_address)
@@ -49,7 +49,7 @@ class Admin::LotsController < Admin::BaseController
 
   def destroy
     @lot.destroy!
-    redirect_to admin_lots_path, notice: "Lot \"#{@lot.name}\" was successfully deleted."
+    redirect_to admin_lots_path, notice: t(".notice", name: @lot.name)
   end
 
   private

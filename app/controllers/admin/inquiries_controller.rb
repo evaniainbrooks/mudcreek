@@ -29,7 +29,7 @@ class Admin::InquiriesController < Admin::BaseController
 
   def update
     if @inquiry.update(inquiry_params)
-      redirect_to admin_inquiry_path(@inquiry), notice: "Inquiry updated."
+      redirect_to admin_inquiry_path(@inquiry), notice: t(".notice")
     else
       render :show, status: :unprocessable_content
     end

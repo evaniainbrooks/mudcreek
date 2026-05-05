@@ -31,7 +31,7 @@ class Admin::QrCodesController < Admin::BaseController
     authorize(@qr_code)
 
     if @qr_code.save
-      redirect_to admin_qr_codes_path, notice: "QR code was successfully created."
+      redirect_to admin_qr_codes_path, notice: t(".notice")
     else
       @users = User.order(:first_name, :last_name)
       render :new, status: :unprocessable_content
@@ -41,7 +41,7 @@ class Admin::QrCodesController < Admin::BaseController
   def update
     permitted = @qr_code.location_qr_code? ? location_qr_code_params : qr_code_params
     if @qr_code.update(permitted)
-      redirect_to admin_qr_codes_path, notice: "QR code was successfully updated."
+      redirect_to admin_qr_codes_path, notice: t(".notice")
     else
       @location_qr_code = @qr_code.location_qr_code?
       @users = User.order(:first_name, :last_name)
@@ -51,11 +51,11 @@ class Admin::QrCodesController < Admin::BaseController
 
   def destroy
     if @qr_code.location_qr_code?
-      redirect_to admin_qr_codes_path, alert: "Location QR codes cannot be deleted."
+      redirect_to admin_qr_codes_path, alert: t(".alert")
       return
     end
     @qr_code.destroy!
-    redirect_to admin_qr_codes_path, notice: "QR code was successfully deleted."
+    redirect_to admin_qr_codes_path, notice: t(".notice")
   end
 
   def qr_image

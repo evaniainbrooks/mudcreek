@@ -6,7 +6,7 @@ class Admin::Listings::StockMovementsController < Admin::BaseController
     @movement = @listing.stock_movements.build(movement_params.merge(kind: :stock_in, reason: :acquisition))
 
     if @movement.save
-      redirect_to admin_listing_path(@listing, anchor: "inventory-pane"), notice: "Acquisition recorded."
+      redirect_to admin_listing_path(@listing, anchor: "inventory-pane"), notice: t(".notice")
     else
       redirect_to admin_listing_path(@listing, anchor: "inventory-pane"),
         alert: @movement.errors.full_messages.to_sentence
@@ -15,7 +15,7 @@ class Admin::Listings::StockMovementsController < Admin::BaseController
 
   def destroy
     @movement.destroy
-    redirect_to admin_listing_path(@listing, anchor: "inventory-pane"), notice: "Acquisition removed."
+    redirect_to admin_listing_path(@listing, anchor: "inventory-pane"), notice: t(".notice")
   end
 
   private

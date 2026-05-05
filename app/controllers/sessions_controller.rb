@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   include TurnstileVerifiable
 
   allow_unauthenticated_access only: %i[ new create ]
-  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_path, alert: "Try again later." }
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_path, alert: I18n.t("sessions.create.alert_rate_limit") }
   before_action :verify_turnstile!, only: :create
 
   def new
@@ -18,10 +18,10 @@ class SessionsController < ApplicationController
         start_new_session_for user
         redirect_to after_authentication_url, status: :see_other
       else
-        redirect_to new_session_path, status: :see_other, alert: "Please activate your account. Check your email for an activation link."
+        redirect_to new_session_path, status: :see_other, alert: t(".alert_not_activated")
       end
     else
-      redirect_to new_session_path, status: :see_other, alert: "Try another email address or password."
+      redirect_to new_session_path, status: :see_other, alert: t(".alert_invalid")
     end
   end
 

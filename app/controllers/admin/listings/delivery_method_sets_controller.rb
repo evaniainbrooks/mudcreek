@@ -16,7 +16,7 @@ class Admin::Listings::DeliveryMethodSetsController < Admin::BaseController
     @delivery_method_set = Listings::DeliveryMethodSet.new(delivery_method_set_params)
     authorize(@delivery_method_set)
     if @delivery_method_set.save
-      redirect_to admin_listings_delivery_method_sets_path, notice: "\"#{@delivery_method_set.name}\" was successfully created."
+      redirect_to admin_listings_delivery_method_sets_path, notice: t(".notice", name: @delivery_method_set.name)
     else
       @delivery_method_sets = Current.tenant.delivery_method_sets.order(:name)
       render :index, status: :unprocessable_content
@@ -37,7 +37,7 @@ class Admin::Listings::DeliveryMethodSetsController < Admin::BaseController
     @delivery_method_set = Current.tenant.delivery_method_sets.find(params[:id])
     authorize(@delivery_method_set)
     @delivery_method_set.destroy!
-    redirect_to admin_listings_delivery_method_sets_path, notice: "\"#{@delivery_method_set.name}\" was successfully deleted."
+    redirect_to admin_listings_delivery_method_sets_path, notice: t(".notice", name: @delivery_method_set.name)
   end
 
   private

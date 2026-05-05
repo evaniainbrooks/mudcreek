@@ -16,7 +16,7 @@ class Admin::ScheduleEventsController < Admin::BaseController
     authorize(@event)
 
     if @event.save
-      redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event added."
+      redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -32,7 +32,7 @@ class Admin::ScheduleEventsController < Admin::BaseController
     @rrule_params = RruleBuilderService.parse(@event.rrule)
 
     if @event.save
-      redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event updated."
+      redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -40,7 +40,7 @@ class Admin::ScheduleEventsController < Admin::BaseController
 
   def destroy
     @event.destroy!
-    redirect_to admin_location_schedule_path(@location, @schedule), notice: "Event deleted."
+    redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
   end
 
   private

@@ -12,7 +12,7 @@ class Ledgers::EntriesController < ApplicationController
       type   = @entry.entry_type.capitalize
       amount = view_context.number_to_currency(@entry.amount)
       undo   = view_context.link_to("Undo", ledger_entry_path(@ledger, @entry), data: { turbo_method: :delete }, class: "alert-link")
-      redirect_to ledger_path(@ledger), notice: "A #{type} of #{amount} for #{@entry.description} was added. #{undo}"
+      redirect_to ledger_path(@ledger), notice: t(".notice", type: type, amount: amount, description: @entry.description, undo: undo).html_safe
     else
       @entry.entry_type ||= "debit"
       render template: "ledgers/show", status: :unprocessable_content
@@ -21,7 +21,7 @@ class Ledgers::EntriesController < ApplicationController
 
   def destroy
     @entry.destroy!
-    redirect_to ledger_path(@ledger), notice: "Entry removed."
+    redirect_to ledger_path(@ledger), notice: t(".notice")
   end
 
   private

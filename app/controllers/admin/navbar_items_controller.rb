@@ -26,7 +26,7 @@ class Admin::NavbarItemsController < Admin::BaseController
     authorize(@navbar_item)
 
     if @navbar_item.save
-      redirect_to admin_navbar_items_path, notice: "Nav item was successfully created."
+      redirect_to admin_navbar_items_path, notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -34,7 +34,7 @@ class Admin::NavbarItemsController < Admin::BaseController
 
   def update
     if @navbar_item.update(navbar_item_params)
-      redirect_to admin_navbar_items_path, notice: "Nav item was successfully updated."
+      redirect_to admin_navbar_items_path, notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -42,7 +42,7 @@ class Admin::NavbarItemsController < Admin::BaseController
 
   def destroy
     @navbar_item.destroy!
-    redirect_to admin_navbar_items_path, notice: "Nav item was successfully deleted."
+    redirect_to admin_navbar_items_path, notice: t(".notice")
   end
 
   private

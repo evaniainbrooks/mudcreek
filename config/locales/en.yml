@@ -28,4 +28,464 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  activations:
+    show:
+      notice: "Your account has been activated."
+      alert: "Activation link is invalid or has expired."
+
+  admin:
+    auction_listings:
+      create:
+        notice: "Listings added to %{auction_link}."
+
+    auctions:
+      create:
+        notice: "Auction was successfully created."
+      update:
+        notice: "Auction was successfully updated."
+      destroy:
+        notice: "Auction was successfully deleted."
+      auction_listings:
+        destroy:
+          notice: "%{listing_link} removed from auction."
+        update:
+          notice: "Bid details updated."
+
+    bids:
+      update:
+        notice: "Bid marked as %{state}."
+        alert: "Invalid state."
+
+    cloudflare:
+      turnstile_widgets:
+        create:
+          notice: "Turnstile widget provisioning has been enqueued."
+
+    delivery_methods:
+      create:
+        notice: '"%{name}" was successfully created.'
+      destroy:
+        notice: '"%{name}" was successfully deleted.'
+
+    disciplines:
+      create:
+        notice: "Discipline created."
+      update:
+        notice: "Discipline updated."
+      destroy:
+        notice: "Discipline deleted."
+
+    discount_codes:
+      create:
+        notice: 'Discount code "%{key}" was successfully created.'
+      destroy:
+        notice: 'Discount code "%{key}" was successfully deleted.'
+
+    email_aliases:
+      create:
+        notice: "Your request to create the alias is being processed."
+      destroy:
+        notice: "Your request to delete the alias is being processed."
+
+    galleries:
+      create:
+        notice: "Gallery was successfully created."
+      update:
+        notice: "Gallery was successfully updated."
+      destroy:
+        notice: "Gallery was successfully deleted."
+      attachments:
+        destroy:
+          notice: "%{filename} was removed."
+
+    improvmx:
+      domains:
+        create:
+          notice: "Domain provisioning has been enqueued."
+
+    inquiries:
+      update:
+        notice: "Inquiry updated."
+
+    inquiry_forms:
+      create:
+        notice: "Inquiry form was successfully created."
+      update:
+        notice: "Inquiry form was successfully updated."
+      destroy:
+        notice: "Inquiry form was successfully deleted."
+
+    invoices:
+      update:
+        notice: "Invoice updated."
+
+    kiosks:
+      update:
+        notice: "Kiosk updated."
+
+    location_announcements:
+      create:
+        notice: "Announcement queued for delivery."
+
+    ledgers:
+      create:
+        notice: "Ledger was successfully created."
+      update:
+        notice: "Ledger was successfully updated."
+      destroy:
+        notice: "Ledger was successfully deleted."
+      entries:
+        update:
+          notice: "Entry updated."
+
+    listing_inference_batches:
+      create:
+        notice: "AI import started."
+
+    listings:
+      create:
+        notice: "Listing was successfully created."
+      update:
+        notice: "Listing was successfully updated."
+      destroy:
+        notice: "Listing was successfully deleted."
+      categories:
+        create:
+          notice: 'Category "%{name}" was successfully created.'
+        update:
+          notice: 'Category "%{name}" was successfully updated.'
+        destroy:
+          notice: 'Category "%{name}" was successfully deleted.'
+      copies:
+        create:
+          notice: "Listing copied. Review and publish when ready."
+      delivery_method_sets:
+        create:
+          notice: '"%{name}" was successfully created.'
+        destroy:
+          notice: '"%{name}" was successfully deleted.'
+        delivery_methods:
+          create:
+            notice: '"%{name}" was added.'
+          destroy:
+            notice: '"%{name}" was removed.'
+      gallery_attachments:
+        destroy:
+          notice: "%{filename} was removed."
+      property_sets:
+        create:
+          notice: '"%{name}" was successfully created.'
+        destroy:
+          notice: '"%{name}" was successfully deleted.'
+        properties:
+          create:
+            notice: '"%{name}" was added.'
+          destroy:
+            notice: '"%{name}" was removed.'
+      sales:
+        create:
+          notice: "Manual sale recorded."
+      stock_movements:
+        create:
+          notice: "Acquisition recorded."
+        destroy:
+          notice: "Acquisition removed."
+      variants:
+        create:
+          notice: "Variants generated."
+
+    locations:
+      create:
+        notice: "Location was successfully created."
+      update:
+        notice: "Location was successfully updated."
+      destroy:
+        notice: "Location was successfully deleted."
+
+    lots:
+      create:
+        notice: 'Lot "%{name}" was successfully created.'
+      update:
+        notice: "Lot updated."
+      destroy:
+        notice: 'Lot "%{name}" was successfully deleted.'
+      listing_placeholders:
+        destroy:
+          notice: 'Placeholder image removed from "%{name}".'
+      settlements:
+        pay:
+          notice: "Lot marked as paid. Seller has been notified."
+          alert: "No settlement exists."
+
+    navbar_items:
+      create:
+        notice: "Nav item was successfully created."
+      update:
+        notice: "Nav item was successfully updated."
+      destroy:
+        notice: "Nav item was successfully deleted."
+
+    offers:
+      update:
+        notice: "Offer %{state}."
+        alert: "Invalid state."
+
+    orders:
+      update:
+        notice: "Order updated."
+
+    pages:
+      create:
+        notice: "Page was successfully created."
+      update:
+        notice: "Page was successfully updated."
+      destroy:
+        notice: "Page was successfully deleted."
+
+    permissions:
+      create:
+        notice: "Permission was successfully added."
+      destroy:
+        notice: "Permission was successfully removed."
+
+    postmark:
+      domains:
+        create:
+          notice: "Domain provisioning has been enqueued."
+
+    qr_codes:
+      create:
+        notice: "QR code was successfully created."
+      update:
+        notice: "QR code was successfully updated."
+      destroy:
+        notice: "QR code was successfully deleted."
+        alert: "Location QR codes cannot be deleted."
+
+    rank_awards:
+      create:
+        notice: "Promotion recorded."
+      destroy:
+        notice: "Promotion removed."
+
+    ranks:
+      create:
+        notice: "Rank added."
+      update:
+        notice: "Rank updated."
+      destroy:
+        notice: "Rank deleted."
+
+    roles:
+      create:
+        notice: 'Role "%{name}" was successfully created.'
+      destroy:
+        notice: 'Role "%{name}" was successfully deleted.'
+
+    schedule_event_passes:
+      create:
+        notice: "Pass issued."
+      destroy:
+        notice: "Pass removed."
+
+    schedule_events:
+      create:
+        notice: "Event added."
+      update:
+        notice: "Event updated."
+      destroy:
+        notice: "Event deleted."
+
+    schedules:
+      create:
+        notice: "Schedule created."
+        notice_importing: "Schedule created. Importing events in the background."
+      update:
+        notice: "Schedule updated."
+      destroy:
+        notice: "Schedule deleted."
+
+    subscription_plans:
+      create:
+        notice: '"%{name}" was successfully created.'
+      destroy:
+        notice: '"%{name}" was successfully deleted.'
+        alert: "Cannot delete a plan with active subscriptions."
+
+    subscriptions:
+      create:
+        notice: "Subscription was successfully created."
+      update:
+        notice: "Subscription was successfully updated."
+
+    subscription_users:
+      create:
+        notice: "User added to subscription."
+      destroy:
+        notice: "User removed from subscription."
+        alert: "Cannot remove the primary contact."
+
+    tenants:
+      update:
+        notice: "Tenant was successfully updated."
+
+    users:
+      create:
+        notice: "User was successfully created."
+      update:
+        notice: "User updated."
+      resend_activation:
+        notice: "Activation email queued for %{email}."
+      disablements:
+        create:
+          notice: "%{email} has been disabled."
+        destroy:
+          notice: "%{email} has been re-enabled."
+          alert: "Could not re-enable user: %{errors}"
+
+  auction_registrations:
+    create:
+      alert: "You are already registered for this auction."
+      notice_approved: "You're registered and approved to bid!"
+      notice_pending: "You're registered! You'll receive an email once your registration is approved."
+
+  bids:
+    create:
+      alert_stale: "Another bid was placed while you were viewing the page. Please try again."
+      notice: "Bid of %{amount} placed successfully."
+
+  cart_addresses:
+    create:
+      notice: "Delivery address saved."
+
+  cart_delivery_methods:
+    create:
+      notice: '"%{name}" selected as delivery method.'
+      alert: "Delivery method not found."
+    destroy:
+      notice: "Delivery method removed."
+
+  cart_discounts:
+    create:
+      notice: 'Discount code "%{key}" applied.'
+      alert_not_found: "Discount code not found."
+      alert_inactive: "This discount code is not currently active."
+    destroy:
+      notice: "Discount code removed."
+
+  cart_guest_info:
+    create:
+      notice: "Contact information saved."
+
+  cart_items:
+    create:
+      alert: "Please sign in to book rentals."
+      added_to_cart: "Added to cart."
+      rental_added_to_cart: "Rental added to cart."
+      view_cart: "View cart"
+    update:
+      notice: "Quantity updated."
+    destroy:
+      notice: "Removed from cart."
+
+  carts:
+    show:
+      items_sold:
+        one: "%{names} has been sold and removed from your cart."
+        other: "%{names} have been sold and removed from your cart."
+      discount_code_inactive: 'Discount code "%{key}" is no longer active.'
+      discount_code_invalid: "Your discount code is no longer valid."
+      delivery_method_unavailable: "Your delivery method is no longer available."
+
+  inquiries:
+    create:
+      notice: "Your inquiry has been submitted. We'll be in touch soon."
+
+  invoices:
+    pay:
+      alert: "That invoice has already been paid."
+      notice: "Your cart has been loaded with your invoice items. Complete checkout to pay your invoice."
+
+  ledgers:
+    entries:
+      create:
+        notice: "A %{type} of %{amount} for %{description} was added. %{undo}"
+      destroy:
+        notice: "Entry removed."
+
+  oauth_callbacks:
+    create:
+      alert_no_email: "Your %{provider} account has no email. Please sign in another way."
+      alert_sign_in_failed: "Sign in failed. Please try again."
+    failure:
+      alert: "Authentication failed: %{message}"
+
+  offers:
+    create:
+      alert: "Offers are not available for rental listings."
+      notice: "Your offer has been submitted."
+
+  orders:
+    create:
+      alert_empty_cart: "Your cart is empty."
+      alert_no_delivery_method: "Please select a delivery method."
+      alert_no_address: "Please provide a delivery address."
+      alert_rental_unavailable: "A rental item in your cart is no longer available."
+      alert_no_guest_info: "Please provide your contact information."
+      notice: "Your order has been placed!"
+      alert_error: "There was a problem placing your order. Please try again."
+    payments:
+      create:
+        alert: "This order has already been processed."
+
+  passwords:
+    create:
+      alert_rate_limit: "Try again later."
+      notice: "Password reset instructions sent (if user with that email address exists)."
+    update:
+      notice: "Password has been reset."
+      alert_mismatch: "Passwords did not match."
+    edit:
+      alert_invalid: "Password reset link is invalid or has expired."
+
+  payment_methods:
+    create:
+      notice: "Card ending in %{last_4} added."
+    set_default:
+      notice: "Default card updated."
+    destroy:
+      notice: "Card removed."
+
+  podium:
+    create:
+      notice: "Thanks for reaching out — we'll be in touch soon."
+
+  profiles:
+    update:
+      notice: "Profile updated successfully."
+    verifications:
+      update:
+        notice: "Verification document uploaded."
+
+  proxy_bids:
+    create:
+      alert: "New max must be higher than your current proxy bid."
+      notice: "Proxy bid set to %{amount}."
+
+  registrations:
+    create:
+      alert_rate_limit: "Too many registration attempts. Try again later."
+      notice: "Check your email for an activation link."
+
+  schedule_event_registrations:
+    create:
+      error_full: "This event is full."
+
+  sessions:
+    create:
+      alert_rate_limit: "Try again later."
+      alert_not_activated: "Please activate your account. Check your email for an activation link."
+      alert_invalid: "Try another email address or password."
+
+  turnstile_verifiable:
+    alert: "Please complete the security challenge."

@@ -3,7 +3,7 @@ class Admin::Listings::VariantsController < Admin::BaseController
 
   def create
     Listings::VariantGenerator.call(listing: @listing)
-    redirect_to edit_admin_listing_path(@listing), notice: "Variants generated."
+    redirect_to edit_admin_listing_path(@listing), notice: t(".notice")
   end
 
   private

@@ -31,7 +31,7 @@ class Admin::PagesController < Admin::BaseController
           position: NavbarItem.maximum(:position).to_i + 1
         )
       end
-      redirect_to admin_pages_path, notice: "Page was successfully created."
+      redirect_to admin_pages_path, notice: t(".notice")
     else
       @widget_collections = build_widget_collections
       render :new, status: :unprocessable_content
@@ -44,7 +44,7 @@ class Admin::PagesController < Admin::BaseController
     @page.right_column_image.purge_later if params[:remove_right_column_image].present?
 
     if @page.update(page_params)
-      redirect_to admin_pages_path, notice: "Page was successfully updated."
+      redirect_to admin_pages_path, notice: t(".notice")
     else
       @widget_collections = build_widget_collections
       render :edit, status: :unprocessable_content
@@ -53,7 +53,7 @@ class Admin::PagesController < Admin::BaseController
 
   def destroy
     @page.destroy!
-    redirect_to admin_pages_path, notice: "Page was successfully deleted."
+    redirect_to admin_pages_path, notice: t(".notice")
   end
 
   private

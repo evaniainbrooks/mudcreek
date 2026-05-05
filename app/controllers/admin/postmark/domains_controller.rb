@@ -4,7 +4,7 @@ module Admin
       def create
         authorize(::Postmark::Domain, policy_class: ::Postmark::DomainPolicy)
         ProvisionPostmarkDomainJob.perform_later(Current.tenant.id)
-        redirect_to admin_sender_signatures_path, notice: "Domain provisioning has been enqueued."
+        redirect_to admin_sender_signatures_path, notice: t(".notice")
       end
 
       def verify

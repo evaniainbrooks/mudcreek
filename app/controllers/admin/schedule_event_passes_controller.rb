@@ -18,7 +18,7 @@ class Admin::ScheduleEventPassesController < Admin::BaseController
     authorize(@pass)
 
     if @pass.save
-      redirect_back_or_to admin_schedule_event_passes_path, notice: "Pass issued."
+      redirect_back_or_to admin_schedule_event_passes_path, notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -28,7 +28,7 @@ class Admin::ScheduleEventPassesController < Admin::BaseController
     @pass = ScheduleEventPass.find(params[:id])
     authorize(@pass)
     @pass.destroy!
-    redirect_back_or_to admin_schedule_event_passes_path, notice: "Pass removed."
+    redirect_back_or_to admin_schedule_event_passes_path, notice: t(".notice")
   end
 
   private

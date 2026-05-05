@@ -10,21 +10,21 @@ class OrdersController < ApplicationController
     end
 
     if @cart_items.empty?
-      redirect_to cart_path, alert: "Your cart is empty."
+      redirect_to cart_path, alert: t(".alert_empty_cart")
       return
     end
 
     reconcile_delivery_method
 
     if @cart_items.any? { |item| item.listing.requires_delivery? } && @delivery_method.nil?
-      redirect_to cart_path, alert: "Please select a delivery method."
+      redirect_to cart_path, alert: t(".alert_no_delivery_method")
       return
     end
 
     addr = resolve_address
     if @delivery_method&.address_required?
       if addr[:street_address].blank? || addr[:city].blank? || addr[:postal_code].blank? || addr[:country].blank?
-        redirect_to cart_path, alert: "Please provide a delivery address."
+        redirect_to cart_path, alert: t(".alert_no_address")
         return
       end
     end
@@ -33,7 +33,7 @@ class OrdersController < ApplicationController
     rental_items.each do |item|
       booking = item.rental_booking
       if booking.nil? || booking.invalid?
-        msg = booking&.errors&.full_messages&.first || "A rental item in your cart is no longer available."
+        msg = booking&.errors&.full_messages&.first || t(".alert_rental_unavailable")
         redirect_to cart_path, alert: msg
         return
       end
@@ -43,7 +43,7 @@ class OrdersController < ApplicationController
       guest_email = session[:guest_email]
       guest_name  = session[:guest_name]
       if guest_email.blank? || guest_name.blank?
-        redirect_to cart_path, alert: "Please provide your contact information."
+        redirect_to cart_path, alert: t(".alert_no_guest_info")
         return
       end
     end
@@ -107,9 +107,9 @@ class OrdersController < ApplicationController
     session.delete(:delivery_method_id)
     session.delete(:discount_code_id)
 
-    redirect_to order_path(order), notice: "Your order has been placed!"
+    redirect_to order_path(order), notice: t(".notice")
   rescue ActiveRecord::RecordInvalid
-    redirect_to cart_path, alert: "There was a problem placing your order. Please try again."
+    redirect_to cart_path, alert: t(".alert_error")
   end
 
   def show

@@ -12,7 +12,7 @@ class Admin::ListingInferenceBatchesController < Admin::BaseController
     authorize(@batch)
     if @batch.save
       ProcessListingInferenceBatchJob.perform_later(@batch.id)
-      redirect_to admin_listing_inference_batch_path(@batch), notice: "AI import started."
+      redirect_to admin_listing_inference_batch_path(@batch), notice: t(".notice")
     else
       @lots = Lot.order(:name)
       render :new, status: :unprocessable_content

@@ -6,7 +6,7 @@ class CartItemsController < ApplicationController
 
     if @listing.rental?
       unless Current.user
-        redirect_to new_session_path, alert: "Please sign in to book rentals."
+        redirect_to new_session_path, alert: t(".alert")
         return
       end
       create_rental
@@ -19,13 +19,13 @@ class CartItemsController < ApplicationController
     cart_item = find_cart_item(params[:id])
     quantity = cart_item.listing.unlimited_quantity? ? 1 : params[:quantity].to_i.clamp(1, cart_item.listing.quantity)
     cart_item.update(quantity:)
-    redirect_back fallback_location: cart_path, notice: "Quantity updated."
+    redirect_back fallback_location: cart_path, notice: t(".notice")
   end
 
   def destroy
     cart_item = find_cart_item(params[:id])
     cart_item.destroy
-    redirect_back fallback_location: cart_path, notice: "Removed from cart."
+    redirect_back fallback_location: cart_path, notice: t(".notice")
   end
 
   private
@@ -51,7 +51,7 @@ class CartItemsController < ApplicationController
       end
       format.html do
         redirect_back fallback_location: root_path,
-          notice: helpers.safe_join(["Added to cart. ", helpers.link_to("View cart", cart_path)])
+          notice: helpers.safe_join([t(".added_to_cart") + " ", helpers.link_to(t(".view_cart"), cart_path)])
       end
     end
   end
@@ -66,7 +66,7 @@ class CartItemsController < ApplicationController
 
     if result.success?
       redirect_back fallback_location: root_path,
-        notice: helpers.safe_join(["Rental added to cart. ", helpers.link_to("View cart", cart_path)])
+        notice: helpers.safe_join([t(".rental_added_to_cart") + " ", helpers.link_to(t(".view_cart"), cart_path)])
     else
       redirect_back fallback_location: listing_path(@listing), alert: result.error
     end

@@ -11,16 +11,16 @@ class Admin::Users::DisablementsController < Admin::BaseController
       email_address: "disabled#{SecureRandom.hex(8)}@#{host}"
     )
     @user.sessions.destroy_all
-    redirect_to admin_users_path, notice: "#{original_email} has been disabled."
+    redirect_to admin_users_path, notice: t(".notice", email: original_email)
   end
 
   def destroy
     authorize(@user, :update?)
     original_email = @user.disabled_email_address
     if @user.update(email_address: original_email, disabled_email_address: nil, disabled_at: nil)
-      redirect_to admin_users_path, notice: "#{@user.email_address} has been re-enabled."
+      redirect_to admin_users_path, notice: t(".notice", email: @user.email_address)
     else
-      redirect_to admin_users_path, alert: "Could not re-enable user: #{@user.errors.full_messages.to_sentence}"
+      redirect_to admin_users_path, alert: t(".alert", errors: @user.errors.full_messages.to_sentence)
     end
   end
 

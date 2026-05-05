@@ -68,7 +68,7 @@ class Admin::ListingsController < Admin::BaseController
     authorize(@listing)
 
     if @listing.save
-      redirect_to admin_listing_path(@listing), notice: "Listing was successfully created."
+      redirect_to admin_listing_path(@listing), notice: t(".notice")
     else
       load_form_collections
       render :new, status: :unprocessable_content
@@ -77,7 +77,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def update
     if @listing.update(listing_params)
-      redirect_to admin_listing_path(@listing), notice: "Listing was successfully updated."
+      redirect_to admin_listing_path(@listing), notice: t(".notice")
     else
       load_form_collections
       render :edit, status: :unprocessable_content
@@ -93,7 +93,7 @@ class Admin::ListingsController < Admin::BaseController
 
   def destroy
     @listing.destroy!
-    redirect_to admin_listings_path, notice: "Listing was successfully deleted."
+    redirect_to admin_listings_path, notice: t(".notice")
   end
 
   private

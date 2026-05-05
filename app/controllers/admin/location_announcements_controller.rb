@@ -20,7 +20,7 @@ class Admin::LocationAnnouncementsController < Admin::BaseController
     if @announcement.save
       SendLocationAnnouncementJob.perform_later(@announcement.id)
       redirect_to admin_location_location_announcement_path(@location, @announcement),
-                  notice: "Announcement queued for delivery."
+                  notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end

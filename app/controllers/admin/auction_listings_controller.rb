@@ -12,6 +12,6 @@ class Admin::AuctionListingsController < Admin::BaseController
     )
 
     auction_link = view_context.link_to(auction.name, admin_auction_path(auction))
-    redirect_to admin_listings_path, notice: "Listings added to #{auction_link}.".html_safe
+    redirect_to admin_listings_path, notice: t(".notice", auction_link: auction_link).html_safe
   end
 end

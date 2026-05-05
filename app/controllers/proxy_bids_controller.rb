@@ -18,7 +18,7 @@ class ProxyBidsController < ApplicationController
     )
 
     if proxy_bid.persisted? && max_cents <= proxy_bid.max_bid_cents
-      flash.now[:alert] = "New max must be higher than your current proxy bid."
+      flash.now[:alert] = t(".alert")
       return respond_with_flash_or_redirect(fallback)
     end
 
@@ -26,7 +26,7 @@ class ProxyBidsController < ApplicationController
 
     if proxy_bid.save
       ProxyBiddingService.resolve(@auction_listing)
-      flash.now[:notice] = "Proxy bid set to #{helpers.humanized_money_with_symbol(proxy_bid.max_bid)}."
+      flash.now[:notice] = t(".notice", amount: helpers.humanized_money_with_symbol(proxy_bid.max_bid))
     else
       flash.now[:alert] = proxy_bid.errors.full_messages.join(", ")
     end

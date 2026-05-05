@@ -11,7 +11,7 @@ class Admin::RolesController < Admin::BaseController
     @role = Role.new(role_params)
     authorize(@role)
     if @role.save
-      redirect_to admin_roles_path, notice: "Role \"#{@role.name}\" was successfully created."
+      redirect_to admin_roles_path, notice: t(".notice", name: @role.name)
     else
       @roles = Role.includes(:users, :permissions).order(:name)
       render :index, status: :unprocessable_content
@@ -20,7 +20,7 @@ class Admin::RolesController < Admin::BaseController
 
   def destroy
     @role.destroy!
-    redirect_to admin_roles_path, notice: "Role \"#{@role.name}\" was successfully deleted."
+    redirect_to admin_roles_path, notice: t(".notice", name: @role.name)
   end
 
   private

@@ -21,6 +21,6 @@ class PodiumController < ApplicationController
       submitted_at: Time.current.to_fs(:long)
     ).deliver_later
 
-    redirect_to podium_path, notice: "Thanks for reaching out — we'll be in touch soon."
+    redirect_to podium_path, notice: t(".notice")
   end
 end

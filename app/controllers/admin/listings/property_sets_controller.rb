@@ -32,7 +32,7 @@ class Admin::Listings::PropertySetsController < Admin::BaseController
     @property_set = Current.tenant.property_sets.find(params[:id])
     authorize(@property_set)
     @property_set.destroy!
-    redirect_to admin_listings_property_sets_path, notice: "\"#{@property_set.name}\" was successfully deleted."
+    redirect_to admin_listings_property_sets_path, notice: t(".notice", name: @property_set.name)
   end
 
   def reorder
@@ -46,7 +46,7 @@ class Admin::Listings::PropertySetsController < Admin::BaseController
     @property_set = Listings::PropertySet.new(property_set_params)
     authorize(@property_set)
     if @property_set.save
-      redirect_to admin_listings_property_sets_path, notice: "\"#{@property_set.name}\" was successfully created."
+      redirect_to admin_listings_property_sets_path, notice: t(".notice", name: @property_set.name)
     else
       @property_sets = Current.tenant.property_sets.order(:name)
       render :index, status: :unprocessable_content

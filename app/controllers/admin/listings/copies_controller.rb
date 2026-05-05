@@ -25,7 +25,7 @@ class Admin::Listings::CopiesController < Admin::BaseController
       end
     end
 
-    redirect_to edit_admin_listing_path(copy), notice: "Listing copied. Review and publish when ready."
+    redirect_to edit_admin_listing_path(copy), notice: t(".notice")
   end
 
   private

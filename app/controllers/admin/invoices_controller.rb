@@ -32,7 +32,7 @@ class Admin::InvoicesController < Admin::BaseController
     @invoice.receipt.purge if attrs.delete(:remove_receipt) == "1"
 
     if @invoice.update(attrs)
-      redirect_to admin_invoice_path(@invoice), notice: "Invoice updated."
+      redirect_to admin_invoice_path(@invoice), notice: t(".notice")
     else
       render :show, status: :unprocessable_content
     end

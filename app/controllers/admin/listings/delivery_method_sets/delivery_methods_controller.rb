@@ -6,7 +6,7 @@ class Admin::Listings::DeliveryMethodSets::DeliveryMethodsController < Admin::Ba
     @delivery = @delivery_method_set.deliveries.build(delivery_method: delivery_method)
     authorize(@delivery)
     if @delivery.save
-      redirect_to admin_listings_delivery_method_set_path(@delivery_method_set), notice: "\"#{delivery_method.name}\" was added."
+      redirect_to admin_listings_delivery_method_set_path(@delivery_method_set), notice: t(".notice", name: delivery_method.name)
     else
       @deliveries = @delivery_method_set.deliveries.includes(:delivery_method).order("delivery_methods.name")
       @available_methods = DeliveryMethod.where.not(id: @delivery_method_set.delivery_method_ids).order(:name)
@@ -18,7 +18,7 @@ class Admin::Listings::DeliveryMethodSets::DeliveryMethodsController < Admin::Ba
     @delivery = @delivery_method_set.deliveries.find(params[:id])
     authorize(@delivery)
     @delivery.destroy!
-    redirect_to admin_listings_delivery_method_set_path(@delivery_method_set), notice: "\"#{@delivery.delivery_method.name}\" was removed."
+    redirect_to admin_listings_delivery_method_set_path(@delivery_method_set), notice: t(".notice", name: @delivery.delivery_method.name)
   end
 
   private

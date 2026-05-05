@@ -3,7 +3,7 @@ class Admin::Lots::ListingPlaceholdersController < Admin::BaseController
 
   def destroy
     @lot.listing_placeholder.purge_later
-    redirect_to admin_lots_path, notice: "Placeholder image removed from \"#{@lot.name}\"."
+    redirect_to admin_lots_path, notice: t(".notice", name: @lot.name)
   end
 
   private

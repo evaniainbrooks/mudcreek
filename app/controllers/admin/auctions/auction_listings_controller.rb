@@ -7,7 +7,7 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
     listing = @auction_listing.listing
     @auction_listing.destroy!
     redirect_to admin_auction_path(@auction),
-      notice: ActionController::Base.helpers.link_to(listing.name, admin_listing_path(listing)) + " removed from auction."
+      notice: t(".notice", listing_link: ActionController::Base.helpers.link_to(listing.name, admin_listing_path(listing))).html_safe
   end
 
   def update
@@ -15,7 +15,7 @@ class Admin::Auctions::AuctionListingsController < Admin::BaseController
     @auction_listing.update(auction_listing_params)
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to admin_auction_path(@auction), notice: "Bid details updated." }
+      format.html { redirect_to admin_auction_path(@auction), notice: t(".notice") }
     end
   end
 

@@ -30,7 +30,7 @@ class Admin::OrdersController < Admin::BaseController
 
   def update
     if @order.update(order_params)
-      redirect_to admin_order_path(@order), notice: "Order updated."
+      redirect_to admin_order_path(@order), notice: t(".notice")
     else
       render :show, status: :unprocessable_content
     end

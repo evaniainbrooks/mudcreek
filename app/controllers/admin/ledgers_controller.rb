@@ -33,7 +33,7 @@ class Admin::LedgersController < Admin::BaseController
     authorize(@ledger)
 
     if @ledger.save
-      redirect_to admin_ledger_path(@ledger), notice: "Ledger was successfully created."
+      redirect_to admin_ledger_path(@ledger), notice: t(".notice")
     else
       @locations = Location.ordered
       render :new, status: :unprocessable_content
@@ -42,7 +42,7 @@ class Admin::LedgersController < Admin::BaseController
 
   def update
     if @ledger.update(ledger_params)
-      redirect_to admin_ledger_path(@ledger), notice: "Ledger was successfully updated."
+      redirect_to admin_ledger_path(@ledger), notice: t(".notice")
     else
       @locations = Location.ordered
       render :edit, status: :unprocessable_content
@@ -51,7 +51,7 @@ class Admin::LedgersController < Admin::BaseController
 
   def destroy
     @ledger.destroy!
-    redirect_to admin_ledgers_path, notice: "Ledger was successfully deleted."
+    redirect_to admin_ledgers_path, notice: t(".notice")
   end
 
   private

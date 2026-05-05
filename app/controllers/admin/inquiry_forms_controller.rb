@@ -22,7 +22,7 @@ class Admin::InquiryFormsController < Admin::BaseController
     authorize(@inquiry_form)
 
     if @inquiry_form.save
-      redirect_to admin_inquiry_forms_path, notice: "Inquiry form was successfully created."
+      redirect_to admin_inquiry_forms_path, notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -30,7 +30,7 @@ class Admin::InquiryFormsController < Admin::BaseController
 
   def update
     if @inquiry_form.update(inquiry_form_params)
-      redirect_to admin_inquiry_forms_path, notice: "Inquiry form was successfully updated."
+      redirect_to admin_inquiry_forms_path, notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -38,7 +38,7 @@ class Admin::InquiryFormsController < Admin::BaseController
 
   def destroy
     @inquiry_form.destroy!
-    redirect_to admin_inquiry_forms_path, notice: "Inquiry form was successfully deleted."
+    redirect_to admin_inquiry_forms_path, notice: t(".notice")
   end
 
   private

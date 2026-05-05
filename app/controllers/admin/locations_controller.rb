@@ -39,7 +39,7 @@ class Admin::LocationsController < Admin::BaseController
         active:          true,
         owner:           Current.user
       )
-      redirect_to admin_location_path(@location), notice: "Location was successfully created."
+      redirect_to admin_location_path(@location), notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -53,7 +53,7 @@ class Admin::LocationsController < Admin::BaseController
         active:          true,
         owner:           Current.user
       ) unless @location.qr_code
-      redirect_to admin_location_path(@location), notice: "Location was successfully updated."
+      redirect_to admin_location_path(@location), notice: t(".notice")
     else
       @qr_code = @location.qr_code
       load_check_in_stats
@@ -70,7 +70,7 @@ class Admin::LocationsController < Admin::BaseController
 
   def destroy
     @location.destroy!
-    redirect_to admin_locations_path, notice: "Location was successfully deleted."
+    redirect_to admin_locations_path, notice: t(".notice")
   end
 
   private

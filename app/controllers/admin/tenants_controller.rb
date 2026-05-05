@@ -30,7 +30,7 @@ module Admin
       end
 
       if @tenant.update(tenant_params)
-        redirect_to admin_tenant_path, notice: "Tenant was successfully updated."
+        redirect_to admin_tenant_path, notice: t(".notice")
       else
         @delivery_method_sets = @tenant.delivery_method_sets.order(:name)
         @pages = Page.published.top_level.order(:position, :title)

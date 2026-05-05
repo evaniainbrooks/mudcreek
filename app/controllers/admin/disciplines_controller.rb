@@ -20,7 +20,7 @@ class Admin::DisciplinesController < Admin::BaseController
     authorize(@discipline)
 
     if @discipline.save
-      redirect_to admin_discipline_path(@discipline), notice: "Discipline created."
+      redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -31,7 +31,7 @@ class Admin::DisciplinesController < Admin::BaseController
 
   def update
     if @discipline.update(discipline_params)
-      redirect_to admin_discipline_path(@discipline), notice: "Discipline updated."
+      redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -39,7 +39,7 @@ class Admin::DisciplinesController < Admin::BaseController
 
   def destroy
     @discipline.destroy!
-    redirect_to admin_disciplines_path, notice: "Discipline deleted."
+    redirect_to admin_disciplines_path, notice: t(".notice")
   end
 
   private

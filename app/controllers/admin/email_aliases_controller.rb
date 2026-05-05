@@ -10,14 +10,14 @@ module Admin
     def create
       authorize(EmailAlias, :create?, policy_class: EmailAliasPolicy)
       CreateEmailAliasJob.perform_later(Current.tenant.id, params[:email_alias][:alias], params[:email_alias][:forward])
-      redirect_to admin_email_aliases_path, notice: "Your request to create the alias is being processed."
+      redirect_to admin_email_aliases_path, notice: t(".notice")
     end
 
     def destroy
       @alias = EmailAlias.find(params[:id])
       authorize(@alias)
       DeleteEmailAliasJob.perform_later(@alias.id)
-      redirect_to admin_email_aliases_path, notice: "Your request to delete the alias is being processed."
+      redirect_to admin_email_aliases_path, notice: t(".notice")
     end
   end
 end

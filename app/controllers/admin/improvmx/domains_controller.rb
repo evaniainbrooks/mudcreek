@@ -4,7 +4,7 @@ module Admin
       def create
         authorize(::Improvmx::Domain, policy_class: ::Improvmx::DomainPolicy)
         ProvisionImprovmxDomainJob.perform_later(Current.tenant.id)
-        redirect_to admin_email_aliases_path, notice: "Domain provisioning has been enqueued."
+        redirect_to admin_email_aliases_path, notice: t(".notice")
       end
 
       def verify

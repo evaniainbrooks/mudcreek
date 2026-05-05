@@ -13,7 +13,7 @@ class Admin::PermissionsController < Admin::BaseController
     @permission = @role.permissions.new(permission_params)
     authorize(@permission)
     if @permission.save
-      redirect_to admin_role_permissions_path(@role), notice: "Permission was successfully added."
+      redirect_to admin_role_permissions_path(@role), notice: t(".notice")
     else
       redirect_to admin_role_permissions_path(@role), alert: @permission.errors.full_messages.to_sentence
     end
@@ -21,7 +21,7 @@ class Admin::PermissionsController < Admin::BaseController
 
   def destroy
     @permission.destroy!
-    redirect_to admin_role_permissions_path(@role), notice: "Permission was successfully removed."
+    redirect_to admin_role_permissions_path(@role), notice: t(".notice")
   end
 
   private

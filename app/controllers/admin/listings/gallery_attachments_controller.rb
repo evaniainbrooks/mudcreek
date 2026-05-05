@@ -4,7 +4,7 @@ class Admin::Listings::GalleryAttachmentsController < Admin::BaseController
 
   def destroy
     @attachment.purge_later
-    redirect_to edit_admin_listing_path(@listing), notice: "#{@attachment.filename} was removed."
+    redirect_to edit_admin_listing_path(@listing), notice: t(".notice", filename: @attachment.filename)
   end
 
   private

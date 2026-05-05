@@ -27,7 +27,7 @@ module TurnstileVerifiable
     Rails.logger.info("[Turnstile] result=#{result.inspect}")
 
     unless result && result[:success]
-      redirect_to new_session_path, alert: "Please complete the security challenge.", status: :see_other
+      redirect_to new_session_path, alert: I18n.t("turnstile_verifiable.alert"), status: :see_other
     end
   end
 end

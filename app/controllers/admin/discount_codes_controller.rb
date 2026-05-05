@@ -11,7 +11,7 @@ class Admin::DiscountCodesController < Admin::BaseController
     @discount_code = DiscountCode.new(discount_code_params)
     authorize(@discount_code)
     if @discount_code.save
-      redirect_to admin_discount_codes_path, notice: "Discount code \"#{@discount_code.key}\" was successfully created."
+      redirect_to admin_discount_codes_path, notice: t(".notice", key: @discount_code.key)
     else
       @discount_codes = DiscountCode.order(:key)
       render :index, status: :unprocessable_content
@@ -20,7 +20,7 @@ class Admin::DiscountCodesController < Admin::BaseController
 
   def destroy
     @discount_code.destroy!
-    redirect_to admin_discount_codes_path, notice: "Discount code \"#{@discount_code.key}\" was successfully deleted."
+    redirect_to admin_discount_codes_path, notice: t(".notice", key: @discount_code.key)
   end
 
   private

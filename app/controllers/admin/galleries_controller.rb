@@ -27,7 +27,7 @@ class Admin::GalleriesController < Admin::BaseController
     authorize(@gallery)
 
     if @gallery.save
-      redirect_to admin_galleries_path, notice: "Gallery was successfully created."
+      redirect_to admin_galleries_path, notice: t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -38,7 +38,7 @@ class Admin::GalleriesController < Admin::BaseController
 
   def update
     if @gallery.update(gallery_params)
-      redirect_to admin_galleries_path, notice: "Gallery was successfully updated."
+      redirect_to admin_galleries_path, notice: t(".notice")
     else
       render :edit, status: :unprocessable_content
     end
@@ -46,7 +46,7 @@ class Admin::GalleriesController < Admin::BaseController
 
   def destroy
     @gallery.destroy!
-    redirect_to admin_galleries_path, notice: "Gallery was successfully deleted."
+    redirect_to admin_galleries_path, notice: t(".notice")
   end
 
   private

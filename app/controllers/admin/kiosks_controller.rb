@@ -12,7 +12,7 @@ class Admin::KiosksController < Admin::BaseController
 
     if @kiosk.update(kiosk_params)
       @kiosk.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
-      redirect_to admin_location_path(@location), notice: "Kiosk updated."
+      redirect_to admin_location_path(@location), notice: t(".notice")
     else
       @qr_code          = @location.qr_code
       @schedules        = @location.schedules.ordered

@@ -18,6 +18,6 @@ class CartAddressesController < ApplicationController
       session[:guest_address] = attrs.to_h.symbolize_keys
     end
 
-    redirect_to cart_path, notice: "Delivery address saved."
+    redirect_to cart_path, notice: t(".notice")
   end
 end

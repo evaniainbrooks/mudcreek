@@ -2,7 +2,7 @@ class RegistrationsController < ApplicationController
   include TurnstileVerifiable
 
   allow_unauthenticated_access only: :create
-  rate_limit to: 5, within: 1.minute, only: :create, with: -> { redirect_to new_session_path, alert: "Too many registration attempts. Try again later." }
+  rate_limit to: 5, within: 1.minute, only: :create, with: -> { redirect_to new_session_path, alert: I18n.t("registrations.create.alert_rate_limit") }
   before_action :verify_turnstile!, only: :create
 
   def create
@@ -10,7 +10,7 @@ class RegistrationsController < ApplicationController
     if user.save
       RegistrationsMailer.activate(user).deliver_later
       RegistrationsMailer.user_registered(user).deliver_later if Current.tenant.features.notify_on_user_registration?
-      redirect_to new_session_path, notice: "Check your email for an activation link."
+      redirect_to new_session_path, notice: t(".notice")
     else
       redirect_to new_session_path, alert: user.errors.full_messages.to_sentence
     end

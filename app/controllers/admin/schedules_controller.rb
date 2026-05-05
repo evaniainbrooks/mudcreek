@@ -21,7 +21,7 @@ class Admin::SchedulesController < Admin::BaseController
   def update
     if @schedule.update(schedule_params)
       SyncScheduleJob.perform_later(@schedule.id) if @schedule.source_url.present? && @schedule.saved_change_to_source_url?
-      redirect_to admin_location_schedule_path(@location, @schedule), notice: "Schedule updated."
+      redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
     else
       render :show, status: :unprocessable_content
     end
@@ -39,7 +39,7 @@ class Admin::SchedulesController < Admin::BaseController
     if @schedule.save
       SyncScheduleJob.perform_later(@schedule.id) if @schedule.source_url.present?
       redirect_to admin_location_path(@location, anchor: "schedules-pane"),
-                  notice: "Schedule created.#{ ' Importing events in the background.' if @schedule.source_url.present? }"
+                  notice: @schedule.source_url.present? ? t(".notice_importing") : t(".notice")
     else
       render :new, status: :unprocessable_content
     end
@@ -47,7 +47,7 @@ class Admin::SchedulesController < Admin::BaseController
 
   def destroy
     @schedule.destroy!
-    redirect_to admin_location_path(@location, anchor: "schedules-pane"), notice: "Schedule deleted."
+    redirect_to admin_location_path(@location, anchor: "schedules-pane"), notice: t(".notice")
   end
 
   private

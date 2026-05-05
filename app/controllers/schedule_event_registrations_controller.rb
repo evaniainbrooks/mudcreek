@@ -30,7 +30,7 @@ class ScheduleEventRegistrationsController < ApplicationController
       render turbo_stream: turbo_stream.replace(
         ActionView::RecordIdentifier.dom_id(event, :registration),
         partial: "schedule_event_registrations/button",
-        locals: { event:, occurs_on: date, registration: nil, session:, error: "This event is full." }
+        locals: { event:, occurs_on: date, registration: nil, session:, error: t(".error_full") }
       )
       return
     end
