@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_02_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_05_014308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -271,8 +271,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_02_010000) do
     t.string "name", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.bigint "variant_id"
     t.index ["listing_id"], name: "index_galleries_on_listing_id", unique: true
     t.index ["tenant_id"], name: "index_galleries_on_tenant_id"
+    t.index ["variant_id"], name: "index_galleries_on_variant_id"
   end
 
   create_table "improvmx_domains", force: :cascade do |t|
@@ -1336,6 +1338,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_02_010000) do
   add_foreign_key "discount_codes", "tenants"
   add_foreign_key "email_aliases", "tenants", on_delete: :cascade
   add_foreign_key "galleries", "listings", on_delete: :cascade
+  add_foreign_key "galleries", "listings_variants", column: "variant_id", validate: false
   add_foreign_key "galleries", "tenants", on_delete: :cascade
   add_foreign_key "improvmx_domains", "tenants", on_delete: :cascade
   add_foreign_key "inquiries", "inquiry_forms"

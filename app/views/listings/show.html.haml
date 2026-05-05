@@ -22,17 +22,21 @@
 .page-container.p-4
   .row.g-4.g-lg-5.align-items-start
     .col-lg-7
-      .position-relative
-        - gallery_media_count = @listing.gallery&.photos&.size.to_i + @listing.gallery&.videos&.size.to_i
-        - if gallery_media_count > 0
-          = render "listings/carousel", listing: @listing, media_count: gallery_media_count
-        - elsif @listing.lot&.listing_placeholder&.attached?
-          .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
-        - elsif Current.tenant.listing_placeholder.attached?
-          .rounded-3.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder, height: 480) }
-        - else
-          .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
-            %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
+      .position-relative{ data: {
+          controller: "listing-variant-gallery",
+          "listing-variant-gallery-gallery-url-value": listing_variant_gallery_path(@listing)
+        } }
+        = turbo_frame_tag "variant-gallery" do
+          - gallery_media_count = @listing.gallery&.photos&.size.to_i + @listing.gallery&.videos&.size.to_i
+          - if gallery_media_count > 0
+            = render "listings/carousel", listing: @listing, media_count: gallery_media_count
+          - elsif @listing.lot&.listing_placeholder&.attached?
+            .rounded-3.bg-secondary-subtle{ style: background_image_style(@listing.lot.listing_placeholder, height: 480) }
+          - elsif Current.tenant.listing_placeholder.attached?
+            .rounded-3.bg-secondary-subtle{ style: background_image_style(Current.tenant.listing_placeholder, height: 480) }
+          - else
+            .rounded-3.bg-light.d-flex.align-items-center.justify-content-center{ style: "height: 480px" }
+              %i.bi.bi-image.text-muted{ style: "font-size: 5rem" }
         - if @listing.lot&.show_attribution?
           .position-absolute.bottom-0.start-0.p-2
             = lot_number_badge(@listing.lot)
@@ -89,7 +93,8 @@
                             class: "form-label fw-semibold small"
                         = select_tag "option_values[#{option.id}]",
                             options_for_select(option.option_values.order(:position).map { |v| [v.value, v.id] }),
-                            class: "form-select form-select-sm"
+                            class: "form-select form-select-sm",
+                            data: { "listing-variant-gallery-target" => "optionSelect", action: "change->listing-variant-gallery#updateGallery" }
                   .d-flex.gap-2
                     - if !@listing.unlimited_quantity? && @listing.quantity > 1 && !(@listing.has_variants? && Current.tenant.features.listing_variants?)
                       = f.number_field :quantity, value: 1, min: 1,

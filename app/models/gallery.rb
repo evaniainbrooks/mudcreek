@@ -2,6 +2,7 @@ class Gallery < ApplicationRecord
   include MultiTenant
 
   belongs_to :listing, optional: true
+  belongs_to :variant, class_name: "Listings::Variant", optional: true
 
   has_rich_text :description
 
@@ -9,15 +10,18 @@ class Gallery < ApplicationRecord
   has_many_attached :videos
   has_many_attached :documents
 
-  before_validation :inherit_listing_name
+  before_validation :inherit_name
 
   validates :name, presence: true
   validates :listing_id, uniqueness: true, allow_nil: true
+  validates :variant_id, uniqueness: true, allow_nil: true
 
   private
 
-  def inherit_listing_name
-    self.name = listing.name if name.blank? && listing.present?
+  def inherit_name
+    if name.blank?
+      self.name = listing&.name || variant&.listing&.name
+    end
   end
 
   public
