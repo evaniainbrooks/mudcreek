@@ -110,7 +110,8 @@ class Admin::ListingsController < Admin::BaseController
     @listing = Listing.includes(
       :categories, :properties,
       auction_listing: :auction,
-      gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob }
+      gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob },
+      variants: { gallery: { photos_attachments: :blob } }
     ).find_by!(hashid: params[:hashid])
     authorize(@listing)
   end

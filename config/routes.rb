@@ -12,6 +12,7 @@ resource :session
 
   resources :listings, only: [ :index, :show ], param: :hashid do
     resources :offers, only: [ :create ]
+    resource :variant_gallery, only: [ :show ], module: :listings
   end
 
   resources :auctions, only: [ :index, :show ], param: :hashid do
@@ -119,7 +120,9 @@ resource :session
       collection { patch :reorder }
       resources :gallery_attachments, only: [ :destroy ], module: :listings
       resources :rental_rate_plans, only: [ :create, :destroy ], module: :listings
-      resources :variants,          only: [ :create ], module: :listings
+      resources :variants,          only: [ :create, :edit, :update ], module: :listings do
+        resources :attachments, only: [ :destroy ], module: :variants
+      end
       resources :stock_movements,   only: [ :create, :destroy ], module: :listings
       resources :sales,             only: [ :create ],           module: :listings
       resources :copies,            only: [ :create ],           module: :listings

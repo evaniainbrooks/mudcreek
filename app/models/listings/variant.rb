@@ -8,6 +8,8 @@ class Listings::Variant < ApplicationRecord
   has_many :option_values, through: :variant_option_values,
            class_name: "Listings::OptionValue", source: :option_value
   has_many :cart_items, dependent: :nullify
+  has_one :gallery, foreign_key: :variant_id, dependent: :destroy, inverse_of: :variant
+  accepts_nested_attributes_for :gallery
 
   monetize :price_cents, allow_nil: true, with_model_currency: :currency
 

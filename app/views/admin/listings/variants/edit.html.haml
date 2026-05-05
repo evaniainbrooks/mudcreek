@@ -1,0 +1,37 @@
+- set_meta_tags title: "Variant Gallery — #{@variant.display_name}"
+
+.d-flex.align-items-center.gap-2.mb-4
+  = link_to edit_admin_listing_path(@listing), class: "btn btn-outline-secondary btn-sm" do
+    %i.bi.bi-arrow-left.me-1
+    Back to Listing
+  %h1.h3.mb-0.ms-2
+    %i.bi.bi-images.me-1
+    Gallery — #{@variant.display_name}
+
+.page-container.p-4
+  = form_with model: [:admin, @listing, @variant],
+              url: admin_listing_variant_path(@listing, @variant),
+              method: :patch,
+              data: { controller: "direct-upload" } do |f|
+    %fieldset.card.shadow-sm.border-0.mb-4
+      %legend.card-header.fw-semibold
+        %i.bi.bi-images.me-1
+        Photos
+      .card-body.p-4
+        .mb-3.text-muted.small
+          These photos replace the listing gallery when this variant is selected on the public page.
+          Leave empty to use the listing's default gallery.
+        = f.fields_for :gallery do |gf|
+          - delete_path = @variant.gallery&.persisted? ? ->(a) { admin_listing_variant_attachment_path(@listing, @variant, a) } : nil
+          = render Admin::AttachmentsListComponent.new(attachments: @variant.gallery&.photos_attachments || [], delete_path: delete_path)
+          .mb-0
+            = gf.label :photos, "Add photos", class: "form-label"
+            = gf.file_field :photos,
+                multiple: true,
+                direct_upload: true,
+                accept: "image/*",
+                class: "form-control"
+          .mt-3{ data: { "direct-upload-target": "progressContainer" }, hidden: true }
+    .d-flex.gap-2
+      = f.submit "Save Gallery", class: "btn btn-primary"
+      = link_to "Cancel", edit_admin_listing_path(@listing), class: "btn btn-outline-secondary"

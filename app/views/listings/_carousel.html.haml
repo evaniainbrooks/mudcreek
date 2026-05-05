@@ -10,7 +10,7 @@
     .carousel-inner{ data: { action: "mousemove->image-zoom#track" } }
       :ruby
         slide = 0
-        photos = listing.gallery&.photos || []
+        photos = local_assigns.key?(:photos) ? local_assigns[:photos] : (listing.gallery&.photos || [])
         videos = listing.gallery&.videos || []
         images_first = !listing.show_video_as_poster
       - (images_first ? photos : videos).each do |item|
@@ -55,7 +55,7 @@
   .d-flex.flex-wrap.gap-2.mt-3
     :ruby
       thumb_index = 0
-      thumb_photos = listing.gallery&.photos || []
+      thumb_photos = local_assigns.key?(:photos) ? local_assigns[:photos] : (listing.gallery&.photos || [])
       thumb_videos = listing.gallery&.videos || []
       thumb_images_first = !listing.show_video_as_poster
     - (thumb_images_first ? thumb_photos : thumb_videos).each do |item|
