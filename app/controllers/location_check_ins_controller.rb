@@ -18,9 +18,10 @@ class LocationCheckInsController < ApplicationController
       if @check_in.save
         if @today_schedule_events.one?
           apply_event(@check_in, @today_schedule_events.first)
-          redirect_to exit_url, allow_other_host: true and return
+          @today_schedule_events = []
+        else
+          session[:check_in_id] = @check_in.id
         end
-        session[:check_in_id] = @check_in.id
       end
     elsif Current.user
       @check_in = @location.check_ins.build(user: Current.user)
