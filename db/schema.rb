@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_05_014308) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_160618) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -752,6 +752,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_05_014308) do
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "icon"
+    t.string "layout"
     t.text "meta_description"
     t.string "meta_title"
     t.bigint "parent_id"

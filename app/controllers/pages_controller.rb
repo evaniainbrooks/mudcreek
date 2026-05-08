@@ -13,8 +13,13 @@ class PagesController < ApplicationController
     @child_widgets = @active_child ? @active_child.widgets.to_a : []
     preload_widget_associations(@child_widgets)
 
+    layout_name = @page.layout.presence || "application"
     tenant_template = "pages/#{Current.tenant.key}/#{@page.slug}"
-    render tenant_template if lookup_context.template_exists?(tenant_template, [], false)
+    if lookup_context.template_exists?(tenant_template, [], false)
+      render tenant_template, layout: layout_name
+    else
+      render :show, layout: layout_name
+    end
   end
 
   private

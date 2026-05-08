@@ -88,11 +88,18 @@
                   data: { "page-form-target": "parentSelect", action: "change->page-form#toggle" }
               - if page.errors[:parent].any?
                 .invalid-feedback= page.errors[:parent].to_sentence
-            .mb-0
+            .mb-3
               = f.label :position, class: "form-label"
               = f.number_field :position, class: "form-control #{'is-invalid' if page.errors[:position].any?}", min: 0
               - if page.errors[:position].any?
                 .invalid-feedback= page.errors[:position].to_sentence
+            .mb-0
+              = f.label :layout, class: "form-label"
+              = f.select :layout,
+                  [["Default (Application)", nil], ["Showroom", "showroom"], ["Check-in", "checkin"]],
+                  {},
+                  class: "form-select"
+              %small.text-muted Controls which layout wraps this page on the public site.
 
         = render "admin/pages/widget_fields", f: f, widget_collections: widget_collections
 
