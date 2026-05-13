@@ -56,7 +56,9 @@ RSpec.describe "Admin::RankAwards", type: :request do
     end
 
     context "for a kid" do
-      let(:kid) { create(:kid, user: member) }
+      let(:kids_discipline) { create(:discipline, name: "Kids BJJ", kids: true) }
+      let(:kids_rank)       { create(:rank, discipline: kids_discipline, name: "White", position: 1) }
+      let(:kid)             { create(:kid, user: member) }
 
       it "creates a rank award for the kid" do
         expect {
@@ -64,7 +66,7 @@ RSpec.describe "Admin::RankAwards", type: :request do
             rank_award: {
               rankable_type: "Kid",
               rankable_id:   kid.id,
-              rank_id:       rank.id,
+              rank_id:       kids_rank.id,
               stripes:       2,
               awarded_at:    Date.current.to_s
             }
