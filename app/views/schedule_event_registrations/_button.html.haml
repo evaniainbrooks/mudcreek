@@ -1,11 +1,12 @@
-- error ||= nil
-- session ||= nil
-- registered_count = session&.confirmed_registrations&.count || 0
-- at_capacity = event.capacity.present? && registered_count >= event.capacity
+:ruby
+  error ||= nil
+  session ||= nil
+  registered_count = session&.confirmed_registrations&.count || 0
+  at_capacity = event.capacity.present? && registered_count >= event.capacity
 %span{ id: dom_id(event, :registration) }
   - if event.capacity.present?
     %small.d-block.mb-1{ class: at_capacity ? "text-danger" : "text-muted" }
-      = "#{registered_count} of #{event.capacity} registered"
+      #{registered_count} of #{event.capacity} registered
   - if registration&.confirmed?
     = button_to schedule_event_registration_path(registration), method: :delete,
         class: "btn btn-sm btn-success",

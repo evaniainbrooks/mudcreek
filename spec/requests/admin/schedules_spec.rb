@@ -126,7 +126,6 @@ RSpec.describe "Admin::Schedules", type: :request do
         }.not_to have_enqueued_job(SyncScheduleJob)
       end
     end
-
   end
 
   # ------------------------------------------------------------------ #

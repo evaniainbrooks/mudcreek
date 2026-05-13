@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -274,7 +274,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_000000) do
     t.bigint "variant_id"
     t.index ["listing_id"], name: "index_galleries_on_listing_id", unique: true
     t.index ["tenant_id"], name: "index_galleries_on_tenant_id"
-    t.index ["variant_id"], name: "index_galleries_on_variant_id"
+    t.index ["variant_id"], name: "index_galleries_on_variant_id", unique: true
   end
 
   create_table "improvmx_domains", force: :cascade do |t|
