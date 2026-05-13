@@ -2009,17 +2009,17 @@ Current.tenant = mudcreek
     l.build_address(attrs[:address])
   end
 
-  unless location.logo.attached?
-    location.logo.attach(
+  unless location.kiosk.logo.attached?
+    location.kiosk.logo.attach(
       io:           Rails.root.join("spec/fixtures/images/logos/mudcreek.png").open("rb"),
       filename:     "mudcreek.png",
       content_type: "image/png"
     )
   end
 
-  unless location.backgrounds.attached?
+  unless location.kiosk.backgrounds.attached?
     fixture_dir = attrs[:background_type].start_with?("video/") ? "spec/fixtures/videos" : "spec/fixtures/images"
-    location.backgrounds.attach(
+    location.kiosk.backgrounds.attach(
       io:           Rails.root.join(fixture_dir, attrs[:background]).open("rb"),
       filename:     attrs[:background],
       content_type: attrs[:background_type]
