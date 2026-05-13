@@ -109,9 +109,10 @@ class Admin::ListingsController < Admin::BaseController
   def set_listing
     @listing = Listing.includes(
       :categories, :properties,
+      :options,
       auction_listing: :auction,
       gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob },
-      variants: { gallery: { photos_attachments: :blob } }
+      variants: [ { gallery: { photos_attachments: :blob } }, :option_values ]
     ).find_by!(hashid: params[:hashid])
     authorize(@listing)
   end
@@ -124,7 +125,7 @@ class Admin::ListingsController < Admin::BaseController
       rental_rate_plans_attributes: [:id, :label, :duration_minutes, :price, :_destroy],
       properties_attributes: [:id, :name, :value, :icon, :position, :_destroy],
       address_attributes: [:id, :street_address, :city, :province, :postal_code, :country, :address_type],
-      options_attributes: [:id, :name, :position, :_destroy,
+      options_attributes: [:id, :name, :position, :affects_gallery, :_destroy,
         option_values_attributes: [:id, :value, :position, :_destroy]],
       variants_attributes: [:id, :quantity, :price_cents, :sku, :_destroy])
     if (ga = p[:gallery_attributes])

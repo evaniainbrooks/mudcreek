@@ -4,6 +4,9 @@
     = option_form.text_field :name,
         class: "form-control form-control-sm flex-grow-1",
         placeholder: "Option name (e.g. Size, Color)"
+    .form-check.mb-0
+      = option_form.check_box :affects_gallery, class: "form-check-input"
+      = option_form.label :affects_gallery, "Affects gallery", class: "form-check-label small"
     - if option_form.object.persisted?
       .form-check.mb-0
         = option_form.check_box :_destroy, class: "form-check-input"

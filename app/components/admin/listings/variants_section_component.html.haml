@@ -3,7 +3,7 @@
     %i.bi.bi-grid-3x3-gap.me-2
     Variants
   .card-body.p-4
-    - if listing.variants.any?
+    - if @listing.variants.any?
       .table-responsive
         %table.table.table-sm.align-middle
           %thead.thead-secondary
@@ -15,14 +15,18 @@
               %th{ style: "width: 100px" } Gallery
               %th
           %tbody
-            = form.fields_for :variants do |variant_form|
-              = render "admin/listings/variants/variant_fields",
+            = @form.fields_for :variants do |variant_form|
+              :ruby
+                row = Admin::Listings::VariantRowComponent.new(
                   variant_form: variant_form,
-                  listing: listing
-    - elsif listing.persisted?
+                  listing: @listing,
+                  gallery_representative_id: gallery_representative_id_for(variant_form.object)
+                )
+              = render row
+    - elsif @listing.persisted?
       .text-muted.small
         No variants yet. Save options and values above to generate variants, or
-        = link_to admin_listing_variants_path(listing),
+        = link_to admin_listing_variants_path(@listing),
             data: { turbo_method: :post },
             class: "btn btn-sm btn-outline-secondary ms-1" do
           %i.bi.bi-magic.me-1
