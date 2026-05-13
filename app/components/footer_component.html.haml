@@ -64,7 +64,9 @@
               %small.text-muted Powered by
               = image_tag "/podium.png", alt: "Podium", style: "height: 3rem; width: auto; object-fit: contain"
               %small.text-muted Platform your business.
-        %small.text-muted.mt-2
+    .row.mt-4.border-top.pt-3
+      .col.text-center
+        %small.text-muted
           &copy;
           = Date.current.year
           = tenant.name
