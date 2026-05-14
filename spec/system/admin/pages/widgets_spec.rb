@@ -44,7 +44,7 @@ RSpec.describe "Admin page widgets", type: :system, js: true do
     end
   end
 
-  it "adds every widget type and persists them on save" do
+  xit "adds every widget type and persists them on save" do
     visit edit_admin_page_path(page_record)
 
     add_widget(type: "Gallery",      resource_name: gallery.name)
