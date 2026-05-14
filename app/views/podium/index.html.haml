@@ -13,7 +13,8 @@
     {
       icon:        "bi-cart-fill",
       title:       "E-Commerce & Payments",
-      description: "Sell products, manage inventory, accept offers, and process payments through Square — with discount codes, delivery options, and order tracking built in."
+      description: "Sell products, manage inventory, accept offers, and process payments " \
+                   "through Square — with discount codes, delivery options, and order tracking built in."
     },
     {
       icon:        "bi-calendar-event-fill",
@@ -33,17 +34,20 @@
     {
       icon:        "bi-layout-text-window-reverse",
       title:       "Pages & Content",
-      description: "Build rich content pages with galleries, location maps, schedules, contact forms, and QR codes using a flexible widget system — no developer required."
+      description: "Build rich content pages with galleries, location maps, schedules, " \
+                   "contact forms, and QR codes using a flexible widget system — no developer required."
     },
     {
       icon:        "bi-hammer",
       title:       "Auctions",
-      description: "Run timed auctions with proxy bidding, real-time updates, buyer registration, and automated invoicing. Everything from listing to final payment."
+      description: "Run timed auctions with proxy bidding, real-time updates, buyer " \
+                   "registration, and automated invoicing. Everything from listing to final payment."
     },
     {
       icon:        "bi-buildings-fill",
       title:       "Multi-Tenant",
-      description: "Run multiple independent brands from a single installation. Each tenant gets its own data, users, and settings — fully isolated under their own subdomain."
+      description: "Run multiple independent brands from a single installation. Each tenant " \
+                   "gets its own data, users, and settings — fully isolated under their own subdomain."
     },
     {
       icon:        "bi-qr-code",
@@ -53,7 +57,8 @@
     {
       icon:        "bi-credit-card-fill",
       title:       "Subscriptions",
-      description: "Offer membership plans with recurring billing, per-user access control, and automated renewal — integrated with your existing member profiles."
+      description: "Offer membership plans with recurring billing, per-user access control, " \
+                   "and automated renewal — integrated with your existing member profiles."
     }
   ]
 
@@ -85,7 +90,9 @@
             = f.email_field :email, class: "form-control", placeholder: "jane@example.com", required: true
           .mb-3
             = f.label :message, "Message", class: "form-label required"
-            = f.text_area :message, class: "form-control", rows: 5, placeholder: "Tell us a bit about your business and what you're looking for.", required: true
+            = f.text_area :message, class: "form-control", rows: 5,
+                placeholder: "Tell us a bit about your business and what you're looking for.",
+                required: true
           = f.submit "Send message", class: "btn btn-primary"
     .col-lg-6.d-none.d-lg-block
       = image_tag "/features.png", alt: "Podium features", class: "img-fluid rounded-3"

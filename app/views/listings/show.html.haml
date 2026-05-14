@@ -22,10 +22,10 @@
 .page-container.p-4
   .row.g-4.g-lg-5.align-items-start
     .col-lg-7
-      .position-relative{ data: {
+      .position-relative{data: {
           controller: "listing-variant-gallery",
           "listing-variant-gallery-gallery-url-value": listing_variant_gallery_path(@listing)
-        } }
+        }}
         = turbo_frame_tag "variant-gallery" do
           - gallery_media_count = @listing.gallery&.photos&.size.to_i + @listing.gallery&.videos&.size.to_i
           - if gallery_media_count > 0
