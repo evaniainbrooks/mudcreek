@@ -34,4 +34,39 @@ RSpec.describe "Podium", type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
+
+  # ------------------------------------------------------------------ #
+  describe "POST /podium" do
+    let(:contact_params) do
+      { name: "Alice", email: "alice@example.com", message: "Interested in Podium." }
+    end
+
+    before do
+      allow(PodiumMailer).to receive_message_chain(:contact, :deliver_later)
+    end
+
+    it "enqueues a contact email" do
+      post podium_path, params: contact_params
+
+      expect(PodiumMailer).to have_received(:contact)
+    end
+
+    it "redirects to the podium page" do
+      post podium_path, params: contact_params
+
+      expect(response).to redirect_to(podium_path)
+    end
+
+    it "sets a flash notice" do
+      post podium_path, params: contact_params
+
+      expect(flash[:notice]).to be_present
+    end
+
+    it "is accessible without signing in" do
+      post podium_path, params: contact_params
+
+      expect(response).to redirect_to(podium_path)
+    end
+  end
 end

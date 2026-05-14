@@ -14,14 +14,7 @@ class Admin::KiosksController < Admin::BaseController
       @kiosk.backgrounds.attach(new_backgrounds) if new_backgrounds.present?
       redirect_to admin_location_path(@location), notice: t(".notice")
     else
-      @qr_code          = @location.qr_code
-      @schedules        = @location.schedules.ordered
-      @members          = @location.users.order(:first_name, :last_name)
-      @non_members      = User.where.not(id: @members.select(:id)).order(:first_name, :last_name)
-      @announcements    = @location.location_announcements.ordered.limit(5)
-      @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)
-      @location.build_address unless @location.address
-      render "admin/locations/show", status: :unprocessable_content
+      redirect_to admin_location_path(@location), alert: @kiosk.errors.full_messages.to_sentence
     end
   end
 

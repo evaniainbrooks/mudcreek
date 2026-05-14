@@ -10,6 +10,7 @@ RSpec.describe "Admin::Inquiries", type: :request do
     Role.create!(name: "inquiry_manager", description: "Manage inquiries").tap do |r|
       r.permissions.create!(resource: "Inquiry", action: "index")
       r.permissions.create!(resource: "Inquiry", action: "show")
+      r.permissions.create!(resource: "Inquiry", action: "update")
     end
   end
 
@@ -85,6 +86,52 @@ RSpec.describe "Admin::Inquiries", type: :request do
 
       it "raises Pundit::NotAuthorizedError" do
         expect { get admin_inquiry_path(inquiry) }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  # ------------------------------------------------------------------ #
+  describe "PATCH /admin/inquiries/:id" do
+    it "updates the status and redirects" do
+      patch admin_inquiry_path(inquiry), params: { inquiry: { status: "resolved" } }
+
+      expect(inquiry.reload.status).to eq("resolved")
+      expect(response).to redirect_to(admin_inquiry_path(inquiry))
+    end
+
+    it "updates admin_notes" do
+      patch admin_inquiry_path(inquiry), params: { inquiry: { admin_notes: "Followed up." } }
+
+      expect(inquiry.reload.admin_notes).to eq("Followed up.")
+    end
+
+    it "sets a flash notice" do
+      patch admin_inquiry_path(inquiry), params: { inquiry: { status: "in_progress" } }
+
+      expect(flash[:notice]).to be_present
+    end
+
+    context "when unauthenticated" do
+      before { delete session_path }
+
+      it "redirects to sign in" do
+        patch admin_inquiry_path(inquiry), params: { inquiry: { status: "resolved" } }
+
+        expect(response).to redirect_to(new_session_path)
+      end
+    end
+
+    context "when the user lacks the update permission" do
+      let(:role) do
+        Role.create!(name: "show_only", description: "Show only").tap do |r|
+          r.permissions.create!(resource: "Inquiry", action: "show")
+        end
+      end
+
+      it "raises Pundit::NotAuthorizedError" do
+        expect {
+          patch admin_inquiry_path(inquiry), params: { inquiry: { status: "resolved" } }
+        }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end

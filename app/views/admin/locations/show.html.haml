@@ -76,7 +76,7 @@
                         %dt.col-5 Directions
                         %dd.col-7= @location.directions
 
-        = render "stats_row",
+        = render "admin/locations/stats_row",
             total: @total_check_ins,
             today: @today_check_ins,
             week:  @week_check_ins,
@@ -84,21 +84,21 @@
 
         .row.g-4
           .col-lg-6
-            = render "check_ins_by_user", user_stats: @user_stats
+            = render "admin/locations/check_ins_by_user", user_stats: @user_stats
           .col-lg-6
-            = render "recent_check_ins", recent_check_ins: @recent_check_ins
+            = render "admin/locations/recent_check_ins", recent_check_ins: @recent_check_ins
 
-        = render "members_and_announcements",
+        = render "admin/locations/members_and_announcements",
             location: @location,
             members: @members,
             non_members: @non_members,
             announcements: @announcements
 
       #edit-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "edit-tab" } }
-        = render "form", location: @location
+        = render "admin/locations/form", location: @location
 
       #kiosk-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "kiosk-tab" } }
-        = render "kiosk_form", location: @location, kiosk: @kiosk, qr_code: @qr_code, drop_in_listings: @drop_in_listings
+        = render "admin/locations/kiosk_form", location: @location, kiosk: @kiosk, qr_code: @qr_code, drop_in_listings: @drop_in_listings
 
       #schedules-pane.tab-pane.fade{ role: "tabpanel", aria: { labelledby: "schedules-tab" } }
         .d-flex.justify-content-between.align-items-center.mb-3

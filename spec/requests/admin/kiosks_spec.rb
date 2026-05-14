@@ -100,5 +100,51 @@ RSpec.describe "Admin::Kiosks", type: :request do
         }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
+
+    context "with remove_logo" do
+      before do
+        location.kiosk.logo.attach(
+          io: StringIO.new("fake logo"),
+          filename: "logo.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "schedules the logo for purge and redirects" do
+        patch admin_location_kiosk_path(location),
+              params: { remove_logo: "1", kiosk: { slide_timeout: 5 } }
+
+        expect(response).to redirect_to(admin_location_path(location))
+      end
+    end
+
+    context "with remove_background_ids" do
+      let(:signed_id) do
+        location.kiosk.backgrounds.attach(
+          io: StringIO.new("fake bg"),
+          filename: "bg.jpg",
+          content_type: "image/jpeg"
+        )
+        location.kiosk.backgrounds.first.blob.signed_id
+      end
+
+      it "schedules the background for purge and redirects" do
+        patch admin_location_kiosk_path(location),
+              params: { remove_background_ids: [signed_id], kiosk: { slide_timeout: 5 } }
+
+        expect(response).to redirect_to(admin_location_path(location))
+      end
+    end
+
+    context "when the kiosk update fails" do
+      before { allow_any_instance_of(Kiosk).to receive(:update).and_return(false) }
+
+      it "redirects back to the location page" do
+        patch admin_location_kiosk_path(location),
+              params: { kiosk: { slide_timeout: 5 } }
+
+        expect(response).to redirect_to(admin_location_path(location))
+      end
+    end
   end
 end
