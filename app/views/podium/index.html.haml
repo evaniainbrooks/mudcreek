@@ -2,84 +2,90 @@
 
 .py-5.text-center
   = image_tag "/podium.png", alt: "Podium", style: "height: 12rem; width: auto; object-fit: contain"
-  %p.lead.text-muted.mb-5.mx-auto{ style: "max-width: 600px" }
-    The white-label commerce platform for auctions, listings, rentals, and more.
-    Give your brand a full-featured online storefront — without building it from scratch.
+  %h1.h3.fw-semibold.mt-3.mb-2 A complete online presence for your business
+  %p.lead.text-muted.mb-5.mx-auto{ style: "max-width: 640px" }
+    From your storefront to your front door — Podium gives your brand a full-featured
+    web platform with e-commerce, bookings, memberships, and more. Under your name,
+    your domain, your look.
 
-.row.g-4.mb-5
-  .col-md-4
-    .card.h-100.border-0.shadow-sm
-      .card-body.p-4
-        %i.bi.bi-hammer.fs-2.text-primary.mb-3.d-block
-        %h5.card-title.fw-semibold Auctions
-        %p.card-text.text-muted
-          Run live and timed auctions with proxy bidding, real-time updates, buyer
-          registration, and automated invoicing. Everything you need from listing
-          to final payment.
+:ruby
+  features = [
+    {
+      icon:        "bi-cart-fill",
+      title:       "E-Commerce & Payments",
+      description: "Sell products, manage inventory, accept offers, and process payments through Square — with discount codes, delivery options, and order tracking built in."
+    },
+    {
+      icon:        "bi-calendar-event-fill",
+      title:       "Events & Scheduling",
+      description: "Publish class and event schedules, accept registrations, issue passes, and track attendance — all synced with your members' profiles."
+    },
+    {
+      icon:        "bi-people-fill",
+      title:       "Member Management",
+      description: "Manage users, roles, family accounts, and rank progression. Everything you need to run a membership-based business in one place."
+    },
+    {
+      icon:        "bi-display-fill",
+      title:       "Check-in Kiosk",
+      description: "QR-code check-in kiosks for your front desk with live attendance stats, announcements, and a drop-in pass purchase flow."
+    },
+    {
+      icon:        "bi-layout-text-window-reverse",
+      title:       "Pages & Content",
+      description: "Build rich content pages with galleries, location maps, schedules, contact forms, and QR codes using a flexible widget system — no developer required."
+    },
+    {
+      icon:        "bi-hammer",
+      title:       "Auctions",
+      description: "Run timed auctions with proxy bidding, real-time updates, buyer registration, and automated invoicing. Everything from listing to final payment."
+    },
+    {
+      icon:        "bi-buildings-fill",
+      title:       "Multi-Tenant",
+      description: "Run multiple independent brands from a single installation. Each tenant gets its own data, users, and settings — fully isolated under their own subdomain."
+    },
+    {
+      icon:        "bi-qr-code",
+      title:       "QR Codes",
+      description: "Create dynamic, trackable QR codes with scan analytics, expiry, and customisable destinations. Perfect for signage, print, and kiosk flows."
+    },
+    {
+      icon:        "bi-credit-card-fill",
+      title:       "Subscriptions",
+      description: "Offer membership plans with recurring billing, per-user access control, and automated renewal — integrated with your existing member profiles."
+    }
+  ]
 
-  .col-md-4
-    .card.h-100.border-0.shadow-sm
-      .card-body.p-4
-        %i.bi.bi-tag-fill.fs-2.text-primary.mb-3.d-block
-        %h5.card-title.fw-semibold Listings & Rentals
-        %p.card-text.text-muted
-          Sell products, accept offers, and rent items — all from one platform.
-          Variants, stock tracking, discount codes, and flexible delivery options
-          are built in.
+%section.rounded-3.overflow-hidden.mb-5{ style: "background: #16181b; border: 1px solid rgba(255,255,255,0.1)" }
+  .row.g-0
+    - features.each_with_index do |f, i|
+      - border_right  = (i % 3 != 2)  ? "border-right: 1px solid rgba(255,255,255,0.1);" : ""
+      - border_bottom = (i / 3 != 2)  ? "border-bottom: 1px solid rgba(255,255,255,0.1);" : ""
+      .col-md-4.p-4{ style: "#{border_right}#{border_bottom}" }
+        .d-flex.align-items-center.gap-2.mb-2
+          %i{ class: "bi #{f[:icon]} fs-3 text-primary" }
+          %h4.fw-semibold.text-white.mb-0= f[:title]
+        %p.mb-0.small{ style: "color: rgba(255,255,255,0.55)" }= f[:description]
 
-  .col-md-4
-    .card.h-100.border-0.shadow-sm
-      .card-body.p-4
-        %i.bi.bi-palette-fill.fs-2.text-primary.mb-3.d-block
-        %h5.card-title.fw-semibold Fully White-Label
-        %p.card-text.text-muted
-          Custom domain, your logo, your colours, your brand. Podium stays in the
-          background so your customers only ever see you.
-
-.row.g-4.mb-5
-  .col-md-4
-    .card.h-100.border-0.shadow-sm
-      .card-body.p-4
-        %i.bi.bi-people-fill.fs-2.text-primary.mb-3.d-block
-        %h5.card-title.fw-semibold Multi-Tenant
-        %p.card-text.text-muted
-          Run multiple independent storefronts from a single installation. Each
-          tenant gets its own data, users, and settings — fully isolated.
-
-  .col-md-4
-    .card.h-100.border-0.shadow-sm
-      .card-body.p-4
-        %i.bi.bi-layout-text-window-reverse.fs-2.text-primary.mb-3.d-block
-        %h5.card-title.fw-semibold Pages & Widgets
-        %p.card-text.text-muted
-          Build content pages with galleries, location maps, schedules, contact
-          forms, and QR codes using a flexible widget system — no developer
-          required.
-
-  .col-md-4
-    .card.h-100.border-0.shadow-sm
-      .card-body.p-4
-        %i.bi.bi-bar-chart-fill.fs-2.text-primary.mb-3.d-block
-        %h5.card-title.fw-semibold Built to Scale
-        %p.card-text.text-muted
-          Backed by PostgreSQL, Solid Queue, Action Cable, and imgproxy.
-          Real-time bid updates, background jobs, and optimised image delivery
-          all come standard.
-
-.row.justify-content-center.py-4
-  .col-lg-6
-    - if notice.present?
-      .alert.alert-success= notice
-    %h2.fw-semibold.mb-1 Interested in Podium?
-    %p.text-muted.mb-4 Get in touch and we'll have you up and running in no time.
-    = form_with url: podium_path, method: :post, class: "needs-validation", novalidate: true do |f|
-      .mb-3
-        = f.label :name, "Your name", class: "form-label"
-        = f.text_field :name, class: "form-control", placeholder: "Jane Smith"
-      .mb-3
-        = f.label :email, "Email address", class: "form-label required"
-        = f.email_field :email, class: "form-control", placeholder: "jane@example.com", required: true
-      .mb-3
-        = f.label :message, "Message", class: "form-label required"
-        = f.text_area :message, class: "form-control", rows: 5, placeholder: "Tell us a bit about your business and what you're looking for.", required: true
-      = f.submit "Send message", class: "btn btn-primary"
+%section.rounded-3.py-5.px-4.mt-2{ style: "background: var(--bs-light)" }
+  .row.align-items-center.g-5
+    .col-lg-6
+      - if notice.present?
+        .alert.alert-success= notice
+      %h2.fw-semibold.mb-1 Interested in Podium?
+      %p.text-muted.mb-4 Get in touch and we'll have you up and running in no time.
+      .p-4.rounded-3.shadow{ style: "background: #fff" }
+        = form_with url: podium_path, method: :post, class: "needs-validation", novalidate: true do |f|
+          .mb-3
+            = f.label :name, "Your name", class: "form-label"
+            = f.text_field :name, class: "form-control", placeholder: "Jane Smith"
+          .mb-3
+            = f.label :email, "Email address", class: "form-label required"
+            = f.email_field :email, class: "form-control", placeholder: "jane@example.com", required: true
+          .mb-3
+            = f.label :message, "Message", class: "form-label required"
+            = f.text_area :message, class: "form-control", rows: 5, placeholder: "Tell us a bit about your business and what you're looking for.", required: true
+          = f.submit "Send message", class: "btn btn-primary"
+    .col-lg-6.d-none.d-lg-block
+      = image_tag "/features.png", alt: "Podium features", class: "img-fluid rounded-3"
