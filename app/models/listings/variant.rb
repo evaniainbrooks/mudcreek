@@ -16,7 +16,7 @@ class Listings::Variant < ApplicationRecord
   validates :quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   def display_name
-    option_values.joins(:option).order("listings_options.position").map(&:value).join(" / ")
+    option_values.sort_by { |ov| ov.option.position }.map(&:value).join(" / ")
   end
 
   def effective_price_cents

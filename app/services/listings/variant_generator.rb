@@ -5,20 +5,28 @@ module Listings
       return [] if option_values_by_option.empty?
 
       combinations = option_values_by_option.reduce([[]]) { |combos, vals| combos.product(vals).map(&:flatten) }
+      existing = preload_existing_combos(listing)
 
-      combinations.each_with_object([]) do |combo, created|
-        next if exists?(listing, combo)
+      combinations.filter_map do |combo|
+        next if existing.include?(combo.map(&:id).sort)
+
         variant = listing.variants.create!
-        combo.each { |ov| variant.variant_option_values.create!(option_value: ov) }
-        created << variant
+        Listings::VariantOptionValue.insert_all!(
+          combo.map { |ov| { variant_id: variant.id, option_value_id: ov.id } }
+        )
+        variant
       end
     end
 
-    def self.exists?(listing, combo)
-      combo.reduce(listing.variants) { |q, ov|
-        q.where("EXISTS (SELECT 1 FROM listings_variant_option_values WHERE variant_id = listings_variants.id AND option_value_id = ?)", ov.id)
-      }.where("(SELECT COUNT(*) FROM listings_variant_option_values WHERE variant_id = listings_variants.id) = ?", combo.size).exists?
+    def self.preload_existing_combos(listing)
+      Listings::VariantOptionValue
+        .where(variant_id: listing.variants.select(:id))
+        .pluck(:variant_id, :option_value_id)
+        .group_by(&:first)
+        .transform_values { |pairs| pairs.map(&:last).sort }
+        .values
+        .to_set
     end
-    private_class_method :exists?
+    private_class_method :preload_existing_combos
   end
 end

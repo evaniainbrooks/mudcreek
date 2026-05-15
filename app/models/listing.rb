@@ -73,7 +73,7 @@ class Listing < ApplicationRecord
   accepts_nested_attributes_for :address, allow_destroy: true
   accepts_nested_attributes_for :rental_rate_plans, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :properties, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :options, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :options, allow_destroy: true, reject_if: proc { |a| a[:name].blank? }
   accepts_nested_attributes_for :variants, allow_destroy: true
 
   def has_variants?

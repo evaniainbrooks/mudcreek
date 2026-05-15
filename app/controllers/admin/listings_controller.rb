@@ -112,7 +112,7 @@ class Admin::ListingsController < Admin::BaseController
       :options,
       auction_listing: :auction,
       gallery: { photos_attachments: :blob, videos_attachments: :blob, documents_attachments: :blob },
-      variants: [ { gallery: { photos_attachments: :blob } }, :option_values ]
+      variants: [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ]
     ).find_by!(hashid: params[:hashid])
     authorize(@listing)
   end
