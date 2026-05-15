@@ -77,6 +77,17 @@ RSpec.describe "Admin::Lots", type: :request do
       end
     end
 
+    context "when the lot has associated listings" do
+      let!(:lot_listing) { create(:listing, lot: lot, owner: nil) }
+
+      it "returns 200 and includes the listing name" do
+        get admin_lot_path(lot)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(lot_listing.name)
+      end
+    end
+
     context "when the user lacks the show permission" do
       let(:role) { Role.create!(name: "no_show_lots", description: "No show access") }
 
@@ -169,6 +180,17 @@ RSpec.describe "Admin::Lots", type: :request do
     end
 
     context "with a missing name" do
+      context "when the lot has associated listings" do
+        let!(:lot_listing) { create(:listing, lot: lot, owner: nil) }
+
+        it "re-renders without error and includes the listing name" do
+          patch admin_lot_path(lot), params: { lot: { name: "" } }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.body).to include(lot_listing.name)
+        end
+      end
+
       it "does not update the lot" do
         expect {
           patch admin_lot_path(lot), params: { lot: { name: "" } }

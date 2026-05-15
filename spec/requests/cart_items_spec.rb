@@ -40,6 +40,39 @@ RSpec.describe "CartItems", type: :request do
       end
     end
 
+    context "when requested as turbo_stream" do
+      let(:turbo_headers) { { "Accept" => "text/vnd.turbo-stream.html" } }
+
+      it "returns 200 and renders the offcanvas cart" do
+        post cart_items_path,
+          params: { listing_id: listing.id },
+          headers: turbo_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      end
+
+      it "includes the listing name in the response" do
+        post cart_items_path,
+          params: { listing_id: listing.id },
+          headers: turbo_headers
+
+        expect(response.body).to include(listing.name)
+      end
+
+      context "when unauthenticated" do
+        before { delete session_path }
+
+        it "returns 200 and renders the offcanvas cart for the guest session" do
+          post cart_items_path,
+            params: { listing_id: listing.id },
+            headers: turbo_headers
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 
