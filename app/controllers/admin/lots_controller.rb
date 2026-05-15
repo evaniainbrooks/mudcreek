@@ -14,7 +14,7 @@ class Admin::LotsController < Admin::BaseController
   def show
     @lot.build_address unless @lot.address
     @users = User.activated.order(:email_address)
-    @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
+    @listings = @lot.listings.includes(:owner, :categories, :gallery).order(:name)
     @settlement = @lot.settlement
     @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
   end
@@ -40,7 +40,7 @@ class Admin::LotsController < Admin::BaseController
     else
       @lot.build_address unless @lot.address
       @users = User.activated.order(:email_address)
-      @listings = @lot.listings.includes(:owner, :categories, { images_attachments: :blob }).order(:name)
+      @listings = @lot.listings.includes(:owner, :categories, :gallery).order(:name)
       @settlement = @lot.settlement
       @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
       render :show, status: :unprocessable_content
