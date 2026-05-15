@@ -1,4 +1,4 @@
-class Listings::VariantGalleryController < ApplicationController
+class Listings::VariantGalleriesController < ApplicationController
   allow_unauthenticated_access
 
   def show
