@@ -10,7 +10,7 @@
         link_url: listings_path)
   - else
     .row.g-4.align-items-start
-      .col-12.col-lg-7.order-1.order-lg-2
+      .col-12.col-lg-7.order-2.order-lg-2
         = render "carts/items",
             cart_items: @cart_items,
             cart_summary: @cart_summary,
@@ -19,7 +19,7 @@
             has_physical_items: @has_physical_items,
             cart_address_saved: @cart_address_saved,
             guest_info_saved: @guest_info_saved
-      .col-12.col-lg-5.order-2.order-lg-1
+      .col-12.col-lg-5.order-1.order-lg-1
         - unless Current.user
           = render "carts/guest_info",
               guest_info_saved: @guest_info_saved,
