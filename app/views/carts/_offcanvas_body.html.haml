@@ -6,8 +6,9 @@
   .px-3.pt-3
     - cart_items.each do |item|
       .d-flex.align-items-center.gap-3.mb-3
-        - if item.listing.gallery&.photos&.attached?
-          = optimized_image_tag item.listing.gallery.photos.first,
+        - cart_item_photo = item.variant&.gallery&.photos&.attached? ? item.variant.gallery.photos.first : (item.listing.gallery&.photos&.attached? ? item.listing.gallery.photos.first : nil)
+        - if cart_item_photo
+          = optimized_image_tag cart_item_photo,
               preset: :carousel_thumb,
               class: "rounded-2 object-fit-cover flex-shrink-0",
               style: "width: 52px; height: 52px"
@@ -16,6 +17,8 @@
             %i.bi.bi-image.text-secondary
         .flex-grow-1.lh-sm.overflow-hidden
           .fw-semibold.small.text-truncate= item.listing.name
+          - if item.variant&.option_values&.any?
+            .text-muted.small.text-truncate= item.variant.option_values.sort_by { |ov| ov.option.position }.map(&:value).join(" · ")
           .text-muted.small
             = humanized_money_with_symbol(item.effective_item_price)
             - unless item.rental?

@@ -289,6 +289,63 @@ RSpec.describe "Carts", type: :request do
       end
     end
 
+    context "when a cart item has a variant with option values" do
+      let!(:listing) { create(:listing) }
+      let!(:variant) do
+        option = Listings::Option.create!(listing: listing, name: "Size", position: 1)
+        ov1 = option.option_values.create!(value: "Small")
+        option2 = Listings::Option.create!(listing: listing, name: "Color", position: 2)
+        ov2 = option2.option_values.create!(value: "Red")
+        v = Listings::Variant.create!(listing: listing, quantity: 1)
+        v.option_values << ov1 << ov2
+        v
+      end
+
+      before { user.cart_items.create!(listing: listing, variant: variant) }
+
+      it "displays the option values joined by a dot separator" do
+        get cart_path
+
+        expect(response.body).to include("Small · Red")
+      end
+
+      it "returns 200" do
+        get cart_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when a cart item's variant has its own gallery" do
+      let!(:listing) { create(:listing) }
+      let!(:listing_gallery) do
+        g = create(:gallery, listing: listing)
+        g.photos.attach(io: StringIO.new("listing-photo"), filename: "listing.jpg", content_type: "image/jpeg")
+        g
+      end
+      let!(:variant) { Listings::Variant.create!(listing: listing, quantity: 1) }
+      let!(:variant_gallery) do
+        g = create(:gallery, variant: variant)
+        g.photos.attach(io: StringIO.new("variant-photo"), filename: "variant.jpg", content_type: "image/jpeg")
+        g
+      end
+
+      before { user.cart_items.create!(listing: listing, variant: variant) }
+
+      it "uses the variant gallery image rather than the listing gallery image" do
+        get cart_path
+
+        expect(response.body).to include("variant.jpg")
+        expect(response.body).not_to include("listing.jpg")
+      end
+
+      it "returns 200" do
+        get cart_path
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
     context "when unauthenticated" do
       before { delete session_path }
 

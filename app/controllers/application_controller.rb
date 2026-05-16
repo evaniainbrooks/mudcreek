@@ -30,10 +30,12 @@ class ApplicationController < ActionController::Base
   end
 
   def offcanvas_cart_items
+    variant_includes = { variant: [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ] }
+    listing_includes = { listing: { gallery: { photos_attachments: :blob } } }
     @offcanvas_cart_items ||= if Current.user
-      Current.user.cart_items.includes(listing: { gallery: { photos_attachments: :blob } }).order(:created_at)
+      Current.user.cart_items.includes(variant_includes, listing_includes).order(:created_at)
     elsif session[:guest_cart_token]
-      CartItem.where(guest_cart_token: session[:guest_cart_token]).includes(listing: { gallery: { photos_attachments: :blob } }).order(:created_at)
+      CartItem.where(guest_cart_token: session[:guest_cart_token]).includes(variant_includes, listing_includes).order(:created_at)
     else
       CartItem.none
     end
