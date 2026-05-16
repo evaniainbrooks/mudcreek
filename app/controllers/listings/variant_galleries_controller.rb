@@ -6,6 +6,10 @@ class Listings::VariantGalleriesController < ApplicationController
                       .includes(:options, gallery: { photos_attachments: :blob, videos_attachments: :blob })
                       .find_by!(hashid: params[:listing_hashid])
     @photos = resolve_photos
+    respond_to do |format|
+      format.html
+      format.turbo_stream { render :show, formats: [:html] }
+    end
   end
 
   private
