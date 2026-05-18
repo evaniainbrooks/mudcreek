@@ -2,14 +2,14 @@
 
 %h1.fw-bold.mb-4 My Cart
 
-.page-container.p-4
+.page-container.p-2.p-lg-4
   - if @cart_items.empty?
     = render EmptyStateComponent.new(icon: "cart-x",
         message: "Your cart is empty.",
         link_text: "Browse Listings",
         link_url: listings_path)
   - else
-    .row.g-4.align-items-start
+    .row.g-2.g-lg-4.align-items-start
       .col-12.col-lg-7.order-2.order-lg-2
         = render "carts/items",
             cart_items: @cart_items,

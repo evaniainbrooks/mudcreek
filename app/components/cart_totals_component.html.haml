@@ -58,6 +58,6 @@
           %i.bi.bi-person.me-1
           Provide contact information to continue
       = form_with url: orders_path, method: :post do
-        = submit_tag "Place Order",
+        = submit_tag "Continue to Payment",
             class: "btn btn-success w-100 mt-2",
             disabled: needs_delivery || needs_address || needs_guest_info
