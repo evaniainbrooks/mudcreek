@@ -44,6 +44,9 @@ jobs:
         run: bin/kamal deploy
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          IMGPROXY_KEY: ${{ secrets.IMGPROXY_KEY }}
+          IMGPROXY_SALT: ${{ secrets.IMGPROXY_SALT }}
+
