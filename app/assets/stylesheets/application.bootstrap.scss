@@ -128,6 +128,11 @@ $app-border-color: rgba(0, 0, 0, 0.12);
   }
 }
 
+// Prevent icon and label from splitting across lines in icon buttons
+.btn:has(.bi) {
+  white-space: nowrap;
+}
+
 // Disabled buttons show not-allowed cursor
 // Bootstrap sets pointer-events: none on disabled buttons, so we apply the cursor to a wrapper
 .btn:disabled,
