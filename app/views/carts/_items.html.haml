@@ -12,7 +12,7 @@
         %tbody
           - cart_items.each do |item|
             %tr
-              %td.ps-3
+              %td.ps-2.ps-md-3
                 .d-flex.align-items-center.gap-3
                   - cart_item_photo = item.variant&.gallery&.photos&.attached? ? item.variant.gallery.photos.first : nil
                   - cart_item_photo ||= item.listing.gallery&.photos&.attached? ? item.listing.gallery.photos.first : nil
@@ -67,7 +67,7 @@
                 - else
                   = item.quantity
               %td.text-end= humanized_money_with_symbol(item.effective_price)
-              %td.text-end.pe-3
+              %td.text-end.pe-2.pe-md-3
                 = button_to cart_item_path(item),
                     method: :delete, class: "btn btn-sm btn-outline-danger",
                     form: { data: { turbo_confirm: "Remove from cart?" } } do

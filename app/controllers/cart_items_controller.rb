@@ -79,7 +79,10 @@ class CartItemsController < ApplicationController
       token = session[:guest_cart_token]
       token ? CartItem.where(guest_cart_token: token) : CartItem.none
     end
-    scope.includes(listing: { gallery: { photos_attachments: :blob } }).order(:created_at)
+    scope.includes(
+      variant: [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ],
+      listing: { gallery: { photos_attachments: :blob } }
+    ).order(:created_at)
   end
 
   def cart_items_scope
