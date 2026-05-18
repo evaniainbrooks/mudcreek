@@ -6,7 +6,8 @@
   .px-3.pt-3
     - cart_items.each do |item|
       .d-flex.align-items-center.gap-3.mb-3
-        - cart_item_photo = item.variant&.gallery&.photos&.attached? ? item.variant.gallery.photos.first : (item.listing.gallery&.photos&.attached? ? item.listing.gallery.photos.first : nil)
+        - cart_item_photo = item.variant&.gallery&.photos&.attached? ? item.variant.gallery.photos.first : nil
+        - cart_item_photo ||= item.listing.gallery&.photos&.attached? ? item.listing.gallery.photos.first : nil
         - if cart_item_photo
           = optimized_image_tag cart_item_photo,
               preset: :carousel_thumb,

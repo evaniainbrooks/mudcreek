@@ -60,6 +60,8 @@ Dual queuing: **Solid Queue** (database-backed, default) and **Sidekiq** (for ad
 
 TypeScript (strict) + Stimulus + Turbo + Bootstrap 5. Entry point: `app/javascript/application.ts`. Stimulus controllers are in `app/javascript/controllers/`. JavaScript is bundled by esbuild (`yarn watch:js`); CSS by the Rails CSS bundler (`yarn watch:css`).
 
+haml files must be linted with haml-lint, respecting all rules
+
 ### Database
 
 Four logical databases all backed by PostgreSQL: primary app data, Solid Cache, Solid Queue, and Solid Cable. Schema uses PostgreSQL enums for state machines (listing state, invoice status, lot state, offer state, etc.). Custom functions and triggers live under `db/functions/` and `db/triggers/`.
