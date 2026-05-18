@@ -14,7 +14,8 @@
             %tr
               %td.ps-3
                 .d-flex.align-items-center.gap-3
-                  - cart_item_photo = item.variant&.gallery&.photos&.attached? ? item.variant.gallery.photos.first : (item.listing.gallery&.photos&.attached? ? item.listing.gallery.photos.first : nil)
+                  - cart_item_photo = item.variant&.gallery&.photos&.attached? ? item.variant.gallery.photos.first : nil
+                  - cart_item_photo ||= item.listing.gallery&.photos&.attached? ? item.listing.gallery.photos.first : nil
                   - if cart_item_photo
                     = optimized_image_tag cart_item_photo,
                         preset: :carousel_thumb,
@@ -30,7 +31,7 @@
                       public_listing_path(item.listing),
                       class: "text-decoration-none fw-semibold")
                     - if item.variant&.option_values&.any?
-                      %div.small.text-muted= item.variant.option_values.sort_by { |ov| ov.option.position }.map(&:value).join(" · ")
+                      .small.text-muted= item.variant.option_values.sort_by { |ov| ov.option.position }.map(&:value).join(" · ")
                     - if item.listing.requires_delivery?
                       %span.badge.text-bg-light.border.ms-1.fw-normal
                         %i.bi.bi-truck.me-1

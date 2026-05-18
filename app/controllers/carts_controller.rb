@@ -4,14 +4,14 @@ class CartsController < ApplicationController
   def show
     if Current.user
       @cart_items = Current.user.cart_items.includes(
-        :variant => [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ],
-        :listing => [ { gallery: { photos_attachments: :blob } }, { auction_listing: :auction } ]
+        variant: [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ],
+        listing: [ { gallery: { photos_attachments: :blob } }, { auction_listing: :auction } ]
       ).order(:created_at)
     else
       token = session[:guest_cart_token]
       @cart_items = token ? CartItem.where(guest_cart_token: token).includes(
-        :variant => [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ],
-        :listing => [ { gallery: { photos_attachments: :blob } }, { auction_listing: :auction } ]
+        variant: [ { gallery: { photos_attachments: :blob } }, { option_values: :option } ],
+        listing: [ { gallery: { photos_attachments: :blob } }, { auction_listing: :auction } ]
       ).order(:created_at) : CartItem.none
     end
 
