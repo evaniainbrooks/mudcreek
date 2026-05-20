@@ -1,6 +1,7 @@
 import { application } from "./application"
 import AddCardController from "./add_card_controller"
 import AsyncContentController from "./async_content_controller"
+import AutoRedirectController from "./auto_redirect_controller"
 import DirectUploadController from "./direct_upload_controller"
 import BidIncrementScheduleController from "./bid_increment_schedule_controller"
 import AddressController from "./address_controller"

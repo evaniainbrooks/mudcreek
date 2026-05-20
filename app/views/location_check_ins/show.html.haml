@@ -46,6 +46,14 @@
           - if @guest_checked_in
             = link_to guest_prompt_location_checkin_path(@location), class: "btn btn-lg w-100 checkin-close-btn mt-2" do
               Next
+          - elsif checkin_loop?
+            .text-center.mt-3{ data: { controller: "auto-redirect",
+                                        "auto-redirect-url-value": location_checkin_path(@location),
+                                        "auto-redirect-delay-value": 5000 } }
+              %p.text-muted.small
+                Returning in
+                %span{ data: { "auto-redirect-target": "countdown" } } 5
+                seconds…
           - else
             = link_to exit_url, class: "btn btn-lg w-100 checkin-close-btn mt-2", allow_other_host: true do
               Done

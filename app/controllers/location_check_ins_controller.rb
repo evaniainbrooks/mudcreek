@@ -6,8 +6,9 @@ class LocationCheckInsController < ApplicationController
   layout "checkin"
 
   before_action :set_location
+  before_action :activate_loop_mode
 
-  helper_method :exit_url
+  helper_method :exit_url, :checkin_loop?
 
   def show
     @guest_checked_in = session.delete(:guest_checked_in)
@@ -124,7 +125,19 @@ class LocationCheckInsController < ApplicationController
     ScheduleEventsCalendarService.new(schedule).today_events
   end
 
+  def activate_loop_mode
+    session[:checkin_loop] = true if params[:loop].present?
+  end
+
+  def checkin_loop?
+    session[:checkin_loop]
+  end
+
   def exit_url
-    @location.kiosk&.checkin_exit_url.presence || root_path
+    if checkin_loop?
+      location_checkin_path(@location)
+    else
+      @location.kiosk&.checkin_exit_url.presence || root_path
+    end
   end
 end
