@@ -22,7 +22,17 @@ Capybara.register_driver :selenium_chrome_headless_xl do |app|
 end
 
 RSpec.configure do |config|
+  # Clear app_host for any real-browser example — system specs use driven_by
+  # rather than the :js tag, but they still need localhost, not example.com.
   config.around(:each, :js) do |example|
+    original_host = Capybara.app_host
+    Capybara.app_host = nil
+    example.run
+  ensure
+    Capybara.app_host = original_host
+  end
+
+  config.around(:each, type: :system) do |example|
     original_host = Capybara.app_host
     Capybara.app_host = nil
     example.run

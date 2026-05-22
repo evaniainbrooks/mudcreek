@@ -10,6 +10,6 @@ end
 # the correct tenant via MultiTenant#set_tenant.
 RSpec.configure do |config|
   config.before(:each, type: :system) do
-    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true, features: { auctions: true }, email_address: "info@test.example.com")
+    Current.tenant = Tenant.create!(name: "Test", key: "test", default: true, features: { auctions: true, locations: true }, email_address: "info@test.example.com")
   end
 end
