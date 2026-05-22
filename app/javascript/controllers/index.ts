@@ -39,6 +39,7 @@ import ScheduleTableController from "./schedule_table_controller"
 
 application.register("add-card", AddCardController)
 application.register("async-content", AsyncContentController)
+application.register("auto-redirect", AutoRedirectController)
 application.register("direct-upload", DirectUploadController)
 application.register("address", AddressController)
 application.register("bid-increment-schedule", BidIncrementScheduleController)
