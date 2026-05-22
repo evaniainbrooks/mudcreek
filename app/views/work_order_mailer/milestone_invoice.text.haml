@@ -1,0 +1,9 @@
+Hi #{@work_order.client_display_name.presence || "there"},
+
+An invoice has been generated for #{@work_order.title} — #{@milestone.name}.
+
+#{@milestone.name}: #{humanized_money_with_symbol(@milestone.amount)}
+
+Total Due: #{humanized_money_with_symbol(@invoice.total)}
+
+View and pay your invoice: #{invoice_url(@invoice)}

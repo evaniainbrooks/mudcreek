@@ -36,7 +36,12 @@ resource :session
   end
 
   namespace :webhooks do
-    resource :square, only: [ :create ], controller: "square"
+    resource :square,        only: [ :create ], controller: "square"
+    resource :dropbox_sign,  only: [ :create ], controller: "dropbox_sign"
+  end
+
+  resources :work_orders, only: [], param: :number do
+    member { get :signed }
   end
 
   resource :profile, only: [ :edit, :update ] do
@@ -186,6 +191,15 @@ resource :session
     resources :turnstiles, only: [ :index ]
     namespace :cloudflare do
       resources :turnstile_widgets, only: [ :create ]
+    end
+    resources :work_orders, param: :number do
+      member do
+        post  :send_estimate
+        patch :advance_state
+        get   :estimate
+      end
+      resources :work_order_items,      only: [ :create, :update, :destroy ]
+      resources :work_order_milestones, only: [ :create, :update, :destroy ]
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

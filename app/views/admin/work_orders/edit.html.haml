@@ -1,0 +1,7 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tools.me-2
+    Edit #{@work_order.number}
+
+.page-container.p-4
+  = render "form", work_order: @work_order

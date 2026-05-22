@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_many :auction_registrations, dependent: :destroy
   has_many :invoices, dependent: :destroy
+  has_many :work_orders, dependent: :nullify
   has_many :cart_listings, through: :cart_items, source: :listing
   has_many :watchlist_items, dependent: :destroy
   has_many :watched_listings, through: :watchlist_items, source: :listing

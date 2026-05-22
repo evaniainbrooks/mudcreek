@@ -1,0 +1,14 @@
+.container.py-5
+  .row.justify-content-center
+    .col-md-6.text-center
+      %i.bi.bi-check-circle-fill.text-success{ style: "font-size: 3rem;" }
+      %h1.h3.mt-3 Thank You!
+      %p.lead.text-muted
+        Your contract for
+        %strong= @work_order.title
+        has been signed.
+      %p.text-muted
+        Reference:
+        %strong= @work_order.number
+      %p.mt-4.text-muted
+        We'll be in touch shortly with next steps. If you have any questions, please don't hesitate to reach out.

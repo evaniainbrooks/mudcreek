@@ -1,0 +1,4 @@
+#work-order-item-errors
+  - if item.errors.any?
+    .alert.alert-danger.py-2.mb-0
+      = item.errors.full_messages.to_sentence

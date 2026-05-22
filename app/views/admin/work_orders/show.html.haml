@@ -1,0 +1,150 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tools.me-2
+    = @work_order.number
+  .d-flex.gap-2
+    = link_to estimate_admin_work_order_path(@work_order), class: "btn btn-outline-secondary", target: "_blank" do
+      %i.bi.bi-file-earmark-text.me-1
+      Preview Estimate
+    - if @work_order.draft?
+      = button_to "Send Estimate & Request Signature", send_estimate_admin_work_order_path(@work_order),
+          method: :post, class: "btn btn-primary",
+          form: { data: { turbo_confirm: "Send the estimate PDF and request e-signature?" } }
+    - if @work_order.contracted?
+      = button_to "Mark In Progress", advance_state_admin_work_order_path(@work_order),
+          method: :patch, params: { state: "in_progress" }, class: "btn btn-warning",
+          form: { data: { turbo_confirm: "Mark this work order as in progress?" } }
+    - if @work_order.in_progress?
+      = button_to "Mark Completed", advance_state_admin_work_order_path(@work_order),
+          method: :patch, params: { state: "completed" }, class: "btn btn-success",
+          form: { data: { turbo_confirm: "Mark this work order as completed?" } }
+    - unless @work_order.cancelled? || @work_order.completed?
+      = button_to "Cancel", advance_state_admin_work_order_path(@work_order),
+          method: :patch, params: { state: "cancelled" }, class: "btn btn-outline-danger",
+          form: { data: { turbo_confirm: "Cancel this work order?" } }
+    = link_to edit_admin_work_order_path(@work_order), class: "btn btn-outline-secondary" do
+      %i.bi.bi-pencil.me-1
+      Edit
+
+.page-container.p-4
+  .row.g-4
+    .col-lg-6
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Work Order Details
+        .card-body
+          %dl.row.mb-0
+            %dt.col-sm-4 Number
+            %dd.col-sm-8= @work_order.number
+
+            %dt.col-sm-4 Title
+            %dd.col-sm-8= @work_order.title
+
+            %dt.col-sm-4 State
+            %dd.col-sm-8= work_order_state_badge(@work_order)
+
+            %dt.col-sm-4 Total
+            %dd.col-sm-8= humanized_money_with_symbol(@work_order.total)
+
+            %dt.col-sm-4= @work_order.guest? ? "Guest Client" : "Client"
+            %dd.col-sm-8
+              - if @work_order.user
+                = link_to @work_order.user.email_address, admin_user_path(@work_order.user)
+              - else
+                - if @work_order.client_name.present?
+                  %div= @work_order.client_name
+                - if @work_order.client_email.present?
+                  %div= mail_to @work_order.client_email
+                - if @work_order.client_phone.present?
+                  %div= @work_order.client_phone
+
+            %dt.col-sm-4 Property
+            %dd.col-sm-8
+              - if @work_order.address
+                = @work_order.address.street_address
+                %br
+                = [@work_order.address.city, @work_order.address.province, @work_order.address.postal_code].compact.join(", ")
+              - else
+                %span.text-muted —
+
+            %dt.col-sm-4 Description
+            %dd.col-sm-8= @work_order.description.presence || content_tag(:span, "—", class: "text-muted")
+
+            %dt.col-sm-4 Estimate Sent
+            %dd.col-sm-8= @work_order.estimate_sent_at&.to_fs(:long) || content_tag(:span, "—", class: "text-muted")
+
+            %dt.col-sm-4 Contracted
+            %dd.col-sm-8= @work_order.contracted_at&.to_fs(:long) || content_tag(:span, "—", class: "text-muted")
+
+            - if @work_order.admin_notes.present?
+              %dt.col-sm-4 Notes
+              %dd.col-sm-8= @work_order.admin_notes
+
+    .col-lg-6
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Line Items
+        .card-body
+          - if @work_order.work_order_items.any?
+            .table-responsive
+              %table.table.table-sm.mb-0
+                %thead
+                  %tr
+                    %th Description
+                    %th.text-center Qty
+                    %th.text-end Unit Price
+                    %th.text-end Total
+                %tbody
+                  - @work_order.work_order_items.each do |item|
+                    %tr
+                      %td= item.name
+                      %td.text-center= item.quantity
+                      %td.text-end= humanized_money_with_symbol(item.unit_price)
+                      %td.text-end= humanized_money_with_symbol(item.line_total)
+                %tfoot
+                  %tr
+                    %td{ colspan: 3 }
+                      %strong Total
+                    %td.text-end
+                      %strong= humanized_money_with_symbol(@work_order.total)
+          - else
+            %p.text-muted.mb-0 No line items yet.
+
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Payment Milestones
+        .card-body
+          - if @work_order.work_order_milestones.any?
+            .table-responsive
+              %table.table.table-sm.mb-0
+                %thead
+                  %tr
+                    %th Name
+                    %th Trigger
+                    %th.text-end %
+                    %th.text-end Amount
+                    %th Invoice
+                %tbody
+                  - @work_order.work_order_milestones.each do |m|
+                    %tr
+                      %td= m.name
+                      %td= m.trigger_state.humanize
+                      %td.text-end #{m.percentage}%
+                      %td.text-end
+                        - if m.amount_cents > 0
+                          = humanized_money_with_symbol(m.amount)
+                        - else
+                          %span.text-muted.fst-italic Calculated at signing
+                      %td
+                        - if m.invoice_generated?
+                          - invoice = m.invoices.first
+                          - if invoice
+                            = link_to invoice.number, admin_invoice_path(invoice), class: "badge text-bg-success text-decoration-none"
+                          - else
+                            %span.badge.text-bg-success Generated
+                        - else
+                          %span.badge.text-bg-secondary Pending
+          - else
+            %p.text-muted.mb-0 No milestones configured.
+
+  .mt-3
+    = link_to admin_work_orders_path, class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Work Orders

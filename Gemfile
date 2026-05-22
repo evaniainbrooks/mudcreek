@@ -169,3 +169,6 @@ gem "rubyzip"
 gem "appsignal", "~> 4.8"
 
 gem "postmark-rails", "~> 0.22.1"
+
+gem "grover"       # HTML→PDF via headless Chrome
+gem "dropbox-sign" # Dropbox Sign (HelloSign) e-signature SDK

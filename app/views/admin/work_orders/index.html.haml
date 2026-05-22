@@ -1,0 +1,49 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-tools.me-2
+    Work Orders
+  = link_to new_admin_work_order_path, class: "btn btn-primary" do
+    %i.bi.bi-plus-lg.me-1
+    New Work Order
+
+.page-container.p-4
+  .card.shadow-sm.border-0.mb-4
+    .card-header.fw-semibold Filter Records
+    .card-body
+      = search_form_for @q, url: admin_work_orders_path, html: { class: "row g-2 align-items-end" } do |f|
+        .col-md-4
+          = f.label :title_cont, "Title", class: "form-label form-label-sm"
+          = f.search_field :title_cont, class: "form-control form-control-sm", placeholder: "Search by title..."
+        .col-md-3
+          = f.label :client_email_cont, "Client Email", class: "form-label form-label-sm"
+          = f.search_field :client_email_cont, class: "form-control form-control-sm", placeholder: "Search by email..."
+        .col-md-2
+          = f.label :state_eq, "State", class: "form-label form-label-sm"
+          = f.select :state_eq, WorkOrder.states.keys.map { |s| [s.humanize, s] },
+              { include_blank: "Any" }, class: "form-select form-select-sm"
+        .col-auto
+          %button.btn.btn-outline-primary.btn-sm{ type: "submit" }
+            %i.bi.bi-search.me-1
+            Search
+        .col-auto
+          = link_to "Clear", admin_work_orders_path, class: "btn btn-outline-secondary btn-sm"
+
+  = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
+      label: "work orders", clear_url: admin_work_orders_path)
+
+  .table-responsive
+    %table.table.table-hover.align-middle{ id: "admin-work-orders-table" }
+      %thead
+        %tr
+          %th Number
+          %th Title
+          %th Client
+          %th Total
+          %th State
+          %th Created
+          %th
+      %tbody{ id: "admin-work-orders-tbody" }
+        = render partial: "work_order_row", collection: @work_orders, as: :work_order
+
+  - if @pagy.next
+    = render "sentinel", pagy: @pagy, q: params[:q]

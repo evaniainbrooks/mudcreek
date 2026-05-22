@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_22_000008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
   create_enum "subscription_status", ["active", "lapsed", "cancelled"]
   create_enum "transaction_state", ["pending", "succeeded", "failed"]
   create_enum "user_verification_status", ["not_validated", "validated"]
+  create_enum "work_order_state", ["draft", "estimate_sent", "contracted", "in_progress", "completed", "cancelled"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
@@ -346,13 +347,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
     t.bigint "tenant_id", null: false
     t.integer "total_cents", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
+    t.bigint "work_order_milestone_id"
     t.index ["auction_id"], name: "index_invoices_on_auction_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["offer_id"], name: "index_invoices_on_offer_id_unique", unique: true
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
+    t.index ["work_order_milestone_id"], name: "index_invoices_on_work_order_milestone_id"
   end
 
   create_table "kids", force: :cascade do |t|
@@ -1310,6 +1313,55 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
     t.index ["tenant_id"], name: "index_widgets_on_tenant_id"
   end
 
+  create_table "work_order_items", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.integer "quantity", default: 1, null: false
+    t.integer "unit_price_cents", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "work_order_id", null: false
+    t.index ["work_order_id"], name: "index_work_order_items_on_work_order_id"
+  end
+
+  create_table "work_order_milestones", force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.boolean "invoice_generated", default: false, null: false
+    t.string "name", null: false
+    t.integer "percentage", null: false
+    t.integer "position", default: 0, null: false
+    t.string "trigger_state", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "work_order_id", null: false
+    t.index ["work_order_id", "trigger_state"], name: "index_work_order_milestones_on_work_order_id_and_trigger_state"
+  end
+
+  create_table "work_orders", force: :cascade do |t|
+    t.text "admin_notes"
+    t.string "client_email"
+    t.string "client_name"
+    t.string "client_phone"
+    t.datetime "completed_at"
+    t.datetime "contracted_at"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "dropbox_sign_request_id"
+    t.datetime "estimate_sent_at"
+    t.string "number", null: false
+    t.enum "state", default: "draft", null: false, enum_type: "work_order_state"
+    t.bigint "tenant_id", null: false
+    t.string "title", null: false
+    t.integer "total_cents", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["dropbox_sign_request_id"], name: "index_work_orders_on_dropbox_sign_request_id"
+    t.index ["number"], name: "index_work_orders_on_number", unique: true
+    t.index ["tenant_id", "state"], name: "index_work_orders_on_tenant_id_and_state"
+    t.index ["user_id"], name: "index_work_orders_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "auction_listings", "auctions"
@@ -1356,6 +1408,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
   add_foreign_key "invoices", "subscriptions", on_delete: :nullify
   add_foreign_key "invoices", "tenants"
   add_foreign_key "invoices", "users"
+  add_foreign_key "invoices", "work_order_milestones", on_delete: :nullify
   add_foreign_key "kids", "tenants"
   add_foreign_key "kids", "users"
   add_foreign_key "kiosks", "listings", column: "drop_in_pass_listing_id", on_delete: :nullify
@@ -1491,6 +1544,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_231504) do
   add_foreign_key "widgets", "pages", on_delete: :cascade
   add_foreign_key "widgets", "qr_codes", on_delete: :cascade
   add_foreign_key "widgets", "tenants", on_delete: :cascade
+  add_foreign_key "work_order_items", "work_orders"
+  add_foreign_key "work_order_milestones", "work_orders"
+  add_foreign_key "work_orders", "tenants"
+  add_foreign_key "work_orders", "users", on_delete: :nullify
 
   create_function :notify_bid_event, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.notify_bid_event()

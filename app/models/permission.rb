@@ -48,6 +48,9 @@ class Permission < ApplicationRecord
     SubscriptionUser
     Tenant
     User
+    WorkOrder
+    WorkOrderItem
+    WorkOrderMilestone
   ].freeze
 
   ACTIONS   = %w[index show create update destroy reorder pay].freeze

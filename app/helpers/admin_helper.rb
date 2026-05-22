@@ -26,6 +26,7 @@ module AdminHelper
     sales_links << { label: "Offers",             icon: "bi-tag",                    path: admin_offers_path                        } if policy(Offer).index?
     sales_links << { label: "Orders",             icon: "bi-bag",                    path: admin_orders_path                        } if policy(Order).index?
     sales_links << { label: "Subscription Plans", icon: "bi-card-checklist",         path: admin_subscription_plans_path            } if policy(SubscriptionPlan).index?
+    sales_links << { label: "Work Orders",        icon: "bi-tools",                  path: admin_work_orders_path                   } if policy(WorkOrder).index?
     sections << { title: "Sales", icon: "bi-basket-fill", links: sales_links } if sales_links.any?
 
     settings_links = []

@@ -1,0 +1,4 @@
+#work-order-milestone-errors
+  - if milestone.errors.any?
+    .alert.alert-danger.py-2.mb-0
+      = milestone.errors.full_messages.to_sentence

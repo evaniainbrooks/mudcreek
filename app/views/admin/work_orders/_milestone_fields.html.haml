@@ -1,0 +1,20 @@
+- f = local_assigns.fetch(:f, nil)
+- if f
+  .d-flex.gap-2.mb-2.align-items-center
+    = f.text_field :name, class: "form-control form-control-sm", placeholder: "Name (e.g. Deposit)"
+    = f.number_field :percentage, class: "form-control form-control-sm", style: "width:80px", min: 1, max: 100, placeholder: "%"
+    = f.select :trigger_state, WorkOrder.states.keys.map { |s| [s.humanize, s] },
+        {}, class: "form-select form-select-sm", style: "width:160px"
+    = f.hidden_field :_destroy
+    = link_to "#", class: "btn btn-sm btn-outline-danger",
+        data: { action: "work-order-form#removeMilestone" } do
+      %i.bi.bi-trash
+- else
+  = form_with url: admin_work_order_work_order_milestone_path(work_order, milestone), method: :patch do |pf|
+    .d-flex.gap-2.mb-2.align-items-center
+      = pf.text_field :name, value: milestone.name, class: "form-control form-control-sm", placeholder: "Name (e.g. Deposit)"
+      = pf.number_field :percentage, value: milestone.percentage, class: "form-control form-control-sm", style: "width:80px", min: 1, max: 100, placeholder: "%"
+      = pf.select :trigger_state, WorkOrder.states.keys.map { |s| [s.humanize, s] },
+          { selected: milestone.trigger_state }, class: "form-select form-select-sm", style: "width:160px"
+      = link_to admin_work_order_work_order_milestone_path(work_order, milestone), data: { turbo_method: :delete }, class: "btn btn-sm btn-outline-danger" do
+        %i.bi.bi-trash

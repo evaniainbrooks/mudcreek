@@ -1,0 +1,9 @@
+The contract for work order #{@work_order.number} has been signed.
+
+Work Order: #{@work_order.number}
+Title:      #{@work_order.title}
+Client:     #{@work_order.client_display_name}
+Total:      #{humanized_money_with_symbol(@work_order.total)}
+Signed At:  #{@work_order.contracted_at&.to_fs(:long)}
+
+Deposit invoices have been automatically generated and sent to the client.

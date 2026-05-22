@@ -1,0 +1,13 @@
+Hi #{@work_order.client_display_name.presence || "there"},
+
+Please find attached your estimate for #{@work_order.title} (#{@work_order.number}).
+
+Line Items:
+- @work_order.work_order_items.each do |item|
+  #{item.quantity} × #{item.name}: #{humanized_money_with_symbol(item.line_total)}
+
+Total: #{humanized_money_with_symbol(@work_order.total)}
+
+The PDF estimate is attached. Please review it and we'll follow up with a link to sign the contract digitally.
+
+If you have any questions, please reply to this email.

@@ -1,0 +1,32 @@
+%p
+  Hi
+  = @work_order.client_display_name.presence || "there"
+  ,
+
+%p
+  Please find attached your estimate for
+  %strong= @work_order.title
+  (#{@work_order.number}).
+
+%table{ style: "width:100%;border-collapse:collapse;" }
+  %thead
+    %tr
+      %th{ style: "text-align:left;padding:6px 0;border-bottom:1px solid #dee2e6;" } Description
+      %th{ style: "text-align:right;padding:6px 0;border-bottom:1px solid #dee2e6;" } Amount
+  %tbody
+    - @work_order.work_order_items.each do |item|
+      %tr
+        %td{ style: "padding:6px 0;" } #{item.quantity} × #{item.name}
+        %td{ style: "text-align:right;padding:6px 0;" }= humanized_money_with_symbol(item.line_total)
+  %tfoot
+    %tr
+      %td{ style: "padding:8px 0;border-top:1px solid #dee2e6;" }
+        %strong Total
+      %td{ style: "text-align:right;padding:8px 0;border-top:1px solid #dee2e6;" }
+        %strong= humanized_money_with_symbol(@work_order.total)
+
+%p{ style: "margin-top:24px;color:#6c757d;" }
+  The PDF estimate is attached. Please review it and we'll follow up with a link to sign the contract digitally.
+
+%p{ style: "margin-top:16px;" }
+  If you have any questions, please reply to this email.

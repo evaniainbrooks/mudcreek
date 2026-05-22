@@ -1,0 +1,16 @@
+%tr
+  %td= link_to work_order.number, admin_work_order_path(work_order), class: "fw-semibold text-decoration-none"
+  %td= work_order.title
+  %td
+    - if work_order.user
+      = link_to work_order.user.email_address, admin_user_path(work_order.user)
+    - elsif work_order.client_email.present?
+      = mail_to work_order.client_email, work_order.client_display_name
+    - else
+      = work_order.client_display_name
+  %td= humanized_money_with_symbol(work_order.total)
+  %td= work_order_state_badge(work_order)
+  %td= work_order.created_at.to_fs(:short)
+  %td
+    = link_to admin_work_order_path(work_order), class: "btn btn-sm btn-outline-secondary" do
+      %i.bi.bi-eye

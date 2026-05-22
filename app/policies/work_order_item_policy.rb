@@ -1,0 +1,2 @@
+class WorkOrderItemPolicy < ApplicationPolicy
+end

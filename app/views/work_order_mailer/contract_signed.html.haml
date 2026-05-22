@@ -1,0 +1,25 @@
+%p
+  The contract for work order
+  %strong= @work_order.number
+  has been signed.
+
+%table{ style: "width:100%;border-collapse:collapse;" }
+  %tbody
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;width:160px;" } Work Order
+      %td{ style: "padding:6px 0;" }= @work_order.number
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Title
+      %td{ style: "padding:6px 0;" }= @work_order.title
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Client
+      %td{ style: "padding:6px 0;" }= @work_order.client_display_name
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Total
+      %td{ style: "padding:6px 0;" }= humanized_money_with_symbol(@work_order.total)
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Signed At
+      %td{ style: "padding:6px 0;" }= @work_order.contracted_at&.to_fs(:long)
+
+%p{ style: "margin-top:24px;" }
+  Deposit invoices have been automatically generated and sent to the client.

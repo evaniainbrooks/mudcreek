@@ -1,0 +1,30 @@
+%p
+  Hi
+  = @work_order.client_display_name.presence || "there"
+  ,
+
+%p
+  An invoice has been generated for
+  %strong= @work_order.title
+  — #{@milestone.name}.
+
+%table{ style: "width:100%;border-collapse:collapse;" }
+  %thead
+    %tr
+      %th{ style: "text-align:left;padding:6px 0;border-bottom:1px solid #dee2e6;" } Description
+      %th{ style: "text-align:right;padding:6px 0;border-bottom:1px solid #dee2e6;" } Amount
+  %tbody
+    %tr
+      %td{ style: "padding:6px 0;" }= @milestone.name
+      %td{ style: "text-align:right;padding:6px 0;" }= humanized_money_with_symbol(@milestone.amount)
+  %tfoot
+    %tr
+      %td{ style: "padding:8px 0;border-top:1px solid #dee2e6;" }
+        %strong Total Due
+      %td{ style: "text-align:right;padding:8px 0;border-top:1px solid #dee2e6;" }
+        %strong= humanized_money_with_symbol(@invoice.total)
+
+%p{ style: "margin-top:24px;" }
+  = link_to "View Invoice", invoice_url(@invoice),
+      style: "background:#0d6efd;color:#fff;padding:10px 20px;border-radius:4px;text-decoration:none;display:inline-block;"
+  View &amp; Pay Invoice

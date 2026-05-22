@@ -2,10 +2,12 @@ class Invoice < ApplicationRecord
   include MultiTenant
   include NativeEnum
 
-  belongs_to :user
-  belongs_to :auction,      optional: true
-  belongs_to :offer,        optional: true
-  belongs_to :subscription, optional: true
+  belongs_to :user,                   optional: true
+  belongs_to :auction,                optional: true
+  belongs_to :offer,                  optional: true
+  belongs_to :subscription,           optional: true
+  belongs_to :work_order_milestone,   optional: true
+  has_one    :work_order, through: :work_order_milestone
 
   has_many :invoice_items, dependent: :destroy
   has_one_attached :receipt
@@ -16,6 +18,7 @@ class Invoice < ApplicationRecord
 
   validates :number, presence: true, uniqueness: true
   validates :offer_id, uniqueness: true, allow_nil: true
+  validate  :user_or_work_order_present
 
   before_validation :assign_number, on: :create
 
@@ -37,6 +40,11 @@ class Invoice < ApplicationRecord
   end
 
   private
+
+  def user_or_work_order_present
+    return if user_id.present? || work_order_milestone_id.present?
+    errors.add(:base, "must belong to a user or a work order milestone")
+  end
 
   def assign_number
     self.number ||= "INV-#{SecureRandom.alphanumeric(10).upcase}"

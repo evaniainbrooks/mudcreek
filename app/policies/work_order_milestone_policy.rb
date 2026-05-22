@@ -1,0 +1,2 @@
+class WorkOrderMilestonePolicy < ApplicationPolicy
+end
