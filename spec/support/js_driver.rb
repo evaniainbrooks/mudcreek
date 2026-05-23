@@ -1,11 +1,11 @@
 # When running specs with a real browser (Selenium), Capybara starts a local
 # Puma server and the browser connects to it at 127.0.0.1:port. The global
 # app_host "http://example.com" (set in spec/support/tenant.rb for rack_test)
-# would cause the browser to hit the live internet instead. This around hook
+# would cause the browser to hit the live internet instead. The :js around hook
 # temporarily clears app_host so Capybara falls back to the actual test server
-# address. TenantResolution resolves the tenant via Tenant.find_by!(default:
-# true) for requests with no subdomain, which matches the default tenant
-# created in the system spec before hook.
+# address. Selenium-based system specs must use the :js tag to get this behaviour.
+# rack_test system specs keep app_host="http://example.com" (no subdomain) so
+# TenantResolution falls through to Tenant.find_by!(default: true).
 Capybara.configure do |config|
   config.server = :puma, { Silent: true }
 end
@@ -22,17 +22,7 @@ Capybara.register_driver :selenium_chrome_headless_xl do |app|
 end
 
 RSpec.configure do |config|
-  # Clear app_host for any real-browser example — system specs use driven_by
-  # rather than the :js tag, but they still need localhost, not example.com.
   config.around(:each, :js) do |example|
-    original_host = Capybara.app_host
-    Capybara.app_host = nil
-    example.run
-  ensure
-    Capybara.app_host = original_host
-  end
-
-  config.around(:each, type: :system) do |example|
     original_host = Capybara.app_host
     Capybara.app_host = nil
     example.run
