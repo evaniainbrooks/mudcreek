@@ -55,7 +55,7 @@ RUN bundle install && \
 
 # Install node modules
 COPY package.json yarn.lock ./
-RUN yarn install --immutable
+RUN PUPPETEER_SKIP_DOWNLOAD=1 yarn install --immutable
 
 # Copy application code
 COPY . .
