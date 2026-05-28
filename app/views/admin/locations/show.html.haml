@@ -107,21 +107,7 @@
             %i.bi.bi-plus-lg.me-1
             New Schedule
 
-        :ruby
-          table = TableComponent.new(rows: @schedules)
-          table.with_column("Name") do |s|
-            link_to(s.name.presence || content_tag(:span, "Untitled", class: "text-muted"), admin_location_schedule_path(@location, s))
-          end
-          table.with_column("Source")            { |s| s.source_url.presence || content_tag(:span, "Uploaded file", class: "text-muted fst-italic") }
-          table.with_value_column("Last synced") { |s| s.last_synced_at }
-          table.with_column("Events")            { |s| s.schedule_events.count }
-          table.with_column("", html_class: "text-end") do |s|
-            button_to admin_location_schedule_path(@location, s), method: :delete, class: "btn btn-outline-danger btn-sm",
-              form: { data: { turbo_confirm: "Delete \"#{s.name}\"?" } } do
-              content_tag(:i, "", class: "bi bi-trash")
-            end
-          end
-        = render table
+        = location_schedules_table(@schedules, @location)
 
 .mt-3
   = link_to admin_locations_path, class: "btn btn-outline-secondary" do

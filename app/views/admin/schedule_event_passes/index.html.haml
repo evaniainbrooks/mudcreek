@@ -9,22 +9,7 @@
 .page-container.p-4
   .card.shadow-sm.border-0
     - if @passes.any?
-      :ruby
-        t = TableComponent.new(rows: @passes)
-        unless @user
-          t.with_column("Member") { |p| p.user&.email_address }
-        end
-        t.with_column("Credits remaining") { |p| p.credits_remaining }
-        t.with_column("Expires") { |p| p.expires_at&.strftime("%b %-d, %Y") || "—" }
-        t.with_column("Issued") { |p| p.created_at.strftime("%b %-d, %Y") }
-        t.with_column("", html_class: "text-end") do |p|
-          button_to admin_schedule_event_pass_path(p), method: :delete,
-            class: "btn btn-outline-danger btn-sm",
-            form: { data: { turbo_confirm: "Remove this pass?" } } do
-            content_tag(:i, "", class: "bi bi-trash")
-          end
-        end
-      = render t
+      = schedule_event_passes_table(@passes, user: @user)
     - else
       .card-body
         %p.text-muted.mb-0 No passes issued yet.

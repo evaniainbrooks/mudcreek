@@ -5,10 +5,10 @@
     = f.number_field :percentage, class: "form-control form-control-sm", style: "width:80px", min: 1, max: 100, placeholder: "%"
     = f.select :trigger_state, WorkOrder.states.keys.map { |s| [s.humanize, s] },
         {}, class: "form-select form-select-sm", style: "width:160px"
-    = f.hidden_field :_destroy
-    = link_to "#", class: "btn btn-sm btn-outline-danger",
-        data: { action: "work-order-form#removeMilestone" } do
-      %i.bi.bi-trash
+    - unless f.object.new_record?
+      .form-check
+        = f.check_box :_destroy, class: "form-check-input"
+        = f.label :_destroy, "Remove", class: "form-check-label"
 - else
   = form_with url: admin_work_order_work_order_milestone_path(work_order, milestone), method: :patch do |pf|
     .d-flex.gap-2.mb-2.align-items-center

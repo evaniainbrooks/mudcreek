@@ -31,19 +31,7 @@
   = render FilterInfoComponent.new(count: @filter_count, total: @filter_total,
       label: "work orders", clear_url: admin_work_orders_path)
 
-  .table-responsive
-    %table.table.table-hover.align-middle{ id: "admin-work-orders-table" }
-      %thead
-        %tr
-          %th Number
-          %th Title
-          %th Client
-          %th Total
-          %th State
-          %th Created
-          %th
-      %tbody{ id: "admin-work-orders-tbody" }
-        = render partial: "work_order_row", collection: @work_orders, as: :work_order
+  = work_orders_table(@work_orders, ransack_query: @q)
 
   - if @pagy.next
     = render "sentinel", pagy: @pagy, q: params[:q]

@@ -83,66 +83,12 @@
       .card.shadow-sm.border-0.mb-4
         .card-header.fw-semibold Line Items
         .card-body
-          - if @work_order.work_order_items.any?
-            .table-responsive
-              %table.table.table-sm.mb-0
-                %thead
-                  %tr
-                    %th Description
-                    %th.text-center Qty
-                    %th.text-end Unit Price
-                    %th.text-end Total
-                %tbody
-                  - @work_order.work_order_items.each do |item|
-                    %tr
-                      %td= item.name
-                      %td.text-center= item.quantity
-                      %td.text-end= humanized_money_with_symbol(item.unit_price)
-                      %td.text-end= humanized_money_with_symbol(item.line_total)
-                %tfoot
-                  %tr
-                    %td{ colspan: 3 }
-                      %strong Total
-                    %td.text-end
-                      %strong= humanized_money_with_symbol(@work_order.total)
-          - else
-            %p.text-muted.mb-0 No line items yet.
+          = work_order_items_table(@work_order.work_order_items, total: @work_order.total)
 
       .card.shadow-sm.border-0
         .card-header.fw-semibold Payment Milestones
         .card-body
-          - if @work_order.work_order_milestones.any?
-            .table-responsive
-              %table.table.table-sm.mb-0
-                %thead
-                  %tr
-                    %th Name
-                    %th Trigger
-                    %th.text-end %
-                    %th.text-end Amount
-                    %th Invoice
-                %tbody
-                  - @work_order.work_order_milestones.each do |m|
-                    %tr
-                      %td= m.name
-                      %td= m.trigger_state.humanize
-                      %td.text-end #{m.percentage}%
-                      %td.text-end
-                        - if m.amount_cents > 0
-                          = humanized_money_with_symbol(m.amount)
-                        - else
-                          %span.text-muted.fst-italic Calculated at signing
-                      %td
-                        - if m.invoice_generated?
-                          - invoice = m.invoices.first
-                          - if invoice
-                            = link_to invoice.number, admin_invoice_path(invoice), class: "badge text-bg-success text-decoration-none"
-                          - else
-                            %span.badge.text-bg-success Generated
-                        - else
-                          %span.badge.text-bg-secondary Pending
-          - else
-            %p.text-muted.mb-0 No milestones configured.
+          = work_order_milestones_table(@work_order.work_order_milestones)
 
   .mt-3
     = link_to admin_work_orders_path, class: "btn btn-outline-secondary" do

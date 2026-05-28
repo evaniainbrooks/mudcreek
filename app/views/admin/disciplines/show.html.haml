@@ -21,21 +21,7 @@
           .col-sm-auto.d-flex.align-items-end
             = f.submit "Add", class: "btn btn-primary btn-sm"
 
-  :ruby
-    t = TableComponent.new(rows: @ranks)
-    t.with_column("Position") { |r| r.position }
-    t.with_column("Name") { |r| r.name }
-    t.with_column("", html_class: "text-end") do |r|
-      content_tag(:div, class: "d-flex gap-1 justify-content-end") do
-        safe_join([
-          link_to("Edit", edit_admin_discipline_rank_path(@discipline, r), class: "btn btn-sm btn-outline-secondary"),
-          button_to("Delete", admin_discipline_rank_path(@discipline, r), method: :delete,
-            class: "btn btn-sm btn-outline-danger",
-            form: { data: { turbo_confirm: "Delete #{r.name}?" } })
-        ])
-      end
-    end
-  = render t
+  = discipline_ranks_table(@ranks, @discipline)
 
   .mt-3
     = link_to admin_disciplines_path, class: "btn btn-outline-secondary" do

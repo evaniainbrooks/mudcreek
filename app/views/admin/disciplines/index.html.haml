@@ -7,18 +7,4 @@
     New Discipline
 
 .page-container.p-4
-  :ruby
-    t = TableComponent.new(rows: @disciplines)
-    t.with_column("Name") { |d| link_to d.name, admin_discipline_path(d) }
-    t.with_column("Ranks") { |d| d.ranks.size }
-    t.with_column("", html_class: "text-end") do |d|
-      content_tag(:div, class: "d-flex gap-1 justify-content-end") do
-        safe_join([
-          link_to("Edit", edit_admin_discipline_path(d), class: "btn btn-sm btn-outline-secondary"),
-          button_to("Delete", admin_discipline_path(d), method: :delete,
-            class: "btn btn-sm btn-outline-danger",
-            form: { data: { turbo_confirm: "Delete #{d.name}? This will remove all associated ranks and promotions." } })
-        ])
-      end
-    end
-  = render t
+  = disciplines_table(@disciplines)

@@ -36,8 +36,7 @@
                 = a.text_field :country, class: "form-control form-control-sm"
 
       .card.shadow-sm.border-0.mb-4
-        .card-header.d-flex.justify-content-between.align-items-center
-          %span.fw-semibold Line Items
+        .card-header.fw-semibold Line Items
         .card-body
           .table-responsive
             %table.table.table-sm.align-middle
@@ -46,14 +45,10 @@
                   %th Description
                   %th.text-center{ style: "width:80px" } Qty
                   %th.text-end{ style: "width:120px" } Unit Price
-                  %th{ style: "width:40px" }
+                  %th{ style: "width:80px" }
               %tbody
-                = f.fields_for :work_order_items do |item_f|
+                = f.fields_for :work_order_items, work_order.work_order_items.to_a + [WorkOrderItem.new] do |item_f|
                   = render "item_fields", f: item_f
-          = link_to "#", class: "btn btn-sm btn-outline-secondary",
-              data: { action: "work-order-form#addItem" } do
-            %i.bi.bi-plus.me-1
-            Add Item
 
       .card.shadow-sm.border-0
         .card-header.fw-semibold Payment Milestones
@@ -61,13 +56,8 @@
           %p.text-muted.small.mb-3
             Configure when invoices are generated. Percentages must total 100%.
             Trigger state determines which state transition creates the invoice.
-          - work_order.work_order_milestones.each do |m|
-            = f.fields_for :work_order_milestones, m do |ms_f|
-              = render "milestone_fields", f: ms_f
-          = link_to "#", class: "btn btn-sm btn-outline-secondary",
-              data: { action: "work-order-form#addMilestone" } do
-            %i.bi.bi-plus.me-1
-            Add Milestone
+          = f.fields_for :work_order_milestones, work_order.work_order_milestones.to_a + [WorkOrderMilestone.new] do |ms_f|
+            = render "milestone_fields", f: ms_f
 
     .col-lg-4
       .card.shadow-sm.border-0.mb-4

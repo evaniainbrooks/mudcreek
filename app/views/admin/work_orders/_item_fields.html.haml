@@ -5,10 +5,10 @@
     %td= f.number_field :quantity, class: "form-control form-control-sm text-center", min: 1, value: f.object.quantity || 1
     %td= f.number_field :unit_price_cents, class: "form-control form-control-sm text-end", min: 0, placeholder: "cents"
     %td
-      = f.hidden_field :_destroy
-      = link_to "#", class: "btn btn-sm btn-outline-danger",
-          data: { action: "work-order-form#removeItem" } do
-        %i.bi.bi-trash
+      - unless f.object.new_record?
+        .form-check
+          = f.check_box :_destroy, class: "form-check-input"
+          = f.label :_destroy, "Remove", class: "form-check-label"
 - else
   = form_with url: admin_work_order_work_order_item_path(work_order, item), method: :patch do |pf|
     %tr

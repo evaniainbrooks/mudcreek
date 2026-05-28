@@ -1,6 +1,1 @@
-:ruby
-  table = TableComponent.new(rows: recent_scans)
-  table.with_column("Time")       { |s| s.created_at.strftime("%b %-d, %Y %H:%M") }
-  table.with_column("IP Address") { |s| s.ip_address || "—" }
-  table.with_column("User Agent", html_class: "text-truncate") { |s| s.user_agent || "—" }
-= render table
+= qr_scans_table(recent_scans)

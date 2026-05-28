@@ -7,19 +7,7 @@
           Members
         %span.badge.bg-secondary= members.count
       .card-body
-        :ruby
-          member_table = TableComponent.new(rows: members)
-          member_table.with_column("Name")  { |u| u.name }
-          member_table.with_column("Email") { |u| u.email_address }
-          member_table.with_column("", html_class: "text-end") do |u|
-            user_location = UserLocation.find_by!(location: location, user: u)
-            button_to admin_location_location_user_path(location, user_location),
-              method: :delete, class: "btn btn-outline-danger btn-sm",
-              form: { data: { turbo_confirm: "Remove #{u.name} from this location?" } } do
-              content_tag(:i, "", class: "bi bi-x")
-            end
-          end
-        = render member_table
+        = location_member_table(members, location)
         - if non_members.any?
           = form_with url: admin_location_location_users_path(location), method: :post, class: "d-flex gap-2 align-items-end mt-3" do |f|
             .flex-grow-1
@@ -40,16 +28,7 @@
           New
       .card-body
         - if announcements.any?
-          :ruby
-            ann_table = TableComponent.new(rows: announcements)
-            ann_table.with_column("Subject") { |a| a.subject }
-            ann_table.with_column("Sent") do |a|
-              a.sent_at ? a.sent_at.strftime("%b %-d") : content_tag(:span, "Pending", class: "badge bg-warning text-dark")
-            end
-            ann_table.with_column("", html_class: "text-end") do |a|
-              link_to("View", admin_location_location_announcement_path(location, a), class: "btn btn-outline-secondary btn-sm")
-            end
-          = render ann_table
+          = location_announcement_table(announcements, location)
           = link_to "All announcements →", admin_location_location_announcements_path(location), class: "small"
         - else
           %p.text-muted.small.mb-0 No announcements yet.
