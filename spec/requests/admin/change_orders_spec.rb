@@ -50,11 +50,11 @@ RSpec.describe "Admin::ChangeOrders", type: :request do
         .to change(ChangeOrder, :count).by(1)
     end
 
-    it "redirects to the change order show page" do
+    it "returns a turbo stream response" do
       post admin_work_order_change_orders_path(work_order), params: valid_params
 
-      created = ChangeOrder.find_by(description: "Add extra insulation")
-      expect(response).to redirect_to(admin_work_order_change_order_path(work_order, created))
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
     end
 
     it "stores the amount in cents" do

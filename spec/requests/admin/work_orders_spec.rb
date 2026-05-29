@@ -153,7 +153,7 @@ RSpec.describe "Admin::WorkOrders", type: :request do
 
   describe "POST /admin/work_orders" do
     let(:valid_params) do
-      { work_order: { title: "Deck Repair", client_name: "Alice", client_email: "alice@example.com", client_phone: "555-1234" } }
+      { work_order: { title: "Deck Repair", client_name: "Alice", client_email: "alice@example.com", client_phone: "555-1234", location_id: work_order.location_id } }
     end
 
     it "creates a work order and redirects to it" do

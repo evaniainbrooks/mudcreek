@@ -29,7 +29,7 @@ class Admin::WorkOrdersController < Admin::BaseController
 
   def new
     authorize(WorkOrder)
-    @work_order = WorkOrder.new
+    @work_order = WorkOrder.new(location: Location.find_by(default: true))
     @work_order.build_address
   end
 
@@ -94,7 +94,7 @@ class Admin::WorkOrdersController < Admin::BaseController
 
   def work_order_params
     params.expect(work_order: [
-      :title, :description, :client_name, :client_email, :client_phone, :user_id, :admin_notes,
+      :title, :description, :client_name, :client_email, :client_phone, :user_id, :admin_notes, :location_id,
       address_attributes: [ :id, :street_address, :city, :province, :postal_code, :country, :_destroy ],
       work_order_items_attributes: [ [ :id, :name, :description, :quantity, :unit_price, :position, :_destroy ] ],
       work_order_milestones_attributes: [ [ :id, :name, :percentage, :trigger_state, :position, :_destroy ] ]
