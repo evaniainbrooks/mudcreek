@@ -1,0 +1,22 @@
+#new-change-order-modal.modal.fade{ aria: { labelledby: "new-change-order-modal-label", hidden: "true" }, tabindex: "-1" }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.modal-title#new-change-order-modal-label
+          %i.bi.bi-file-earmark-plus.me-2
+          New Change Order
+        %button.btn-close{ data: { bs_dismiss: "modal" }, aria: { label: "Close" }, type: "button" }
+      = form_with model: [ :admin, work_order, change_order ], id: "new-change-order-form" do |f|
+        .modal-body
+          #new-change-order-form-errors
+          .mb-3
+            = f.label :description, class: "form-label"
+            = f.text_area :description, class: "form-control", rows: 4, required: true
+          .mb-0
+            = f.label :amount, "Amount", class: "form-label"
+            .input-group
+              %span.input-group-text $
+              = f.text_field :amount, class: "form-control", placeholder: "0.00", required: true
+        .modal-footer
+          %button.btn.btn-outline-secondary{ data: { bs_dismiss: "modal" }, type: "button" } Cancel
+          = f.submit "Create Change Order", class: "btn btn-primary"

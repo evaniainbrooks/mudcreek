@@ -12,9 +12,20 @@ class Admin::ChangeOrdersController < Admin::BaseController
     @change_order = @work_order.change_orders.new(change_order_params)
 
     if @change_order.save
-      redirect_to admin_work_order_change_order_path(@work_order, @change_order), notice: t(".notice")
+      render turbo_stream: [
+        turbo_stream.update(
+          "change-orders-section",
+          partial: "admin/change_orders/table",
+          locals: { change_orders: @work_order.change_orders.reload, work_order: @work_order }
+        ),
+        turbo_stream.action(:close_modal, "new-change-order-modal")
+      ]
     else
-      render :new, status: :unprocessable_content
+      render turbo_stream: turbo_stream.replace(
+        "new-change-order-form-errors",
+        partial: "admin/change_orders/form_errors",
+        locals: { change_order: @change_order }
+      ), status: :unprocessable_content
     end
   end
 

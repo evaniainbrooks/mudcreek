@@ -94,11 +94,13 @@
         .card-header.d-flex.justify-content-between.align-items-center
           %span.fw-semibold Change Orders
           - if (@work_order.contracted? || @work_order.in_progress?) && policy(ChangeOrder).create?
-            = link_to new_admin_work_order_change_order_path(@work_order), class: "btn btn-sm btn-outline-primary" do
+            %button.btn.btn-sm.btn-outline-primary{ data: { bs_toggle: "modal", bs_target: "#new-change-order-modal" } }
               %i.bi.bi-plus.me-1
               New Change Order
-        .card-body
-          = change_orders_table(@work_order.change_orders, work_order: @work_order)
+        #change-orders-section.card-body
+          = render "admin/change_orders/table", change_orders: @work_order.change_orders, work_order: @work_order
+
+      = render "admin/change_orders/new_modal", work_order: @work_order, change_order: @work_order.change_orders.new
 
   .row.g-4.mt-0
     .col-12

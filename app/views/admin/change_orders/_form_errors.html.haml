@@ -1,0 +1,5 @@
+- if change_order.errors.any?
+  .alert.alert-danger.mb-3
+    %ul.mb-0
+      - change_order.errors.full_messages.each do |msg|
+        %li= msg

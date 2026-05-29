@@ -22,6 +22,13 @@ StreamActions["show_offcanvas"] = function(this: HTMLElement) {
   if (el) Offcanvas.getOrCreateInstance(el).show()
 }
 
+// Custom Turbo Stream action: <turbo-stream action="close_modal" target="modal-id"></turbo-stream>
+import { Modal } from "bootstrap"
+StreamActions["close_modal"] = function (this: HTMLElement) {
+  const el = document.getElementById(this.getAttribute("target")!)
+  if (el) Modal.getInstance(el)?.hide()
+}
+
 // Directional page transitions: set html[data-transition] before navigation
 document.addEventListener("click", (event) => {
   const link = (event.target as HTMLElement).closest<HTMLElement>("a[data-transition]")
