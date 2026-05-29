@@ -21,7 +21,7 @@ RSpec.describe "Admin::WorkOrderItems", type: :request do
   before { post session_path, params: { email_address: user.email_address, password: "password" } }
 
   let(:valid_params) do
-    { work_order_item: { name: "Labor", quantity: 3, unit_price_cents: 12_000 } }
+    { work_order_item: { name: "Labor", quantity: 3, unit_price: "120.00" } }
   end
 
   describe "POST /admin/work_orders/:work_order_number/work_order_items" do
@@ -45,7 +45,7 @@ RSpec.describe "Admin::WorkOrderItems", type: :request do
     context "with invalid params" do
       it "returns 422" do
         post admin_work_order_work_order_items_path(work_order),
-          params: { work_order_item: { name: "", quantity: 1, unit_price_cents: 0 } }
+          params: { work_order_item: { name: "", quantity: 1, unit_price: "0.00" } }
 
         expect(response).to have_http_status(:unprocessable_content)
       end
@@ -53,7 +53,7 @@ RSpec.describe "Admin::WorkOrderItems", type: :request do
       it "does not create an item" do
         expect {
           post admin_work_order_work_order_items_path(work_order),
-            params: { work_order_item: { name: "", quantity: 1, unit_price_cents: 0 } }
+            params: { work_order_item: { name: "", quantity: 1, unit_price: "0.00" } }
         }.not_to change { work_order.work_order_items.count }
       end
     end

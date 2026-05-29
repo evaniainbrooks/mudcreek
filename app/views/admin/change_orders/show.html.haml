@@ -1,0 +1,41 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-file-earmark-text.me-2
+    = @change_order.number
+  .d-flex.gap-2
+    - if @change_order.draft?
+      = button_to "Send for Signature",
+          send_for_signature_admin_work_order_change_order_path(@work_order, @change_order),
+          method: :post, class: "btn btn-primary",
+          form: { data: { turbo_confirm: "Send this change order to #{@work_order.client_display_name} for signature?" } }
+
+.page-container.p-4
+  .row.justify-content-center
+    .col-lg-7
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Change Order Details
+        .card-body
+          %dl.row.mb-0
+            %dt.col-sm-4 Number
+            %dd.col-sm-8= @change_order.number
+
+            %dt.col-sm-4 Work Order
+            %dd.col-sm-8= link_to @work_order.number, admin_work_order_path(@work_order)
+
+            %dt.col-sm-4 Status
+            %dd.col-sm-8= change_order_status_badge(@change_order)
+
+            %dt.col-sm-4 Amount
+            %dd.col-sm-8= humanized_money_with_symbol(@change_order.amount)
+
+            %dt.col-sm-4 Description
+            %dd.col-sm-8= @change_order.description
+
+            - if @change_order.signed?
+              %dt.col-sm-4 Signed At
+              %dd.col-sm-8= @change_order.signed_at&.to_fs(:long)
+
+  .mt-3
+    = link_to admin_work_order_path(@work_order), class: "btn btn-outline-secondary" do
+      %i.bi.bi-arrow-left.me-1
+      Back to Work Order

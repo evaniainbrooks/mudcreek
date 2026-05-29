@@ -96,8 +96,8 @@ class Admin::WorkOrdersController < Admin::BaseController
     params.expect(work_order: [
       :title, :description, :client_name, :client_email, :client_phone, :user_id, :admin_notes,
       address_attributes: [ :id, :street_address, :city, :province, :postal_code, :country, :_destroy ],
-      work_order_items_attributes: [ :id, :name, :description, :quantity, :unit_price_cents, :position, :_destroy ],
-      work_order_milestones_attributes: [ :id, :name, :percentage, :trigger_state, :position, :_destroy ]
+      work_order_items_attributes: [ [ :id, :name, :description, :quantity, :unit_price, :position, :_destroy ] ],
+      work_order_milestones_attributes: [ [ :id, :name, :percentage, :trigger_state, :position, :_destroy ] ]
     ])
   end
 end

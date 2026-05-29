@@ -8,6 +8,26 @@ module Admin::WorkOrdersHelper
     "cancelled"      => "text-bg-danger"
   }.freeze
 
+  CHANGE_ORDER_STATUS_BADGE = {
+    "draft"          => "text-bg-secondary",
+    "signature_sent" => "text-bg-info",
+    "signed"         => "text-bg-success"
+  }.freeze
+
+  def change_order_status_badge(change_order)
+    css = CHANGE_ORDER_STATUS_BADGE.fetch(change_order.status, "text-bg-secondary")
+    content_tag(:span, change_order.status.humanize, class: "badge #{css}")
+  end
+
+  def change_orders_table(change_orders, work_order:)
+    t = TableComponent.new(rows: change_orders)
+    t.with_column("Number") { |co| link_to co.number, admin_work_order_change_order_path(work_order, co), class: "fw-semibold text-decoration-none" }
+    t.with_column("Description") { |co| content_tag(:span, co.description, class: "text-truncate d-inline-block", style: "max-width:260px") }
+    t.with_value_column("Amount") { |co| co.amount }
+    t.with_column("Status") { |co| change_order_status_badge(co) }
+    render(t)
+  end
+
   def work_order_state_badge(work_order)
     css = STATE_BADGE.fetch(work_order.state, "text-bg-secondary")
     content_tag(:span, work_order.state.humanize, class: "badge #{css}")

@@ -119,6 +119,13 @@ module ApplicationHelper
     DOCUMENT_ICON_MAP.fetch(content_type.to_s, "bi-file-earmark")
   end
 
+  def attachment_icon(attachment)
+    ct = attachment.content_type.to_s
+    return "bi-image"        if ct.start_with?("image/")
+    return "bi-camera-video" if ct.start_with?("video/")
+    DOCUMENT_ICON_MAP.fetch(ct, "bi-file-earmark")
+  end
+
   def absolute_url_for(attachment)
     url = url_for(attachment)
     url.start_with?("http") ? url : "#{request.base_url}#{url}"

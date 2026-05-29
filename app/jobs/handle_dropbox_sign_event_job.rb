@@ -6,10 +6,16 @@ class HandleDropboxSignEventJob < ApplicationJob
     return unless request_id.present?
 
     work_order = WorkOrder.unscoped.find_by(dropbox_sign_request_id: request_id)
-    return unless work_order.present?
+    if work_order.present?
+      Current.tenant = work_order.tenant
+      ProcessWorkOrderContractJob.perform_later(work_order.id)
+      return
+    end
 
-    Current.tenant = work_order.tenant
+    change_order = ChangeOrder.unscoped.find_by(dropbox_sign_request_id: request_id)
+    return unless change_order.present?
 
-    ProcessWorkOrderContractJob.perform_later(work_order.id)
+    Current.tenant = change_order.work_order.tenant
+    ProcessSignedChangeOrderJob.perform_later(change_order.id)
   end
 end

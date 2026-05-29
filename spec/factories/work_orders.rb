@@ -41,6 +41,14 @@ FactoryBot.define do
     end
   end
 
+  factory :change_order do
+    association :work_order, :contracted
+    sequence(:number) { |n| "CO-TEST%08d" % n }
+    sequence(:description) { |n| "Change order #{n}" }
+    amount_cents { 50_000 }
+    status       { "draft" }
+  end
+
   factory :work_order_item do
     association :work_order
     sequence(:name) { |n| "Item #{n}" }

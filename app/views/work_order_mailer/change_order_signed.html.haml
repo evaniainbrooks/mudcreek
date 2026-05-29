@@ -1,0 +1,27 @@
+%p
+  Change order
+  %strong= @change_order.number
+  for work order
+  %strong= @work_order.number
+  has been signed.
+
+%table{ style: "width:100%;border-collapse:collapse;" }
+  %tbody
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;width:160px;" } Change Order
+      %td{ style: "padding:6px 0;" }= @change_order.number
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Work Order
+      %td{ style: "padding:6px 0;" }
+        = @work_order.number
+        —
+        = @work_order.title
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Client
+      %td{ style: "padding:6px 0;" }= @work_order.client_display_name
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Amount
+      %td{ style: "padding:6px 0;" }= humanized_money_with_symbol(@change_order.amount)
+    %tr
+      %td{ style: "padding:6px 0;font-weight:600;" } Signed At
+      %td{ style: "padding:6px 0;" }= @change_order.signed_at&.to_fs(:long)

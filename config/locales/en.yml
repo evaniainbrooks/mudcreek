@@ -329,6 +329,22 @@ en:
       update:
         notice: "Tenant was successfully updated."
 
+    change_orders:
+      create:
+        notice: "Change order was successfully created."
+      send_for_signature:
+        notice: "Change order sent for signature."
+
+    work_orders:
+      admin_attachments:
+        create:
+          notice: "Files uploaded."
+        destroy:
+          notice: "%{filename} removed."
+      client_attachments:
+        destroy:
+          notice: "%{filename} removed."
+
     users:
       create:
         notice: "User was successfully created."

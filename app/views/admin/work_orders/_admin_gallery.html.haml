@@ -1,0 +1,11 @@
+.card.shadow-sm.border-0.mb-4
+  .card-header.fw-semibold
+    %i.bi.bi-folder2-open.me-1
+    Project Files (Admin)
+  .card-body
+    - delete_path = ->(a) { admin_work_order_admin_attachment_path(work_order, a) }
+    = render Admin::AttachmentsListComponent.new(attachments: work_order.admin_attachments_attachments.order(:created_at), delete_path: delete_path)
+    = form_with url: admin_work_order_admin_attachments_path(work_order), html: { class: "mt-3" } do |f|
+      = f.file_field :files, multiple: true, class: "form-control form-control-sm"
+      .mt-2
+        = f.submit "Upload", class: "btn btn-sm btn-primary"

@@ -22,6 +22,16 @@ class WorkOrderMailer < ApplicationMailer
     )
   end
 
+  def change_order_signed(change_order)
+    @change_order = change_order
+    @work_order   = change_order.work_order
+
+    mail(
+      to:      Current.tenant.email_address,
+      subject: "Change order #{change_order.number} has been signed"
+    )
+  end
+
   def milestone_invoice(invoice)
     @invoice    = invoice
     @work_order = invoice.work_order

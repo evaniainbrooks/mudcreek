@@ -49,6 +49,6 @@ class Admin::WorkOrderItemsController < Admin::BaseController
   end
 
   def item_params
-    params.expect(work_order_item: [ :name, :description, :quantity, :unit_price_cents, :position ])
+    params.expect(work_order_item: [ :name, :description, :quantity, :unit_price, :position ])
   end
 end

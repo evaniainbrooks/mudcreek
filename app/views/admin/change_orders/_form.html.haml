@@ -1,0 +1,20 @@
+= form_with model: [ :admin, work_order, change_order ], html: { class: "needs-validation" } do |f|
+  .row.justify-content-center
+    .col-lg-7
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Change Order Details
+        .card-body
+          .mb-3
+            = f.label :description, class: "form-label"
+            = f.text_area :description, class: "form-control", rows: 4, required: true
+          .mb-0
+            = f.label :amount, "Amount", class: "form-label"
+            .input-group
+              %span.input-group-text $
+              = f.text_field :amount, class: "form-control", placeholder: "0.00",
+                  value: (change_order.amount&.to_f unless change_order.new_record? && change_order.amount_cents.zero?),
+                  required: true
+
+      .mt-4.d-flex.gap-2
+        = f.submit class: "btn btn-primary"
+        = link_to "Cancel", admin_work_order_path(work_order), class: "btn btn-outline-secondary"

@@ -1,0 +1,7 @@
+Change order #{@change_order.number} has been signed.
+
+Change Order: #{@change_order.number}
+Work Order:   #{@work_order.number} — #{@work_order.title}
+Client:       #{@work_order.client_display_name}
+Amount:       #{humanized_money_with_symbol(@change_order.amount)}
+Signed At:    #{@change_order.signed_at&.to_fs(:long)}

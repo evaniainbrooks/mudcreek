@@ -1,0 +1,156 @@
+.container.py-5
+  .row.justify-content-center
+    .col-lg-9
+
+      -# Header
+      .d-flex.flex-wrap.justify-content-between.align-items-start.mb-4.gap-3
+        .flex-grow-1
+          %h1.h3.mb-1= @work_order.title
+          %small.text-muted= @work_order.number
+        = work_order_state_badge(@work_order)
+
+      -# Status timeline
+      .card.shadow-sm.border-0.mb-4
+        .card-header.fw-semibold Project Status
+        .card-body
+          - states      = WorkOrder.states.keys
+          - current_idx = states.index(@work_order.state) || 0
+          .d-flex
+            - @portal_steps.each_with_index do |step, i|
+              :ruby
+                step_idx  = states.index(step[:state]) || 0
+                completed = !@work_order.cancelled? && current_idx >= step_idx
+                active    = @work_order.state == step[:state]
+                line_done = !@work_order.cancelled? && current_idx > step_idx
+              .flex-fill.text-center.position-relative
+                - unless i.zero?
+                  .position-absolute{ style: "top:17px;left:0;width:50%;height:2px;background:#{completed ? '#198754' : '#dee2e6'};z-index:0" }
+                - unless i == @portal_steps.length - 1
+                  .position-absolute{ style: "top:17px;right:0;width:50%;height:2px;background:#{line_done ? '#198754' : '#dee2e6'};z-index:0" }
+                - circle_class = completed ? "bg-success text-white" : "bg-light text-muted border"
+                - circle_style = "width:36px;height:36px;position:relative;z-index:1"
+                .rounded-circle.d-inline-flex.align-items-center.justify-content-center.mb-1{ class: circle_class, style: circle_style }
+                  %i.bi{ class: completed ? "bi-check-lg" : "bi-circle" }
+                .small.fw-semibold{ class: active ? "text-success" : (completed ? "" : "text-muted") }= step[:label]
+                - if step[:ts]
+                  .text-muted{ style: "font-size:0.7rem" }= step[:ts].to_fs(:short)
+          - if @work_order.cancelled?
+            .mt-3
+              %span.badge.text-bg-danger This work order has been cancelled.
+
+      -# Contract details
+      - if @work_order.description.present? || @work_order.address
+        .card.shadow-sm.border-0.mb-4
+          .card-header.fw-semibold Contract Details
+          .card-body
+            - if @work_order.description.present?
+              %p.mb-3= @work_order.description
+            - if @work_order.address
+              %p.small.text-muted.text-uppercase.fw-semibold.mb-1 Job Site
+              %address.mb-0
+                = @work_order.address.street_address
+                %br
+                = [@work_order.address.city, @work_order.address.province, @work_order.address.postal_code].compact.join(", ")
+
+      -# Line items
+      - if @work_order.work_order_items.any?
+        .card.shadow-sm.border-0.mb-4
+          .card-header.fw-semibold Line Items
+          .card-body.p-0
+            .table-responsive
+              %table.table.table-sm.mb-0
+                %thead.table-light
+                  %tr
+                    %th Description
+                    %th.text-center{ style: "width:60px" } Qty
+                    %th.text-end{ style: "width:110px" } Unit Price
+                    %th.text-end{ style: "width:110px" } Amount
+                %tbody
+                  - @work_order.work_order_items.each do |item|
+                    %tr
+                      %td
+                        = item.name
+                        - if item.description.present?
+                          .small.text-muted= item.description
+                      %td.text-center= item.quantity
+                      %td.text-end= humanized_money_with_symbol(item.unit_price)
+                      %td.text-end= humanized_money_with_symbol(item.line_total)
+                %tfoot
+                  %tr.fw-bold.border-top.border-2
+                    %td{ colspan: 3 } Total
+                    %td.text-end= humanized_money_with_symbol(@work_order.total)
+
+      -# Payment schedule
+      - if @work_order.work_order_milestones.any?
+        .card.shadow-sm.border-0.mb-4
+          .card-header.fw-semibold Payment Schedule
+          .card-body.p-0
+            .table-responsive
+              %table.table.table-sm.mb-0
+                %thead.table-light
+                  %tr
+                    %th Milestone
+                    %th.text-end{ style: "width:60px" } %
+                    %th.text-end{ style: "width:110px" } Amount
+                    %th.text-end{ style: "width:100px" } Invoice
+                %tbody
+                  - @work_order.work_order_milestones.each do |ms|
+                    %tr
+                      %td= ms.name
+                      %td.text-end #{ms.percentage}%
+                      %td.text-end
+                        - if ms.amount_cents > 0
+                          = humanized_money_with_symbol(ms.amount)
+                        - else
+                          %span.text-muted —
+                      %td.text-end
+                        - if ms.invoice_generated?
+                          %span.badge.text-bg-success Generated
+                        - else
+                          %span.badge.text-bg-secondary Pending
+
+      -# Change orders
+      - if @work_order.change_orders.any?
+        .card.shadow-sm.border-0.mb-4
+          .card-header.fw-semibold Change Orders
+          .card-body.p-0
+            .table-responsive
+              %table.table.table-sm.mb-0
+                %thead.table-light
+                  %tr
+                    %th Number
+                    %th Description
+                    %th.text-end{ style: "width:110px" } Amount
+                    %th.text-end{ style: "width:100px" } Status
+                %tbody
+                  - @work_order.change_orders.each do |co|
+                    - co_badge = { "draft" => "text-bg-secondary", "signature_sent" => "text-bg-info",
+                      "signed" => "text-bg-success" }.fetch(co.status, "text-bg-secondary")
+                    %tr
+                      %td= co.number
+                      %td= co.description
+                      %td.text-end= humanized_money_with_symbol(co.amount)
+                      %td.text-end
+                        %span.badge{ class: co_badge }= co.status.humanize
+
+      -# Client files
+      .card.shadow-sm.border-0
+        .card-header.fw-semibold Your Files
+        .card-body
+          - if notice
+            .alert.alert-success.py-2.mb-3= notice
+          - attachments = @work_order.client_attachments_attachments.order(:created_at)
+          - if attachments.any?
+            %ul.list-unstyled.mb-3
+              - attachments.each do |attachment|
+                %li.d-flex.align-items-center.gap-2.py-2.border-bottom
+                  %i.bi{ class: attachment_icon(attachment) }
+                  = link_to attachment.filename.to_s,
+                      rails_blob_path(attachment.blob, disposition: "attachment"),
+                      class: "text-decoration-none text-truncate", target: "_blank"
+                  %small.text-muted.ms-auto.flex-shrink-0= number_to_human_size(attachment.byte_size)
+          = form_with url: portal_work_order_path(@work_order, token: params[:token]) do |f|
+            .mb-2
+              = f.file_field :files, multiple: true, class: "form-control form-control-sm"
+              .form-text Any file type accepted. Select multiple files at once.
+            = f.submit "Upload Files", class: "btn btn-sm btn-primary"

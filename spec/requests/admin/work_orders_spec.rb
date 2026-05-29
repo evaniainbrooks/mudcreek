@@ -168,6 +168,78 @@ RSpec.describe "Admin::WorkOrders", type: :request do
         .to change(WorkOrder, :count).by(1)
     end
 
+    context "with a line item in the nested attributes" do
+      let(:params_with_item) do
+        valid_params.deep_merge(work_order: {
+          work_order_items_attributes: { "0" => { name: "Lumber", quantity: 2, unit_price: "50.00" } }
+        })
+      end
+
+      it "creates the work order item" do
+        expect { post admin_work_orders_path, params: params_with_item }
+          .to change(WorkOrderItem, :count).by(1)
+      end
+
+      it "associates the item with the new work order" do
+        post admin_work_orders_path, params: params_with_item
+
+        item = WorkOrder.find_by(title: "Deck Repair").work_order_items.first
+        expect(item.name).to eq("Lumber")
+        expect(item.quantity).to eq(2)
+        expect(item.unit_price_cents).to eq(5_000)  # $50.00
+      end
+    end
+
+    context "with a payment milestone in the nested attributes" do
+      let(:params_with_milestone) do
+        valid_params.deep_merge(work_order: {
+          work_order_milestones_attributes: { "0" => { name: "Deposit", percentage: 50, trigger_state: "contracted" } }
+        })
+      end
+
+      it "creates the work order milestone" do
+        expect { post admin_work_orders_path, params: params_with_milestone }
+          .to change(WorkOrderMilestone, :count).by(1)
+      end
+
+      it "associates the milestone with the new work order" do
+        post admin_work_orders_path, params: params_with_milestone
+
+        milestone = WorkOrder.find_by(title: "Deck Repair").work_order_milestones.first
+        expect(milestone.name).to eq("Deposit")
+        expect(milestone.percentage).to eq(50)
+        expect(milestone.trigger_state).to eq("contracted")
+      end
+    end
+
+    context "with a blank item row (unfilled template)" do
+      let(:params_with_blank_item) do
+        valid_params.deep_merge(work_order: {
+          work_order_items_attributes: { "0" => { name: "", quantity: 1, unit_price: "" } }
+        })
+      end
+
+      it "ignores the blank row and still creates the work order" do
+        expect { post admin_work_orders_path, params: params_with_blank_item }
+          .to change(WorkOrder, :count).by(1)
+          .and change(WorkOrderItem, :count).by(0)
+      end
+    end
+
+    context "with a blank milestone row (unfilled template)" do
+      let(:params_with_blank_milestone) do
+        valid_params.deep_merge(work_order: {
+          work_order_milestones_attributes: { "0" => { name: "", percentage: "", trigger_state: "draft" } }
+        })
+      end
+
+      it "ignores the blank row and still creates the work order" do
+        expect { post admin_work_orders_path, params: params_with_blank_milestone }
+          .to change(WorkOrder, :count).by(1)
+          .and change(WorkOrderMilestone, :count).by(0)
+      end
+    end
+
     context "with invalid params" do
       it "returns 422" do
         post admin_work_orders_path, params: { work_order: { title: "" } }

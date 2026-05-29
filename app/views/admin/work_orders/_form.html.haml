@@ -44,7 +44,7 @@
                 %tr
                   %th Description
                   %th.text-center{ style: "width:80px" } Qty
-                  %th.text-end{ style: "width:120px" } Unit Price
+                  %th.text-end{ style: "width:150px" } Unit Price
                   %th{ style: "width:80px" }
               %tbody
                 = f.fields_for :work_order_items, work_order.work_order_items.to_a + [WorkOrderItem.new] do |item_f|

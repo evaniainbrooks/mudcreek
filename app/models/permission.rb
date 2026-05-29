@@ -48,6 +48,7 @@ class Permission < ApplicationRecord
     SubscriptionUser
     Tenant
     User
+    ChangeOrder
     WorkOrder
     WorkOrderItem
     WorkOrderMilestone

@@ -1,0 +1,8 @@
+.d-flex.justify-content-between.align-items-center.mb-4
+  %h1.h3.mb-0
+    %i.bi.bi-file-earmark-plus.me-2
+    New Change Order
+  %small.text-muted= @work_order.number
+
+.page-container.p-4
+  = render "form", change_order: @change_order, work_order: @work_order

@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_22_000008) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   # Custom types defined in this database.
   # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "change_order_status", ["draft", "signature_sent", "signed"]
   create_enum "check_in_source", ["kiosk", "schedule", "admin"]
   create_enum "discount_code_type", ["fixed", "percentage"]
   create_enum "improvmx_domain_status", ["unchecked", "verified", "failed"]
@@ -191,6 +192,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_000008) do
     t.index ["tenant_id"], name: "index_cart_items_on_tenant_id"
     t.index ["user_id", "listing_id", "variant_id"], name: "index_cart_items_unique_user_listing_variant", unique: true, where: "((user_id IS NOT NULL) AND (rental_start_at IS NULL) AND (invoice_item_id IS NULL))"
     t.index ["variant_id"], name: "index_cart_items_on_variant_id"
+  end
+
+  create_table "change_orders", force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.string "dropbox_sign_request_id"
+    t.string "number", null: false
+    t.datetime "signed_at"
+    t.enum "status", default: "draft", null: false, enum_type: "change_order_status"
+    t.bigint "tenant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "work_order_id", null: false
+    t.index ["number"], name: "index_change_orders_on_number", unique: true
+    t.index ["tenant_id"], name: "index_change_orders_on_tenant_id"
+    t.index ["work_order_id"], name: "index_change_orders_on_work_order_id"
   end
 
   create_table "check_ins", force: :cascade do |t|
@@ -1343,6 +1360,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_000008) do
     t.string "client_email"
     t.string "client_name"
     t.string "client_phone"
+    t.string "client_upload_token"
     t.datetime "completed_at"
     t.datetime "contracted_at"
     t.datetime "created_at", null: false
@@ -1356,6 +1374,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_000008) do
     t.integer "total_cents", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["client_upload_token"], name: "index_work_orders_on_client_upload_token", unique: true
     t.index ["dropbox_sign_request_id"], name: "index_work_orders_on_dropbox_sign_request_id"
     t.index ["number"], name: "index_work_orders_on_number", unique: true
     t.index ["tenant_id", "state"], name: "index_work_orders_on_tenant_id_and_state"
@@ -1381,6 +1400,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_000008) do
   add_foreign_key "cart_items", "listings_variants", column: "variant_id", on_delete: :nullify
   add_foreign_key "cart_items", "tenants"
   add_foreign_key "cart_items", "users"
+  add_foreign_key "change_orders", "tenants"
+  add_foreign_key "change_orders", "work_orders"
   add_foreign_key "check_ins", "locations"
   add_foreign_key "check_ins", "schedule_event_registrations", on_delete: :nullify
   add_foreign_key "check_ins", "schedule_events", on_delete: :nullify

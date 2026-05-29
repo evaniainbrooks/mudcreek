@@ -41,7 +41,7 @@ resource :session
   end
 
   resources :work_orders, only: [], param: :number do
-    member { get :signed }
+    member { get :signed; get :portal; post :portal }
   end
 
   resource :profile, only: [ :edit, :update ] do
@@ -200,6 +200,13 @@ resource :session
       end
       resources :work_order_items,      only: [ :create, :update, :destroy ]
       resources :work_order_milestones, only: [ :create, :update, :destroy ]
+      resources :change_orders, param: :number, only: [ :new, :create, :show ] do
+        member { post :send_for_signature }
+      end
+      scope module: :work_orders do
+        resources :admin_attachments,  only: [ :create, :destroy ]
+        resources :client_attachments, only: [ :destroy ]
+      end
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -85,10 +85,26 @@
         .card-body
           = work_order_items_table(@work_order.work_order_items, total: @work_order.total)
 
-      .card.shadow-sm.border-0
+      .card.shadow-sm.border-0.mb-4
         .card-header.fw-semibold Payment Milestones
         .card-body
           = work_order_milestones_table(@work_order.work_order_milestones)
+
+      .card.shadow-sm.border-0.mb-4
+        .card-header.d-flex.justify-content-between.align-items-center
+          %span.fw-semibold Change Orders
+          - if (@work_order.contracted? || @work_order.in_progress?) && policy(ChangeOrder).create?
+            = link_to new_admin_work_order_change_order_path(@work_order), class: "btn btn-sm btn-outline-primary" do
+              %i.bi.bi-plus.me-1
+              New Change Order
+        .card-body
+          = change_orders_table(@work_order.change_orders, work_order: @work_order)
+
+  .row.g-4.mt-0
+    .col-12
+      = render "admin_gallery", work_order: @work_order
+    .col-12
+      = render "client_gallery", work_order: @work_order
 
   .mt-3
     = link_to admin_work_orders_path, class: "btn btn-outline-secondary" do

@@ -3,14 +3,17 @@ class WorkOrder < ApplicationRecord
   include NativeEnum
 
   belongs_to :user, optional: true
+  has_many :change_orders,         -> { order(:created_at) }, dependent: :destroy, inverse_of: :work_order
   has_many :work_order_items,      -> { order(:position) }, dependent: :destroy, inverse_of: :work_order
   has_many :work_order_milestones, -> { order(:position) }, dependent: :destroy, inverse_of: :work_order
   has_many :invoices, through: :work_order_milestones
   has_one  :address, as: :addressable, dependent: :destroy
-  has_one_attached :estimate_pdf
+  has_one_attached  :estimate_pdf
+  has_many_attached :admin_attachments
+  has_many_attached :client_attachments
 
-  accepts_nested_attributes_for :work_order_items,      allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :work_order_milestones, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :work_order_items,      allow_destroy: true, reject_if: proc { |a| a[:name].blank? }
+  accepts_nested_attributes_for :work_order_milestones, allow_destroy: true, reject_if: proc { |a| a[:name].blank? }
   accepts_nested_attributes_for :address
 
   native_enum :state, %i[draft estimate_sent contracted in_progress completed cancelled]
@@ -21,7 +24,8 @@ class WorkOrder < ApplicationRecord
   validates :title,  presence: true
   validate  :client_contact_present
 
-  before_validation :assign_number, on: :create
+  before_validation :assign_number,              on: :create
+  before_validation :assign_client_upload_token, on: :create
   before_save       :recompute_total
 
   def guest? = user_id.nil?
@@ -45,6 +49,10 @@ class WorkOrder < ApplicationRecord
 
   def assign_number
     self.number ||= "WO-#{SecureRandom.alphanumeric(10).upcase}"
+  end
+
+  def assign_client_upload_token
+    self.client_upload_token ||= SecureRandom.hex(32)
   end
 
   def client_contact_present

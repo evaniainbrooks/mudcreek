@@ -1,0 +1,16 @@
+.card.shadow-sm.border-0
+  .card-header.fw-semibold
+    %i.bi.bi-cloud-upload.me-1
+    Client Files
+  .card-body
+    - delete_path = ->(a) { admin_work_order_client_attachment_path(work_order, a) }
+    = render Admin::AttachmentsListComponent.new(attachments: work_order.client_attachments_attachments.order(:created_at), delete_path: delete_path)
+    - if work_order.client_attachments_attachments.none?
+      %p.text-muted.small.mb-3 No client files uploaded yet.
+    - portal_url = portal_work_order_url(work_order, token: work_order.client_upload_token)
+    .border.rounded.p-2.bg-light.mt-3
+      %p.small.text-muted.mb-1 Client portal link
+      .d-flex.align-items-center.gap-2
+        %input.form-control.form-control-sm{ type: "text", readonly: true, value: portal_url, onclick: "this.select()" }
+        %button.btn.btn-sm.btn-outline-secondary.flex-shrink-0{ type: "button", onclick: "navigator.clipboard.writeText('#{j portal_url}')" }
+          %i.bi.bi-clipboard
