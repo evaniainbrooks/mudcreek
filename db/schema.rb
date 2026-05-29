@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_29_140003) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_29_183343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -370,7 +370,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_140003) do
     t.bigint "user_id"
     t.bigint "work_order_milestone_id"
     t.index ["auction_id"], name: "index_invoices_on_auction_id"
-    t.index ["change_order_id"], name: "index_invoices_on_change_order_id"
+    t.index ["change_order_id"], name: "index_invoices_on_change_order_id", unique: true
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["offer_id"], name: "index_invoices_on_offer_id_unique", unique: true
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"

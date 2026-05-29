@@ -18,7 +18,8 @@ class Invoice < ApplicationRecord
   monetize :total_cents, with_model_currency: :currency
 
   validates :number, presence: true, uniqueness: true
-  validates :offer_id, uniqueness: true, allow_nil: true
+  validates :offer_id,        uniqueness: true, allow_nil: true
+  validates :change_order_id, uniqueness: true, allow_nil: true
   validate  :user_or_work_order_present
 
   before_validation :assign_number, on: :create
