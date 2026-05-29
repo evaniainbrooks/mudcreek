@@ -10,6 +10,7 @@ class ChangeOrder < ApplicationRecord
 
   monetize :amount_cents, with_model_currency: :currency
 
+  validates :number,      presence: true, uniqueness: true
   validates :description, presence: true
   validates :amount_cents, numericality: { only_integer: true }
 

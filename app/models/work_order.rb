@@ -20,7 +20,8 @@ class WorkOrder < ApplicationRecord
 
   monetize :total_cents, with_model_currency: :currency
 
-  validates :number, presence: true, uniqueness: true
+  validates :number,              presence: true, uniqueness: true
+  validates :client_upload_token, uniqueness: true, allow_nil: true
   validates :title,  presence: true
   validate  :client_contact_present
 

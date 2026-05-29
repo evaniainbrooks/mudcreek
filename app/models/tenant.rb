@@ -41,7 +41,8 @@ class Tenant < ApplicationRecord
   has_many :check_ins, dependent: :destroy
   has_many :verifications, class_name: "Users::Verification", dependent: :destroy
 
-  has_many :work_orders, dependent: :destroy
+  has_many :work_orders,   dependent: :destroy
+  has_many :change_orders, dependent: :destroy
   has_many :email_aliases, dependent: :destroy
   has_many :inquiry_forms, dependent: :destroy
   has_many :inquiries, dependent: :destroy

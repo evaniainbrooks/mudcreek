@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_000002) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_29_104842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -205,6 +205,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_000002) do
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "work_order_id", null: false
+    t.index ["dropbox_sign_request_id"], name: "index_change_orders_on_dropbox_sign_request_id"
     t.index ["number"], name: "index_change_orders_on_number", unique: true
     t.index ["tenant_id"], name: "index_change_orders_on_tenant_id"
     t.index ["work_order_id"], name: "index_change_orders_on_work_order_id"
