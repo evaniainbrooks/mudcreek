@@ -7,6 +7,7 @@ class Invoice < ApplicationRecord
   belongs_to :offer,                  optional: true
   belongs_to :subscription,           optional: true
   belongs_to :work_order_milestone,   optional: true
+  belongs_to :change_order,           optional: true
   has_one    :work_order, through: :work_order_milestone
 
   has_many :invoice_items, dependent: :destroy
@@ -42,8 +43,8 @@ class Invoice < ApplicationRecord
   private
 
   def user_or_work_order_present
-    return if user_id.present? || work_order_milestone_id.present?
-    errors.add(:base, "must belong to a user or a work order milestone")
+    return if user_id.present? || work_order_milestone_id.present? || change_order_id.present?
+    errors.add(:base, "must belong to a user, a work order milestone, or a change order")
   end
 
   def assign_number

@@ -7,13 +7,17 @@
           .mb-3
             = f.label :description, class: "form-label"
             = f.text_area :description, class: "form-control", rows: 4, required: true
-          .mb-0
+          .mb-3
             = f.label :amount, "Amount", class: "form-label"
             .input-group
               %span.input-group-text $
               = f.text_field :amount, class: "form-control", placeholder: "0.00",
                   value: (change_order.amount&.to_f unless change_order.new_record? && change_order.amount_cents.zero?),
                   required: true
+          .mb-0
+            .form-check
+              = f.check_box :tax_exempt, class: "form-check-input"
+              = f.label :tax_exempt, "Tax exempt", class: "form-check-label"
 
       .mt-4.d-flex.gap-2
         = f.submit class: "btn btn-primary"

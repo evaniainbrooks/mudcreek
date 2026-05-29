@@ -28,6 +28,9 @@
             %dt.col-sm-4 Amount
             %dd.col-sm-8= humanized_money_with_symbol(@change_order.amount)
 
+            %dt.col-sm-4 Tax Exempt
+            %dd.col-sm-8= @change_order.tax_exempt? ? "Yes" : "No"
+
             %dt.col-sm-4 Description
             %dd.col-sm-8= @change_order.description
 

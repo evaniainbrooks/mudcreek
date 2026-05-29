@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_29_135945) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_29_140003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -202,6 +202,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_135945) do
     t.string "number", null: false
     t.datetime "signed_at"
     t.enum "status", default: "draft", null: false, enum_type: "change_order_status"
+    t.boolean "tax_exempt", default: false, null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "work_order_id", null: false
@@ -355,6 +356,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_135945) do
   create_table "invoices", force: :cascade do |t|
     t.text "admin_notes"
     t.bigint "auction_id"
+    t.bigint "change_order_id"
     t.text "charge_error"
     t.datetime "created_at", null: false
     t.string "number", null: false
@@ -368,6 +370,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_135945) do
     t.bigint "user_id"
     t.bigint "work_order_milestone_id"
     t.index ["auction_id"], name: "index_invoices_on_auction_id"
+    t.index ["change_order_id"], name: "index_invoices_on_change_order_id"
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["offer_id"], name: "index_invoices_on_offer_id_unique", unique: true
     t.index ["subscription_id"], name: "index_invoices_on_subscription_id"
@@ -1429,6 +1432,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_135945) do
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "listings", on_delete: :nullify
   add_foreign_key "invoices", "auctions"
+  add_foreign_key "invoices", "change_orders", on_delete: :nullify
   add_foreign_key "invoices", "offers", on_delete: :nullify
   add_foreign_key "invoices", "subscriptions", on_delete: :nullify
   add_foreign_key "invoices", "tenants"

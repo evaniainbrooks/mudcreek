@@ -7,6 +7,8 @@ class ProcessSignedChangeOrderJob < ApplicationJob
 
     change_order.update!(status: :signed, signed_at: Time.current)
 
+    WorkOrders::GenerateChangeOrderInvoiceService.call(change_order: change_order)
+
     WorkOrderMailer.change_order_signed(change_order).deliver_later
   end
 end

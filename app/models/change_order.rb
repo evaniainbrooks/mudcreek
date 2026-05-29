@@ -4,6 +4,7 @@ class ChangeOrder < ApplicationRecord
 
   belongs_to :work_order, inverse_of: :change_orders
 
+  has_one  :invoice, dependent: :nullify
   has_one_attached :document_pdf
 
   native_enum :status, %i[draft signature_sent signed]

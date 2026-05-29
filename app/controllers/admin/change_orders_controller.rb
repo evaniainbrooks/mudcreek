@@ -55,6 +55,6 @@ class Admin::ChangeOrdersController < Admin::BaseController
   end
 
   def change_order_params
-    params.expect(change_order: [ :description, :amount ])
+    params.expect(change_order: [ :description, :amount, :tax_exempt ])
   end
 end
