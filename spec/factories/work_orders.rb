@@ -6,6 +6,7 @@ FactoryBot.define do
     client_phone { "555-0100" }
     state        { "draft" }
     total_cents  { 0 }
+    association :location
 
     trait :with_user do
       association :user

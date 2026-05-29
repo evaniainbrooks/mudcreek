@@ -6,6 +6,7 @@ class WorkOrderItem < ApplicationRecord
   monetize :unit_price_cents, with_model_currency: :currency
 
   validates :name,             presence: true
+  validates :tax_exempt,       inclusion: { in: [ true, false ] }
   validates :quantity,         numericality: { greater_than: 0, only_integer: true }
   validates :unit_price_cents, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 

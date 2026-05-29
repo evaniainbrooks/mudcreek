@@ -4,7 +4,17 @@ RSpec.describe WorkOrders::GenerateMilestoneInvoiceService do
   before { Current.tenant = create(:tenant) }
   after  { Current.tenant = nil }
 
-  let(:work_order) { create(:work_order).tap { |wo| wo.update_columns(total_cents: 100_000) } }
+  let(:location) { create(:location, tax_rate: 0.10) }
+  let(:work_order) do
+    create(:work_order, location:).tap do |wo|
+      create(:work_order_item, work_order: wo, name: "Labour",   quantity: 1, unit_price_cents: 80_000, tax_exempt: false)
+      create(:work_order_item, work_order: wo, name: "Permit",   quantity: 1, unit_price_cents: 20_000, tax_exempt: true)
+      wo.update_columns(total_cents: 100_000)
+    end
+  end
+  # 10% milestone → amount_cents = 10_000
+  # Labour portion: 8_000, Permit portion: 2_000 (exempt)
+  # Tax: 8_000 * 0.10 = 800
   let(:milestone) do
     create(:work_order_milestone, work_order:, name: "Deposit", percentage: 10,
            trigger_state: "contracted", amount_cents: 10_000)
@@ -20,16 +30,28 @@ RSpec.describe WorkOrders::GenerateMilestoneInvoiceService do
         expect(result.invoice).to be_a(Invoice)
       end
 
-      it "creates an Invoice with the milestone amount" do
+      it "creates one invoice" do
         expect { described_class.call(milestone:) }.to change(Invoice, :count).by(1)
-        expect(Invoice.last.total_cents).to eq(10_000)
       end
 
-      it "creates an InvoiceItem for the milestone" do
+      it "creates invoice items for each work order item" do
         described_class.call(milestone:)
-        item = Invoice.last.invoice_items.first
-        expect(item.name).to eq("Deposit")
-        expect(item.amount_cents).to eq(10_000)
+        items = Invoice.last.invoice_items.order(:id)
+        expect(items.map(&:name)).to include("Labour", "Permit")
+        expect(items.find { |i| i.name == "Labour" }.amount_cents).to eq(8_000)
+        expect(items.find { |i| i.name == "Permit" }.amount_cents).to eq(2_000)
+      end
+
+      it "appends a tax line item for the taxable portion" do
+        described_class.call(milestone:)
+        tax_item = Invoice.last.invoice_items.find { |i| i.name.start_with?("Tax") }
+        expect(tax_item).to be_present
+        expect(tax_item.amount_cents).to eq(800)
+      end
+
+      it "sets the invoice total to milestone amount plus tax" do
+        described_class.call(milestone:)
+        expect(Invoice.last.total_cents).to eq(10_800)
       end
 
       it "links the invoice back to the milestone" do
@@ -45,16 +67,51 @@ RSpec.describe WorkOrders::GenerateMilestoneInvoiceService do
       it "delivers the milestone invoice mailer" do
         mail_double = double("mail", deliver_later: true)
         allow(WorkOrderMailer).to receive(:milestone_invoice).and_return(mail_double)
-
         described_class.call(milestone:)
-
         expect(WorkOrderMailer).to have_received(:milestone_invoice).with(instance_of(Invoice))
         expect(mail_double).to have_received(:deliver_later)
       end
 
+      context "when all items are tax exempt" do
+        before do
+          work_order.work_order_items.update_all(tax_exempt: true)
+        end
+
+        it "does not add a tax line item" do
+          described_class.call(milestone:)
+          tax_item = Invoice.last.invoice_items.find { |i| i.name.start_with?("Tax") }
+          expect(tax_item).to be_nil
+        end
+
+        it "sets the invoice total to just the milestone amount" do
+          described_class.call(milestone:)
+          expect(Invoice.last.total_cents).to eq(10_000)
+        end
+      end
+
+      context "when the location has no tax rate" do
+        let(:location) { create(:location, tax_rate: 0) }
+
+        it "does not add a tax line item" do
+          described_class.call(milestone:)
+          tax_item = Invoice.last.invoice_items.find { |i| i.name.start_with?("Tax") }
+          expect(tax_item).to be_nil
+        end
+
+        it "sets the invoice total to just the milestone amount" do
+          described_class.call(milestone:)
+          expect(Invoice.last.total_cents).to eq(10_000)
+        end
+      end
+
       context "with a linked user" do
         let(:user) { create(:user) }
-        let(:work_order) { create(:work_order, :with_user, user:, total_cents: 100_000) }
+        let(:work_order) do
+          create(:work_order, :with_user, user:, location:).tap do |wo|
+            create(:work_order_item, work_order: wo, quantity: 1, unit_price_cents: 100_000)
+            wo.update_columns(total_cents: 100_000)
+          end
+        end
 
         it "sets the invoice user to the work order user" do
           described_class.call(milestone:)

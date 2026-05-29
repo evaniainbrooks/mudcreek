@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_29_104842) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_29_135945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -1337,6 +1337,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_104842) do
     t.string "name", null: false
     t.integer "position", default: 0, null: false
     t.integer "quantity", default: 1, null: false
+    t.boolean "tax_exempt", default: false, null: false
     t.integer "unit_price_cents", null: false
     t.datetime "updated_at", null: false
     t.bigint "work_order_id", null: false
@@ -1368,6 +1369,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_104842) do
     t.text "description"
     t.string "dropbox_sign_request_id"
     t.datetime "estimate_sent_at"
+    t.bigint "location_id", null: false
     t.string "number", null: false
     t.enum "state", default: "draft", null: false, enum_type: "work_order_state"
     t.bigint "tenant_id", null: false
@@ -1377,6 +1379,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_104842) do
     t.bigint "user_id"
     t.index ["client_upload_token"], name: "index_work_orders_on_client_upload_token", unique: true
     t.index ["dropbox_sign_request_id"], name: "index_work_orders_on_dropbox_sign_request_id"
+    t.index ["location_id"], name: "index_work_orders_on_location_id"
     t.index ["number"], name: "index_work_orders_on_number", unique: true
     t.index ["tenant_id", "state"], name: "index_work_orders_on_tenant_id_and_state"
     t.index ["user_id"], name: "index_work_orders_on_user_id"
@@ -1568,6 +1571,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_29_104842) do
   add_foreign_key "widgets", "tenants", on_delete: :cascade
   add_foreign_key "work_order_items", "work_orders"
   add_foreign_key "work_order_milestones", "work_orders"
+  add_foreign_key "work_orders", "locations"
   add_foreign_key "work_orders", "tenants"
   add_foreign_key "work_orders", "users", on_delete: :nullify
 

@@ -2,7 +2,8 @@ class WorkOrder < ApplicationRecord
   include MultiTenant
   include NativeEnum
 
-  belongs_to :user, optional: true
+  belongs_to :user,     optional: true
+  belongs_to :location
   has_many :change_orders,         -> { order(:created_at) }, dependent: :destroy, inverse_of: :work_order
   has_many :work_order_items,      -> { order(:position) }, dependent: :destroy, inverse_of: :work_order
   has_many :work_order_milestones, -> { order(:position) }, dependent: :destroy, inverse_of: :work_order
