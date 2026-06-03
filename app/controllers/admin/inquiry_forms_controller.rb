@@ -24,6 +24,7 @@ class Admin::InquiryFormsController < Admin::BaseController
     if @inquiry_form.save
       redirect_to admin_inquiry_forms_path, notice: t(".notice")
     else
+      flash.now[:alert] = @inquiry_form.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -32,6 +33,7 @@ class Admin::InquiryFormsController < Admin::BaseController
     if @inquiry_form.update(inquiry_form_params)
       redirect_to admin_inquiry_forms_path, notice: t(".notice")
     else
+      flash.now[:alert] = @inquiry_form.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

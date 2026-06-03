@@ -34,6 +34,7 @@ class Admin::PagesController < Admin::BaseController
       redirect_to admin_pages_path, notice: t(".notice")
     else
       @widget_collections = build_widget_collections
+      flash.now[:alert] = @page.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -47,6 +48,7 @@ class Admin::PagesController < Admin::BaseController
       redirect_to admin_pages_path, notice: t(".notice")
     else
       @widget_collections = build_widget_collections
+      flash.now[:alert] = @page.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

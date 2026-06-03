@@ -31,6 +31,7 @@ class Admin::InquiriesController < Admin::BaseController
     if @inquiry.update(inquiry_params)
       redirect_to admin_inquiry_path(@inquiry), notice: t(".notice")
     else
+      flash.now[:alert] = @inquiry.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end

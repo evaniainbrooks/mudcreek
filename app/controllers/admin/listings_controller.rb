@@ -71,6 +71,7 @@ class Admin::ListingsController < Admin::BaseController
       redirect_to admin_listing_path(@listing), notice: t(".notice")
     else
       load_form_collections
+      flash.now[:alert] = @listing.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -80,6 +81,7 @@ class Admin::ListingsController < Admin::BaseController
       redirect_to admin_listing_path(@listing), notice: t(".notice")
     else
       load_form_collections
+      flash.now[:alert] = @listing.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

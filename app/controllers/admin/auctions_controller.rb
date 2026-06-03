@@ -58,6 +58,7 @@ class Admin::AuctionsController < Admin::BaseController
       schedule_reconciler(@auction)
       redirect_to admin_auction_path(@auction), notice: t(".notice")
     else
+      flash.now[:alert] = @auction.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -77,6 +78,7 @@ class Admin::AuctionsController < Admin::BaseController
       end
       redirect_to admin_auction_path(@auction), notice: t(".notice")
     else
+      flash.now[:alert] = @auction.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

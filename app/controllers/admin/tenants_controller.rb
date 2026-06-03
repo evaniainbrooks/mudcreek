@@ -34,6 +34,7 @@ module Admin
       else
         @delivery_method_sets = @tenant.delivery_method_sets.order(:name)
         @pages = Page.published.top_level.order(:position, :title)
+        flash.now[:alert] = @tenant.errors.full_messages.to_sentence
         render :show, status: :unprocessable_content
       end
     end

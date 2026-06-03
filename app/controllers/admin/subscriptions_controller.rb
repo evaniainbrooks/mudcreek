@@ -27,6 +27,7 @@ class Admin::SubscriptionsController < Admin::BaseController
                                          &.includes(subscription_users: :user)
                                          &.includes(:subscription_plan)
                                          &.order(:status)
+      flash.now[:alert] = @subscription.errors.full_messages.to_sentence
       render "admin/subscription_plans/show", status: :unprocessable_content
     end
   end
@@ -36,6 +37,7 @@ class Admin::SubscriptionsController < Admin::BaseController
       redirect_to admin_subscription_path(@subscription), notice: t(".notice")
     else
       prepare_show_assigns
+      flash.now[:alert] = @subscription.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end

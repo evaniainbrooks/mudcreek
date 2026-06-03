@@ -22,6 +22,7 @@ class Admin::DisciplinesController < Admin::BaseController
     if @discipline.save
       redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
+      flash.now[:alert] = @discipline.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -33,6 +34,7 @@ class Admin::DisciplinesController < Admin::BaseController
     if @discipline.update(discipline_params)
       redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
+      flash.now[:alert] = @discipline.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

@@ -22,6 +22,7 @@ class Admin::LocationAnnouncementsController < Admin::BaseController
       redirect_to admin_location_location_announcement_path(@location, @announcement),
                   notice: t(".notice")
     else
+      flash.now[:alert] = @announcement.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end

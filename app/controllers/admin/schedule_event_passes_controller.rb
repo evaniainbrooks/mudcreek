@@ -20,6 +20,7 @@ class Admin::ScheduleEventPassesController < Admin::BaseController
     if @pass.save
       redirect_back_or_to admin_schedule_event_passes_path, notice: t(".notice")
     else
+      flash.now[:alert] = @pass.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end

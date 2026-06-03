@@ -24,6 +24,7 @@ class Admin::SubscriptionPlansController < Admin::BaseController
       redirect_to admin_subscription_plans_path, notice: t(".notice", name: @subscription_plan.name)
     else
       @subscription_plans = SubscriptionPlan.order(:name)
+      flash.now[:alert] = @subscription_plan.errors.full_messages.to_sentence
       render :index, status: :unprocessable_content
     end
   end

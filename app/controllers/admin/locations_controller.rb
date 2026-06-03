@@ -41,6 +41,7 @@ class Admin::LocationsController < Admin::BaseController
       )
       redirect_to admin_location_path(@location), notice: t(".notice")
     else
+      flash.now[:alert] = @location.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -64,6 +65,7 @@ class Admin::LocationsController < Admin::BaseController
       @announcements    = @location.location_announcements.ordered.limit(5)
       @schedules        = @location.schedules.ordered
       @drop_in_listings = Listing.not_in_auction.where(published: true, state: :on_sale).order(:name)
+      flash.now[:alert] = @location.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end

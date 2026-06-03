@@ -23,6 +23,7 @@ class Admin::SchedulesController < Admin::BaseController
       SyncScheduleJob.perform_later(@schedule.id) if @schedule.source_url.present? && @schedule.saved_change_to_source_url?
       redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
     else
+      flash.now[:alert] = @schedule.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end
@@ -41,6 +42,7 @@ class Admin::SchedulesController < Admin::BaseController
       redirect_to admin_location_path(@location, anchor: "schedules-pane"),
                   notice: @schedule.source_url.present? ? t(".notice_importing") : t(".notice")
     else
+      flash.now[:alert] = @schedule.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end

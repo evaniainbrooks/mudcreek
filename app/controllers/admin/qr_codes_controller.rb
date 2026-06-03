@@ -34,6 +34,7 @@ class Admin::QrCodesController < Admin::BaseController
       redirect_to admin_qr_codes_path, notice: t(".notice")
     else
       @users = User.order(:first_name, :last_name)
+      flash.now[:alert] = @qr_code.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -45,6 +46,7 @@ class Admin::QrCodesController < Admin::BaseController
     else
       @location_qr_code = @qr_code.location_qr_code?
       @users = User.order(:first_name, :last_name)
+      flash.now[:alert] = @qr_code.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

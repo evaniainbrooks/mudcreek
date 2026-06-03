@@ -40,6 +40,7 @@ class Admin::WorkOrdersController < Admin::BaseController
     if @work_order.save
       redirect_to admin_work_order_path(@work_order), notice: t(".notice")
     else
+      flash.now[:alert] = @work_order.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -52,6 +53,7 @@ class Admin::WorkOrdersController < Admin::BaseController
     if @work_order.update(work_order_params)
       redirect_to admin_work_order_path(@work_order), notice: t(".notice")
     else
+      flash.now[:alert] = @work_order.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

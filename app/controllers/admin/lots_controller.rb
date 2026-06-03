@@ -30,6 +30,7 @@ class Admin::LotsController < Admin::BaseController
       @lots = @q.result.includes(:owner, :listings, :settlement).with_attached_listing_placeholder.order(:name)
       @filter_total = Lot.count
       @filter_count = @lots.size
+      flash.now[:alert] = @lot.errors.full_messages.to_sentence
       render :index, status: :unprocessable_content
     end
   end
@@ -43,6 +44,7 @@ class Admin::LotsController < Admin::BaseController
       @listings = @lot.listings.includes(:owner, :categories, :gallery).order(:name)
       @settlement = @lot.settlement
       @settlement_line_items = @settlement&.settlement_line_items&.order(:created_at)
+      flash.now[:alert] = @lot.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end

@@ -29,6 +29,7 @@ class Admin::GalleriesController < Admin::BaseController
     if @gallery.save
       redirect_to admin_galleries_path, notice: t(".notice")
     else
+      flash.now[:alert] = @gallery.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -40,6 +41,7 @@ class Admin::GalleriesController < Admin::BaseController
     if @gallery.update(gallery_params)
       redirect_to admin_galleries_path, notice: t(".notice")
     else
+      flash.now[:alert] = @gallery.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

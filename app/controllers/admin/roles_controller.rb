@@ -14,6 +14,7 @@ class Admin::RolesController < Admin::BaseController
       redirect_to admin_roles_path, notice: t(".notice", name: @role.name)
     else
       @roles = Role.includes(:users, :permissions).order(:name)
+      flash.now[:alert] = @role.errors.full_messages.to_sentence
       render :index, status: :unprocessable_content
     end
   end

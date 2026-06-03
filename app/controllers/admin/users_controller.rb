@@ -41,6 +41,7 @@ class Admin::UsersController < Admin::BaseController
       redirect_to admin_user_path(@user), notice: t(".notice")
     else
       @roles = Role.order(:name)
+      flash.now[:alert] = @user.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -54,6 +55,7 @@ class Admin::UsersController < Admin::BaseController
       redirect_to admin_user_path(@user), notice: t(".notice")
     else
       load_show_data
+      flash.now[:alert] = @user.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end

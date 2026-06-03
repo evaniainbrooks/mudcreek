@@ -18,6 +18,7 @@ class Admin::ScheduleEventsController < Admin::BaseController
     if @event.save
       redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
     else
+      flash.now[:alert] = @event.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -34,6 +35,7 @@ class Admin::ScheduleEventsController < Admin::BaseController
     if @event.save
       redirect_to admin_location_schedule_path(@location, @schedule), notice: t(".notice")
     else
+      flash.now[:alert] = @event.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

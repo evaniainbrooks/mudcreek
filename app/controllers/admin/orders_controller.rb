@@ -32,6 +32,7 @@ class Admin::OrdersController < Admin::BaseController
     if @order.update(order_params)
       redirect_to admin_order_path(@order), notice: t(".notice")
     else
+      flash.now[:alert] = @order.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end

@@ -36,6 +36,7 @@ class Admin::LedgersController < Admin::BaseController
       redirect_to admin_ledger_path(@ledger), notice: t(".notice")
     else
       @locations = Location.ordered
+      flash.now[:alert] = @ledger.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -45,6 +46,7 @@ class Admin::LedgersController < Admin::BaseController
       redirect_to admin_ledger_path(@ledger), notice: t(".notice")
     else
       @locations = Location.ordered
+      flash.now[:alert] = @ledger.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

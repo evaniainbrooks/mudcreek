@@ -14,6 +14,7 @@ class Admin::DeliveryMethodsController < Admin::BaseController
       redirect_to admin_delivery_methods_path, notice: t(".notice", name: @delivery_method.name)
     else
       @delivery_methods = DeliveryMethod.order(:name)
+      flash.now[:alert] = @delivery_method.errors.full_messages.to_sentence
       render :index, status: :unprocessable_content
     end
   end

@@ -14,6 +14,7 @@ class Admin::DiscountCodesController < Admin::BaseController
       redirect_to admin_discount_codes_path, notice: t(".notice", key: @discount_code.key)
     else
       @discount_codes = DiscountCode.order(:key)
+      flash.now[:alert] = @discount_code.errors.full_messages.to_sentence
       render :index, status: :unprocessable_content
     end
   end

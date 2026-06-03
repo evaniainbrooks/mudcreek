@@ -28,6 +28,7 @@ class Admin::NavbarItemsController < Admin::BaseController
     if @navbar_item.save
       redirect_to admin_navbar_items_path, notice: t(".notice")
     else
+      flash.now[:alert] = @navbar_item.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end
@@ -36,6 +37,7 @@ class Admin::NavbarItemsController < Admin::BaseController
     if @navbar_item.update(navbar_item_params)
       redirect_to admin_navbar_items_path, notice: t(".notice")
     else
+      flash.now[:alert] = @navbar_item.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

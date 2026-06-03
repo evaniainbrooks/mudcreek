@@ -24,6 +24,7 @@ class Admin::RanksController < Admin::BaseController
     if @rank.update(rank_params)
       redirect_to admin_discipline_path(@discipline), notice: t(".notice")
     else
+      flash.now[:alert] = @rank.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_content
     end
   end

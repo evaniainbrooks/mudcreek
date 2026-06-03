@@ -15,6 +15,7 @@ class Admin::ListingInferenceBatchesController < Admin::BaseController
       redirect_to admin_listing_inference_batch_path(@batch), notice: t(".notice")
     else
       @lots = Lot.order(:name)
+      flash.now[:alert] = @batch.errors.full_messages.to_sentence
       render :new, status: :unprocessable_content
     end
   end

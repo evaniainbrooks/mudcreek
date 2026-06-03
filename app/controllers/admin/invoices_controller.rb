@@ -34,6 +34,7 @@ class Admin::InvoicesController < Admin::BaseController
     if @invoice.update(attrs)
       redirect_to admin_invoice_path(@invoice), notice: t(".notice")
     else
+      flash.now[:alert] = @invoice.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end
