@@ -68,16 +68,12 @@
         .card-header.fw-semibold Client
         .card-body
           .mb-3
-            = f.label :user_id, "Linked Account (optional)", class: "form-label"
-            = f.number_field :user_id, class: "form-control", placeholder: "User ID (optional)"
-          %hr
-          %p.text-muted.small.mb-2 Or enter guest contact details:
-          .mb-3
             = f.label :client_name, class: "form-label"
             = f.text_field :client_name, class: "form-control"
           .mb-3
             = f.label :client_email, class: "form-label"
             = f.email_field :client_email, class: "form-control"
+            .form-text If this email matches an existing account it will be linked automatically.
           .mb-0
             = f.label :client_phone, class: "form-label"
             = f.telephone_field :client_phone, class: "form-control"

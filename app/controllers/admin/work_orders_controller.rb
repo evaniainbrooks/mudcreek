@@ -36,6 +36,7 @@ class Admin::WorkOrdersController < Admin::BaseController
   def create
     authorize(WorkOrder)
     @work_order = WorkOrder.new(work_order_params)
+    resolve_client_user(@work_order)
 
     if @work_order.save
       redirect_to admin_work_order_path(@work_order), notice: t(".notice")
@@ -50,7 +51,9 @@ class Admin::WorkOrdersController < Admin::BaseController
   end
 
   def update
-    if @work_order.update(work_order_params)
+    @work_order.assign_attributes(work_order_params)
+    resolve_client_user(@work_order)
+    if @work_order.save
       redirect_to admin_work_order_path(@work_order), notice: t(".notice")
     else
       flash.now[:alert] = @work_order.errors.full_messages.to_sentence
@@ -96,10 +99,18 @@ class Admin::WorkOrdersController < Admin::BaseController
 
   def work_order_params
     params.expect(work_order: [
-      :title, :description, :client_name, :client_email, :client_phone, :user_id, :admin_notes, :location_id,
+      :title, :description, :client_name, :client_email, :client_phone, :admin_notes, :location_id,
       address_attributes: [ :id, :street_address, :city, :province, :postal_code, :country, :_destroy ],
       work_order_items_attributes: [ [ :id, :name, :description, :quantity, :unit_price, :position, :_destroy ] ],
       work_order_milestones_attributes: [ [ :id, :name, :percentage, :trigger_state, :position, :_destroy ] ]
     ])
+  end
+
+  def resolve_client_user(work_order)
+    email = work_order.client_email.presence
+    return unless email
+
+    matched = User.find_by(email_address: email)
+    work_order.user = matched
   end
 end

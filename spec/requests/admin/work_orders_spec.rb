@@ -240,6 +240,17 @@ RSpec.describe "Admin::WorkOrders", type: :request do
       end
     end
 
+    context "when the client_email matches an existing user" do
+      let!(:client) { create(:user, email_address: "alice@example.com") }
+
+      it "associates the new work order with that user" do
+        post admin_work_orders_path, params: valid_params
+
+        created = WorkOrder.find_by(title: "Deck Repair")
+        expect(created.user).to eq(client)
+      end
+    end
+
     context "with invalid params" do
       it "returns 422" do
         post admin_work_orders_path, params: { work_order: { title: "" } }
@@ -303,6 +314,16 @@ RSpec.describe "Admin::WorkOrders", type: :request do
       patch admin_work_order_path(work_order), params: { work_order: { title: "New Title" } }
 
       expect(flash[:notice]).to be_present
+    end
+
+    context "when the updated client_email matches an existing user" do
+      let!(:client) { create(:user, email_address: "client@example.com") }
+
+      it "associates the work order with that user" do
+        patch admin_work_order_path(work_order), params: { work_order: { client_email: "client@example.com" } }
+
+        expect(work_order.reload.user).to eq(client)
+      end
     end
 
     context "with invalid params" do
